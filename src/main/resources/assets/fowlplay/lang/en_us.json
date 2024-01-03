@@ -1,0 +1,18 @@
+{
+  "entity.fowlplay.penguin": "Penguin",
+  "entity.fowlplay.pigeon": "Pigeon",
+  "entity.fowlplay.robin": "Robin",
+  "entity.fowlplay.seagull": "Seagull",
+  "item.fowlplay.penguin_spawn_egg": "Penguin Spawn Egg",
+  "item.fowlplay.pigeon_spawn_egg": "Pigeon Spawn Egg",
+  "item.fowlplay.robin_spawn_egg": "Robin Spawn Egg",
+  "item.fowlplay.seagull_spawn_egg": "Seagull Spawn Egg",
+  "fowlplay.subtitles.entity.penguin.idle": "Penguin squawks",
+  "fowlplay.subtitles.entity.penguin_baby.idle": "Penguin chirps",
+  "fowlplay.subtitles.entity.penguin.swim": "Penguin swims",
+  "fowlplay.subtitles.entity.penguin.hurt": "Penguin hurts",
+  "fowlplay.subtitles.entity.penguin.death": "Penguin dies",
+  "fowlplay.subtitles.entity.robin.idle": "Robin chirps",
+  "fowlplay.subtitles.entity.robin.sing": "Robin sings",
+  "fowlplay.subtitles.entity.seagull.idle": "Seagull squawks"
+}

@@ -1,0 +1,45 @@
+{
+	"schema_version": 1,
+	"quilt_loader": {
+		"group": "aqario.fowlplay",
+		"id": "fowlplay",
+		"version": "${version}",
+		"metadata": {
+			"name": "Fowl Play",
+			"description": "Just smile and wave, boys. Smile and wave.",
+			"contributors": {
+				"aqario": "Author",
+				"Aesthel": "Contributor"
+			},
+			"contact": {
+				"sources": "https://github.com/aqariio/fowl-play",
+				"issues": "https://github.com/aqariio/fowl-play/issues"
+			},
+			"icon": "assets/fowlplay/icon.png"
+		},
+		"intermediate_mappings": "net.fabricmc:intermediary",
+		"entrypoints": {
+			"init": "aqario.fowlplay.common.FowlPlay",
+			"client_init": "aqario.fowlplay.client.FowlPlayClient"
+		},
+		"depends": [
+			{
+				"id": "quilt_loader",
+				"versions": ">=0.22.0"
+			},
+			{
+				"id": "quilted_fabric_api",
+				"versions": ">=4.0.0-"
+			},
+			{
+				"id": "minecraft",
+				"versions": ">=1.19.2"
+			},
+			{
+				"id": "geckolib3",
+				"versions": ">=3.1.41"
+			}
+		]
+	},
+	"mixin": "fowlplay.mixins.json"
+}
