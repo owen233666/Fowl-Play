@@ -1,19 +1,19 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
 import aqario.fowlplay.common.entity.PigeonEntity;
+import aqario.fowlplay.common.entity.TameableBirdEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.*;
-import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
 
 import java.util.EnumSet;
 
-public class DeliverBundleGoal<T extends TameableEntity> extends Goal {
+public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
     private final T tameable;
 
     private LivingEntity owner;
@@ -36,16 +36,16 @@ public class DeliverBundleGoal<T extends TameableEntity> extends Goal {
 
     private PlayerEntity recipient;
 
-    public DeliverBundleGoal(T tameable, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
-        this.tameable = tameable;
-        this.world = tameable.world;
+    public DeliverBundleGoal(T bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
+        this.tameable = bird;
+        this.world = bird.world;
         this.speed = speed;
-        this.navigation = tameable.getNavigation();
+        this.navigation = bird.getNavigation();
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
         this.leavesAllowed = leavesAllowed;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
-        if ((!(tameable.getNavigation() instanceof MobNavigation) && !(tameable.getNavigation() instanceof BirdNavigation)) || !(tameable instanceof PigeonEntity))
+        if ((!(bird.getNavigation() instanceof MobNavigation) && !(bird.getNavigation() instanceof BirdNavigation)) || !(bird instanceof PigeonEntity))
             throw new IllegalArgumentException("Unsupported mob type for DeliverBundleGoal");
     }
 
@@ -85,7 +85,6 @@ public class DeliverBundleGoal<T extends TameableEntity> extends Goal {
         this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.tameable.getPathfindingPenalty(PathNodeType.WATER);
         this.tameable.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
-        this.tameable.getDataTracker().set(PigeonEntity.DELIVERING, true);
     }
 
     @Override

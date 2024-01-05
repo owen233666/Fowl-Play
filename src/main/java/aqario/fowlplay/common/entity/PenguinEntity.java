@@ -21,7 +21,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -50,7 +49,7 @@ import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
 import java.util.List;
 
-public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleable {
+public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable {
     protected static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS;
     protected static final ImmutableList<MemoryModuleType<?>> MEMORY_MODULES;
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
@@ -67,7 +66,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
     private boolean pressingForward;
     private boolean pressingBack;
 
-    public PenguinEntity(EntityType<? extends AnimalEntity> entityType, World world) {
+    public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
         this.getNavigation().setCanSwim(true);
     }
@@ -108,10 +107,10 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
         if (!this.hasPassenger(passenger)) {
             return;
         }
-        float g = (float)((this.isRemoved() ? 0.01F : this.getMountedHeightOffset()) + passenger.getHeightOffset());
+        float g = (float) ((this.isRemoved() ? 0.01F : this.getMountedHeightOffset()) + passenger.getHeightOffset());
 
         Vec3d vec3d = new Vec3d(this.getMountedXOffset(), 0.0, 0.0).rotateY(-this.getYaw() * (float) (Math.PI / 180.0) - (float) (Math.PI / 2));
-        passenger.setPosition(this.getX() + vec3d.x, this.getY() + (double)g, this.getZ() + vec3d.z);
+        passenger.setPosition(this.getX() + vec3d.x, this.getY() + (double) g, this.getZ() + vec3d.z);
         passenger.setYaw(passenger.getYaw());
         passenger.setHeadYaw(passenger.getHeadYaw());
         this.copyEntityData(passenger);
@@ -128,16 +127,16 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
             List<Vec3d> list = Lists.newArrayList();
             double f = this.world.getDismountHeight(blockPos);
             if (Dismounting.canDismountInBlock(f)) {
-                list.add(new Vec3d(d, (double)blockPos.getY() + f, e));
+                list.add(new Vec3d(d, (double) blockPos.getY() + f, e));
             }
 
             double g = this.world.getDismountHeight(blockPos2);
             if (Dismounting.canDismountInBlock(g)) {
-                list.add(new Vec3d(d, (double)blockPos2.getY() + g, e));
+                list.add(new Vec3d(d, (double) blockPos2.getY() + g, e));
             }
 
-            for(EntityPose entityPose : passenger.getPoses()) {
-                for(Vec3d vec3d2 : list) {
+            for (EntityPose entityPose : passenger.getPoses()) {
+                for (Vec3d vec3d2 : list) {
                     if (Dismounting.canPlaceEntityAt(this.world, vec3d2, passenger, entityPose)) {
                         passenger.setPose(entityPose);
                         return vec3d2;
@@ -171,9 +170,9 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0D)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135D)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D);
     }
 
     @Override
@@ -205,7 +204,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
                 float sidewaysSpeed = ((LivingEntity) entity).sidewaysSpeed * 0.5F;
                 float forwardSpeed = ((LivingEntity) entity).forwardSpeed;
                 if (this.isLogicalSideForUpdatingMovement()) {
-                    this.setMovementSpeed((float)this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
+                    this.setMovementSpeed((float) this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
                     super.travel(new Vec3d(sidewaysSpeed, movementInput.y, forwardSpeed));
                 } else if (entity instanceof PlayerEntity) {
                     this.setVelocity(Vec3d.ZERO);
@@ -289,7 +288,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         boolean bl = this.isBreedingItem(player.getStackInHand(hand));
-        if (!bl  && !this.hasPassengers() && !player.shouldCancelInteraction() && !this.isBaby()) {
+        if (!bl && !this.hasPassengers() && !player.shouldCancelInteraction() && !this.isBaby()) {
             if (!this.world.isClient) {
                 player.startRiding(this);
             }
@@ -335,7 +334,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_IDLE : FowlPlaySoundEvents.ENTITY_PENGUIN_IDLE;
+        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
     }
 
     @Override
@@ -360,12 +359,17 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
         this.pressingBack = pressingBack;
     }
 
+    @Override
+    public boolean isFlying() {
+        return false;
+    }
+
     public boolean isMoving(AnimationEvent<PenguinEntity> event) {
         float limbSwingAmount = event.getLimbSwingAmount();
         return Math.abs(limbSwingAmount) >= 0.05F;
     }
 
-    private PlayState controller(AnimationEvent<PenguinEntity> event) {
+    private PlayState predicate(AnimationEvent<PenguinEntity> event) {
         PenguinEntity entity = event.getAnimatable();
         byte currentAnimation = getAnimation();
 //        switch (currentAnimation) {
@@ -393,7 +397,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::controller));
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
     }
 
     @Override
@@ -421,7 +425,7 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
     protected void mobTick() {
         this.setSliding(!this.getPassengerList().isEmpty());
         this.getWorld().getProfiler().push("penguinBrain");
-        this.getBrain().tick((ServerWorld)this.getWorld(), this);
+        this.getBrain().tick((ServerWorld) this.getWorld(), this);
         this.getWorld().getProfiler().pop();
         this.getWorld().getProfiler().push("penguinActivityUpdate");
         PenguinBrain.updateActivities(this);
@@ -431,36 +435,36 @@ public class PenguinEntity extends AnimalEntity implements IAnimatable, Saddleab
 
     static {
         SENSORS = ImmutableList.of(
-                SensorType.NEAREST_LIVING_ENTITIES,
-                SensorType.NEAREST_ADULT,
-                SensorType.HURT_BY,
-                FowlPlaySensorType.PENGUIN_TEMPTATIONS,
-                SensorType.AXOLOTL_ATTACKABLES,
-                SensorType.IS_IN_WATER
+            SensorType.NEAREST_LIVING_ENTITIES,
+            SensorType.NEAREST_ADULT,
+            SensorType.HURT_BY,
+            FowlPlaySensorType.PENGUIN_TEMPTATIONS,
+            SensorType.AXOLOTL_ATTACKABLES,
+            SensorType.IS_IN_WATER
         );
         MEMORY_MODULES = ImmutableList.of(
-                MemoryModuleType.LOOK_TARGET,
-                MemoryModuleType.MOBS,
-                MemoryModuleType.VISIBLE_MOBS,
-                MemoryModuleType.WALK_TARGET,
-                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-                MemoryModuleType.PATH,
-                MemoryModuleType.BREED_TARGET,
-                MemoryModuleType.NEAREST_VISIBLE_PLAYER,
-                MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
-                MemoryModuleType.ATTACK_COOLING_DOWN,
-                MemoryModuleType.NEAREST_VISIBLE_ADULT,
-                MemoryModuleType.HAS_HUNTING_COOLDOWN,
-                MemoryModuleType.ATTACK_TARGET,
-                MemoryModuleType.TEMPTING_PLAYER,
-                MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
-                MemoryModuleType.IS_TEMPTED,
-                MemoryModuleType.HURT_BY,
-                MemoryModuleType.HURT_BY_ENTITY,
-                MemoryModuleType.NEAREST_ATTACKABLE,
-                MemoryModuleType.IS_IN_WATER,
-                MemoryModuleType.IS_PREGNANT,
-                MemoryModuleType.IS_PANICKING
+            MemoryModuleType.LOOK_TARGET,
+            MemoryModuleType.MOBS,
+            MemoryModuleType.VISIBLE_MOBS,
+            MemoryModuleType.WALK_TARGET,
+            MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+            MemoryModuleType.PATH,
+            MemoryModuleType.BREED_TARGET,
+            MemoryModuleType.NEAREST_VISIBLE_PLAYER,
+            MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            MemoryModuleType.NEAREST_VISIBLE_ADULT,
+            MemoryModuleType.HAS_HUNTING_COOLDOWN,
+            MemoryModuleType.ATTACK_TARGET,
+            MemoryModuleType.TEMPTING_PLAYER,
+            MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
+            MemoryModuleType.IS_TEMPTED,
+            MemoryModuleType.HURT_BY,
+            MemoryModuleType.HURT_BY_ENTITY,
+            MemoryModuleType.NEAREST_ATTACKABLE,
+            MemoryModuleType.IS_IN_WATER,
+            MemoryModuleType.IS_PREGNANT,
+            MemoryModuleType.IS_PANICKING
         );
     }
 }

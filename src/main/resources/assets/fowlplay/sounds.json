@@ -1,18 +1,18 @@
 {
-  "entity.penguin.idle": {
+  "entity.penguin.ambient": {
     "sounds": [
-      "fowlplay:mob/penguin/idle1",
-      "fowlplay:mob/penguin/idle2",
-      "fowlplay:mob/penguin/idle3"
+      "fowlplay:mob/penguin/ambient1",
+      "fowlplay:mob/penguin/ambient2",
+      "fowlplay:mob/penguin/ambient3"
 
     ],
-    "subtitle": "fowlplay.subtitles.entity.penguin.idle"
+    "subtitle": "subtitles.entity.penguin.ambient"
   },
-  "entity.penguin_baby.idle": {
+  "entity.penguin_baby.ambient": {
     "sounds": [
-      "fowlplay:mob/penguin/baby_idle"
+      "fowlplay:mob/penguin/baby_ambient"
     ],
-    "subtitle": "fowlplay.subtitles.entity.penguin_baby.idle"
+    "subtitle": "subtitles.entity.penguin_baby.ambient"
   },
   "entity.penguin.swim": {
     "sounds": [
@@ -22,28 +22,58 @@
       "fowlplay:mob/penguin/swim/swim4",
       "fowlplay:mob/penguin/swim/swim5"
     ],
-    "subtitle": "fowlplay.subtitles.entity.penguin.swim"
+    "subtitle": "subtitles.entity.penguin.swim"
   },
   "entity.penguin.hurt": {
     "sounds": [
       "fowlplay:mob/penguin/hurt"
     ],
-    "subtitle": "fowlplay.subtitles.entity.penguin.hurt"
+    "subtitle": "subtitles.entity.penguin.hurt"
   },
   "entity.penguin.death": {
     "sounds": [
       "fowlplay:mob/penguin/hurt"
     ],
-    "subtitle": "fowlplay.subtitles.entity.penguin.death"
+    "subtitle": "subtitles.entity.penguin.death"
   },
-  "entity.seagull.idle": {
+  "entity.pigeon.ambient": {
     "sounds": [
-      "fowlplay:mob/seagull/idle1",
-      "fowlplay:mob/seagull/idle2",
-      "fowlplay:mob/seagull/idle3",
-      "fowlplay:mob/seagull/idle4",
-      "fowlplay:mob/seagull/idle5"
+      "fowlplay:mob/pigeon/ambient1"
+
     ],
-    "subtitle": "fowlplay.subtitles.entity.seagull.idle"
+    "subtitle": "subtitles.entity.pigeon.ambient"
+  },
+  "entity.pigeon.call": {
+    "sounds": [
+      "fowlplay:mob/pigeon/call1"
+
+    ],
+    "subtitle": "subtitles.entity.pigeon.call"
+  },
+  "entity.seagull.ambient": {
+    "sounds": [
+      "fowlplay:mob/seagull/ambient1",
+      "fowlplay:mob/seagull/ambient2",
+      "fowlplay:mob/seagull/ambient3",
+      "fowlplay:mob/seagull/ambient4",
+      "fowlplay:mob/seagull/ambient5"
+    ],
+    "subtitle": "subtitles.entity.seagull.ambient"
+  },
+  "entity.robin.ambient": {
+    "sounds": [
+      "fowlplay:mob/robin/ambient1",
+      "fowlplay:mob/robin/ambient2"
+
+    ],
+    "subtitle": "subtitles.entity.robin.ambient"
+  },
+  "entity.robin.song": {
+    "sounds": [
+      "fowlplay:mob/robin/song1",
+      "fowlplay:mob/robin/song2"
+
+    ],
+    "subtitle": "subtitles.entity.robin.song"
   }
 }

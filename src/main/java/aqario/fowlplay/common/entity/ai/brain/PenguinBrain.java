@@ -2,8 +2,6 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PenguinEntity;
-import aqario.fowlplay.common.entity.ai.brain.task.DebugConditionalTask;
-import aqario.fowlplay.common.entity.ai.brain.task.DebugWaitTask;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -19,8 +17,6 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-
-import java.util.function.Predicate;
 
 public class PenguinBrain {
     private static final UniformIntProvider ADULT_FOLLOW_RANGE = UniformIntProvider.create(5, 16);
@@ -73,7 +69,7 @@ public class PenguinBrain {
                             Pair.of(new StrollTask(WALK_SPEED), 2),
                             Pair.of(new GoTowardsLookTarget(WALK_SPEED, 3), 3),
                             Pair.of(new ConditionalTask<>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5),
-                            Pair.of(new DebugWaitTask(600, 800), 5)
+                            Pair.of(new WaitTask(600, 800), 5)
 //                            Pair.of(new ConditionalTask<>(entity -> true, new DebugWaitTask(600, 800)), 5)
                         )
                     )

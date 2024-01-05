@@ -24,7 +24,6 @@ public class SeagullRenderer extends GeoEntityRenderer<SeagullEntity> {
 
     @Override
     public RenderLayer getRenderType(SeagullEntity animatable, float partialTick, MatrixStack poseStack, @Nullable VertexConsumerProvider bufferSource, @Nullable VertexConsumer buffer, int packedLight, Identifier texture) {
-        poseStack.scale(1.2f, 1.2f, 1.2f);
         return RenderLayer.getEntityCutoutNoCull(texture);
     }
 }

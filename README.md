@@ -2,5 +2,19 @@
 
 # Fowl Play
 
+An overcomplicated mod that adds a bunch of birds. Some of them add ambience, others have useful features and all of 
+them try to annoy you as much as they can, just like real birds!
 
-An overcomplicated mod that adds a bunch of birds. Some of them add ambience, others have useful features and all of them try to annoy you as much as they can, just like real birds!
+Current mobs:
+
+- Penguin
+- Seagull
+- Robin
+- Pigeon
+
+Planned additions:
+
+- Crow
+- Falcon
+- Duck
+- More songbirds

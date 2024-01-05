@@ -14,10 +14,10 @@ public class FowlPlayItems {
         new SpawnEggItem(FowlPlayEntityType.PENGUIN, 0x151419, 0xfafafa,
             new QuiltItemSettings().group(ItemGroup.MISC)));
     public static final Item PIGEON_SPAWN_EGG = register("pigeon_spawn_egg",
-        new SpawnEggItem(FowlPlayEntityType.PIGEON, 0x77797A, 0x755C5F,
+        new SpawnEggItem(FowlPlayEntityType.PIGEON, 0xBBBDBF, 0x467A58,
             new QuiltItemSettings().group(ItemGroup.MISC)));
     public static final Item ROBIN_SPAWN_EGG = register("robin_spawn_egg",
-        new SpawnEggItem(FowlPlayEntityType.ROBIN, 0x6f7172, 0xcc733d,
+        new SpawnEggItem(FowlPlayEntityType.ROBIN, 0x66696A, 0xE57839,
             new QuiltItemSettings().group(ItemGroup.MISC)));
     public static final Item SEAGULL_SPAWN_EGG = register("seagull_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.SEAGULL, 0xeaedf0, 0xffd850,

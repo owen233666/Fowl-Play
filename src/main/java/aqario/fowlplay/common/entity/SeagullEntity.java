@@ -18,7 +18,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -27,8 +26,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
@@ -57,12 +54,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class SeagullEntity extends AnimalEntity implements IAnimatable {
+public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
-    private static final TrackedData<Boolean> TRUSTING = DataTracker.registerData(SeagullEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> FLYING = DataTracker.registerData(SeagullEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Optional<UUID>> OWNER = DataTracker.registerData(SeagullEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    private static final TrackedData<Optional<UUID>> OTHER_TRUSTED = DataTracker.registerData(SeagullEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final TrackedData<Float> FLIGHT_LOOK_YAW = DataTracker.registerData(SeagullEntity.class, TrackedDataHandlerRegistry.FLOAT);
     public static final Predicate<Entity> NOTICEABLE_PLAYER_FILTER = entity -> !entity.isSneaky() && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(entity);
     public float flapProgress;
@@ -74,11 +67,7 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
 
     public int fleeTime = 0;
 
-    void setFlying(boolean flying) {
-        this.dataTracker.set(FLYING, flying);
-    }
-
-    public SeagullEntity(EntityType<? extends AnimalEntity> entityType, World world) {
+    public SeagullEntity(EntityType<? extends SeagullEntity> entityType, World world) {
         super(entityType, world);
         this.moveControl = new FlightMoveControl(this, 10, false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
@@ -90,34 +79,12 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(FLYING, false);
-        this.dataTracker.startTracking(OWNER, Optional.empty());
-        this.dataTracker.startTracking(OTHER_TRUSTED, Optional.empty());
-    }
-
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        List<UUID> list = this.getTrustedUuids();
-        NbtList nbtList = new NbtList();
-        for (UUID uUID : list) {
-            if (uUID == null) continue;
-            nbtList.add(NbtHelper.fromUuid(uUID));
-        }
-        nbt.put("Trusted", nbtList);
-        nbt.putBoolean("Flying", this.isFlying());
-    }
-
-    @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         NbtList nbtList = nbt.getList("Trusted", 11);
         for (NbtElement nbtElement : nbtList) {
             this.addTrustedUuid(NbtHelper.toUuid(nbtElement));
         }
-        this.setFlying(nbt.getBoolean("Flying"));
     }
 
     @Override
@@ -129,7 +96,7 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
             this.dropStack(this.getStackInHand(Hand.MAIN_HAND), 0.0F);
         }
         this.setStackInHand(Hand.MAIN_HAND, duplicate);
-        if (item.getStack().isIn(FowlPlayItemTags.SEAGULL_TEMPT_ITEMS) /*&& !this.isTrusting()*/) {
+        if (item.getStack().isIn(FowlPlayItemTags.SEAGULL_TEMPT_ITEMS) && this.getTrusted() == null) {
 //            seedThrowerID = item.getThrower();
         } else {
 //            seedThrowerID = null;
@@ -185,21 +152,16 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
 
     public List<UUID> getTrustedUuids() {
         ArrayList<UUID> list = Lists.newArrayList();
-        list.add(this.dataTracker.get(OWNER).orElse(null));
-        list.add(this.dataTracker.get(OTHER_TRUSTED).orElse(null));
+        list.add(this.dataTracker.get(TRUSTED).orElse(null));
         return list;
     }
 
     private void rememberTrusting() {
-        this.getBrain().remember(MemoryModuleType.LIKED_PLAYER, this.dataTracker.get(OWNER).orElse(null));
+        this.getBrain().remember(MemoryModuleType.LIKED_PLAYER, this.dataTracker.get(TRUSTED).orElse(null));
     }
 
     void addTrustedUuid(@Nullable UUID uuid) {
-        if (this.dataTracker.get(OWNER).isPresent()) {
-            this.dataTracker.set(OTHER_TRUSTED, Optional.ofNullable(uuid));
-        } else {
-            this.dataTracker.set(OWNER, Optional.ofNullable(uuid));
-        }
+        this.dataTracker.set(TRUSTED, Optional.ofNullable(uuid));
     }
 
     @Override
@@ -223,19 +185,6 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
     @Override
     public boolean isBreedingItem(ItemStack stack) {
         return false;
-    }
-
-    private void showEmoteParticle(boolean positive) {
-        DefaultParticleType particleEffect = ParticleTypes.HEART;
-        if (!positive) {
-            particleEffect = ParticleTypes.SMOKE;
-        }
-        for (int i = 0; i < 7; ++i) {
-            double d = this.random.nextGaussian() * 0.02;
-            double e = this.random.nextGaussian() * 0.02;
-            double f = this.random.nextGaussian() * 0.02;
-            this.world.addParticle(particleEffect, this.getParticleX(1.0), this.getRandomBodyY() + 0.5, this.getParticleZ(1.0), d, e, f);
-        }
     }
 
     @Override
@@ -316,10 +265,6 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
 
-    public boolean isFlying() {
-        return !this.onGround && !this.isTouchingWater();
-    }
-
     @Override
     public Vec3d getLeashOffset() {
         return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
@@ -327,14 +272,26 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return FowlPlaySoundEvents.ENTITY_SEAGULL_IDLE;
+        return FowlPlaySoundEvents.ENTITY_SEAGULL_AMBIENT;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return null;
     }
 
     public boolean canTrust(UUID uuid) {
         return this.getTrustedUuids().contains(uuid);
     }
 
-    private PlayState controller(AnimationEvent<SeagullEntity> event) {
+    private PlayState predicate(AnimationEvent<SeagullEntity> event) {
         if (this.isFlying()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.flying", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
@@ -349,7 +306,7 @@ public class SeagullEntity extends AnimalEntity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::controller));
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
     }
 
     @Override

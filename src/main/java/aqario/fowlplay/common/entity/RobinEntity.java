@@ -1,10 +1,8 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -14,7 +12,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -24,11 +21,14 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -45,10 +45,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class RobinEntity extends AnimalEntity implements IAnimatable {
+public class RobinEntity extends BirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
-    private static final TrackedData<Boolean> FLYING = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Optional<UUID>> OWNER = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final TrackedData<Optional<UUID>> OTHER_TRUSTED = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     public float flapProgress;
@@ -58,11 +57,7 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
     public float flapSpeed = 1.0f;
     private int eatingTime;
 
-    void setFlying(boolean flying) {
-        this.dataTracker.set(FLYING, flying);
-    }
-
-    public RobinEntity(EntityType<? extends AnimalEntity> entityType, World world) {
+    public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);
 //        this.moveControl = new FlightMoveControl(this, 10, false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
@@ -77,7 +72,6 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(VARIANT, Util.getRandom(Variant.VARIANTS, random).toString());
-        this.dataTracker.startTracking(FLYING, false);
         this.dataTracker.startTracking(OWNER, Optional.empty());
         this.dataTracker.startTracking(OTHER_TRUSTED, Optional.empty());
     }
@@ -94,7 +88,6 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("Variant", this.getVariant().toString());
-        nbt.putBoolean("Flying", this.isFlying());
     }
 
     @Override
@@ -103,7 +96,6 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
         if (nbt.contains("Variant")) {
             this.setVariant(Variant.valueOf(nbt.getString("Variant")));
         }
-        this.setFlying(nbt.getBoolean("Flying"));
     }
 
     @Nullable
@@ -170,7 +162,7 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
 
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_FOX_EAT;
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override
@@ -229,21 +221,33 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
 
-    public boolean isFlying() {
-        return !this.onGround && !this.isTouchingWater();
-    }
-
     @Override
     public Vec3d getLeashOffset() {
         return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
     }
 
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+        return world.getBlockState(pos.down()).isIn(BlockTags.PARROTS_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
+    }
+
     @Override
     protected SoundEvent getAmbientSound() {
+        return random.nextInt(10) == 0 ? FowlPlaySoundEvents.ENTITY_ROBIN_SONG : FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
         return null;
     }
 
-    private PlayState controller(AnimationEvent<RobinEntity> event) {
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return null;
+    }
+
+    private PlayState predicate(AnimationEvent<RobinEntity> event) {
 //        if (this.isFlying()) {
 //            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flying", ILoopType.EDefaultLoopTypes.LOOP));
 //            return PlayState.CONTINUE;
@@ -266,7 +270,7 @@ public class RobinEntity extends AnimalEntity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::controller));
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
     }
 
     @Override
