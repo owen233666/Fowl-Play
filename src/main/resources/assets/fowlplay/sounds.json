@@ -38,7 +38,9 @@
   },
   "entity.pigeon.ambient": {
     "sounds": [
-      "fowlplay:mob/pigeon/ambient1"
+      "fowlplay:mob/pigeon/ambient1",
+      "fowlplay:mob/pigeon/ambient2",
+      "fowlplay:mob/pigeon/ambient3"
 
     ],
     "subtitle": "subtitles.entity.pigeon.ambient"

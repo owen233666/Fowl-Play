@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.BirdFollowOwnerGoal;
+import aqario.fowlplay.common.entity.ai.goal.DelivererFollowOwnerGoal;
+import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.DeliverBundleGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import net.minecraft.block.BlockState;
@@ -8,7 +9,12 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.ai.control.FlightMoveControl;
+import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -47,28 +53,41 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+    public static final TrackedData<Boolean> DELIVERING = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
     public float prevFlapProgress;
     public float flapSpeed = 1.0f;
     private int eatingTime;
+    private boolean isFlightMoveControl;
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
-//        this.moveControl = new FlightMoveControl(this, 90, false);
+        this.setMoveControl(false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    private void setMoveControl(boolean isFlying) {
+        if (isFlying) {
+            this.moveControl = new FlightMoveControl(this, 10, false);
+            this.isFlightMoveControl = true;
+        } else {
+            this.moveControl = new MoveControl(this);
+            this.isFlightMoveControl = false;
+        }
     }
 
     @Override
@@ -81,11 +100,13 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(RECIPIENT, Optional.empty());
+        this.dataTracker.startTracking(DELIVERING, false);
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("Delivering", this.dataTracker.get(DELIVERING));
         if (this.getRecipientUuid() != null) {
             nbt.putUuid("Recipient", this.getRecipientUuid());
         }
@@ -94,6 +115,7 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+        this.dataTracker.set(DELIVERING, nbt.getBoolean("Delivering"));
         if (!nbt.containsUuid("Receiver")) {
             this.setRecipientUuid(null);
             return;
@@ -123,22 +145,28 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(2, new DeliverBundleGoal<>(this, 1.0, 6.0F, 128.0F, false));
-        this.goalSelector.add(3, new BirdFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
+        this.goalSelector.add(3, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(5, new AnimalMateGoal(this, 1.0));
-        this.goalSelector.add(6, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(6, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));
     }
 
-//    @Override
-//    protected EntityNavigation createNavigation(World world) {
-//        BirdNavigation birdNavigation = new BirdNavigation(this, world);
-//        birdNavigation.setCanPathThroughDoors(false);
-//        birdNavigation.setCanSwim(true);
-//        birdNavigation.setCanEnterOpenDoors(true);
-//        return birdNavigation;
-//    }
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        if (!this.isFlying()) {
+            MobNavigation mobNavigation = new MobNavigation(this, world);
+            mobNavigation.setCanPathThroughDoors(false);
+            mobNavigation.setCanSwim(true);
+            mobNavigation.setCanEnterOpenDoors(true);
+            return mobNavigation;
+        }
+        BirdNavigation birdNavigation = new BirdNavigation(this, world);
+        birdNavigation.setCanPathThroughDoors(false);
+        birdNavigation.setCanEnterOpenDoors(true);
+        return birdNavigation;
+    }
 
     @Override
     protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
@@ -165,13 +193,13 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
             return ActionResult.success(this.world.isClient);
         }
 
-        if (!stack.isEmpty() && !this.isBreedingItem(stack)) {
-            if (!this.world.isClient) {
-                this.setStackInHand(Hand.MAIN_HAND, stack);
-                player.setStackInHand(hand, ItemStack.EMPTY);
-            }
-            return ActionResult.success(this.world.isClient);
-        }
+//        if (!stack.isEmpty() && !this.isBreedingItem(stack)) {
+//            if (!this.world.isClient) {
+//                this.setStackInHand(Hand.MAIN_HAND, stack);
+//                player.setStackInHand(hand, ItemStack.EMPTY);
+//            }
+//            return ActionResult.success(this.world.isClient);
+//        }
 
         if (!this.isBreedingItem(stack)) {
             return super.interactMob(player, hand);
@@ -182,7 +210,6 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
                 this.eat(player, hand, stack);
                 if (this.random.nextInt(4) == 0) {
                     this.setOwner(player);
-//                        this.setSitting(true);
                     this.navigation.stop();
                     this.world.sendEntityStatus(this, (byte) 7);
                 } else {
@@ -227,15 +254,21 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     @Override
     protected void mobTick() {
         super.mobTick();
+        if (!this.world.isClient) {
+            if (this.isFlying() != this.isFlightMoveControl) {
+                this.setMoveControl(this.isFlying());
+            }
+        }
         if (this.getServer() == null) {
             return;
         }
 
-        ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
+        ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
         ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
 
         if (!(stack.getItem() instanceof BundleItem) || !stack.hasCustomName() || recipient == null || recipient.getUuid() == null) {
             this.setRecipientUuid(null);
+            this.dataTracker.set(DELIVERING, false);
             return;
         }
 
@@ -245,7 +278,9 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     @Override
     public void tickMovement() {
         super.tickMovement();
-//        this.flapWings();
+        if (this.isFlying()) {
+            this.flapWings();
+        }
     }
 
     private void flapWings() {
@@ -292,8 +327,26 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     }
 
     @Override
+    public void playAmbientSound() {
+        SoundEvent soundEvent = this.getAmbientSound();
+        if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
+            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
+        } else {
+            super.playAmbientSound();
+        }
+    }
+
+    @Override
     protected SoundEvent getAmbientSound() {
-        return random.nextInt(10) == 0 ? FowlPlaySoundEvents.ENTITY_PIGEON_CALL : FowlPlaySoundEvents.ENTITY_PIGEON_AMBIENT;
+        if (!this.world.isDay() && this.random.nextFloat() < 0.1F) {
+            List<PlayerEntity> list = this.world
+                .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
+            if (list.isEmpty()) {
+                return FowlPlaySoundEvents.ENTITY_PIGEON_CALL;
+            }
+        }
+
+        return FowlPlaySoundEvents.ENTITY_PIGEON_AMBIENT;
     }
 
     @Nullable
@@ -309,12 +362,12 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     }
 
     private PlayState predicate(AnimationEvent<PigeonEntity> event) {
-//        if (this.isFlying()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.flying", ILoopType.EDefaultLoopTypes.LOOP));
-//            return PlayState.CONTINUE;
-//        }
+        if (this.isFlying()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flying", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
 //        if (this.isTouchingWater()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.idle", ILoopType.EDefaultLoopTypes.LOOP));
+//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.swimming", ILoopType.EDefaultLoopTypes.LOOP));
 //            return PlayState.CONTINUE;
 //        }
         if (event.isMoving()) {

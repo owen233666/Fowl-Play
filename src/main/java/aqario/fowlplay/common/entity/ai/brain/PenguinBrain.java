@@ -70,13 +70,42 @@ public class PenguinBrain {
                             Pair.of(new GoTowardsLookTarget(WALK_SPEED, 3), 3),
                             Pair.of(new ConditionalTask<>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5),
                             Pair.of(new WaitTask(600, 800), 5)
-//                            Pair.of(new ConditionalTask<>(entity -> true, new DebugWaitTask(600, 800)), 5)
                         )
                     )
                 )
             ),
             ImmutableSet.of(
-                Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT)
+            )
+        );
+    }
+
+    private static void addSwimActivities(Brain<PenguinEntity> brain) {
+        brain.setTaskList(
+            Activity.SWIM,
+            ImmutableList.of(
+                Pair.of(0, new TimeLimitedTask<LivingEntity>(new FollowMobTask(EntityType.PLAYER, 6.0f), UniformIntProvider.create(30, 60))),
+                Pair.of(1, new TemptTask(penguin -> 1.25f)),
+                Pair.of(2, new UpdateAttackTargetTask<>(PenguinBrain::isNotBreeding, penguin -> penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE))),
+                Pair.of(3, new FindLandTask(8, 1.5f)),
+                Pair.of(
+                    5,
+                    new CompositeTask<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+                        ImmutableSet.of(),
+                        CompositeTask.Order.ORDERED,
+                        CompositeTask.RunMode.TRY_ALL,
+                        ImmutableList.of(
+                            Pair.of(new AquaticStrollTask(SWIM_SPEED), 1),
+                            Pair.of(new StrollTask(WALK_SPEED, true), 1),
+                            Pair.of(new GoTowardsLookTarget(1.0f, 3), 1),
+                            Pair.of(new ConditionalTask<LivingEntity>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5)
+                        )
+                    )
+                )
+            ),
+            ImmutableSet.of(
+                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_PRESENT)
             )
         );
     }
@@ -101,36 +130,6 @@ public class PenguinBrain {
                         )
                     )
                 )
-            )
-        );
-    }
-
-    private static void addSwimActivities(Brain<PenguinEntity> brain) {
-        brain.setTaskList(
-            Activity.SWIM,
-            ImmutableList.of(
-                Pair.of(0, new TimeLimitedTask<LivingEntity>(new FollowMobTask(EntityType.PLAYER, 6.0f), UniformIntProvider.create(30, 60))),
-                Pair.of(1, new TemptTask(penguin -> 1.25f)),
-                Pair.of(2, new UpdateAttackTargetTask<>(PenguinBrain::isNotBreeding, penguin -> penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE))),
-                Pair.of(3, new FindLandTask(8, 1.5f)),
-                Pair.of(
-                    5,
-                    new CompositeTask<>(
-                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
-                        ImmutableSet.of(),
-                        CompositeTask.Order.ORDERED,
-                        CompositeTask.RunMode.TRY_ALL,
-                        ImmutableList.of(
-                            Pair.of(new AquaticStrollTask(0.75f), 1),
-                            Pair.of(new StrollTask(1.0f, true), 1),
-                            Pair.of(new GoTowardsLookTarget(1.0f, 3), 1),
-                            Pair.of(new ConditionalTask<LivingEntity>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5)
-                        )
-                    )
-                )
-            ),
-            ImmutableSet.of(
-                Pair.of(MemoryModuleType.LONG_JUMP_MID_JUMP, MemoryModuleState.VALUE_ABSENT), Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_PRESENT)
             )
         );
     }

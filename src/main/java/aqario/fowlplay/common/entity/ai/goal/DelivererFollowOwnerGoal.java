@@ -1,6 +1,8 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
 import java.util.EnumSet;
+
+import aqario.fowlplay.common.entity.PigeonEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.LivingEntity;
@@ -14,7 +16,7 @@ import aqario.fowlplay.common.entity.TameableBirdEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
 
-public class BirdFollowOwnerGoal extends Goal {
+public class DelivererFollowOwnerGoal extends Goal {
     public static final int TELEPORT_AT_DISTANCE = 12;
     private static final int HORIZONTAL_RANGE = 2;
     private static final int HORIZONTAL_VARIATION = 3;
@@ -30,7 +32,7 @@ public class BirdFollowOwnerGoal extends Goal {
     private float oldWaterPathfindingPenalty;
     private final boolean leavesAllowed;
 
-    public BirdFollowOwnerGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
+    public DelivererFollowOwnerGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
         this.tameable = bird;
         this.world = bird.world;
         this.speed = speed;
@@ -49,27 +51,36 @@ public class BirdFollowOwnerGoal extends Goal {
         LivingEntity livingEntity = this.tameable.getOwner();
         if (livingEntity == null) {
             return false;
-        } else if (livingEntity.isSpectator()) {
-            return false;
-        } else if (this.tameable.isSitting()) {
-            return false;
-        } else if (this.tameable.squaredDistanceTo(livingEntity) < (double)(this.minDistance * this.minDistance)) {
-            return false;
-        } else {
-            this.owner = livingEntity;
-            return true;
         }
+        if (livingEntity.isSpectator()) {
+            return false;
+        }
+        if (this.tameable.isSitting()) {
+            return false;
+        }
+        if (this.tameable.squaredDistanceTo(livingEntity) < (double)(this.minDistance * this.minDistance)) {
+            return false;
+        }
+        if (this.tameable.getDataTracker().get(PigeonEntity.DELIVERING)) {
+            return false;
+        }
+        this.owner = livingEntity;
+        return true;
     }
 
     @Override
     public boolean shouldContinue() {
+        if (this.tameable.getDataTracker().get(PigeonEntity.DELIVERING)) {
+            return false;
+        }
         if (this.navigation.isIdle()) {
             return false;
-        } else if (this.tameable.isSitting()) {
-            return false;
-        } else {
-            return !(this.tameable.squaredDistanceTo(this.owner) <= (double)(this.maxDistance * this.maxDistance));
         }
+        if (this.tameable.isSitting()) {
+            return false;
+        }
+
+        return !(this.tameable.squaredDistanceTo(this.owner) <= (double)(this.maxDistance * this.maxDistance));
     }
 
     @Override

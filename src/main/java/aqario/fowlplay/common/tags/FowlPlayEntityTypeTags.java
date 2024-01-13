@@ -7,9 +7,9 @@ import net.minecraft.util.registry.Registry;
 import aqario.fowlplay.common.FowlPlay;
 
 public final class FowlPlayEntityTypeTags {
-    public static final TagKey<EntityType<?>> BIRDS = FowlPlayEntityTypeTags.of("birds");
+    public static final TagKey<EntityType<?>> BIRDS = register("birds");
 
-    private static TagKey<EntityType<?>> of(String id) {
+    private static TagKey<EntityType<?>> register(String id) {
         return TagKey.of(Registry.ENTITY_TYPE_KEY, new Identifier(FowlPlay.ID, id));
     }
 }

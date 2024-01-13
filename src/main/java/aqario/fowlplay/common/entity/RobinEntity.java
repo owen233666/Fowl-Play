@@ -1,9 +1,16 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.control.FlightMoveControl;
+import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -21,7 +28,6 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -42,24 +48,22 @@ import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-public class RobinEntity extends BirdEntity implements IAnimatable {
+public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
-    private static final TrackedData<Optional<UUID>> OWNER = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    private static final TrackedData<Optional<UUID>> OTHER_TRUSTED = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
     public float prevFlapProgress;
     public float flapSpeed = 1.0f;
     private int eatingTime;
+    private boolean isFlightMoveControl;
+    private int singChance;
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);
-//        this.moveControl = new FlightMoveControl(this, 10, false);
+        this.setMoveControl(false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
@@ -68,12 +72,20 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
+    private void setMoveControl(boolean isFlying) {
+        if (isFlying) {
+            this.moveControl = new FlightMoveControl(this, 10, false);
+            this.isFlightMoveControl = true;
+        } else {
+            this.moveControl = new MoveControl(this);
+            this.isFlightMoveControl = false;
+        }
+    }
+
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(VARIANT, Util.getRandom(Variant.VARIANTS, random).toString());
-        this.dataTracker.startTracking(OWNER, Optional.empty());
-        this.dataTracker.startTracking(OTHER_TRUSTED, Optional.empty());
     }
 
     public Variant getVariant() {
@@ -120,19 +132,25 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(5, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));
     }
 
-//    @Override
-//    protected EntityNavigation createNavigation(World world) {
-//        BirdNavigation birdNavigation = new BirdNavigation(this, world);
-//        birdNavigation.setCanPathThroughDoors(false);
-//        birdNavigation.setCanSwim(true);
-//        birdNavigation.setCanEnterOpenDoors(true);
-//        return birdNavigation;
-//    }
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        if (!this.isFlying()) {
+            MobNavigation mobNavigation = new MobNavigation(this, world);
+            mobNavigation.setCanPathThroughDoors(false);
+            mobNavigation.setCanSwim(true);
+            mobNavigation.setCanEnterOpenDoors(true);
+            return mobNavigation;
+        }
+        BirdNavigation birdNavigation = new BirdNavigation(this, world);
+        birdNavigation.setCanPathThroughDoors(false);
+        birdNavigation.setCanEnterOpenDoors(true);
+        return birdNavigation;
+    }
 
     @Override
     protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
@@ -166,9 +184,25 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     }
 
     @Override
+    public void mobTick() {
+        super.mobTick();
+        if (!this.world.isClient) {
+            if (this.isFlying() != this.isFlightMoveControl) {
+                this.setMoveControl(this.isFlying());
+            }
+        }
+        if (this.isAlive() && this.random.nextInt(1000) < this.singChance++) {
+            this.singChance = -80;
+            this.playSongSound(this);
+        }
+    }
+
+    @Override
     public void tickMovement() {
         super.tickMovement();
-//        this.flapWings();
+        if (this.isFlying()) {
+            this.flapWings();
+        }
         if (!this.world.isClient && this.isAlive() && this.canMoveVoluntarily()) {
             ++this.eatingTime;
             ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
@@ -227,12 +261,17 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     }
 
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(BlockTags.PARROTS_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return random.nextInt(10) == 0 ? FowlPlaySoundEvents.ENTITY_ROBIN_SONG : FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+        return FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+    }
+
+    @Override
+    public SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
     }
 
     @Nullable
@@ -248,10 +287,10 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     }
 
     private PlayState predicate(AnimationEvent<RobinEntity> event) {
-//        if (this.isFlying()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flying", ILoopType.EDefaultLoopTypes.LOOP));
-//            return PlayState.CONTINUE;
-//        }
+        if (this.isFlying()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flying", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
 //        if (this.isTouchingWater()) {
 //            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.idle", ILoopType.EDefaultLoopTypes.LOOP));
 //            return PlayState.CONTINUE;

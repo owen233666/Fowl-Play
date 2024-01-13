@@ -288,6 +288,62 @@
           }
         }
       }
+    },
+    "animation.pigeon.flying": {
+      "loop": true,
+      "animation_length": 0.25,
+      "bones": {
+        "body": {
+          "rotation": {
+            "vector": [22.5, 0, 0]
+          }
+        },
+        "left_wing": {
+          "rotation": {
+            "0.0": {
+              "vector": [-55, 0, -75]
+            },
+            "0.125": {
+              "vector": [-56.3178, -4.98093, -45.37835],
+              "easing": "easeInQuad"
+            },
+            "0.25": {
+              "vector": [-55, 0, -75],
+              "easing": "easeInQuad"
+            }
+          }
+        },
+        "right_wing": {
+          "rotation": {
+            "0.0": {
+              "vector": [-55, 0, 75]
+            },
+            "0.125": {
+              "vector": [-56.3178, 4.98093, 45.37835],
+              "easing": "easeInQuad"
+            },
+            "0.25": {
+              "vector": [-55, 0, 75],
+              "easing": "easeInQuad"
+            }
+          }
+        },
+        "tail": {
+          "rotation": {
+            "vector": [-15, 0, 0]
+          }
+        },
+        "left_leg": {
+          "rotation": {
+            "vector": [95, 0, 0]
+          }
+        },
+        "right_leg": {
+          "rotation": {
+            "vector": [95, 0, 0]
+          }
+        }
+      }
     }
   },
   "geckolib_format_version": 2

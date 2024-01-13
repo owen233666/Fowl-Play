@@ -22,5 +22,7 @@
   "subtitles.entity.robin.death": "Robin dies",
   "subtitles.entity.seagull.ambient": "Seagull squawks",
   "subtitles.entity.seagull.hurt": "Seagull hurts",
-  "subtitles.entity.seagull.death": "Seagull dies"
+  "subtitles.entity.seagull.death": "Seagull dies",
+  "advancements.adventure.fly_penguin.title": "When Penguins Fly",
+  "advancements.adventure.fly_penguin.description": "Fly a Penguin off a cliff"
 }

@@ -3,6 +3,8 @@
     "minecraft:chicken",
     "minecraft:parrot",
     "fowlplay:penguin",
-    "fowlplay:seagull"
+    "fowlplay:seagull",
+    "fowlplay:robin",
+    "fowlplay:pigeon"
   ]
 }

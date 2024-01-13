@@ -85,6 +85,7 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
         this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.tameable.getPathfindingPenalty(PathNodeType.WATER);
         this.tameable.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.tameable.getDataTracker().set(PigeonEntity.DELIVERING, true);
     }
 
     @Override
