@@ -74,7 +74,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     @Override
     public boolean canPickupItem(ItemStack stack) {
         ItemStack heldStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-        return heldStack.isEmpty() || this.eatingTime > 0 && (this.getTemptItems().test(stack) || stack.getItem().isFood()) && !(this.getTemptItems().test(heldStack) || stack.getItem().isFood());
+        return this.getTemptItems().test(stack) && !this.getTemptItems().test(heldStack) && this.eatingTime > 0;
     }
 
     private void drop(ItemStack stack) {
@@ -125,11 +125,38 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         }
     }
 
-    protected void showEmoteParticle(boolean positive) {
-        ParticleEffect particleEffect = ParticleTypes.HEART;
-        if (!positive) {
-            particleEffect = ParticleTypes.SMOKE;
+    @Override
+    public void tickMovement() {
+        super.tickMovement();
+        if (!this.world.isClient && this.isAlive() && this.canMoveVoluntarily()) {
+            ++this.eatingTime;
+            ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
+            if (this.canEat(stack)) {
+                if (this.eatingTime > 600) {
+                    ItemStack usedStack = stack.finishUsing(this.world, this);
+                    if (this.getHealth() < this.getMaxHealth() && stack.getItem().getFoodComponent() != null) {
+                        this.heal(stack.getItem().getFoodComponent().getHunger());
+                    }
+                    if (!usedStack.isEmpty()) {
+                        this.equipStack(EquipmentSlot.MAINHAND, usedStack);
+                    }
+                    this.eatingTime = 0;
+                    return;
+                }
+                if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
+                    this.playSound(this.getEatSound(stack), 1.0f, 1.0f);
+                    this.world.sendEntityStatus(this, (byte) 45);
+                }
+            }
         }
+    }
+
+    private boolean canEat(ItemStack stack) {
+        return stack.getItem().isFood() && this.onGround && !this.isSleeping();
+    }
+
+    protected void showEmoteParticle(boolean positive) {
+        ParticleEffect particleEffect = positive ? ParticleTypes.HEART : ParticleTypes.SMOKE;
 
         for (int i = 0; i < 7; ++i) {
             double d = this.random.nextGaussian() * 0.02;

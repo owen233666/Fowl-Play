@@ -35,7 +35,7 @@ public class FowlPlayEntitySpawn {
         );
 
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.BEACH, BiomeKeys.STONY_SHORE),
-            SpawnGroup.CREATURE, FowlPlayEntityType.SEAGULL, 50, 5, 12
+            SpawnGroup.AMBIENT, FowlPlayEntityType.SEAGULL, 75, 5, 12
         );
         SpawnRestriction.register(FowlPlayEntityType.SEAGULL, SpawnRestriction.Location.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::isValidNaturalSpawn

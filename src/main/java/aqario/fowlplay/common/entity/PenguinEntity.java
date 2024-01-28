@@ -14,6 +14,8 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -68,7 +70,9 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
-        this.getNavigation().setCanSwim(true);
+        this.setPathfindingPenalty(PathNodeType.WATER, 4.0F);
+        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, true);
+        this.stepHeight = 1.0F;
     }
 
     @Override
@@ -145,6 +149,8 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
             }
         }
 
+        this.setSliding(false);
+
         return super.updatePassengerForDismount(passenger);
     }
 
@@ -172,7 +178,7 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
         return MobEntity.createMobAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0D)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135D)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D);
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0D);
     }
 
     @Override
@@ -291,6 +297,7 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
         if (!bl && !this.hasPassengers() && !player.shouldCancelInteraction() && !this.isBaby()) {
             if (!this.world.isClient) {
                 player.startRiding(this);
+                this.setSliding(true);
             }
             return ActionResult.success(this.world.isClient);
         }
@@ -325,7 +332,7 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
     }
 
     public boolean isSliding() {
-        return this.hasPassengers() || dataTracker.get(SLIDING);
+        return /*this.hasPassengers() || */dataTracker.get(SLIDING);
     }
 
     void setSliding(boolean sliding) {
@@ -438,8 +445,8 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
             SensorType.NEAREST_LIVING_ENTITIES,
             SensorType.NEAREST_ADULT,
             SensorType.HURT_BY,
-            FowlPlaySensorType.PENGUIN_TEMPTATIONS,
             SensorType.AXOLOTL_ATTACKABLES,
+            FowlPlaySensorType.PENGUIN_TEMPTATIONS,
             SensorType.IS_IN_WATER
         );
         MEMORY_MODULES = ImmutableList.of(
@@ -454,8 +461,8 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
             MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
             MemoryModuleType.ATTACK_COOLING_DOWN,
             MemoryModuleType.NEAREST_VISIBLE_ADULT,
-            MemoryModuleType.HAS_HUNTING_COOLDOWN,
             MemoryModuleType.ATTACK_TARGET,
+            MemoryModuleType.HAS_HUNTING_COOLDOWN,
             MemoryModuleType.TEMPTING_PLAYER,
             MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
             MemoryModuleType.IS_TEMPTED,

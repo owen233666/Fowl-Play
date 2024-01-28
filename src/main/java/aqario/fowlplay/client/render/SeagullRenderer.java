@@ -61,7 +61,7 @@ public class SeagullRenderer extends GeoEntityRenderer<SeagullEntity> {
                 parent = parent.getParent();
             }
 
-            poseStack.translate(0.0F, 0.45F, -0.41F);
+            poseStack.translate(0.0F, 0.6F, -0.38F);
             poseStack.scale(0.5F, 0.5F, 0.5F);
             poseStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
             MinecraftClient.getInstance().getItemRenderer().renderItem(this.stack, ModelTransformation.Mode.GROUND, packedLight, packedOverlay, poseStack, this.vertexConsumerProvider, 0);

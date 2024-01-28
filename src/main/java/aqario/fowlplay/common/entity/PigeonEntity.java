@@ -1,10 +1,10 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.DelivererFollowOwnerGoal;
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.DeliverBundleGoal;
+import aqario.fowlplay.common.entity.ai.goal.DelivererFollowOwnerGoal;
+import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -36,7 +36,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
@@ -148,6 +147,7 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.goalSelector.add(3, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(5, new AnimalMateGoal(this, 1.0));
+        this.goalSelector.add(6, new FlyAroundGoal(this));
         this.goalSelector.add(6, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));
@@ -247,11 +247,6 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     }
 
     @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_FOX_EAT;
-    }
-
-    @Override
     protected void mobTick() {
         super.mobTick();
         if (!this.world.isClient) {
@@ -279,7 +274,16 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     public void tickMovement() {
         super.tickMovement();
         if (this.isFlying()) {
+            this.glide();
+        } else {
             this.flapWings();
+        }
+    }
+
+    private void glide() {
+        Vec3d vec3d = this.getVelocity();
+        if (!this.onGround && vec3d.y < 0.0) {
+            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
         }
     }
 
@@ -294,18 +298,9 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
         if (!this.onGround && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
+            this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
-    }
-
-    @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        return false;
-    }
-
-    @Override
-    protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
     }
 
     @Override
@@ -349,6 +344,11 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         return FowlPlaySoundEvents.ENTITY_PIGEON_AMBIENT;
     }
 
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return SoundEvents.ENTITY_GENERIC_EAT;
+    }
+
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
@@ -361,16 +361,25 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         return null;
     }
 
+    public boolean isMoving(AnimationEvent<PigeonEntity> event) {
+        float limbSwingAmount = event.getLimbSwingAmount();
+        return Math.abs(limbSwingAmount) >= 0.05F;
+    }
+
     private PlayState predicate(AnimationEvent<PigeonEntity> event) {
         if (this.isFlying()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flying", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
-//        if (this.isTouchingWater()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.swimming", ILoopType.EDefaultLoopTypes.LOOP));
-//            return PlayState.CONTINUE;
-//        }
-        if (event.isMoving()) {
+        if (this.isTouchingWater()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.swimming", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
+        if (!this.isOnGround()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flap", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
+        if (this.isMoving(event)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.walk", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -378,14 +387,9 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         return PlayState.CONTINUE;
     }
 
-    public boolean isMoving(AnimationEvent<PigeonEntity> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        return Math.abs(limbSwingAmount) >= 0.05F;
-    }
-
     @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
     }
 
     @Override

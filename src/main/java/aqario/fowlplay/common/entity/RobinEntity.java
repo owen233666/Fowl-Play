@@ -3,7 +3,6 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -49,7 +48,7 @@ import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 import java.util.Arrays;
 import java.util.List;
 
-public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
+public class RobinEntity extends BirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
     public float flapProgress;
@@ -59,7 +58,6 @@ public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
     public float flapSpeed = 1.0f;
     private int eatingTime;
     private boolean isFlightMoveControl;
-    private int singChance;
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);
@@ -191,16 +189,14 @@ public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
                 this.setMoveControl(this.isFlying());
             }
         }
-        if (this.isAlive() && this.random.nextInt(1000) < this.singChance++) {
-            this.singChance = -80;
-            this.playSongSound(this);
-        }
     }
 
     @Override
     public void tickMovement() {
         super.tickMovement();
         if (this.isFlying()) {
+            this.glide();
+        } else {
             this.flapWings();
         }
         if (!this.world.isClient && this.isAlive() && this.canMoveVoluntarily()) {
@@ -221,8 +217,11 @@ public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
         }
     }
 
-    private boolean canEat(ItemStack stack) {
-        return stack.getItem().isFood() && this.getTarget() == null && this.onGround && !this.isSleeping();
+    private void glide() {
+        Vec3d vec3d = this.getVelocity();
+        if (!this.onGround && vec3d.y < 0.0) {
+            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
+        }
     }
 
     private void flapWings() {
@@ -236,18 +235,13 @@ public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
         if (!this.onGround && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
+            this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
     }
 
-    @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        return false;
-    }
-
-    @Override
-    protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+    private boolean canEat(ItemStack stack) {
+        return stack.getItem().isFood() && this.getTarget() == null && this.onGround && !this.isSleeping();
     }
 
     @Override
@@ -265,13 +259,22 @@ public class RobinEntity extends BirdEntity implements IAnimatable, Songbird {
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+    public void playAmbientSound() {
+        SoundEvent soundEvent = this.getAmbientSound();
+        if (soundEvent == FowlPlaySoundEvents.ENTITY_ROBIN_SONG) {
+            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
+        } else {
+            super.playAmbientSound();
+        }
     }
 
     @Override
-    public SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
+    protected SoundEvent getAmbientSound() {
+        if (this.world.isDay() && this.random.nextFloat() < 0.1F) {
+            return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
+        }
+
+        return FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
     }
 
     @Nullable

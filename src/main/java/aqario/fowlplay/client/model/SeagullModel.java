@@ -11,7 +11,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class SeagullModel extends AnimatedGeoModel<SeagullEntity> {
     @Override
     public Identifier getModelResource(SeagullEntity object) {
-        return object.isFlying() ? new Identifier(FowlPlay.ID, "geo/seagull/seagull_flying.geo.json") : new Identifier(FowlPlay.ID, "geo/seagull/seagull.geo.json");
+        return /*object.isFlying() ? new Identifier(FowlPlay.ID, "geo/seagull/seagull_flying.geo.json") : */new Identifier(FowlPlay.ID, "geo/seagull/seagull.geo.json");
     }
 
     @Override

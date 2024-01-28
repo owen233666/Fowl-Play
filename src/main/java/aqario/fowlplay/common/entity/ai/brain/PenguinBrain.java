@@ -28,6 +28,7 @@ public class PenguinBrain {
     public static Brain<?> create(Brain<PenguinEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
+        addSwimActivities(brain);
         addFightActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
@@ -69,7 +70,7 @@ public class PenguinBrain {
                             Pair.of(new StrollTask(WALK_SPEED), 2),
                             Pair.of(new GoTowardsLookTarget(WALK_SPEED, 3), 3),
                             Pair.of(new ConditionalTask<>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5),
-                            Pair.of(new WaitTask(600, 800), 5)
+                            Pair.of(new WaitTask(400, 1200), 5)
                         )
                     )
                 )
@@ -85,7 +86,7 @@ public class PenguinBrain {
             Activity.SWIM,
             ImmutableList.of(
                 Pair.of(0, new TimeLimitedTask<LivingEntity>(new FollowMobTask(EntityType.PLAYER, 6.0f), UniformIntProvider.create(30, 60))),
-                Pair.of(1, new TemptTask(penguin -> 1.25f)),
+                Pair.of(1, new TemptTask(penguin -> TEMPTED_SPEED)),
                 Pair.of(2, new UpdateAttackTargetTask<>(PenguinBrain::isNotBreeding, penguin -> penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE))),
                 Pair.of(3, new FindLandTask(8, 1.5f)),
                 Pair.of(

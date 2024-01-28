@@ -9,6 +9,10 @@ group = project.maven_group
 
 repositories {
 	maven {
+		name "modrinth"
+		url "https://api.modrinth.com/maven"
+	}
+	maven {
 		name = "GeckoLib"
 		url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"
 	}
@@ -35,11 +39,14 @@ dependencies {
 	// modImplementation libs.bundles.quilted.fabric.api // If you wish to use Fabric API's deprecated modules, you can replace the above line with this one
 
 	// GeckoLib
-	modImplementation "software.bernie.geckolib:${project.geckolib_version}"
+	modImplementation ("software.bernie.geckolib:${project.geckolib_version}") {
+		exclude group: "org.quiltmc"
+	}
 
 	// Mod Menu
-//	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
-//	modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+	}
 }
 
 processResources {

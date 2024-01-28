@@ -39,7 +39,7 @@ public class FowlPlayEntityType {
             .entityFactory(SeagullEntity::new)
             .defaultAttributes(SeagullEntity.createAttributes())
             .setDimensions(EntityDimensions.fixed(0.6f, 0.8f))
-            .spawnGroup(SpawnGroup.CREATURE)
+            .spawnGroup(SpawnGroup.AMBIENT)
     );
 
     private static <T extends Entity> EntityType<T> register(String id, QuiltEntityTypeBuilder<T> builder) {
