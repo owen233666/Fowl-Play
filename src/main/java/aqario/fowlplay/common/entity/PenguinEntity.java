@@ -22,11 +22,11 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -71,7 +71,12 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
         this.setPathfindingPenalty(PathNodeType.WATER, 4.0F);
-        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, true);
+        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, false);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, 12.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
         this.stepHeight = 1.0F;
     }
 
@@ -174,11 +179,11 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_TEMPT_ITEMS).test(stack);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createMobAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0D)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135D)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0D);
+    public static DefaultAttributeContainer.Builder createPenguinAttributes() {
+        return BirdEntity.createBirdAttributes()
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0f);
     }
 
     @Override
@@ -341,7 +346,15 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
+        if (!this.world.isDay() && this.random.nextFloat() < 0.1F) {
+            List<PenguinEntity> list = this.world
+                .getEntitiesByClass(PenguinEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.VALID_LIVING_ENTITY);
+            if (!list.isEmpty()) {
+                return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -369,6 +382,10 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
     @Override
     public boolean isFlying() {
         return false;
+    }
+
+    @Override
+    public void setFlying(boolean flying) {
     }
 
     public boolean isMoving(AnimationEvent<PenguinEntity> event) {

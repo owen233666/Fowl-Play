@@ -1,10 +1,11 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
+import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -72,7 +73,7 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
 
     private void setMoveControl(boolean isFlying) {
         if (isFlying) {
-            this.moveControl = new FlightMoveControl(this, 10, false);
+            this.moveControl = new BirdFlightMoveControl(this, 40, false);
             this.isFlightMoveControl = true;
         } else {
             this.moveControl = new MoveControl(this);
@@ -119,8 +120,8 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createMobAttributes()
+    public static DefaultAttributeContainer.Builder createRobinAttributes() {
+        return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
@@ -129,6 +130,7 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(3, new FlyAroundGoal(this));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(5, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
@@ -289,24 +291,30 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         return null;
     }
 
+    public boolean isMoving(AnimationEvent<RobinEntity> event) {
+        float limbSwingAmount = event.getLimbSwingAmount();
+        return Math.abs(limbSwingAmount) >= 0.05F;
+    }
+
     private PlayState predicate(AnimationEvent<RobinEntity> event) {
-        if (this.isFlying()) {
+        if (this.isTouchingWater()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.swimming", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else if (this.isFlying() && this.limbDistance < 0.9F) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flying", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
         }
-//        if (this.isTouchingWater()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.idle", ILoopType.EDefaultLoopTypes.LOOP));
-//            return PlayState.CONTINUE;
-//        }
-        if (event.isMoving()) {
+        else if (this.isFlying()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.gliding", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else if (!this.isOnGround()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flap", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else if (this.isMoving(event)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.walk", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
         }
-        if (this.isSleeping()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.sit", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.idle", ILoopType.EDefaultLoopTypes.LOOP));
         return PlayState.CONTINUE;
     }
 

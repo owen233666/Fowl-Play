@@ -1,11 +1,19 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
+import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.MobNavigation;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.HitResult;
@@ -16,10 +24,32 @@ import net.minecraft.world.World;
 
 public abstract class BirdEntity extends AnimalEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(BirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private final BirdNavigation flyNavigation;
+    private final MobNavigation landNavigation;
+    private final BirdFlightMoveControl flightMoveControl;
+    private final MoveControl landMoveControl;
+    public int airTicks = 0;
     public int timeFlying = 0;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
+        this.flyNavigation = new BirdNavigation(this, world);
+        this.flyNavigation.setCanPathThroughDoors(false);
+        this.flyNavigation.setCanEnterOpenDoors(true);
+        this.flyNavigation.setCanSwim(false);
+
+        this.landNavigation = new MobNavigation(this, world);
+
+        this.flightMoveControl = new BirdFlightMoveControl(this, 20, true);
+        this.landMoveControl = new BirdMoveControl(this);
+
+    }
+
+    public static DefaultAttributeContainer.Builder createBirdAttributes() {
+        return MobEntity.createMobAttributes()
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
     @Override
@@ -43,15 +73,30 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.isOnGround()) {
+        if (this.isOnGround() || this.isTouchingWater()) {
             this.setFlying(false);
+            this.airTicks = 0;
+        }
+        if (!this.isOnGround() && !this.isTouchingWater()) {
+            this.airTicks++;
+        }
+        if (this.airTicks > 10 && this.getHealth() > 2.0F) {
+            this.setFlying(true);
         }
         if (this.isFlying()) {
             this.timeFlying++;
             this.setNoGravity(true);
-        } else {
+        }
+        else {
             this.timeFlying = 0;
             this.setNoGravity(false);
+        }
+    }
+
+    public void flap() {
+        Vec3d vec3d = this.getVelocity();
+        if (!this.onGround && vec3d.y < 0.0) {
+            this.setUpwardSpeed(this.getMovementSpeed());
         }
     }
 
@@ -78,6 +123,9 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
+
+        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
+        this.navigation = flying ? this.flyNavigation : this.landNavigation;
     }
 
     public boolean isTargetBlocked(Vec3d target) {

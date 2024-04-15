@@ -143,7 +143,7 @@ public class PenguinBrain {
                 new ForgetAttackTargetTask<>(),
                 new RangedApproachTask(PenguinBrain::getChaseSpeed),
                 new MeleeAttackTask(20),
-                new ForgetTask<>(LookTargetUtil::method_41331, MemoryModuleType.ATTACK_TARGET)
+                new ForgetTask<>(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
             ),
             MemoryModuleType.ATTACK_TARGET
         );
@@ -154,7 +154,7 @@ public class PenguinBrain {
     }
 
     private static boolean isNotBreeding(PenguinEntity penguin) {
-        return !LookTargetUtil.method_41331(penguin);
+        return !LookTargetUtil.hasBreedTarget(penguin);
     }
 
     public static void updateActivities(PenguinEntity penguin) {

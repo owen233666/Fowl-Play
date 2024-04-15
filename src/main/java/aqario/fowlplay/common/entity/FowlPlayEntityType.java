@@ -13,7 +13,7 @@ public class FowlPlayEntityType {
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
         QuiltEntityTypeBuilder.createMob()
             .entityFactory(PenguinEntity::new)
-            .defaultAttributes(PenguinEntity.createAttributes())
+            .defaultAttributes(PenguinEntity.createPenguinAttributes())
             .setDimensions(EntityDimensions.changing(0.5f, 1.4f))
             .spawnGroup(SpawnGroup.CREATURE)
     );
@@ -21,7 +21,7 @@ public class FowlPlayEntityType {
     public static final EntityType<PigeonEntity> PIGEON = register("pigeon",
         QuiltEntityTypeBuilder.createMob()
             .entityFactory(PigeonEntity::new)
-            .defaultAttributes(PigeonEntity.createAttributes())
+            .defaultAttributes(PigeonEntity.createPigeonAttributes())
             .setDimensions(EntityDimensions.changing(0.5f, 0.6f))
             .spawnGroup(SpawnGroup.CREATURE)
     );
@@ -29,7 +29,7 @@ public class FowlPlayEntityType {
     public static final EntityType<RobinEntity> ROBIN = register("robin",
         QuiltEntityTypeBuilder.createMob()
             .entityFactory(RobinEntity::new)
-            .defaultAttributes(RobinEntity.createAttributes())
+            .defaultAttributes(RobinEntity.createRobinAttributes())
             .setDimensions(EntityDimensions.changing(0.4f, 0.5f))
             .spawnGroup(SpawnGroup.CREATURE)
     );

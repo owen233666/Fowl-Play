@@ -12,12 +12,12 @@
       },
       "bones": [
         {
-          "name": "robin",
+          "name": "pigeon",
           "pivot": [0, 0, 0]
         },
         {
           "name": "body",
-          "parent": "robin",
+          "parent": "pigeon",
           "pivot": [0, 2.75, 0]
         },
         {
@@ -151,7 +151,7 @@
         },
         {
           "name": "left_leg",
-          "parent": "robin",
+          "parent": "pigeon",
           "pivot": [1, 2, 0],
           "rotation": [-15, 0, 0],
           "cubes": [
@@ -175,7 +175,7 @@
         },
         {
           "name": "right_leg",
-          "parent": "robin",
+          "parent": "pigeon",
           "pivot": [-1, 2, 0],
           "rotation": [-15, 0, 0],
           "cubes": [

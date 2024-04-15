@@ -9,8 +9,6 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ai.control.FlightMoveControl;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -66,27 +64,15 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     public float prevFlapProgress;
     public float flapSpeed = 1.0f;
     private int eatingTime;
-    private boolean isFlightMoveControl;
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
-        this.setMoveControl(false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-    }
-
-    private void setMoveControl(boolean isFlying) {
-        if (isFlying) {
-            this.moveControl = new FlightMoveControl(this, 10, false);
-            this.isFlightMoveControl = true;
-        } else {
-            this.moveControl = new MoveControl(this);
-            this.isFlightMoveControl = false;
-        }
     }
 
     @Override
@@ -133,8 +119,8 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createMobAttributes()
+    public static DefaultAttributeContainer.Builder createPigeonAttributes() {
+        return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
@@ -142,30 +128,31 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
 
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
-        this.goalSelector.add(1, new SwimGoal(this));
+        this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(2, new DeliverBundleGoal<>(this, 1.0, 6.0F, 128.0F, false));
         this.goalSelector.add(3, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(5, new AnimalMateGoal(this, 1.0));
+        this.goalSelector.add(4, new AnimalMateGoal(this, 1.0));
+        this.goalSelector.add(5, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(6, new FlyAroundGoal(this));
-        this.goalSelector.add(6, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(7, new LookAroundGoal(this));
+        this.goalSelector.add(7, new BirdWanderGoal(this, 1.0));
+        this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
+        this.goalSelector.add(8, new LookAroundGoal(this));
     }
 
     @Override
     protected EntityNavigation createNavigation(World world) {
-        if (!this.isFlying()) {
-            MobNavigation mobNavigation = new MobNavigation(this, world);
-            mobNavigation.setCanPathThroughDoors(false);
-            mobNavigation.setCanSwim(true);
-            mobNavigation.setCanEnterOpenDoors(true);
-            return mobNavigation;
+        if (this.isFlying()) {
+            BirdNavigation birdNavigation = new BirdNavigation(this, world);
+            birdNavigation.setCanPathThroughDoors(false);
+            birdNavigation.setCanEnterOpenDoors(true);
+            birdNavigation.setCanSwim(false);
+            return birdNavigation;
         }
-        BirdNavigation birdNavigation = new BirdNavigation(this, world);
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        return birdNavigation;
+        MobNavigation mobNavigation = new MobNavigation(this, world);
+        mobNavigation.setCanPathThroughDoors(false);
+        mobNavigation.setCanEnterOpenDoors(true);
+        mobNavigation.setCanSwim(false);
+        return mobNavigation;
     }
 
     @Override
@@ -250,10 +237,11 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     protected void mobTick() {
         super.mobTick();
         if (!this.world.isClient) {
-            if (this.isFlying() != this.isFlightMoveControl) {
-                this.setMoveControl(this.isFlying());
-            }
+//            if (this.isFlying() != this.isFlightMoveControl) {
+//                this.setMoveControl(this.isFlying());
+//            }
         }
+
         if (this.getServer() == null) {
             return;
         }
@@ -270,23 +258,6 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.setRecipientUuid(recipient.getUuid());
     }
 
-    @Override
-    public void tickMovement() {
-        super.tickMovement();
-        if (this.isFlying()) {
-            this.glide();
-        } else {
-            this.flapWings();
-        }
-    }
-
-    private void glide() {
-        Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
-        }
-    }
-
     private void flapWings() {
         this.prevFlapProgress = this.flapProgress;
         this.prevMaxWingDeviation = this.maxWingDeviation;
@@ -298,10 +269,61 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
         if (!this.onGround && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
+            this.setVelocity(vec3d.add(0.0f, 1.5f, 0.0f));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
     }
+
+//    @Override
+//    public void travel(Vec3d movementInput) {
+//        if (!this.isFlying()) {
+//            super.travel(movementInput);
+//            return;
+//        }
+//
+//        if (this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement()) {
+//            double d = 0.08;
+//            Vec3d vec3d4 = this.getVelocity();
+//            if (vec3d4.y > -0.5) {
+//                this.fallDistance = 1.0F;
+//            }
+//
+//            Vec3d vec3d5 = this.getRotationVector();
+//            float f = this.getPitch() * (float) (Math.PI / 180.0);
+//            double i = Math.sqrt(vec3d5.x * vec3d5.x + vec3d5.z * vec3d5.z);
+//            double j = vec3d4.horizontalLength();
+//            double k = vec3d5.length();
+//            double l = Math.cos(f);
+//            l = l * l * Math.min(1.0, k / 0.4);
+//            vec3d4 = this.getVelocity().add(0.0, d * (-1.0 + l * 0.75), 0.0);
+//            if (vec3d4.y < 0.0 && i > 0.0) {
+//                double m = vec3d4.y * -0.1 * l;
+//                vec3d4 = vec3d4.add(vec3d5.x * m / i, m, vec3d5.z * m / i);
+//            }
+//
+//            if (f < 0.0F && i > 0.0) {
+//                double m = j * (double)(-MathHelper.sin(f)) * 0.04;
+//                vec3d4 = vec3d4.add(-vec3d5.x * m / i, m * 3.2, -vec3d5.z * m / i);
+//            }
+//
+//            if (i > 0.0) {
+//                vec3d4 = vec3d4.add((vec3d5.x / i * j - vec3d4.x) * 0.1, 0.0, (vec3d5.z / i * j - vec3d4.z) * 0.1);
+//            }
+//
+//            this.setVelocity(vec3d4.multiply(0.99F, 0.98F, 0.99F));
+//            this.move(MovementType.SELF, this.getVelocity());
+//            if (this.horizontalCollision && !this.world.isClient) {
+//                double m = this.getVelocity().horizontalLength();
+//                double n = j - m;
+//                float o = (float)(n * 10.0 - 3.0);
+//                if (o > 0.0F) {
+//                    this.damage(DamageSource.FLY_INTO_WALL, o);
+//                }
+//            }
+//        }
+//
+//        this.updateLimbs(this, false);
+//    }
 
     @Override
     protected void addFlapEffects() {
@@ -367,23 +389,24 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     }
 
     private PlayState predicate(AnimationEvent<PigeonEntity> event) {
-        if (this.isFlying()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flying", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }
         if (this.isTouchingWater()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.swimming", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
         }
-        if (!this.isOnGround()) {
+        else if (this.isFlying() && this.limbDistance < 0.9F) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flying", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else if (this.isFlying()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.gliding", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else if (!this.isOnGround()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flap", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
         }
-        if (this.isMoving(event)) {
+        else if (this.isMoving(event)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.walk", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
         }
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.idle", ILoopType.EDefaultLoopTypes.LOOP));
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.idle", ILoopType.EDefaultLoopTypes.LOOP));
+        }
         return PlayState.CONTINUE;
     }
 

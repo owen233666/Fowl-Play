@@ -49,16 +49,16 @@ public class FlyAroundGoal extends Goal {
     @Override
     public void tick() {
         if (flightTarget) {
-            this.bird.getMoveControl().moveTo(x, y, z, 1F);
+            this.bird.getMoveControl().moveTo(x, y, z, 1.0F);
         } else {
-            this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1F);
+            this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1.0F);
 
-            if (this.bird.isFlying() && this.bird.isOnGround()) {
+            if (this.bird.isFlying() && (this.bird.isOnGround() || this.bird.isTouchingWater())) {
                 this.bird.setFlying(false);
             }
         }
 
-        if (this.bird.isFlying() && this.bird.isOnGround() && this.bird.timeFlying > 10) {
+        if (this.bird.isFlying() && (this.bird.isOnGround() || this.bird.isTouchingWater()) && this.bird.timeFlying > 10) {
             this.bird.setFlying(false);
         }
     }
@@ -76,7 +76,7 @@ public class FlyAroundGoal extends Goal {
                 return this.bird.getBlockGrounding(vec3d);
             }
         } else {
-            return FuzzyTargeting.find(this.bird, 10, 7);
+            return FuzzyTargeting.find(this.bird, 50, 20);
         }
     }
 
@@ -93,9 +93,9 @@ public class FlyAroundGoal extends Goal {
     public void start() {
         if (flightTarget) {
             this.bird.setFlying(true);
-            this.bird.getMoveControl().moveTo(x, y, z, 1F);
+            this.bird.getMoveControl().moveTo(x, y, z, 1.0F);
         } else {
-            this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1F);
+            this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1.0F);
         }
     }
 

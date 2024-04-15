@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -54,7 +55,7 @@ public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
         this.setMoveControl(false);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
@@ -90,7 +91,8 @@ public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.25));
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new PickupItemGoal(this));
+        this.goalSelector.add(1, new PickupItemGoal(this));
+        this.goalSelector.add(2, new FlyAroundGoal(this));
         this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity.getUuid()), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getTemptItems(), true));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
