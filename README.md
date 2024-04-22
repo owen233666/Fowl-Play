@@ -15,9 +15,9 @@ Current mobs:
 Planned additions:
 
 - Crow
-- Cardinals
-- Sparrows
-- Blue Jays
+- Cardinal
+- Sparrow
+- Blue Jay
 - Falcon
 - Duck
 - Other songbirds
