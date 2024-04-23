@@ -14,4 +14,3 @@ public final class FowlPlayBlockTags {
         return TagKey.of(Registry.BLOCK_KEY, new Identifier(FowlPlay.ID, id));
     }
 }
-

@@ -1,10 +1,10 @@
 package aqario.fowlplay.common.tags;
 
+import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.entity.EntityType;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import aqario.fowlplay.common.FowlPlay;
 
 public final class FowlPlayEntityTypeTags {
     public static final TagKey<EntityType<?>> BIRDS = register("birds");
@@ -13,4 +13,3 @@ public final class FowlPlayEntityTypeTags {
         return TagKey.of(Registry.ENTITY_TYPE_KEY, new Identifier(FowlPlay.ID, id));
     }
 }
-

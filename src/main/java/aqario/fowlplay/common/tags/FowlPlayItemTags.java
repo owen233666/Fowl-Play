@@ -1,10 +1,10 @@
 package aqario.fowlplay.common.tags;
 
+import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import aqario.fowlplay.common.FowlPlay;
 
 public final class FowlPlayItemTags {
     public static final TagKey<Item> PENGUIN_TEMPT_ITEMS = register("penguin_tempt_items");
@@ -15,4 +15,3 @@ public final class FowlPlayItemTags {
         return TagKey.of(Registry.ITEM_KEY, new Identifier(FowlPlay.ID, id));
     }
 }
-

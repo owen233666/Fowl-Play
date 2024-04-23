@@ -4,7 +4,6 @@
       "fowlplay:mob/penguin/ambient1",
       "fowlplay:mob/penguin/ambient2",
       "fowlplay:mob/penguin/ambient3"
-
     ],
     "subtitle": "subtitles.entity.penguin.ambient"
   },
@@ -41,14 +40,12 @@
       "fowlplay:mob/pigeon/ambient1",
       "fowlplay:mob/pigeon/ambient2",
       "fowlplay:mob/pigeon/ambient3"
-
     ],
     "subtitle": "subtitles.entity.pigeon.ambient"
   },
   "entity.pigeon.call": {
     "sounds": [
       "fowlplay:mob/pigeon/call1"
-
     ],
     "subtitle": "subtitles.entity.pigeon.call"
   },
@@ -66,7 +63,6 @@
     "sounds": [
       "fowlplay:mob/robin/ambient1",
       "fowlplay:mob/robin/ambient2"
-
     ],
     "subtitle": "subtitles.entity.robin.ambient"
   },
@@ -74,7 +70,6 @@
     "sounds": [
       "fowlplay:mob/robin/song1",
       "fowlplay:mob/robin/song2"
-
     ],
     "subtitle": "subtitles.entity.robin.song"
   }
