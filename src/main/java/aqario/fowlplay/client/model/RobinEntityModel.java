@@ -55,17 +55,18 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
         ModelPartData right_leg = robin.addChild("right_leg", ModelPartBuilder.create().uv(1, 3).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
         right_leg.addChild("right_foot", ModelPartBuilder.create().uv(-1, 2).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+
         return TexturedModelData.of(modelData, 32, 32);
     }
 
     @Override
     public void setAngles(RobinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
-        float k = Math.min((float) entity.getVelocity().lengthSquared() * 200.0F, 8.0F);
-		this.updateAnimation(entity.flyAnimationState, RobinEntityAnimations.FLY, ageInTicks);
-		this.updateAnimation(entity.walkAnimationState, RobinEntityAnimations.WALK, ageInTicks, k);
-		this.updateAnimation(entity.floatAnimationState, RobinEntityAnimations.FLOAT, ageInTicks);
+        float speed = Math.min((float) entity.getVelocity().lengthSquared() * 200.0F, 8.0F);
         this.updateAnimation(entity.idleAnimationState, RobinEntityAnimations.IDLE, ageInTicks);
+        this.updateAnimation(entity.walkAnimationState, RobinEntityAnimations.WALK, ageInTicks, speed);
+		this.updateAnimation(entity.flyAnimationState, RobinEntityAnimations.FLY, ageInTicks);
+		this.updateAnimation(entity.floatAnimationState, RobinEntityAnimations.FLOAT, ageInTicks);
     }
 
     @Override
