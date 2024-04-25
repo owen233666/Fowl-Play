@@ -52,6 +52,10 @@ import java.util.List;
 public class RobinEntity extends BirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState floatAnimationState = new AnimationState();
+    public final AnimationState idleAnimationState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
