@@ -52,10 +52,10 @@ import java.util.List;
 public class RobinEntity extends BirdEntity implements IAnimatable {
     private final AnimationFactory factory = new SingletonAnimationFactory(this);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
-    public final AnimationState flyAnimationState = new AnimationState();
-    public final AnimationState walkAnimationState = new AnimationState();
-    public final AnimationState floatAnimationState = new AnimationState();
     public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final AnimationState floatAnimationState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -128,7 +128,7 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f);
     }
 
     protected void initGoals() {
@@ -185,6 +185,41 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
+    }
+
+    private boolean isWalking() {
+        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+    }
+
+    @Override
+    public void tick() {
+        if (this.world.isClient()) {
+            if (this.isOnGround() && !this.isWalking()) {
+                this.idleAnimationState.start(this.age);
+            } else {
+                this.idleAnimationState.stop();
+            }
+
+            if (!this.isOnGround()) {
+                this.flyAnimationState.start(this.age);
+            } else {
+                this.flyAnimationState.stop();
+            }
+
+            if (this.isWalking()) {
+                this.walkAnimationState.start(this.age);
+            } else {
+                this.walkAnimationState.stop();
+            }
+
+            if (this.isInsideWaterOrBubbleColumn()) {
+                this.floatAnimationState.start(this.age);
+            } else {
+                this.floatAnimationState.stop();
+            }
+        }
+
+        super.tick();
     }
 
     @Override
@@ -339,7 +374,7 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         public static final List<RobinEntity.Variant> VARIANTS = List.of(Arrays.stream(values())
             .toArray(Variant[]::new));
 
-        public final String id;
+        private final String id;
 
         Variant(String id) {
             this.id = id;

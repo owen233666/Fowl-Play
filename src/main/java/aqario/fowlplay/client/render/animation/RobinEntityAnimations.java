@@ -6,7 +6,7 @@ import net.minecraft.client.render.animation.Animator;
 import net.minecraft.client.render.animation.PartAnimation;
 
 public class RobinEntityAnimations {
-    public static final Animation IDLE = Animation.Builder.withLength(0f).looping()
+    public static final Animation IDLE = Animation.Builder.withLength(1.0f).looping()
         .addPartAnimation(
             "left_wing",
             new PartAnimation(
@@ -72,16 +72,16 @@ public class RobinEntityAnimations {
         )
         .build();
 
-    public static final Animation WALK = Animation.Builder.withLength(0.5f).looping()
+    public static final Animation WALK = Animation.Builder.withLength(1.0f).looping()
         .addPartAnimation(
             "body",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.08343333f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.3433333f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.16766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.6766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .addPartAnimation(
@@ -89,10 +89,10 @@ public class RobinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(17.5f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.08343333f, Animator.rotate(19f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.rotate(17.5f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.3433333f, Animator.rotate(19f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.rotate(17.5f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.16766666f, Animator.rotate(19f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(17.5f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.6766666f, Animator.rotate(19f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(17.5f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .addPartAnimation(
@@ -135,10 +135,10 @@ public class RobinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.08343333f, Animator.translate(0f, 0f, 0.5f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.4167667f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.16766666f, Animator.translate(0f, 0f, 0.5f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.8343334f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .addPartAnimation(
@@ -146,10 +146,10 @@ public class RobinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.08343333f, Animator.rotate(50f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.4167667f, Animator.rotate(-25f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.16766666f, Animator.rotate(50f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.8343334f, Animator.rotate(-25f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .addPartAnimation(
@@ -157,10 +157,10 @@ public class RobinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.16766666f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.3433333f, Animator.translate(0f, 0f, 0.5f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.3433333f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.6766666f, Animator.translate(0f, 0f, 0.5f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .addPartAnimation(
@@ -168,10 +168,10 @@ public class RobinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.16766666f, Animator.rotate(-25f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.25f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.3433333f, Animator.rotate(50f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
+                new AnimationKeyframe(0.3433333f, Animator.rotate(-25f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(0.6766666f, Animator.rotate(50f, 0f, 0f), PartAnimation.Interpolators.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolators.SPLINE)
             )
         )
         .build();
