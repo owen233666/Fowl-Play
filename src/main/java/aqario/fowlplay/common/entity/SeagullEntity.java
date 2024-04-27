@@ -10,9 +10,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -118,21 +115,6 @@ public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
 
     public Ingredient getTemptItems() {
         return Ingredient.ofTag(ConventionalItemTags.FOODS);
-    }
-
-    @Override
-    protected EntityNavigation createNavigation(World world) {
-        if (!this.isFlying()) {
-            MobNavigation mobNavigation = new MobNavigation(this, world);
-            mobNavigation.setCanPathThroughDoors(false);
-            mobNavigation.setCanSwim(true);
-            mobNavigation.setCanEnterOpenDoors(true);
-            return mobNavigation;
-        }
-        BirdNavigation birdNavigation = new BirdNavigation(this, world);
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        return birdNavigation;
     }
 
     @Override

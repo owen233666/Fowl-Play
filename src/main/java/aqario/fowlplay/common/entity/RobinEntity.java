@@ -8,9 +8,6 @@ import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -36,21 +33,11 @@ import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class RobinEntity extends BirdEntity implements IAnimatable {
-    private final AnimationFactory factory = new SingletonAnimationFactory(this);
+public class RobinEntity extends BirdEntity {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState walkAnimationState = new AnimationState();
@@ -139,21 +126,6 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
         this.goalSelector.add(5, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));
-    }
-
-    @Override
-    protected EntityNavigation createNavigation(World world) {
-        if (!this.isFlying()) {
-            MobNavigation mobNavigation = new MobNavigation(this, world);
-            mobNavigation.setCanPathThroughDoors(false);
-            mobNavigation.setCanSwim(true);
-            mobNavigation.setCanEnterOpenDoors(true);
-            return mobNavigation;
-        }
-        BirdNavigation birdNavigation = new BirdNavigation(this, world);
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        return birdNavigation;
     }
 
     @Override
@@ -321,50 +293,13 @@ public class RobinEntity extends BirdEntity implements IAnimatable {
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
+        return FowlPlaySoundEvents.ENTITY_ROBIN_HURT;
     }
 
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
         return null;
-    }
-
-    public boolean isMoving(AnimationEvent<RobinEntity> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        return Math.abs(limbSwingAmount) >= 0.05F;
-    }
-
-    private PlayState predicate(AnimationEvent<RobinEntity> event) {
-        if (this.isTouchingWater()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.swimming", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isFlying() && this.limbDistance < 0.9F) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flying", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isFlying()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.gliding", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (!this.isOnGround()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.flap", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isMoving(event)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.walk", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.robin.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 
     public enum Variant {

@@ -69,8 +69,16 @@
   "entity.robin.song": {
     "sounds": [
       "fowlplay:mob/robin/song1",
-      "fowlplay:mob/robin/song2"
+      "fowlplay:mob/robin/song2",
+      "fowlplay:mob/robin/song3"
     ],
     "subtitle": "subtitles.entity.robin.song"
+  },
+  "entity.robin.hurt": {
+    "sounds": [
+      "fowlplay:mob/robin/hurt1",
+      "fowlplay:mob/robin/hurt2"
+    ],
+    "subtitle": "subtitles.entity.robin.hurt"
   }
 }

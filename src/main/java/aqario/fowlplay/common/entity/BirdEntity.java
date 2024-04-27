@@ -1,9 +1,12 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
+import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
@@ -42,7 +45,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
         this.flightMoveControl = new BirdFlightMoveControl(this, 20, true);
         this.landMoveControl = new BirdMoveControl(this);
-
+        this.lookControl = new BirdLookControl(this);
     }
 
     public static DefaultAttributeContainer.Builder createBirdAttributes() {
@@ -51,6 +54,27 @@ public abstract class BirdEntity extends AnimalEntity {
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
+
+//    @Override
+//    protected EntityNavigation createNavigation(World world) {
+//        if (!this.isFlying()) {
+//            MobNavigation mobNavigation = new MobNavigation(this, world);
+//            mobNavigation.setCanPathThroughDoors(false);
+//            mobNavigation.setCanSwim(true);
+//            mobNavigation.setCanEnterOpenDoors(true);
+//            return mobNavigation;
+//        }
+//        BirdNavigation birdNavigation = new BirdNavigation(this, world);
+//        birdNavigation.setCanPathThroughDoors(false);
+//        birdNavigation.setCanEnterOpenDoors(true);
+//        return birdNavigation;
+//    }
+
+
+//    @Override
+//    public LookControl getLookControl() {
+//        return this.lookControl;
+//    }
 
     @Override
     protected void initDataTracker() {
@@ -68,6 +92,26 @@ public abstract class BirdEntity extends AnimalEntity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setFlying(nbt.getBoolean("Flying"));
+    }
+
+    @Override
+    public int getLookYawSpeed() {
+        return 100;
+    }
+
+    @Override
+    public int getLookPitchSpeed() {
+        return 100;
+    }
+
+    @Override
+    public int getBodyYawSpeed() {
+        return 270;
+    }
+
+    @Override
+    protected BodyControl createBodyControl() {
+        return new BirdBodyControl(this);
     }
 
     @Override

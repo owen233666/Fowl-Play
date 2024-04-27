@@ -17,6 +17,7 @@ public class FowlPlaySoundEvents {
 
     public static final SoundEvent ENTITY_ROBIN_AMBIENT = register("entity.robin.ambient");
     public static final SoundEvent ENTITY_ROBIN_SONG = register("entity.robin.song");
+    public static final SoundEvent ENTITY_ROBIN_HURT = register("entity.robin.hurt");
 
     public static final SoundEvent ENTITY_SEAGULL_AMBIENT = register("entity.seagull.ambient");
 

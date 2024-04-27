@@ -15,6 +15,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -78,6 +80,11 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
         this.stepHeight = 1.0F;
+    }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new MobNavigation(this, world);
     }
 
     @Override
