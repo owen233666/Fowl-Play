@@ -41,29 +41,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
 import java.util.List;
 
-public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable {
+public class PenguinEntity extends BirdEntity implements Saddleable {
     protected static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS;
     protected static final ImmutableList<MemoryModuleType<?>> MEMORY_MODULES;
-    private final AnimationFactory factory = new SingletonAnimationFactory(this);
-    protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.BYTE);
     protected static final TrackedData<Boolean> SLIDING = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final AnimationBuilder SWIM_ANIM = new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP);
-    private static final AnimationBuilder SWIM_IDLE_ANIM = new AnimationBuilder().addAnimation("swim_idle", ILoopType.EDefaultLoopTypes.LOOP);
-    private static final AnimationBuilder FLAP_ANIM = new AnimationBuilder().addAnimation("flap");
-    public static final byte ANIMATION_IDLE = 0;
-    public static final byte ANIMATION_FLAP = 1;
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final AnimationState floatAnimationState = new AnimationState();
     public int fleeTime = 0;
     private boolean pressingLeft;
     private boolean pressingRight;
@@ -87,9 +75,38 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
         return new MobNavigation(this, world);
     }
 
+    private boolean isWalking() {
+        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+    }
+
     @Override
     public void tick() {
-        if (world.isClient() && !getPassengerList().isEmpty()) {
+        if (this.world.isClient()) {
+            if (this.isOnGround() && !this.isWalking()) {
+                this.idleAnimationState.start(this.age);
+            } else {
+                this.idleAnimationState.stop();
+            }
+
+            if (!this.isOnGround()) {
+                this.flyAnimationState.start(this.age);
+            } else {
+                this.flyAnimationState.stop();
+            }
+
+            if (this.isWalking()) {
+                this.walkAnimationState.start(this.age);
+            } else {
+                this.walkAnimationState.stop();
+            }
+
+            if (this.isInsideWaterOrBubbleColumn()) {
+                this.floatAnimationState.start(this.age);
+            } else {
+                this.floatAnimationState.stop();
+            }
+        }
+        if (this.world.isClient() && !getPassengerList().isEmpty()) {
             Entity pilot = getPassengerList().get(0);
             MinecraftClient client = MinecraftClient.getInstance();
             if (pilot instanceof ClientPlayerEntity) {
@@ -320,7 +337,6 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(SLIDING, false);
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
     }
 
     @Override
@@ -333,14 +349,6 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setSliding(nbt.getBoolean("Sliding"));
-    }
-
-    public byte getAnimation() {
-        return dataTracker.get(ANIMATION);
-    }
-
-    public void setAnimation(byte animation) {
-        dataTracker.set(ANIMATION, animation);
     }
 
     public boolean isSliding() {
@@ -393,47 +401,6 @@ public class PenguinEntity extends BirdEntity implements IAnimatable, Saddleable
 
     @Override
     public void setFlying(boolean flying) {
-    }
-
-    public boolean isMoving(AnimationEvent<PenguinEntity> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        return Math.abs(limbSwingAmount) >= 0.05F;
-    }
-
-    private PlayState predicate(AnimationEvent<PenguinEntity> event) {
-        PenguinEntity entity = event.getAnimatable();
-        byte currentAnimation = getAnimation();
-//        switch (currentAnimation) {
-//            case ANIMATION_FLAP:
-//                event.getController().setAnimation(FLAP_ANIM);
-//                break;
-//            default:
-//                if (inWater) {
-//                    event.getController().setAnimation(event.isMoving() ? SWIM_ANIM : SWIM_IDLE_ANIM);
-//                } else {
-//                }
-//                break;
-//        }
-        if (entity.isSliding()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.penguin.slide", ILoopType.EDefaultLoopTypes.LOOP));
-        } else if (entity.isTouchingWater()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.penguin.slide", ILoopType.EDefaultLoopTypes.LOOP));
-        } else if (this.isMoving(event)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.penguin.waddle", ILoopType.EDefaultLoopTypes.LOOP));
-        } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.penguin.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 
     @Override

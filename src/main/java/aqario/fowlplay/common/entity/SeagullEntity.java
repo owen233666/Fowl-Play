@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -28,18 +29,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
-public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
-    private final AnimationFactory factory = new SingletonAnimationFactory(this);
+public class SeagullEntity extends TrustingBirdEntity {
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final AnimationState floatAnimationState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -151,6 +146,41 @@ public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
         this.flapProgress += this.flapSpeed * 2.0f;
     }
 
+    private boolean isWalking() {
+        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+    }
+
+    @Override
+    public void tick() {
+        if (this.world.isClient()) {
+            if (this.isOnGround() && !this.isWalking()) {
+                this.idleAnimationState.start(this.age);
+            } else {
+                this.idleAnimationState.stop();
+            }
+
+            if (!this.isOnGround()) {
+                this.flyAnimationState.start(this.age);
+            } else {
+                this.flyAnimationState.stop();
+            }
+
+            if (this.isWalking()) {
+                this.walkAnimationState.start(this.age);
+            } else {
+                this.walkAnimationState.stop();
+            }
+
+            if (this.isInsideWaterOrBubbleColumn()) {
+                this.floatAnimationState.start(this.age);
+            } else {
+                this.floatAnimationState.stop();
+            }
+        }
+
+        super.tick();
+    }
+
     @Override
     protected void mobTick() {
         super.mobTick();
@@ -193,37 +223,5 @@ public class SeagullEntity extends TrustingBirdEntity implements IAnimatable {
     @Override
     protected SoundEvent getDeathSound() {
         return null;
-    }
-
-    public boolean isMoving(AnimationEvent<SeagullEntity> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        return Math.abs(limbSwingAmount) >= 0.05F;
-    }
-
-    private PlayState predicate(AnimationEvent<SeagullEntity> event) {
-        if (this.isFlying()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.flying", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }
-//        if (this.isTouchingWater()) {
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.idle", ILoopType.EDefaultLoopTypes.LOOP));
-//            return PlayState.CONTINUE;
-//        }
-        if (this.isMoving(event)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.walk", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.seagull.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 }

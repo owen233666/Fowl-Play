@@ -8,7 +8,6 @@ import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.bernie.geckolib3.GeckoLib;
 
 public class FowlPlay implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("Fowl Play");
@@ -21,6 +20,5 @@ public class FowlPlay implements ModInitializer {
         FowlPlayItems.init();
         FowlPlaySoundEvents.init();
         FowlPlayWorldGen.init();
-        GeckoLib.initialize();
     }
 }

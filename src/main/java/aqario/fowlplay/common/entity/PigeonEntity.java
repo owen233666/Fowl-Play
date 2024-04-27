@@ -5,10 +5,7 @@ import aqario.fowlplay.common.entity.ai.goal.DeliverBundleGoal;
 import aqario.fowlplay.common.entity.ai.goal.DelivererFollowOwnerGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -40,24 +37,18 @@ import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.core.manager.SingletonAnimationFactory;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
-    private final AnimationFactory factory = new SingletonAnimationFactory(this);
+public class PigeonEntity extends TameableBirdEntity {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     public static final TrackedData<Boolean> DELIVERING = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final AnimationState floatAnimationState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -233,6 +224,41 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
         this.equipStack(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
     }
 
+    private boolean isWalking() {
+        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+    }
+
+    @Override
+    public void tick() {
+        if (this.world.isClient()) {
+            if (this.isOnGround() && !this.isWalking()) {
+                this.idleAnimationState.start(this.age);
+            } else {
+                this.idleAnimationState.stop();
+            }
+
+            if (!this.isOnGround()) {
+                this.flyAnimationState.start(this.age);
+            } else {
+                this.flyAnimationState.stop();
+            }
+
+            if (this.isWalking()) {
+                this.walkAnimationState.start(this.age);
+            } else {
+                this.walkAnimationState.stop();
+            }
+
+            if (this.isInsideWaterOrBubbleColumn()) {
+                this.floatAnimationState.start(this.age);
+            } else {
+                this.floatAnimationState.stop();
+            }
+        }
+
+        super.tick();
+    }
+
     @Override
     protected void mobTick() {
         super.mobTick();
@@ -381,42 +407,5 @@ public class PigeonEntity extends TameableBirdEntity implements IAnimatable {
     @Override
     protected SoundEvent getDeathSound() {
         return null;
-    }
-
-    public boolean isMoving(AnimationEvent<PigeonEntity> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        return Math.abs(limbSwingAmount) >= 0.05F;
-    }
-
-    private PlayState predicate(AnimationEvent<PigeonEntity> event) {
-        if (this.isTouchingWater()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.swimming", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isFlying() && this.limbDistance < 0.9F) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flying", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isFlying()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.gliding", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (!this.isOnGround()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.flap", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else if (this.isMoving(event)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.walk", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.pigeon.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "controller", 4, this::predicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 }

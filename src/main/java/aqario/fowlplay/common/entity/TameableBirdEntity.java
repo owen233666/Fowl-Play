@@ -134,7 +134,7 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     @Nullable
     @Override
     public UUID getOwnerUuid() {
-        return (UUID)((Optional)this.dataTracker.get(OWNER_UUID)).orElse(null);
+        return this.dataTracker.get(OWNER_UUID).orElse(null);
     }
 
     public void setOwnerUuid(@Nullable UUID uuid) {

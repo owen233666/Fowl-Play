@@ -119,10 +119,10 @@ public class RobinEntity extends BirdEntity {
     }
 
     protected void initGoals() {
-        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
+        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(3, new FlyAroundGoal(this));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
+        this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(5, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));

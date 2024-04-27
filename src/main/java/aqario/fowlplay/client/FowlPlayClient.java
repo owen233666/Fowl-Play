@@ -1,11 +1,10 @@
 package aqario.fowlplay.client;
 
-import aqario.fowlplay.client.model.FowlPlayEntityModelLayers;
-import aqario.fowlplay.client.model.RobinEntityModel;
-import aqario.fowlplay.client.render.PenguinRenderer;
-import aqario.fowlplay.client.render.PigeonRenderer;
+import aqario.fowlplay.client.model.*;
+import aqario.fowlplay.client.render.PenguinEntityRenderer;
+import aqario.fowlplay.client.render.PigeonEntityRenderer;
 import aqario.fowlplay.client.render.RobinEntityRenderer;
-import aqario.fowlplay.client.render.SeagullRenderer;
+import aqario.fowlplay.client.render.SeagullEntityRenderer;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -15,10 +14,16 @@ import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 public class FowlPlayClient implements ClientModInitializer {
     @Override
     public void onInitializeClient(ModContainer mod) {
-        EntityRendererRegistry.register(FowlPlayEntityType.PENGUIN, PenguinRenderer::new);
-        EntityRendererRegistry.register(FowlPlayEntityType.PIGEON, PigeonRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.PENGUIN, PenguinEntityModel::getTexturedModelData);
+        EntityRendererRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
+
+        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.PIGEON, PigeonEntityModel::getTexturedModelData);
+        EntityRendererRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntityRenderer::new);
+
         EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.ROBIN, RobinEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
-        EntityRendererRegistry.register(FowlPlayEntityType.SEAGULL, SeagullRenderer::new);
+
+        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.SEAGULL, SeagullEntityModel::getTexturedModelData);
+        EntityRendererRegistry.register(FowlPlayEntityType.SEAGULL, SeagullEntityRenderer::new);
     }
 }

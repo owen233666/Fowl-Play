@@ -34,11 +34,6 @@ dependencies {
 	// Quilted Fabric API will automatically pull in the correct QSL version.
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${project.quilted_fabric_api_version}-${project.minecraft_version}"
 
-	// GeckoLib
-	modImplementation ("software.bernie.geckolib:${project.geckolib_version}") {
-		exclude group: "org.quiltmc"
-	}
-
 	// Mod Menu
 	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}") {
 		exclude group: "net.fabricmc.fabric-api"
