@@ -78,19 +78,19 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     }
 
     private void drop(ItemStack stack) {
-        if (!stack.isEmpty() && !this.world.isClient) {
+        if (!stack.isEmpty() && !this.getWorld().isClient) {
             ItemEntity itemEntity = new ItemEntity(
-                this.world, this.getX() + this.getRotationVector().x, this.getY() + 1.0, this.getZ() + this.getRotationVector().z, stack
+                this.getWorld(), this.getX() + this.getRotationVector().x, this.getY() + 1.0, this.getZ() + this.getRotationVector().z, stack
             );
             itemEntity.setPickupDelay(40);
             itemEntity.setThrower(this.getUuid());
-            this.world.spawnEntity(itemEntity);
+            this.getWorld().spawnEntity(itemEntity);
         }
     }
 
     private void dropItem(ItemStack stack) {
-        ItemEntity itemEntity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), stack);
-        this.world.spawnEntity(itemEntity);
+        ItemEntity itemEntity = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), stack);
+        this.getWorld().spawnEntity(itemEntity);
     }
 
     @Override
@@ -110,17 +110,17 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             item.discard();
             this.eatingTime = 0;
         }
-        UUID thrower = item.getThrower();
-        if (!this.isTrusted(thrower)) {
+        UUID thrower = item.getOwner().getUuid();
+        if (thrower != null && !this.isTrusted(thrower)) {
             if (this.random.nextInt(3) == 0) {
                 this.setTrustedUuid(thrower);
-//                PlayerEntity player = this.world.getPlayerByUuid(thrower);
+//                PlayerEntity player = this.getWorld().getPlayerByUuid(thrower);
 //                if (player instanceof ServerPlayerEntity serverPlayer) {
 //                    Criteria.TAME_ANIMAL.trigger(serverPlayer, this);
 //                }
-                this.world.sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
+                this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
             } else {
-                this.world.sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
+                this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
             }
         }
     }
@@ -128,12 +128,12 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     @Override
     public void tickMovement() {
         super.tickMovement();
-        if (!this.world.isClient && this.isAlive() && this.canMoveVoluntarily()) {
+        if (!this.getWorld().isClient && this.isAlive() && this.movesIndependently()) {
             ++this.eatingTime;
             ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
             if (this.canEat(stack)) {
                 if (this.eatingTime > 600) {
-                    ItemStack usedStack = stack.finishUsing(this.world, this);
+                    ItemStack usedStack = stack.finishUsing(this.getWorld(), this);
                     if (this.getHealth() < this.getMaxHealth() && stack.getItem().getFoodComponent() != null) {
                         this.heal(stack.getItem().getFoodComponent().getHunger());
                     }
@@ -145,14 +145,14 @@ public abstract class TrustingBirdEntity extends BirdEntity {
                 }
                 if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
                     this.playSound(this.getEatSound(stack), 1.0f, 1.0f);
-                    this.world.sendEntityStatus(this, (byte) 45);
+                    this.getWorld().sendEntityStatus(this, (byte) 45);
                 }
             }
         }
     }
 
     private boolean canEat(ItemStack stack) {
-        return stack.getItem().isFood() && this.onGround && !this.isSleeping();
+        return stack.getItem().isFood() && this.isOnGround() && !this.isSleeping();
     }
 
     protected void showEmoteParticle(boolean positive) {
@@ -162,7 +162,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             double d = this.random.nextGaussian() * 0.02;
             double e = this.random.nextGaussian() * 0.02;
             double f = this.random.nextGaussian() * 0.02;
-            this.world.addParticle(particleEffect, this.getParticleX(1.0), this.getRandomBodyY() + 0.5, this.getParticleZ(1.0), d, e, f);
+            this.getWorld().addParticle(particleEffect, this.getParticleX(1.0), this.getRandomBodyY() + 0.5, this.getParticleZ(1.0), d, e, f);
         }
     }
 
@@ -201,7 +201,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     public LivingEntity getTrusted() {
         try {
             UUID uUID = this.getTrustedUuid();
-            return uUID == null ? null : this.world.getPlayerByUuid(uUID);
+            return uUID == null ? null : this.getWorld().getPlayerByUuid(uUID);
         } catch (IllegalArgumentException var2) {
             return null;
         }

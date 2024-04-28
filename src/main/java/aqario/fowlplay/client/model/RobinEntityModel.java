@@ -65,11 +65,10 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
     public void setAngles(RobinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        float speed = Math.min((float) entity.getVelocity().lengthSquared() * 200.0F, 8.0F);
-        this.updateAnimation(entity.idleAnimationState, RobinEntityAnimations.IDLE, ageInTicks);
-        this.updateAnimation(entity.walkAnimationState, RobinEntityAnimations.WALK, ageInTicks, speed);
-		this.updateAnimation(entity.flyAnimationState, RobinEntityAnimations.FLY, ageInTicks);
-		this.updateAnimation(entity.floatAnimationState, RobinEntityAnimations.FLOAT, ageInTicks);
+        this.animateWalk(RobinEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
+        this.animate(entity.idleAnimationState, RobinEntityAnimations.IDLE, ageInTicks);
+        this.animate(entity.flyAnimationState, RobinEntityAnimations.FLY, ageInTicks);
+        this.animate(entity.floatAnimationState, RobinEntityAnimations.FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
@@ -81,7 +80,7 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        root.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
+        this.getPart().render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
     }
 
     @Override

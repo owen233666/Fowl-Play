@@ -67,7 +67,6 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
         this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-        this.stepHeight = 1.0F;
     }
 
     @Override
@@ -76,12 +75,17 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     }
 
     private boolean isWalking() {
-        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+    }
+
+    @Override
+    public float getStepHeight() {
+        return 1;
     }
 
     @Override
     public void tick() {
-        if (this.world.isClient()) {
+        if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
             } else {
@@ -106,7 +110,7 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
                 this.floatAnimationState.stop();
             }
         }
-        if (this.world.isClient() && !getPassengerList().isEmpty()) {
+        if (this.getWorld().isClient() && !getPassengerList().isEmpty()) {
             Entity pilot = getPassengerList().get(0);
             MinecraftClient client = MinecraftClient.getInstance();
             if (pilot instanceof ClientPlayerEntity) {
@@ -136,7 +140,7 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     }
 
     @Override
-    public void updatePassengerPosition(Entity passenger) {
+    public void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
         if (!this.hasPassenger(passenger)) {
             return;
         }
@@ -154,23 +158,23 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
         Vec3d vec3d = getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO, passenger.getWidth(), passenger.getYaw());
         double d = this.getX() + vec3d.x;
         double e = this.getZ() + vec3d.z;
-        BlockPos blockPos = new BlockPos(d, this.getBoundingBox().maxY, e);
+        BlockPos blockPos = new BlockPos((int) d, (int) this.getBoundingBox().maxY, (int) e);
         BlockPos blockPos2 = blockPos.down();
-        if (!this.world.isWater(blockPos2)) {
+        if (!this.getWorld().isWater(blockPos2)) {
             List<Vec3d> list = Lists.newArrayList();
-            double f = this.world.getDismountHeight(blockPos);
+            double f = this.getWorld().getDismountHeight(blockPos);
             if (Dismounting.canDismountInBlock(f)) {
                 list.add(new Vec3d(d, (double) blockPos.getY() + f, e));
             }
 
-            double g = this.world.getDismountHeight(blockPos2);
+            double g = this.getWorld().getDismountHeight(blockPos2);
             if (Dismounting.canDismountInBlock(g)) {
                 list.add(new Vec3d(d, (double) blockPos2.getY() + g, e));
             }
 
             for (EntityPose entityPose : passenger.getPoses()) {
                 for (Vec3d vec3d2 : list) {
-                    if (Dismounting.canPlaceEntityAt(this.world, vec3d2, passenger, entityPose)) {
+                    if (Dismounting.canPlaceEntityAt(this.getWorld(), vec3d2, passenger, entityPose)) {
                         passenger.setPose(entityPose);
                         return vec3d2;
                     }
@@ -204,7 +208,7 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     }
 
     public static DefaultAttributeContainer.Builder createPenguinAttributes() {
-        return BirdEntity.createBirdAttributes()
+        return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 12.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0f);
@@ -245,7 +249,7 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
                     this.setVelocity(Vec3d.ZERO);
                 }
             }
-            if (this.canMoveVoluntarily() && this.isTouchingWater()) {
+            if (this.movesIndependently() && this.isTouchingWater()) {
                 this.updateVelocity(this.getMovementSpeed(), movementInput);
                 this.move(MovementType.SELF, this.getVelocity());
                 this.setVelocity(this.getVelocity().multiply(0.8F));
@@ -324,11 +328,11 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         boolean bl = this.isBreedingItem(player.getStackInHand(hand));
         if (!bl && !this.hasPassengers() && !player.shouldCancelInteraction() && !this.isBaby()) {
-            if (!this.world.isClient) {
+            if (!this.getWorld().isClient) {
                 player.startRiding(this);
                 this.setSliding(true);
             }
-            return ActionResult.success(this.world.isClient);
+            return ActionResult.success(this.getWorld().isClient);
         }
         return super.interactMob(player, hand);
     }
@@ -361,8 +365,8 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!this.world.isDay() && this.random.nextFloat() < 0.1F) {
-            List<PenguinEntity> list = this.world
+        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
+            List<PenguinEntity> list = this.getWorld()
                 .getEntitiesByClass(PenguinEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.VALID_LIVING_ENTITY);
             if (!list.isEmpty()) {
                 return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;

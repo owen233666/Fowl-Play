@@ -1,20 +1,16 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
-import java.util.EnumSet;
-
 import aqario.fowlplay.common.entity.PigeonEntity;
+import aqario.fowlplay.common.entity.TameableBirdEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import aqario.fowlplay.common.entity.TameableBirdEntity;
+import net.minecraft.entity.ai.pathing.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
+
+import java.util.EnumSet;
 
 public class DelivererFollowOwnerGoal extends Goal {
     public static final int TELEPORT_AT_DISTANCE = 12;
@@ -34,7 +30,7 @@ public class DelivererFollowOwnerGoal extends Goal {
 
     public DelivererFollowOwnerGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
         this.tameable = bird;
-        this.world = bird.world;
+        this.world = bird.getWorld();
         this.speed = speed;
         this.navigation = bird.getNavigation();
         this.minDistance = minDistance;

@@ -7,7 +7,7 @@ import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -63,9 +63,9 @@ public class BirdMoveControl extends MoveControl {
             this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), n, 15.0F));
             this.bird.setMovementSpeed((float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
             BlockPos blockPos = this.bird.getBlockPos();
-            BlockState blockState = this.bird.world.getBlockState(blockPos);
-            VoxelShape voxelShape = blockState.getCollisionShape(this.bird.world, blockPos);
-            if (o > (double)this.bird.stepHeight && d * d + e * e < (double)Math.max(1.0F, this.bird.getWidth())
+            BlockState blockState = this.bird.getWorld().getBlockState(blockPos);
+            VoxelShape voxelShape = blockState.getCollisionShape(this.bird.getWorld(), blockPos);
+            if (o > (double)this.bird.getStepHeight() && d * d + e * e < (double)Math.max(1.0F, this.bird.getWidth())
                 || !voxelShape.isEmpty()
                 && this.bird.getY() < voxelShape.getMax(Direction.Axis.Y) + (double)blockPos.getY()
                 && !blockState.isIn(BlockTags.DOORS)
@@ -89,7 +89,7 @@ public class BirdMoveControl extends MoveControl {
             PathNodeMaker pathNodeMaker = entityNavigation.getNodeMaker();
             return pathNodeMaker == null
                 || pathNodeMaker.getDefaultNodeType(
-                this.bird.world, MathHelper.floor(this.bird.getX() + (double) x), this.bird.getBlockY(), MathHelper.floor(this.bird.getZ() + (double) z)
+                this.bird.getWorld(), MathHelper.floor(this.bird.getX() + (double) x), this.bird.getBlockY(), MathHelper.floor(this.bird.getZ() + (double) z)
             ) == PathNodeType.WALKABLE;
         }
 

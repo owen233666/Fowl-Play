@@ -30,14 +30,14 @@ public class PickupItemGoal extends Goal {
         if (animal.getRandom().nextInt(toGoalTicks(10)) != 0) {
             return false;
         }
-        List<ItemEntity> list = animal.world
+        List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(8.0, 8.0, 8.0), PICKABLE_DROP_FILTER);
         return !list.isEmpty() && animal.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty();
     }
 
     @Override
     public void tick() {
-        List<ItemEntity> list = animal.world
+        List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(8.0, 8.0, 8.0), PICKABLE_DROP_FILTER);
         ItemStack itemStack = animal.getEquippedStack(EquipmentSlot.MAINHAND);
         if (itemStack.isEmpty() && !list.isEmpty()) {
@@ -47,7 +47,7 @@ public class PickupItemGoal extends Goal {
 
     @Override
     public void start() {
-        List<ItemEntity> list = animal.world
+        List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(8.0, 8.0, 8.0), PICKABLE_DROP_FILTER);
         if (!list.isEmpty()) {
             animal.getNavigation().startMovingTo(list.get(0), 1.2F);

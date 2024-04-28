@@ -1,10 +1,10 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
+import aqario.fowlplay.common.entity.PenguinEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
-import aqario.fowlplay.common.entity.PenguinEntity;
 
 public class WanderInWaterGoal extends MoveToTargetPosGoal {
     private static final int field_30385 = 1200;
@@ -17,7 +17,7 @@ public class WanderInWaterGoal extends MoveToTargetPosGoal {
     }
 
     public boolean shouldContinue() {
-        return !this.penguin.isTouchingWater() && this.tryingTime <= 1200 && this.isTargetPos(this.penguin.world, this.targetPos);
+        return !this.penguin.isTouchingWater() && this.tryingTime <= 1200 && this.isTargetPos(this.penguin.getWorld(), this.targetPos);
     }
 
     public boolean canStart() {

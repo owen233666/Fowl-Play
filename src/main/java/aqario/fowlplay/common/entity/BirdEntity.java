@@ -36,35 +36,35 @@ public abstract class BirdEntity extends AnimalEntity {
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
-        this.flyNavigation = new BirdNavigation(this, world);
+        this.flyNavigation = new BirdNavigation(this, getWorld());
         this.flyNavigation.setCanPathThroughDoors(false);
         this.flyNavigation.setCanEnterOpenDoors(true);
         this.flyNavigation.setCanSwim(false);
 
-        this.landNavigation = new MobNavigation(this, world);
+        this.landNavigation = new MobNavigation(this, getWorld());
 
         this.flightMoveControl = new BirdFlightMoveControl(this, 20, true);
         this.landMoveControl = new BirdMoveControl(this);
         this.lookControl = new BirdLookControl(this);
     }
 
-    public static DefaultAttributeContainer.Builder createBirdAttributes() {
-        return MobEntity.createMobAttributes()
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
 //    @Override
-//    protected EntityNavigation createNavigation(World world) {
+//    protected EntityNavigation createNavigation(World getWorld()) {
 //        if (!this.isFlying()) {
-//            MobNavigation mobNavigation = new MobNavigation(this, world);
+//            MobNavigation mobNavigation = new MobNavigation(this, getWorld());
 //            mobNavigation.setCanPathThroughDoors(false);
 //            mobNavigation.setCanSwim(true);
 //            mobNavigation.setCanEnterOpenDoors(true);
 //            return mobNavigation;
 //        }
-//        BirdNavigation birdNavigation = new BirdNavigation(this, world);
+//        BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());
 //        birdNavigation.setCanPathThroughDoors(false);
 //        birdNavigation.setCanEnterOpenDoors(true);
 //        return birdNavigation;
@@ -139,7 +139,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public void flap() {
         Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
+        if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setUpwardSpeed(this.getMovementSpeed());
         }
     }
@@ -175,7 +175,7 @@ public abstract class BirdEntity extends AnimalEntity {
     public boolean isTargetBlocked(Vec3d target) {
         Vec3d vec3d = new Vec3d(this.getX(), this.getEyeY(), this.getZ());
 
-        return this.world.raycast(new RaycastContext(vec3d, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this)).getType() != HitResult.Type.MISS;
+        return this.getWorld().raycast(new RaycastContext(vec3d, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this)).getType() != HitResult.Type.MISS;
     }
 
     public Vec3d getBlockInViewAway(Vec3d fleePos, float radiusAdd) {
@@ -183,7 +183,7 @@ public abstract class BirdEntity extends AnimalEntity {
         final float angle = getAngle();
         final double extraX = radius * Math.sin((float) (Math.PI + angle));
         final double extraZ = radius * Math.cos(angle);
-        final BlockPos radialPos = new BlockPos(fleePos.getX() + extraX, 0, fleePos.getZ() + extraZ);
+        final BlockPos radialPos = new BlockPos((int) (fleePos.getX() + extraX), 0, (int) (fleePos.getZ() + extraZ));
         final BlockPos ground = getGroundPos(radialPos);
         final int distFromGround = (int) this.getY() - ground.getY();
 
@@ -202,8 +202,8 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     private BlockPos getGroundPos(BlockPos in){
-        BlockPos pos = new BlockPos(in.getX(), this.getY(), in.getZ());
-        while (pos.getY() > -64 && !world.getBlockState(pos).getMaterial().blocksLight() && world.getFluidState(pos).isEmpty()) {
+        BlockPos pos = new BlockPos(in.getX(), (int) this.getY(), in.getZ());
+        while (pos.getY() > -64 && !getWorld().getBlockState(pos).isSolid() && getWorld().getFluidState(pos).isEmpty()) {
             pos = pos.down();
         }
         return pos;
@@ -214,13 +214,13 @@ public abstract class BirdEntity extends AnimalEntity {
         final float angle = getAngle();
         final double extraX = radius * Math.sin((float) (Math.PI + angle));
         final double extraZ = radius * Math.cos(angle);
-        final BlockPos radialPos = new BlockPos(fleePos.getX() + extraX, getY(), fleePos.getZ() + extraZ);
+        final BlockPos radialPos = new BlockPos((int) (fleePos.getX() + extraX), (int) getY(), (int) (fleePos.getZ() + extraZ));
         BlockPos ground = this.getGroundPos(radialPos);
         if (ground.getY() == -64) {
             return this.getPos();
         } else {
             ground = this.getBlockPos();
-            while (ground.getY() > -64 && !world.getBlockState(ground).getMaterial().blocksLight()) {
+            while (ground.getY() > -64 && !getWorld().getBlockState(ground).isSolid()) {
                 ground = ground.down();
             }
         }
@@ -238,9 +238,9 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public boolean isOverWater() {
         BlockPos pos = this.getBlockPos();
-        while (pos.getY() > -64 && world.isAir(pos)) {
+        while (pos.getY() > -64 && getWorld().isAir(pos)) {
             pos = pos.down();
         }
-        return !world.getFluidState(pos).isEmpty();
+        return !getWorld().getFluidState(pos).isEmpty();
     }
 }

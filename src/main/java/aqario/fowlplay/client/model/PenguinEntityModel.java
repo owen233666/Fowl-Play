@@ -66,11 +66,10 @@ public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
     public void setAngles(PenguinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        float speed = Math.min((float) entity.getVelocity().lengthSquared() * 200.0F, 8.0F);
-        this.updateAnimation(entity.idleAnimationState, PenguinEntityAnimations.IDLE, ageInTicks);
-        this.updateAnimation(entity.walkAnimationState, PenguinEntityAnimations.WALK, ageInTicks, speed);
-		this.updateAnimation(entity.flyAnimationState, PenguinEntityAnimations.FLY, ageInTicks);
-		this.updateAnimation(entity.floatAnimationState, PenguinEntityAnimations.FLOAT, ageInTicks);
+        this.animateWalk(PenguinEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
+        this.animate(entity.idleAnimationState, PenguinEntityAnimations.IDLE, ageInTicks);
+		this.animate(entity.flyAnimationState, PenguinEntityAnimations.FLY, ageInTicks);
+		this.animate(entity.floatAnimationState, PenguinEntityAnimations.FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
@@ -82,7 +81,7 @@ public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        root.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
+        this.getPart().render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
     }
 
     @Override

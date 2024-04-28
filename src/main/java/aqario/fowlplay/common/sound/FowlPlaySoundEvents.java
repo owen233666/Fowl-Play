@@ -1,9 +1,10 @@
 package aqario.fowlplay.common.sound;
 
 import aqario.fowlplay.common.FowlPlay;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_PENGUIN_AMBIENT = register("entity.penguin.ambient");
@@ -23,7 +24,7 @@ public class FowlPlaySoundEvents {
 
     private static SoundEvent register(String id) {
         Identifier identifier = new Identifier(FowlPlay.ID, id);
-        return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
+        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
     }
 
     public static void init() {

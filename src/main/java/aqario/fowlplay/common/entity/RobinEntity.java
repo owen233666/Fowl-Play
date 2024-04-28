@@ -111,8 +111,8 @@ public class RobinEntity extends BirdEntity {
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createRobinAttributes() {
-        return BirdEntity.createBirdAttributes()
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f);
@@ -160,12 +160,12 @@ public class RobinEntity extends BirdEntity {
     }
 
     private boolean isWalking() {
-        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
     }
 
     @Override
     public void tick() {
-        if (this.world.isClient()) {
+        if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
             } else {
@@ -197,7 +197,7 @@ public class RobinEntity extends BirdEntity {
     @Override
     public void mobTick() {
         super.mobTick();
-        if (!this.world.isClient) {
+        if (!this.getWorld().isClient) {
             if (this.isFlying() != this.isFlightMoveControl) {
                 this.setMoveControl(this.isFlying());
             }
@@ -212,19 +212,19 @@ public class RobinEntity extends BirdEntity {
         } else {
             this.flapWings();
         }
-        if (!this.world.isClient && this.isAlive() && this.canMoveVoluntarily()) {
+        if (!this.getWorld().isClient && this.isAlive() && this.movesIndependently()) {
             ++this.eatingTime;
             ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
             if (this.canEat(itemStack)) {
                 if (this.eatingTime > 600) {
-                    ItemStack itemStack2 = itemStack.finishUsing(this.world, this);
+                    ItemStack itemStack2 = itemStack.finishUsing(this.getWorld(), this);
                     if (!itemStack2.isEmpty()) {
                         this.equipStack(EquipmentSlot.MAINHAND, itemStack2);
                     }
                     this.eatingTime = 0;
                 } else if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
                     this.playSound(this.getEatSound(itemStack), 1.0f, 1.0f);
-                    this.world.sendEntityStatus(this, (byte) 45);
+                    this.getWorld().sendEntityStatus(this, (byte) 45);
                 }
             }
         }
@@ -232,7 +232,7 @@ public class RobinEntity extends BirdEntity {
 
     private void glide() {
         Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
+        if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
         }
     }
@@ -240,21 +240,21 @@ public class RobinEntity extends BirdEntity {
     private void flapWings() {
         this.prevFlapProgress = this.flapProgress;
         this.prevMaxWingDeviation = this.maxWingDeviation;
-        this.maxWingDeviation += (float) (this.onGround || this.hasVehicle() ? -1 : 4) * 0.3f;
+        this.maxWingDeviation += (float) (this.isOnGround() || this.hasVehicle() ? -1 : 4) * 0.3f;
         this.maxWingDeviation = MathHelper.clamp(this.maxWingDeviation, 0.0f, 1.0f);
-        if (!this.onGround && this.flapSpeed < 1.0f) {
+        if (!this.isOnGround() && this.flapSpeed < 1.0f) {
             this.flapSpeed = 1.0f;
         }
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
+        if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
     }
 
     private boolean canEat(ItemStack stack) {
-        return stack.getItem().isFood() && this.getTarget() == null && this.onGround && !this.isSleeping();
+        return stack.getItem().isFood() && this.getTarget() == null && this.isOnGround() && !this.isSleeping();
     }
 
     @Override
@@ -283,7 +283,7 @@ public class RobinEntity extends BirdEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.world.isDay() && this.random.nextFloat() < 0.1F) {
+        if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
             return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
         }
 

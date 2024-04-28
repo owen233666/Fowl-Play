@@ -38,7 +38,7 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
 
     public DeliverBundleGoal(T bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
         this.tameable = bird;
-        this.world = bird.world;
+        this.world = bird.getWorld();
         this.speed = speed;
         this.navigation = bird.getNavigation();
         this.minDistance = minDistance;

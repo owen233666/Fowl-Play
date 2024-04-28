@@ -34,6 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.EntityView;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -111,7 +112,7 @@ public class PigeonEntity extends TameableBirdEntity {
     }
 
     public static DefaultAttributeContainer.Builder createPigeonAttributes() {
-        return BirdEntity.createBirdAttributes()
+        return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
@@ -156,27 +157,27 @@ public class PigeonEntity extends TameableBirdEntity {
         ItemStack stack = player.getStackInHand(hand);
 
         if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && stack.getItem() instanceof BundleItem && stack.hasCustomName() && this.isTamed()) {
-            if (!this.world.isClient) {
+            if (!this.getWorld().isClient) {
                 this.setStackInHand(Hand.OFF_HAND, stack);
                 player.setStackInHand(hand, ItemStack.EMPTY);
             }
-            return ActionResult.success(this.world.isClient);
+            return ActionResult.success(this.getWorld().isClient);
         }
 
         if (stack.isEmpty() && this.getStackInHand(Hand.OFF_HAND).getItem() instanceof BundleItem) {
-            if (!this.world.isClient) {
+            if (!this.getWorld().isClient) {
                 player.setStackInHand(hand, this.getStackInHand(Hand.OFF_HAND));
                 this.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
             }
-            return ActionResult.success(this.world.isClient);
+            return ActionResult.success(this.getWorld().isClient);
         }
 
 //        if (!stack.isEmpty() && !this.isBreedingItem(stack)) {
-//            if (!this.world.isClient) {
+//            if (!this.getWorld().isClient) {
 //                this.setStackInHand(Hand.MAIN_HAND, stack);
 //                player.setStackInHand(hand, ItemStack.EMPTY);
 //            }
-//            return ActionResult.success(this.world.isClient);
+//            return ActionResult.success(this.getWorld().isClient);
 //        }
 
         if (!this.isBreedingItem(stack)) {
@@ -184,17 +185,17 @@ public class PigeonEntity extends TameableBirdEntity {
         }
 
         if (!this.isTamed()) {
-            if (!this.world.isClient) {
+            if (!this.getWorld().isClient) {
                 this.eat(player, hand, stack);
                 if (this.random.nextInt(4) == 0) {
                     this.setOwner(player);
                     this.navigation.stop();
-                    this.world.sendEntityStatus(this, (byte) 7);
+                    this.getWorld().sendEntityStatus(this, (byte) 7);
                 } else {
-                    this.world.sendEntityStatus(this, (byte) 6);
+                    this.getWorld().sendEntityStatus(this, (byte) 6);
                 }
             }
-            return ActionResult.success(this.world.isClient);
+            return ActionResult.success(this.getWorld().isClient);
         }
 
         return super.interactMob(player, hand);
@@ -225,12 +226,12 @@ public class PigeonEntity extends TameableBirdEntity {
     }
 
     private boolean isWalking() {
-        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
     }
 
     @Override
     public void tick() {
-        if (this.world.isClient()) {
+        if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
             } else {
@@ -262,7 +263,7 @@ public class PigeonEntity extends TameableBirdEntity {
     @Override
     protected void mobTick() {
         super.mobTick();
-        if (!this.world.isClient) {
+        if (!this.getWorld().isClient) {
 //            if (this.isFlying() != this.isFlightMoveControl) {
 //                this.setMoveControl(this.isFlying());
 //            }
@@ -287,14 +288,14 @@ public class PigeonEntity extends TameableBirdEntity {
     private void flapWings() {
         this.prevFlapProgress = this.flapProgress;
         this.prevMaxWingDeviation = this.maxWingDeviation;
-        this.maxWingDeviation += (float) (this.onGround || this.hasVehicle() ? -1 : 4) * 0.3f;
+        this.maxWingDeviation += (float) (this.isOnGround() || this.hasVehicle() ? -1 : 4) * 0.3f;
         this.maxWingDeviation = MathHelper.clamp(this.maxWingDeviation, 0.0f, 1.0f);
-        if (!this.onGround && this.flapSpeed < 1.0f) {
+        if (!this.isOnGround() && this.flapSpeed < 1.0f) {
             this.flapSpeed = 1.0f;
         }
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
+        if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setVelocity(vec3d.add(0.0f, 1.5f, 0.0f));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
@@ -338,7 +339,7 @@ public class PigeonEntity extends TameableBirdEntity {
 //
 //            this.setVelocity(vec3d4.multiply(0.99F, 0.98F, 0.99F));
 //            this.move(MovementType.SELF, this.getVelocity());
-//            if (this.horizontalCollision && !this.world.isClient) {
+//            if (this.horizontalCollision && !this.getWorld().isClient) {
 //                double m = this.getVelocity().horizontalLength();
 //                double n = j - m;
 //                float o = (float)(n * 10.0 - 3.0);
@@ -381,8 +382,8 @@ public class PigeonEntity extends TameableBirdEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!this.world.isDay() && this.random.nextFloat() < 0.1F) {
-            List<PlayerEntity> list = this.world
+        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
+            List<PlayerEntity> list = this.getWorld()
                 .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
             if (list.isEmpty()) {
                 return FowlPlaySoundEvents.ENTITY_PIGEON_CALL;
@@ -406,6 +407,11 @@ public class PigeonEntity extends TameableBirdEntity {
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
+        return null;
+    }
+
+    @Override
+    public EntityView getEntityView() {
         return null;
     }
 }

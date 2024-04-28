@@ -74,7 +74,7 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createMobAttributes()
+        return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
@@ -133,26 +133,26 @@ public class SeagullEntity extends TrustingBirdEntity {
     private void flapWings() {
         this.prevFlapProgress = this.flapProgress;
         this.prevMaxWingDeviation = this.maxWingDeviation;
-        this.maxWingDeviation += (float) (this.onGround || this.hasVehicle() ? -1 : 4) * 0.3f;
+        this.maxWingDeviation += (float) (this.isOnGround() || this.hasVehicle() ? -1 : 4) * 0.3f;
         this.maxWingDeviation = MathHelper.clamp(this.maxWingDeviation, 0.0f, 1.0f);
-        if (!this.onGround && this.flapSpeed < 1.0f) {
+        if (!this.isOnGround() && this.flapSpeed < 1.0f) {
             this.flapSpeed = 1.0f;
         }
         this.flapSpeed *= 0.9f;
         Vec3d vec3d = this.getVelocity();
-        if (!this.onGround && vec3d.y < 0.0) {
+        if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
     }
 
     private boolean isWalking() {
-        return this.onGround && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
+        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
     }
 
     @Override
     public void tick() {
-        if (this.world.isClient()) {
+        if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
             } else {
@@ -184,7 +184,7 @@ public class SeagullEntity extends TrustingBirdEntity {
     @Override
     protected void mobTick() {
         super.mobTick();
-        if (!this.world.isClient) {
+        if (!this.getWorld().isClient) {
             if (this.isFlying() != this.isFlightMoveControl) {
                 this.setMoveControl(this.isFlying());
             }
