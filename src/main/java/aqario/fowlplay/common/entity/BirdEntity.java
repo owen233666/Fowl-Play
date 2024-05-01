@@ -124,7 +124,7 @@ public abstract class BirdEntity extends AnimalEntity {
         if (!this.isOnGround() && !this.isTouchingWater()) {
             this.airTicks++;
         }
-        if (this.airTicks > 10 && this.getHealth() > 2.0F) {
+        if (this.airTicks > 5 && this.getHealth() > 2.0F) {
             this.setFlying(true);
         }
         if (this.isFlying()) {
@@ -242,5 +242,10 @@ public abstract class BirdEntity extends AnimalEntity {
             pos = pos.down();
         }
         return !getWorld().getFluidState(pos).isEmpty();
+    }
+
+    @Override
+    public float getSoundPitch() {
+        return this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
     }
 }

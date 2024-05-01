@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 public class FowlPlayEntityModelLayers {
     private static final String MAIN = "main";
     private static final Set<EntityModelLayer> LAYERS = Sets.newHashSet();
+    public static final EntityModelLayer CARDINAL = registerMain("cardinal");
     public static final EntityModelLayer PENGUIN = registerMain("penguin");
     public static final EntityModelLayer PIGEON = registerMain("pigeon");
     public static final EntityModelLayer ROBIN = registerMain("robin");

@@ -13,7 +13,11 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
+@SuppressWarnings("unused")
 public class FowlPlayItems {
+    public static final Item CARDINAL_SPAWN_EGG = register("cardinal_spawn_egg",
+        new SpawnEggItem(FowlPlayEntityType.CARDINAL, 0xDB2929, 0x42312F,
+            new QuiltItemSettings()), ItemGroups.SPAWN_EGGS);
     public static final Item PENGUIN_SPAWN_EGG = register("penguin_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.PENGUIN, 0x151419, 0xfafafa,
             new QuiltItemSettings()), ItemGroups.SPAWN_EGGS);

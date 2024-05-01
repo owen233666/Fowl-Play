@@ -25,7 +25,6 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -37,12 +36,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class RobinEntity extends BirdEntity {
+public class RobinEntity extends BirdEntity implements VariantProvider<RobinEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
-    public final AnimationState idleAnimationState = new AnimationState();
-    public final AnimationState walkAnimationState = new AnimationState();
-    public final AnimationState flyAnimationState = new AnimationState();
-    public final AnimationState floatAnimationState = new AnimationState();
+    public final AnimationState idleState = new AnimationState();
+    public final AnimationState flyState = new AnimationState();
+    public final AnimationState floatState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -75,13 +73,15 @@ public class RobinEntity extends BirdEntity {
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
-        this.dataTracker.startTracking(VARIANT, Util.getRandom(Variant.VARIANTS, random).toString());
+        this.dataTracker.startTracking(VARIANT, /*Util.getRandom(Variant.VARIANTS, random).toString()*/ Variant.AMERICAN.toString());
     }
 
+    @Override
     public Variant getVariant() {
         return Variant.valueOf(this.dataTracker.get(VARIANT));
     }
 
+    @Override
     public void setVariant(Variant variant) {
         this.dataTracker.set(VARIANT, variant.toString());
     }
@@ -89,14 +89,14 @@ public class RobinEntity extends BirdEntity {
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putString("Variant", this.getVariant().toString());
+        nbt.putString("variant", this.getVariant().toString());
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("Variant")) {
-            this.setVariant(Variant.valueOf(nbt.getString("Variant")));
+        if (nbt.contains("variant")) {
+            this.setVariant(Variant.valueOf(nbt.getString("variant")));
         }
     }
 
@@ -118,6 +118,7 @@ public class RobinEntity extends BirdEntity {
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f);
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
         this.goalSelector.add(0, new SwimGoal(this));
@@ -159,35 +160,25 @@ public class RobinEntity extends BirdEntity {
         return SoundEvents.ENTITY_PARROT_EAT;
     }
 
-    private boolean isWalking() {
-        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
-    }
-
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            if (this.isOnGround() && !this.isWalking()) {
-                this.idleAnimationState.start(this.age);
+            if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
+                this.idleState.start(this.age);
             } else {
-                this.idleAnimationState.stop();
+                this.idleState.stop();
             }
 
             if (!this.isOnGround()) {
-                this.flyAnimationState.start(this.age);
+                this.flyState.start(this.age);
             } else {
-                this.flyAnimationState.stop();
-            }
-
-            if (this.isWalking()) {
-                this.walkAnimationState.start(this.age);
-            } else {
-                this.walkAnimationState.stop();
+                this.flyState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatAnimationState.start(this.age);
+                this.floatState.start(this.age);
             } else {
-                this.floatAnimationState.stop();
+                this.floatState.stop();
             }
         }
 

@@ -2,10 +2,8 @@ package aqario.fowlplay.client.model;
 
 import aqario.fowlplay.client.render.animation.RobinEntityAnimations;
 import aqario.fowlplay.common.entity.RobinEntity;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
@@ -65,10 +63,12 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
     public void setAngles(RobinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        this.animateWalk(RobinEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleAnimationState, RobinEntityAnimations.IDLE, ageInTicks);
-        this.animate(entity.flyAnimationState, RobinEntityAnimations.FLY, ageInTicks);
-        this.animate(entity.floatAnimationState, RobinEntityAnimations.FLOAT, ageInTicks);
+        if (entity.isOnGround() && !entity.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbSwing, limbSwingAmount, 5.0F, 2.5F);
+        }
+        this.animate(entity.idleState, RobinEntityAnimations.ROBIN_IDLE, ageInTicks);
+        this.animate(entity.flyState, RobinEntityAnimations.ROBIN_FLY, ageInTicks);
+        this.animate(entity.floatState, RobinEntityAnimations.ROBIN_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
@@ -76,11 +76,6 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
-    }
-
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        this.getPart().render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
     }
 
     @Override

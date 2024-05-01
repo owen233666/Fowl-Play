@@ -11,13 +11,15 @@ Current mobs:
 - Seagull
 - Robin
 - Pigeon
+- Cardinal
 
 Planned additions:
 
-- Crow
-- Cardinal
-- Sparrow
 - Blue Jay
-- Falcon
+- Sparrow
+- Grackle
+- Crow
 - Duck
+- Goose
+- Falcon
 - Other songbirds

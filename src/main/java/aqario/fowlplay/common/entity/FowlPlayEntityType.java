@@ -11,6 +11,14 @@ import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder;
 
 public class FowlPlayEntityType {
+    public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
+        QuiltEntityTypeBuilder.createMob()
+            .entityFactory(CardinalEntity::new)
+            .defaultAttributes(CardinalEntity.createAttributes())
+            .setDimensions(EntityDimensions.changing(0.4f, 0.5f))
+            .spawnGroup(SpawnGroup.CREATURE)
+    );
+
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
         QuiltEntityTypeBuilder.createMob()
             .entityFactory(PenguinEntity::new)

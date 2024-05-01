@@ -31,10 +31,9 @@ dependencies {
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${project.quilted_fabric_api_version}-${project.minecraft_version}"
 
 	// Mod Menu
-//	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}") {
-//		exclude group: "net.fabricmc.fabric-api"
-//		exclude group: "net.fabricmc.fabric-loader"
-//	}
+	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		transitive = false
+	}
 }
 
 processResources {
