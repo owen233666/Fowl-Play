@@ -113,7 +113,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f);
     }

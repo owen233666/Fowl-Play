@@ -25,7 +25,7 @@ public class FowlPlayItems {
         new SpawnEggItem(FowlPlayEntityType.PIGEON, 0xBBBDBF, 0x467A58,
             new QuiltItemSettings()), ItemGroups.SPAWN_EGGS);
     public static final Item ROBIN_SPAWN_EGG = register("robin_spawn_egg",
-        new SpawnEggItem(FowlPlayEntityType.ROBIN, 0x66696A, 0xE57839,
+        new SpawnEggItem(FowlPlayEntityType.ROBIN, 0x66696A, 0xFF823F,
             new QuiltItemSettings()), ItemGroups.SPAWN_EGGS);
     public static final Item SEAGULL_SPAWN_EGG = register("seagull_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.SEAGULL, 0xeaedf0, 0xffd850,

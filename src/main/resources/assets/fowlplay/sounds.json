@@ -70,7 +70,9 @@
     "sounds": [
       "fowlplay:mob/robin/song1",
       "fowlplay:mob/robin/song2",
-      "fowlplay:mob/robin/song3"
+      "fowlplay:mob/robin/song3",
+      "fowlplay:mob/robin/song4",
+      "fowlplay:mob/robin/song5"
     ],
     "subtitle": "subtitles.entity.robin.song"
   },

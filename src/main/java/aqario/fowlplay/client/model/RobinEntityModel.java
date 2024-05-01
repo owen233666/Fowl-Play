@@ -56,6 +56,7 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
         ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(1, 3).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
         right_leg.addChild("right_foot", ModelPartBuilder.create().uv(-1, 2).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+
         return TexturedModelData.of(modelData, 32, 32);
     }
 
@@ -72,8 +73,8 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
-        headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
+        headPitch = MathHelper.clamp(headPitch, -30.0F, 60.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
     }

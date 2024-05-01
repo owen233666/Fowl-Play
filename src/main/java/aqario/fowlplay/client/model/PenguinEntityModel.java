@@ -2,10 +2,8 @@ package aqario.fowlplay.client.model;
 
 import aqario.fowlplay.client.render.animation.PenguinEntityAnimations;
 import aqario.fowlplay.common.entity.PenguinEntity;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
@@ -77,11 +75,6 @@ public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
-    }
-
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        this.getPart().render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
     }
 
     @Override

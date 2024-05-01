@@ -99,7 +99,7 @@ public class RobinEntityAnimations {
             "head",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, -0.25f, -0.1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.15f, -0.2f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -109,20 +109,6 @@ public class RobinEntityAnimations {
                 new AnimationKeyframe(0f, Animator.rotate(-15f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
-//        .addPartAnimation(
-//            "left_wing",
-//            new PartAnimation(
-//                PartAnimation.AnimationTargets.ROTATE,
-//                new AnimationKeyframe(0f, Animator.rotate(0.69f, -9.39f, -4.68f), PartAnimation.Interpolations.SPLINE)
-//            )
-//        )
-//        .addPartAnimation(
-//            "right_wing",
-//            new PartAnimation(
-//                PartAnimation.AnimationTargets.ROTATE,
-//                new AnimationKeyframe(0f, Animator.rotate(0.69f, 9.39f, 4.68f), PartAnimation.Interpolations.SPLINE)
-//            )
-//        )
         .addPartAnimation(
             "tail",
             new PartAnimation(
@@ -172,6 +158,17 @@ public class RobinEntityAnimations {
                 new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(0.6766666f, Animator.rotate(50f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(1f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "root",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.16766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.6766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .build();
