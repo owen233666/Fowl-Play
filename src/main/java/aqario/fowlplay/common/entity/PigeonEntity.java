@@ -100,6 +100,11 @@ public class PigeonEntity extends TameableBirdEntity {
         this.setRecipientUuid(nbt.getUuid("Receiver"));
     }
 
+    @Override
+    public int getFlapFrequency() {
+        return 7;
+    }
+
     @Nullable
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {

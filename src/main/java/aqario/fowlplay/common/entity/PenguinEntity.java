@@ -238,10 +238,10 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     @Override
     public void travel(Vec3d movementInput) {
         if (this.isAlive()) {
-            Entity entity = this.getPrimaryPassenger();
+            LivingEntity entity = this.getPrimaryPassenger();
             if (this.hasPassengers() && entity instanceof LivingEntity) {
-                float sidewaysSpeed = ((LivingEntity) entity).sidewaysSpeed * 0.5F;
-                float forwardSpeed = ((LivingEntity) entity).forwardSpeed;
+                float sidewaysSpeed = entity.sidewaysSpeed * 0.5F;
+                float forwardSpeed = entity.forwardSpeed;
                 if (this.isLogicalSideForUpdatingMovement()) {
                     this.setMovementSpeed((float) this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
                     super.travel(new Vec3d(sidewaysSpeed, movementInput.y, forwardSpeed));
@@ -353,6 +353,11 @@ public class PenguinEntity extends BirdEntity implements Saddleable {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setSliding(nbt.getBoolean("Sliding"));
+    }
+
+    @Override
+    public int getFlapFrequency() {
+        return 0;
     }
 
     public boolean isSliding() {

@@ -21,8 +21,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class CardinalEntity extends BirdEntity {
     public final AnimationState idleState = new AnimationState();
+    public final AnimationState flapState = new AnimationState();
     public final AnimationState flyState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    private int flapAnimationTimeout = 0;
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -68,8 +70,21 @@ public class CardinalEntity extends BirdEntity {
     }
 
     @Override
+    public int getFlapFrequency() {
+        return 7;
+    }
+
+    @Override
     public void tick() {
         if (this.getWorld().isClient()) {
+            if (!this.isOnGround()) {
+                this.flapState.start(this.age);
+            } else if (this.flapAnimationTimeout <= 0) {
+                this.flapAnimationTimeout = this.getFlapFrequency();
+                this.flapState.restart(this.age);
+            } else {
+                --this.flapAnimationTimeout;
+            }
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
             } else {

@@ -114,6 +114,8 @@ public abstract class BirdEntity extends AnimalEntity {
         return new BirdBodyControl(this);
     }
 
+    public abstract int getFlapFrequency();
+
     @Override
     public void tick() {
         super.tick();

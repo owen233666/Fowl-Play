@@ -39,8 +39,10 @@ import java.util.List;
 public class RobinEntity extends BirdEntity implements VariantProvider<RobinEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
+    public final AnimationState flapState = new AnimationState();
     public final AnimationState flyState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    private int flapAnimationTimeout = 0;
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -161,15 +163,29 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     @Override
+    public int getFlapFrequency() {
+        return 7;
+    }
+
+    @Override
     public void tick() {
         if (this.getWorld().isClient()) {
+            if (!this.isOnGround()) {
+                this.flapState.start(this.age);
+            } else if (this.flapAnimationTimeout <= 0) {
+                this.flapAnimationTimeout = this.getFlapFrequency();
+                this.flapState.restart(this.age);
+            } else {
+                --this.flapAnimationTimeout;
+            }
+
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
             } else {
                 this.idleState.stop();
             }
 
-            if (!this.isOnGround()) {
+            if (this.isFlying()) {
                 this.flyState.start(this.age);
             } else {
                 this.flyState.stop();
