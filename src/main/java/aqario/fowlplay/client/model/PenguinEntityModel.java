@@ -65,14 +65,14 @@ public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
         this.animateWalk(PenguinEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleAnimationState, PenguinEntityAnimations.IDLE, ageInTicks);
-        this.animate(entity.flyAnimationState, PenguinEntityAnimations.FLY, ageInTicks);
-        this.animate(entity.floatAnimationState, PenguinEntityAnimations.FLOAT, ageInTicks);
+        this.animate(entity.idleState, PenguinEntityAnimations.IDLE, ageInTicks);
+        this.animate(entity.flapState, PenguinEntityAnimations.FLY, ageInTicks);
+        this.animate(entity.floatState, PenguinEntityAnimations.FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
-        headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
+        headYaw = MathHelper.clamp(headYaw, -90.0F, 90.0F);
+        headPitch = MathHelper.clamp(headPitch, -45.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
     }

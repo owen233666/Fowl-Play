@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PenguinEntity;
+import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -9,29 +10,65 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.Sensor;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.unmapped.C_jcahukeq;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.unmapped.C_rcqaryar;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 
 public class PenguinBrain {
-    private static final UniformIntProvider ADULT_FOLLOW_RANGE = UniformIntProvider.create(5, 16);
+    private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
+        SensorType.NEAREST_LIVING_ENTITIES,
+        SensorType.NEAREST_ADULT,
+        SensorType.HURT_BY,
+        FowlPlaySensorType.PENGUIN_TEMPTATIONS,
+        SensorType.IS_IN_WATER
+    );
+    private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
+        MemoryModuleType.LOOK_TARGET,
+        MemoryModuleType.MOBS,
+        MemoryModuleType.VISIBLE_MOBS,
+        MemoryModuleType.WALK_TARGET,
+        MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+        MemoryModuleType.PATH,
+        MemoryModuleType.BREED_TARGET,
+        MemoryModuleType.NEAREST_VISIBLE_PLAYER,
+        MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
+        MemoryModuleType.ATTACK_COOLING_DOWN,
+        MemoryModuleType.NEAREST_VISIBLE_ADULT,
+        MemoryModuleType.ATTACK_TARGET,
+        MemoryModuleType.HAS_HUNTING_COOLDOWN,
+        MemoryModuleType.TEMPTING_PLAYER,
+        MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
+        MemoryModuleType.GAZE_COOLDOWN_TICKS,
+        MemoryModuleType.IS_TEMPTED,
+        MemoryModuleType.HURT_BY,
+        MemoryModuleType.HURT_BY_ENTITY,
+        MemoryModuleType.NEAREST_ATTACKABLE,
+        MemoryModuleType.IS_IN_WATER,
+        MemoryModuleType.IS_PREGNANT,
+        MemoryModuleType.IS_PANICKING
+    );
+    private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final float PANICKING_SPEED = 1.5F;
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
     private static final float SWIM_SPEED = 4.0F;
 
+    public static Brain.Profile<PenguinEntity> createProfile() {
+        return Brain.createProfile(MEMORIES, SENSORS);
+    }
+
     public static Brain<?> create(Brain<PenguinEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
-//        addSwimActivities(brain);
-//        addFightActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
@@ -46,7 +83,8 @@ public class PenguinBrain {
                 new WalkTask(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
-                new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS)
+                new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
+                new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
         );
     }
@@ -58,17 +96,14 @@ public class PenguinBrain {
                 Pair.of(0, C_lygsomtd.follow(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED)),
                 Pair.of(2, new TemptTask(penguin -> TEMPTED_SPEED)),
-                Pair.of(3, WalkTowardClosestAdultTask.create(ADULT_FOLLOW_RANGE, WALK_SPEED)),
+                Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(4, new C_jcahukeq(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
-                    4,
-                    new CompositeTask<>(
+                    5,
+                    new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
-                        ImmutableSet.of(),
-                        CompositeTask.Order.ORDERED,
-                        CompositeTask.RunMode.TRY_ALL,
                         ImmutableList.of(
-                            Pair.of(StrollTask.createDynamicRadius(SWIM_SPEED), 2),
-                            Pair.of(StrollTask.create(WALK_SPEED), 2),
+                            Pair.of(StrollTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 3),
                             Pair.of(C_rcqaryar.predicate(Entity::isInsideWaterOrBubbleColumn), 5),
                             Pair.of(new WaitTask(400, 1200), 5)
@@ -82,80 +117,8 @@ public class PenguinBrain {
         );
     }
 
-//    private static void addSwimActivities(Brain<PenguinEntity> brain) {
-//        brain.setTaskList(
-//            Activity.SWIM,
-//            ImmutableList.of(
-//                Pair.of(0, new TimeLimitedTask<LivingEntity>(new FollowMobTask(EntityType.PLAYER, 6.0f), UniformIntProvider.create(30, 60))),
-//                Pair.of(1, new TemptTask(penguin -> TEMPTED_SPEED)),
-//                Pair.of(2, new UpdateAttackTargetTask<>(PenguinBrain::isNotBreeding, penguin -> penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE))),
-//                Pair.of(3, new FindLandTask(8, 1.5f)),
-//                Pair.of(
-//                    5,
-//                    new CompositeTask<>(
-//                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
-//                        ImmutableSet.of(),
-//                        CompositeTask.Order.ORDERED,
-//                        CompositeTask.RunMode.TRY_ALL,
-//                        ImmutableList.of(
-//                            Pair.of(new AquaticStrollTask(SWIM_SPEED), 1),
-//                            Pair.of(new StrollTask(WALK_SPEED, true), 1),
-//                            Pair.of(new GoTowardsLookTarget(1.0f, 3), 1),
-//                            Pair.of(new ConditionalTask<LivingEntity>(Entity::isInsideWaterOrBubbleColumn, new WaitTask(30, 60)), 5)
-//                        )
-//                    )
-//                )
-//            ),
-//            ImmutableSet.of(
-//                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_PRESENT)
-//            )
-//        );
-//    }
-
-//    private static void addGroupActivities(Brain<PenguinEntity> brain) {
-//        brain.setTaskList(
-//            Activity.MEET,
-//            ImmutableList.of(
-//                Pair.of(0, new TimeLimitedTask<LivingEntity>(new FollowMobTask(EntityType.PLAYER, 8.0f), UniformIntProvider.create(30, 60))),
-//                Pair.of(0, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED)),
-//                Pair.of(1, new TemptTask(penguin -> TEMPTED_SPEED)),
-//                Pair.of(2, new WalkTowardClosestAdultTask<>(UniformIntProvider.create(5, 16), WALK_SPEED)),
-//                Pair.of(3, new FindLandTask(6, WALK_SPEED)),
-//                Pair.of(
-//                    4,
-//                    new RandomTask<>(
-//                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
-//                        ImmutableList.of(
-//                            Pair.of(new StrollTask(WALK_SPEED), 1),
-//                            Pair.of(new GoTowardsLookTarget(WALK_SPEED, 16), 1),
-//                            Pair.of(new ConditionalTask<>(Entity::isOnGround, new WaitTask(900, 1200)), 2)
-//                        )
-//                    )
-//                )
-//            )
-//        );
-//    }
-
-//    private static void addFightActivities(Brain<PenguinEntity> brain) {
-//        brain.setTaskList(
-//            Activity.FIGHT,
-//            0,
-//            ImmutableList.of(
-//                new ForgetAttackTargetTask<>(),
-//                new RangedApproachTask(PenguinBrain::getChaseSpeed),
-//                new MeleeAttackTask(20),
-//                new ForgetTask<>(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
-//            ),
-//            MemoryModuleType.ATTACK_TARGET
-//        );
-//    }
-
-    private static float getChaseSpeed(LivingEntity entity) {
-        return entity.isInsideWaterOrBubbleColumn() ? 0.6F : 0.15F;
-    }
-
-    public static void updateActivities(PenguinEntity penguin) {
-        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.FIGHT));
+    public static void reset(PenguinEntity penguin) {
+        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE));
     }
 
     public static Ingredient getTemptIngredient() {

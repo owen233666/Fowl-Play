@@ -69,6 +69,11 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     @Override
+    public int getFlapFrequency() {
+        return 0;
+    }
+
+    @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
     }
