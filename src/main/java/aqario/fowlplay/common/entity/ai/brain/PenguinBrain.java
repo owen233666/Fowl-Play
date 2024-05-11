@@ -18,6 +18,7 @@ import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.unmapped.C_jcahukeq;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.unmapped.C_rcqaryar;
@@ -104,9 +105,10 @@ public class PenguinBrain {
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(StrollTask.create(WALK_SPEED), 1),
-                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 3),
-                            Pair.of(C_rcqaryar.predicate(Entity::isInsideWaterOrBubbleColumn), 5),
-                            Pair.of(new WaitTask(400, 1200), 5)
+                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
+                            Pair.of(C_rcqaryar.predicate(Entity::isInsideWaterOrBubbleColumn), 2),
+                            Pair.of(new PenguinBrain.RandomSlideTask(20), 1),
+                            Pair.of(new WaitTask(400, 800), 2)
                         )
                     )
                 )
@@ -123,5 +125,31 @@ public class PenguinBrain {
 
     public static Ingredient getTemptIngredient() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_TEMPT_ITEMS);
+    }
+
+    public static class RandomSlideTask extends Task<PenguinEntity> {
+        private final int minimalSitTicks;
+
+        public RandomSlideTask(int seconds) {
+            super(ImmutableMap.of());
+            this.minimalSitTicks = seconds * 20;
+        }
+
+        @Override
+        protected boolean shouldRun(ServerWorld serverWorld, PenguinEntity penguin) {
+            return !penguin.isTouchingWater()
+                && penguin.getAnimationTicks() >= (long)this.minimalSitTicks
+                && !penguin.hasPassengers()
+                && penguin.isOnGround();
+        }
+
+        @Override
+        protected void run(ServerWorld serverWorld, PenguinEntity penguin, long l) {
+            if (penguin.isSliding()) {
+                penguin.setStanding();
+            } else {
+                penguin.setFallingDown();
+            }
+        }
     }
 }

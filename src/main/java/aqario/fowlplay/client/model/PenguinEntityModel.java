@@ -64,14 +64,15 @@ public class PenguinEntityModel extends SinglePartEntityModel<PenguinEntity> {
     public void setAngles(PenguinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        this.animateWalk(PenguinEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleState, PenguinEntityAnimations.IDLE, ageInTicks);
-        this.animate(entity.flapState, PenguinEntityAnimations.FLY, ageInTicks);
-        this.animate(entity.floatState, PenguinEntityAnimations.FLOAT, ageInTicks);
+        this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
+        this.animate(entity.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
+        this.animate(entity.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.animate(entity.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.animate(entity.floatState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -90.0F, 90.0F);
+        headYaw = MathHelper.clamp(headYaw, -75.0F, 75.0F);
         headPitch = MathHelper.clamp(headPitch, -45.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
