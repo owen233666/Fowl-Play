@@ -84,12 +84,46 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0f);
     }
 
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(SLIDING, false);
+        this.dataTracker.startTracking(LAST_ANIMATION_TICK, 0L);
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putLong("LastPoseTick", this.dataTracker.get(LAST_ANIMATION_TICK));
+        nbt.putBoolean("Sliding", this.dataTracker.get(SLIDING));
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        long l = nbt.getLong("LastPoseTick");
+        if (l < 0L) {
+            this.setSliding(true);
+        }
+
+        this.setLastAnimationTick(l);
+    }
+
+    @Override
+    public void onTrackedDataUpdate(TrackedData<?> data) {
+        super.onTrackedDataUpdate(data);
+        this.calculateDimensions();
+    }
+
     private boolean isWalking() {
         return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
     }
 
     @Override
     public void tick() {
+        if (this.getPrimaryPassenger() != null && this.getPrimaryPassenger().isSubmergedInWater()) {
+            this.getPrimaryPassenger().stopRiding();
+        }
         if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
@@ -151,8 +185,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
         Vec3d vec3d = new Vec3d(this.getMountedXOffset(), 0.0, 0.0).rotateY(-this.getYaw() * (float) (Math.PI / 180.0) - (float) (Math.PI / 2));
         passenger.setPosition(this.getX() + vec3d.x, this.getY() + (double) g, this.getZ() + vec3d.z);
-        passenger.setYaw(passenger.getYaw());
-        passenger.setHeadYaw(passenger.getHeadYaw());
         this.clampPassengerYaw(passenger);
     }
 
@@ -228,11 +260,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         return !this.hasPassengers();
     }
 
-    @Override
-    public boolean isImmobile() {
-        return super.isImmobile() && this.hasPassengers();
-    }
-
     protected boolean canBreed() {
         return !this.hasPassengers() && !this.hasVehicle() && !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
     }
@@ -249,20 +276,28 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     }
 
     @Override
+    protected boolean canAddPassenger(Entity passenger) {
+        return super.canAddPassenger(passenger) && !this.isSubmergedInWater();
+    }
+
+    @Override
     protected void tickControlled(PlayerEntity player, Vec3d input) {
         super.tickControlled(player, input);
         float sidewaysMovement = player.sidewaysSpeed;
 
-        double rotation = Math.atan(5) * 180 / Math.PI;
+        double rotation = 3;
+        if (Math.abs(sidewaysMovement) == 0) {
+            rotation = 0;
+        }
         this.setRotation((float) (this.getYaw() + (rotation * (sidewaysMovement < 0 ? 1 : -1))), this.getPitch());
         this.prevYaw = this.bodyYaw = this.headYaw = this.getYaw();
     }
 
     @Override
     protected Vec3d getControlledMovementInput(PlayerEntity player, Vec3d input) {
-        float forwardMovement = player.forwardSpeed * 0.25F;
+        float forwardMovement = player.forwardSpeed * 0.2F;
         if (this.getWorld().getBlockState(this.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)) {
-            forwardMovement *= 4.0F;
+            forwardMovement *= 2.0F;
         }
 
         return new Vec3d(0.0, 0.0, Math.max(forwardMovement, 0));
@@ -270,7 +305,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     protected float getRiddenSpeed(PlayerEntity player) {
-        return (float) this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 3;
+        return (float) this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED);
     }
 
     @Override
@@ -293,37 +328,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             return ActionResult.success(this.getWorld().isClient);
         }
         return super.interactMob(player, hand);
-    }
-
-    @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(SLIDING, false);
-        this.dataTracker.startTracking(LAST_ANIMATION_TICK, 0L);
-    }
-
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putLong("LastPoseTick", this.dataTracker.get(LAST_ANIMATION_TICK));
-        nbt.putBoolean("Sliding", this.dataTracker.get(SLIDING));
-    }
-
-    @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        long l = nbt.getLong("LastPoseTick");
-        if (l < 0L) {
-            this.setSliding(true);
-        }
-
-        this.setLastAnimationTick(l);
-    }
-
-    @Override
-    public void onTrackedDataUpdate(TrackedData<?> data) {
-        super.onTrackedDataUpdate(data);
-        this.calculateDimensions();
     }
 
     @Override
@@ -382,6 +386,16 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             return (super.computeFallDamage(fallDistance, damageMultiplier) * 2 - 3) / 2;
         }
         return super.computeFallDamage(fallDistance, damageMultiplier) * 2;
+    }
+
+    @Override
+    public void playAmbientSound() {
+        SoundEvent soundEvent = this.getAmbientSound();
+        if (soundEvent == FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT) {
+            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
+        } else {
+            super.playAmbientSound();
+        }
     }
 
     @Override
