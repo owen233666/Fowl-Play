@@ -7,20 +7,25 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biomes;
 import org.quiltmc.qsl.worldgen.biome.api.BiomeModifications;
-import org.quiltmc.qsl.worldgen.biome.api.BiomeSelectors;
 
 public class FowlPlayEntitySpawn {
     public static void addEntitySpawn() {
-        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.SNOWY_PLAINS, Biomes.SNOWY_BEACH),
+        BiomeModifications.addSpawn(biome -> biome.isIn(FowlPlayBiomeTags.SPAWNS_CARDINALS),
+            SpawnGroup.CREATURE, FowlPlayEntityType.CARDINAL, 75, 1, 3
+        );
+        SpawnRestriction.register(FowlPlayEntityType.CARDINAL, SpawnRestriction.Location.NO_RESTRICTIONS,
+            Heightmap.Type.MOTION_BLOCKING, RobinEntity::canSpawn
+        );
+
+        BiomeModifications.addSpawn(biome -> biome.isIn(FowlPlayBiomeTags.SPAWNS_PENGUINS),
             SpawnGroup.CREATURE, FowlPlayEntityType.PENGUIN, 6, 40, 60
         );
         SpawnRestriction.register(FowlPlayEntityType.PENGUIN, SpawnRestriction.Location.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::isValidNaturalSpawn
         );
 
-        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.BEACH, Biomes.STONY_SHORE),
+        BiomeModifications.addSpawn(biome -> biome.isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS),
             SpawnGroup.CREATURE, FowlPlayEntityType.PIGEON, 30, 4, 8
         );
         SpawnRestriction.register(FowlPlayEntityType.PIGEON, SpawnRestriction.Location.ON_GROUND,
@@ -34,7 +39,7 @@ public class FowlPlayEntitySpawn {
             Heightmap.Type.MOTION_BLOCKING, RobinEntity::canSpawn
         );
 
-        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.BEACH, Biomes.STONY_SHORE),
+        BiomeModifications.addSpawn(biome -> biome.isIn(FowlPlayBiomeTags.SPAWNS_SEAGULLS),
             SpawnGroup.AMBIENT, FowlPlayEntityType.SEAGULL, 75, 5, 12
         );
         SpawnRestriction.register(FowlPlayEntityType.SEAGULL, SpawnRestriction.Location.ON_GROUND,

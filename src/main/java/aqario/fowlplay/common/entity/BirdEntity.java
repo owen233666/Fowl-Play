@@ -31,7 +31,6 @@ public abstract class BirdEntity extends AnimalEntity {
     private final MobNavigation landNavigation;
     private final BirdFlightMoveControl flightMoveControl;
     private final MoveControl landMoveControl;
-    public int airTicks = 0;
     public int timeFlying = 0;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
@@ -121,12 +120,8 @@ public abstract class BirdEntity extends AnimalEntity {
         super.tick();
         if (this.isOnGround() || this.isTouchingWater()) {
             this.setFlying(false);
-            this.airTicks = 0;
         }
-        if (!this.isOnGround() && !this.isTouchingWater()) {
-            this.airTicks++;
-        }
-        if (this.airTicks > 5 && this.getHealth() > 2.0F) {
+        if (this.fallDistance > 2 && this.getHealth() > 2.0F) {
             this.setFlying(true);
         }
         if (this.isFlying()) {

@@ -7,15 +7,15 @@ import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.util.math.MathHelper;
 
 public class PigeonEntityModel extends SinglePartEntityModel<PigeonEntity> {
-    private final ModelPart root;
-    private final ModelPart body;
-    private final ModelPart head;
-    private final ModelPart torso;
-    private final ModelPart leftWing;
-    private final ModelPart rightWing;
-    private final ModelPart leftLeg;
-    private final ModelPart rightLeg;
-    private final ModelPart tail;
+    public final ModelPart root;
+    public final ModelPart body;
+    public final ModelPart head;
+    public final ModelPart torso;
+    public final ModelPart leftWing;
+    public final ModelPart rightWing;
+    public final ModelPart leftLeg;
+    public final ModelPart rightLeg;
+    public final ModelPart tail;
 
     public PigeonEntityModel(ModelPart root) {
         this.root = root.getChild("root");

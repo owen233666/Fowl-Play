@@ -15,21 +15,35 @@ repositories {
     maven {
         url = "https://maven.terraformersmc.com/releases/"
     }
+    maven {
+        url "https://gitlab.com/api/v4/projects/21830712/packages/maven"
+    }
 }
 
 dependencies {
+    // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    // Mappings
 //	mappings "org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2"
     mappings loom.layered {
         mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2"
         mappings "org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2"
-
     }
+
+    // Quilt Loader
     modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
 
-    // QSL is not a complete API; You will need Quilted Fabric API to fill in the gaps.
-    // Quilted Fabric API will automatically pull in the correct QSL version.
+    // Quilted Fabric API
     modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${project.quilted_fabric_api_version}-${project.minecraft_version}"
+
+    // Debug Utils
+    modRuntimeOnly("io.github.flemmli97:debugutils:${project.minecraft_version}-${project.debugutils_version}") {
+        transitive = false
+    }
+
+    // Item Suggestions Not Require Mod Name
+    modRuntimeOnly("maven.modrinth:isnrmn:${project.isnrmn_version}")
 
     // Mod Menu
     modRuntimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {

@@ -23,6 +23,7 @@ import net.minecraft.unmapped.C_jcahukeq;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.unmapped.C_rcqaryar;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
+import net.minecraft.util.random.RandomGenerator;
 
 public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
@@ -62,6 +63,9 @@ public class PenguinBrain {
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
     private static final float SWIM_SPEED = 4.0F;
+
+    public static void initialize(PenguinEntity penguin, RandomGenerator random) {
+    }
 
     public static Brain.Profile<PenguinEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -128,17 +132,17 @@ public class PenguinBrain {
     }
 
     public static class RandomSlideTask extends Task<PenguinEntity> {
-        private final int minimalSitTicks;
+        private final int minimalSlideTicks;
 
         public RandomSlideTask(int seconds) {
             super(ImmutableMap.of());
-            this.minimalSitTicks = seconds * 20;
+            this.minimalSlideTicks = seconds * 20;
         }
 
         @Override
         protected boolean shouldRun(ServerWorld serverWorld, PenguinEntity penguin) {
             return !penguin.isTouchingWater()
-                && penguin.getAnimationTicks() >= (long)this.minimalSitTicks
+                && penguin.getAnimationTicks() >= (long)this.minimalSlideTicks
                 && !penguin.hasPassengers()
                 && penguin.isOnGround();
         }

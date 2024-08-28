@@ -89,8 +89,8 @@ public class SeagullEntity extends TrustingBirdEntity {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.25));
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new PickupItemGoal(this));
+        this.goalSelector.add(1, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(2, new FlyAroundGoal(this));
-        this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity.getUuid()), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getTemptItems(), true));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));

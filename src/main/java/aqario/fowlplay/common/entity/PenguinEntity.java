@@ -9,8 +9,6 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -23,8 +21,8 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -33,6 +31,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,8 +62,9 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     }
 
     @Override
-    protected EntityNavigation createNavigation(World world) {
-        return new MobNavigation(this, world);
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        PenguinBrain.initialize(this, world.getRandom());
+        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
     @Nullable
@@ -127,19 +128,22 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
-            } else {
+            }
+            else {
                 this.idleState.stop();
             }
 
             if (this.isWalking()) {
                 this.walkState.start(this.age);
-            } else {
+            }
+            else {
                 this.walkState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatState.start(this.age);
-            } else {
+            }
+            else {
                 this.floatState.stop();
             }
 
@@ -148,11 +152,13 @@ public class PenguinEntity extends BirdEntity implements Sliding {
                 if (this.isVisuallySliding()) {
                     this.slideState.start(this.age);
                     this.fallingState.stop();
-                } else {
+                }
+                else {
                     this.slideState.stop();
                     this.fallingState.start(this.age);
                 }
-            } else {
+            }
+            else {
                 this.slideState.stop();
                 this.fallingState.stop();
                 this.standUpState.animateIf(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
@@ -393,19 +399,16 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT) {
             this.playSound(soundEvent, 4.0F, this.getSoundPitch());
-        } else {
+        }
+        else {
             super.playAmbientSound();
         }
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
-            List<PenguinEntity> list = this.getWorld()
-                .getEntitiesByClass(PenguinEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.VALID_LIVING_ENTITY);
-            if (!list.isEmpty()) {
-                return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
-            }
+        if (this.random.nextFloat() < 0.1F) {
+            return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
         }
 
         return null;
@@ -460,5 +463,11 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         PenguinBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
+    }
+
+    @Override
+    protected void sendAiDebugData() {
+        super.sendAiDebugData();
+        DebugInfoSender.sendBrainDebugData(this);
     }
 }

@@ -74,7 +74,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     @Override
     public boolean canPickupItem(ItemStack stack) {
         ItemStack heldStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-        return this.getTemptItems().test(stack) && !this.getTemptItems().test(heldStack) && this.eatingTime > 0;
+        return this.getTemptItems().test(stack) && !this.getTemptItems().test(heldStack)/* && this.eatingTime > 0*/;
     }
 
     private void drop(ItemStack stack) {
@@ -110,14 +110,10 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             item.discard();
             this.eatingTime = 0;
         }
-        UUID thrower = item.getOwner().getUuid();
+        UUID thrower = item.getOwner() != null ? item.getOwner().getUuid() : null;
         if (thrower != null && !this.isTrusted(thrower)) {
             if (this.random.nextInt(3) == 0) {
                 this.setTrustedUuid(thrower);
-//                PlayerEntity player = this.getWorld().getPlayerByUuid(thrower);
-//                if (player instanceof ServerPlayerEntity serverPlayer) {
-//                    Criteria.TAME_ANIMAL.trigger(serverPlayer, this);
-//                }
                 this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
             } else {
                 this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
@@ -200,9 +196,9 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     @Nullable
     public LivingEntity getTrusted() {
         try {
-            UUID uUID = this.getTrustedUuid();
-            return uUID == null ? null : this.getWorld().getPlayerByUuid(uUID);
-        } catch (IllegalArgumentException var2) {
+            UUID uuid = this.getTrustedUuid();
+            return uuid == null ? null : this.getWorld().getPlayerByUuid(uuid);
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
