@@ -66,7 +66,8 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         if (isFlying) {
             this.moveControl = new BirdFlightMoveControl(this, 40, false);
             this.isFlightMoveControl = true;
-        } else {
+        }
+        else {
             this.moveControl = new MoveControl(this);
             this.isFlightMoveControl = false;
         }
@@ -172,28 +173,33 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         if (this.getWorld().isClient()) {
             if (!this.isOnGround()) {
                 this.flapState.start(this.age);
-            } else if (this.flapAnimationTimeout <= 0) {
+            }
+            else if (this.flapAnimationTimeout <= 0) {
                 this.flapAnimationTimeout = this.getFlapFrequency();
                 this.flapState.restart(this.age);
-            } else {
+            }
+            else {
                 --this.flapAnimationTimeout;
             }
 
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
-            } else {
+            }
+            else {
                 this.idleState.stop();
             }
 
             if (this.isFlying()) {
                 this.flyState.start(this.age);
-            } else {
+            }
+            else {
                 this.flyState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatState.start(this.age);
-            } else {
+            }
+            else {
                 this.floatState.stop();
             }
         }
@@ -216,7 +222,8 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         super.tickMovement();
         if (this.isFlying()) {
             this.glide();
-        } else {
+        }
+        else {
             this.flapWings();
         }
         if (!this.getWorld().isClient && this.isAlive() && this.movesIndependently()) {
@@ -229,7 +236,8 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
                         this.equipStack(EquipmentSlot.MAINHAND, itemStack2);
                     }
                     this.eatingTime = 0;
-                } else if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
+                }
+                else if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
                     this.playSound(this.getEatSound(itemStack), 1.0f, 1.0f);
                     this.getWorld().sendEntityStatus(this, (byte) 45);
                 }
@@ -283,7 +291,8 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_ROBIN_SONG) {
             this.playSound(soundEvent, 4.0F, this.getSoundPitch());
-        } else {
+        }
+        else {
             super.playAmbientSound();
         }
     }

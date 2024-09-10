@@ -142,7 +142,7 @@ public class PenguinBrain {
         @Override
         protected boolean shouldRun(ServerWorld serverWorld, PenguinEntity penguin) {
             return !penguin.isTouchingWater()
-                && penguin.getAnimationTicks() >= (long)this.minimalSlideTicks
+                && penguin.getAnimationTicks() >= (long) this.minimalSlideTicks
                 && !penguin.hasPassengers()
                 && penguin.isOnGround();
         }
@@ -150,9 +150,10 @@ public class PenguinBrain {
         @Override
         protected void run(ServerWorld serverWorld, PenguinEntity penguin, long l) {
             if (penguin.isSliding()) {
-                penguin.setStanding();
-            } else {
-                penguin.setFallingDown();
+                penguin.standUp();
+            }
+            else {
+                penguin.startSliding();
             }
         }
     }

@@ -358,7 +358,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         return this.isSliding() && this.getAnimationTicks() < 40L && this.getAnimationTicks() >= 0L;
     }
 
-    public void setFallingDown() {
+    public void startSliding() {
         if (!this.isSliding()) {
             this.playSound(SoundEvents.ENTITY_CAMEL_SIT, 1.0F, 1.0F);
             this.setSliding(true);
@@ -366,7 +366,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         }
     }
 
-    public void setStanding() {
+    public void standUp() {
         if (this.isSliding()) {
             this.playSound(SoundEvents.ENTITY_CAMEL_STAND, 1.0F, 1.0F);
             this.setSliding(false);
