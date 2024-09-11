@@ -4,11 +4,10 @@ import aqario.fowlplay.client.render.animation.SeagullEntityAnimations;
 import aqario.fowlplay.common.entity.SeagullEntity;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SeagullEntityModel extends SinglePartEntityModel<SeagullEntity> {
+public class SeagullEntityModel extends BirdEntityModel<SeagullEntity> {
     public final ModelPart root;
     public final ModelPart body;
     public final ModelPart head;
@@ -20,6 +19,7 @@ public class SeagullEntityModel extends SinglePartEntityModel<SeagullEntity> {
     public final ModelPart tail;
 
     public SeagullEntityModel(ModelPart root) {
+        super(root);
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
         this.head = this.body.getChild("head");

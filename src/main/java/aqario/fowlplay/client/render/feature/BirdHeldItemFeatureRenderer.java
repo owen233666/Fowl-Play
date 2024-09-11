@@ -1,7 +1,7 @@
 package aqario.fowlplay.client.render.feature;
 
-import aqario.fowlplay.client.model.SeagullEntityModel;
-import aqario.fowlplay.common.entity.SeagullEntity;
+import aqario.fowlplay.client.model.BirdEntityModel;
+import aqario.fowlplay.common.entity.BirdEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -11,17 +11,18 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Axis;
+import net.minecraft.util.math.Vec3d;
 
-public class SeagullHeldItemFeatureRenderer extends FeatureRenderer<SeagullEntity, SeagullEntityModel> {
+public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extends BirdEntityModel<E>> extends FeatureRenderer<E, M> {
     private final HeldItemRenderer heldItemRenderer;
 
-    public SeagullHeldItemFeatureRenderer(FeatureRendererContext<SeagullEntity, SeagullEntityModel> context, HeldItemRenderer heldItemRenderer) {
+    public BirdHeldItemFeatureRenderer(FeatureRendererContext<E, M> context, HeldItemRenderer heldItemRenderer) {
         super(context);
         this.heldItemRenderer = heldItemRenderer;
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, SeagullEntity seagull, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, E bird, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         matrices.push();
 
         matrices.translate(
@@ -51,14 +52,14 @@ public class SeagullHeldItemFeatureRenderer extends FeatureRenderer<SeagullEntit
         matrices.multiply(Axis.Y_POSITIVE.rotation(this.getContextModel().head.getTransform().yaw));
         matrices.multiply(Axis.X_POSITIVE.rotation(this.getContextModel().head.getTransform().pitch));
 
-        matrices.translate(0.0F, -0.27F, -0.225F);
-
+        matrices.translate(this.getItemOffset().x, this.getItemOffset().y, this.getItemOffset().z);
         matrices.multiply(Axis.X_POSITIVE.rotationDegrees(90.0F));
-
         matrices.scale(0.5F, 0.5F, 0.5F);
 
-        ItemStack stack = seagull.getEquippedStack(EquipmentSlot.MAINHAND);
-        this.heldItemRenderer.renderItem(seagull, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
+        ItemStack stack = bird.getEquippedStack(EquipmentSlot.MAINHAND);
+        this.heldItemRenderer.renderItem(bird, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
         matrices.pop();
     }
+
+    public abstract Vec3d getItemOffset();
 }

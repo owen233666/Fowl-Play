@@ -3,10 +3,9 @@ package aqario.fowlplay.client.model;
 import aqario.fowlplay.client.render.animation.PigeonEntityAnimations;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.util.math.MathHelper;
 
-public class PigeonEntityModel extends SinglePartEntityModel<PigeonEntity> {
+public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
     public final ModelPart root;
     public final ModelPart body;
     public final ModelPart head;
@@ -18,6 +17,7 @@ public class PigeonEntityModel extends SinglePartEntityModel<PigeonEntity> {
     public final ModelPart tail;
 
     public PigeonEntityModel(ModelPart root) {
+        super(root);
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
         this.head = this.body.getChild("head");
