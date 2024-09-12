@@ -3,21 +3,21 @@ package aqario.fowlplay.client.model;
 import aqario.fowlplay.client.render.animation.RobinEntityAnimations;
 import aqario.fowlplay.common.entity.RobinEntity;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.util.math.MathHelper;
 
-public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
-    private final ModelPart root;
-    private final ModelPart body;
-    private final ModelPart head;
-    private final ModelPart torso;
-    private final ModelPart leftWing;
-    private final ModelPart rightWing;
-    private final ModelPart leftLeg;
-    private final ModelPart rightLeg;
-    private final ModelPart tail;
+public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
+    public final ModelPart root;
+    public final ModelPart body;
+    public final ModelPart head;
+    public final ModelPart torso;
+    public final ModelPart leftWing;
+    public final ModelPart rightWing;
+    public final ModelPart leftLeg;
+    public final ModelPart rightLeg;
+    public final ModelPart tail;
 
     public RobinEntityModel(ModelPart root) {
+        super(root);
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
         this.head = this.body.getChild("head");
@@ -77,10 +77,5 @@ public class RobinEntityModel extends SinglePartEntityModel<RobinEntity> {
         headPitch = MathHelper.clamp(headPitch, -30.0F, 60.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
-    }
-
-    @Override
-    public ModelPart getPart() {
-        return this.root;
     }
 }

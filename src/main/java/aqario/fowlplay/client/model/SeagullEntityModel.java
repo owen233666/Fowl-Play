@@ -2,9 +2,7 @@ package aqario.fowlplay.client.model;
 
 import aqario.fowlplay.client.render.animation.SeagullEntityAnimations;
 import aqario.fowlplay.common.entity.SeagullEntity;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 public class SeagullEntityModel extends BirdEntityModel<SeagullEntity> {
@@ -76,15 +74,5 @@ public class SeagullEntityModel extends BirdEntityModel<SeagullEntity> {
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
-    }
-
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        this.getPart().render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-    }
-
-    @Override
-    public ModelPart getPart() {
-        return this.root;
     }
 }

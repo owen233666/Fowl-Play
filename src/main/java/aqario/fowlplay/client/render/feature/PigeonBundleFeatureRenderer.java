@@ -44,9 +44,10 @@ public class PigeonBundleFeatureRenderer extends FeatureRenderer<PigeonEntity, P
         matrices.multiply(Axis.Y_POSITIVE.rotation(this.getContextModel().leftLeg.getTransform().yaw));
         matrices.multiply(Axis.X_POSITIVE.rotation(this.getContextModel().leftLeg.getTransform().pitch));
 
-        matrices.translate(0.0F, 0.05F, 0.0F);
-//        matrices.multiply(Axis.X_POSITIVE.rotationDegrees(90.0F));
-        matrices.scale(0.5F, 0.5F, 0.5F);
+        matrices.translate(0.03125F, 0.075F, 0.0F);
+        matrices.multiply(Axis.X_POSITIVE.rotationDegrees(180.0F));
+        matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(90.0F));
+        matrices.scale(0.25F, 0.25F, 0.25F);
 
         ItemStack stack = pigeon.getEquippedStack(EquipmentSlot.OFFHAND);
         this.heldItemRenderer.renderItem(pigeon, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);

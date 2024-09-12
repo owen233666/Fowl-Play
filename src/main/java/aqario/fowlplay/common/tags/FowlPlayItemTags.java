@@ -7,9 +7,9 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public final class FowlPlayItemTags {
-    public static final TagKey<Item> PENGUIN_TEMPT_ITEMS = create("penguin_tempt_items");
-    public static final TagKey<Item> PIGEON_TEMPT_ITEMS = create("pigeon_tempt_items");
-    public static final TagKey<Item> SEAGULL_TEMPT_ITEMS = create("seagull_tempt_items");
+    public static final TagKey<Item> PENGUIN_FOOD = create("penguin_food");
+    public static final TagKey<Item> PIGEON_FOOD = create("pigeon_food");
+    public static final TagKey<Item> SEAGULL_FOOD = create("seagull_food");
 
     private static TagKey<Item> create(String id) {
         return TagKey.of(RegistryKeys.ITEM, new Identifier(FowlPlay.ID, id));

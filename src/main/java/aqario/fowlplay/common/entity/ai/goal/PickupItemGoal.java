@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class PickupItemGoal extends Goal {
-    static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = item -> !item.cannotPickup() && item.isAlive();
+    static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = Entity::isAlive;
     private final AnimalEntity animal;
 
     public PickupItemGoal(AnimalEntity animal) {
@@ -24,15 +25,26 @@ public class PickupItemGoal extends Goal {
         }
         List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
-        return !list.isEmpty() && animal.canPickupItem(list.get(0).getStack());
+        if (!list.isEmpty()) {
+            for (ItemEntity item : list) {
+                if (animal.canPickupItem(item.getStack())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void tick() {
         List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
-        if (!list.isEmpty() && animal.canPickupItem(list.get(0).getStack())) {
-            animal.getNavigation().startMovingTo(list.get(0), 1.75F);
+        if (!list.isEmpty()) {
+            for (ItemEntity item : list) {
+                if (animal.canPickupItem(item.getStack())) {
+                    animal.getNavigation().startMovingTo(item, 1.75F);
+                }
+            }
         }
     }
 
@@ -41,7 +53,11 @@ public class PickupItemGoal extends Goal {
         List<ItemEntity> list = animal.getWorld()
             .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
         if (!list.isEmpty()) {
-            animal.getNavigation().startMovingTo(list.get(0), 1.75F);
+            for (ItemEntity item : list) {
+                if (animal.canPickupItem(item.getStack())) {
+                    animal.getNavigation().startMovingTo(item, 1.75F);
+                }
+            }
         }
     }
 }

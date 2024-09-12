@@ -128,7 +128,7 @@ public class PenguinBrain {
     }
 
     public static Ingredient getTemptIngredient() {
-        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_TEMPT_ITEMS);
+        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
     }
 
     public static class RandomSlideTask extends Task<PenguinEntity> {

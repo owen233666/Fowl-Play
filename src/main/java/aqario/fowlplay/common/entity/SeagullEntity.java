@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -91,7 +91,7 @@ public class SeagullEntity extends TrustingBirdEntity {
         this.goalSelector.add(1, new PickupItemGoal(this));
         this.goalSelector.add(1, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(2, new FlyAroundGoal(this));
-        this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getTemptItems(), true));
+        this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getFood(), true));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(7, new LookAroundGoal(this));
@@ -113,8 +113,8 @@ public class SeagullEntity extends TrustingBirdEntity {
         return null;
     }
 
-    public Ingredient getTemptItems() {
-        return Ingredient.ofTag(ConventionalItemTags.FOODS);
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.SEAGULL_FOOD);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class SeagullEntity extends TrustingBirdEntity {
 
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_GENERIC_EAT;
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override

@@ -9,12 +9,14 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +52,8 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         UUID uUID;
         if (nbt.containsUuid("Trusted")) {
             uUID = nbt.getUuid("Trusted");
-        } else {
+        }
+        else {
             String string = nbt.getString("Trusted");
             uUID = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
         }
@@ -69,12 +72,12 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         return equipmentSlot == EquipmentSlot.MAINHAND && super.canEquip(stack);
     }
 
-    public abstract Ingredient getTemptItems();
+    public abstract Ingredient getFood();
 
     @Override
     public boolean canPickupItem(ItemStack stack) {
         ItemStack heldStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-        return this.getTemptItems().test(stack) && !this.getTemptItems().test(heldStack)/* && this.eatingTime > 0*/;
+        return this.getFood().test(stack) && !this.getFood().test(heldStack);
     }
 
     private void drop(ItemStack stack) {
@@ -85,6 +88,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             itemEntity.setPickupDelay(40);
             itemEntity.setThrower(this.getUuid());
             this.getWorld().spawnEntity(itemEntity);
+            this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
     }
 
@@ -115,7 +119,8 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             if (this.random.nextInt(3) == 0) {
                 this.setTrustedUuid(thrower);
                 this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
-            } else {
+            }
+            else {
                 this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
             }
         }
@@ -124,31 +129,39 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     @Override
     public void tickMovement() {
         super.tickMovement();
-        if (!this.getWorld().isClient && this.isAlive() && this.movesIndependently()) {
+        if (!this.getWorld().isClient && this.isAlive()) {
             ++this.eatingTime;
             ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
             if (this.canEat(stack)) {
-                if (this.eatingTime > 600) {
-                    ItemStack usedStack = stack.finishUsing(this.getWorld(), this);
-                    if (this.getHealth() < this.getMaxHealth() && stack.getItem().getFoodComponent() != null) {
+                if ((this.eatingTime > 140 && this.random.nextFloat() < 0.1f) || this.eatingTime > 200) {
+                    if (stack.getItem().isFood()) {
                         this.heal(stack.getItem().getFoodComponent().getHunger());
                     }
+                    else {
+                        stack.decrement(1);
+                    }
+                    ItemStack usedStack = stack.finishUsing(this.getWorld(), this);
                     if (!usedStack.isEmpty()) {
                         this.equipStack(EquipmentSlot.MAINHAND, usedStack);
                     }
                     this.eatingTime = 0;
                     return;
                 }
-                if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
+                if (this.eatingTime > 100 && this.random.nextFloat() < 0.1f) {
                     this.playSound(this.getEatSound(stack), 1.0f, 1.0f);
-                    this.getWorld().sendEntityStatus(this, (byte) 45);
+                    this.getWorld().sendEntityStatus(this, EntityStatuses.CREATE_EATING_PARTICLES);
+                }
+            }
+            else if (!stack.isEmpty()) {
+                if (this.random.nextFloat() < 0.1f) {
+                    this.drop(this.getEquippedStack(EquipmentSlot.MAINHAND));
                 }
             }
         }
     }
 
     private boolean canEat(ItemStack stack) {
-        return stack.getItem().isFood() && this.isOnGround() && !this.isSleeping();
+        return this.getFood().test(stack) && this.isOnGround()/* && !this.isSleeping()*/;
     }
 
     protected void showEmoteParticle(boolean positive) {
@@ -166,9 +179,31 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     public void handleStatus(byte status) {
         if (status == EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES) {
             this.showEmoteParticle(true);
-        } else if (status == EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES) {
+        }
+        else if (status == EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES) {
             this.showEmoteParticle(false);
-        } else {
+        }
+        else if (status == EntityStatuses.CREATE_EATING_PARTICLES) {
+            ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
+            if (!itemStack.isEmpty()) {
+                for (int i = 0; i < 8; i++) {
+                    Vec3d vec3d = new Vec3d(((double) this.random.nextFloat() - 0.5) * 0.1, Math.random() * 0.1 + 0.1, 0.0)
+                        .rotateX(-this.getPitch() * (float) (Math.PI / 180.0))
+                        .rotateY(-this.getYaw() * (float) (Math.PI / 180.0));
+                    this.getWorld()
+                        .addParticle(
+                            new ItemStackParticleEffect(ParticleTypes.ITEM, itemStack),
+                            this.getX() + this.getRotationVector().x / 2.0,
+                            this.getY(),
+                            this.getZ() + this.getRotationVector().z / 2.0,
+                            vec3d.x,
+                            vec3d.y + 0.05,
+                            vec3d.z
+                        );
+                }
+            }
+        }
+        else {
             super.handleStatus(status);
         }
     }
@@ -198,7 +233,8 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         try {
             UUID uuid = this.getTrustedUuid();
             return uuid == null ? null : this.getWorld().getPlayerByUuid(uuid);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             return null;
         }
     }

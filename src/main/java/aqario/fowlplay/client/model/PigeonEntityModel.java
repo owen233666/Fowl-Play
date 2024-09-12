@@ -75,9 +75,4 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);
     }
-
-    @Override
-    public ModelPart getPart() {
-        return this.root;
-    }
 }

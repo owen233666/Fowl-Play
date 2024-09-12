@@ -75,7 +75,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_TEMPT_ITEMS).test(stack);
+        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD).test(stack);
     }
 
     public static DefaultAttributeContainer.Builder createPenguinAttributes() {
@@ -296,6 +296,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             rotation = 0;
         }
         this.setRotation((float) (this.getYaw() + (rotation * (sidewaysMovement < 0 ? 1 : -1))), this.getPitch());
+        player.setYaw((float) (player.getYaw() + (rotation * (sidewaysMovement < 0 ? 1 : -1))) % 360.0F);
         this.prevYaw = this.bodyYaw = this.headYaw = this.getYaw();
     }
 
