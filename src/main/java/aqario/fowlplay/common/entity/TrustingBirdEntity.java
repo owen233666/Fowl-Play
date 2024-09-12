@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -9,13 +8,13 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.server.ServerConfigHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -38,28 +37,39 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         this.dataTracker.startTracking(TRUSTED, Optional.empty());
     }
 
+    protected NbtList toNbtList(UUID... values) {
+        NbtList nbtList = new NbtList();
+
+        for (UUID uuid : values) {
+            nbtList.add(NbtString.of(uuid.toString()));
+        }
+
+        return nbtList;
+    }
+
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         if (this.getTrustedUuid() != null) {
             nbt.putUuid("Trusted", this.getTrustedUuid());
+            nbt.put("Trusted", this.toNbtList(this.getTrustedUuid()));
         }
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        UUID uUID;
+        UUID uuid;
         if (nbt.containsUuid("Trusted")) {
-            uUID = nbt.getUuid("Trusted");
+            uuid = nbt.getUuid("Trusted");
         }
         else {
             String string = nbt.getString("Trusted");
-            uUID = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
+            uuid = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
         }
 
-        if (uUID != null) {
-            this.setTrustedUuid(uUID);
+        if (uuid != null) {
+            this.setTrustedUuid(uuid);
         }
     }
 
@@ -80,21 +90,9 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         return this.getFood().test(stack) && !this.getFood().test(heldStack);
     }
 
-    private void drop(ItemStack stack) {
-        if (!stack.isEmpty() && !this.getWorld().isClient) {
-            ItemEntity itemEntity = new ItemEntity(
-                this.getWorld(), this.getX() + this.getRotationVector().x, this.getY() + 1.0, this.getZ() + this.getRotationVector().z, stack
-            );
-            itemEntity.setPickupDelay(40);
-            itemEntity.setThrower(this.getUuid());
-            this.getWorld().spawnEntity(itemEntity);
-            this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-        }
-    }
-
-    private void dropItem(ItemStack stack) {
-        ItemEntity itemEntity = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), stack);
-        this.getWorld().spawnEntity(itemEntity);
+    private void dropWithoutDelay(ItemStack stack) {
+        ItemEntity item = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), stack);
+        this.getWorld().spawnEntity(item);
     }
 
     @Override
@@ -103,10 +101,9 @@ public abstract class TrustingBirdEntity extends BirdEntity {
         if (this.canPickupItem(stack)) {
             int i = stack.getCount();
             if (i > 1) {
-                this.dropItem(stack.split(i - 1));
+                this.dropWithoutDelay(stack.split(i - 1));
             }
-
-            this.drop(this.getEquippedStack(EquipmentSlot.MAINHAND));
+            this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
             this.triggerItemPickedUpByEntityCriteria(item);
             this.equipStack(EquipmentSlot.MAINHAND, stack.split(1));
             this.updateDropChances(EquipmentSlot.MAINHAND);
@@ -134,7 +131,7 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
             if (this.canEat(stack)) {
                 if ((this.eatingTime > 140 && this.random.nextFloat() < 0.1f) || this.eatingTime > 200) {
-                    if (stack.getItem().isFood()) {
+                    if (stack.getItem().getFoodComponent() != null) {
                         this.heal(stack.getItem().getFoodComponent().getHunger());
                     }
                     else {
@@ -154,7 +151,8 @@ public abstract class TrustingBirdEntity extends BirdEntity {
             }
             else if (!stack.isEmpty()) {
                 if (this.random.nextFloat() < 0.1f) {
-                    this.drop(this.getEquippedStack(EquipmentSlot.MAINHAND));
+                    this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
+                    this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                 }
             }
         }
@@ -219,9 +217,6 @@ public abstract class TrustingBirdEntity extends BirdEntity {
 
     public void setTrusted(PlayerEntity player) {
         this.setTrustedUuid(player.getUuid());
-        if (player instanceof ServerPlayerEntity) {
-            Criteria.TAME_ANIMAL.trigger((ServerPlayerEntity) player, this);
-        }
     }
 
     public boolean hasTrusted() {
@@ -250,29 +245,5 @@ public abstract class TrustingBirdEntity extends BirdEntity {
 
     public boolean isTrusted(UUID uuid) {
         return uuid == this.getTrustedUuid();
-    }
-
-    @Override
-    public AbstractTeam getScoreboardTeam() {
-        LivingEntity livingEntity = this.getTrusted();
-        if (livingEntity != null) {
-            return livingEntity.getScoreboardTeam();
-        }
-
-        return super.getScoreboardTeam();
-    }
-
-    @Override
-    public boolean isTeammate(Entity other) {
-        LivingEntity livingEntity = this.getTrusted();
-        if (other == livingEntity) {
-            return true;
-        }
-
-        if (livingEntity != null) {
-            return livingEntity.isTeammate(other);
-        }
-
-        return super.isTeammate(other);
     }
 }

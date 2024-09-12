@@ -1,10 +1,8 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
-import aqario.fowlplay.common.entity.ai.goal.DeliverBundleGoal;
-import aqario.fowlplay.common.entity.ai.goal.DelivererFollowOwnerGoal;
-import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
+import aqario.fowlplay.common.entity.ai.goal.*;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -22,9 +20,9 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BundleItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -126,13 +124,14 @@ public class PigeonEntity extends TameableBirdEntity {
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new DeliverBundleGoal<>(this, 1.0, 6.0F, 128.0F, false));
-        this.goalSelector.add(3, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
+        this.goalSelector.add(1, new DeliverBundleGoal<>(this, 1.0, 6.0F, 128.0F, false));
+        this.goalSelector.add(2, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
+        this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
+        this.goalSelector.add(3, new PickupItemGoal(this));
         this.goalSelector.add(4, new AnimalMateGoal(this, 1.0));
-        this.goalSelector.add(5, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(6, new FlyAroundGoal(this));
-        this.goalSelector.add(7, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
+        this.goalSelector.add(5, new FlyAroundGoal(this));
+        this.goalSelector.add(6, new BirdWanderGoal(this, 1.0));
+        this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(8, new LookAroundGoal(this));
     }
 
@@ -196,7 +195,8 @@ public class PigeonEntity extends TameableBirdEntity {
                     this.setOwner(player);
                     this.navigation.stop();
                     this.getWorld().sendEntityStatus(this, (byte) 7);
-                } else {
+                }
+                else {
                     this.getWorld().sendEntityStatus(this, (byte) 6);
                 }
             }
@@ -208,7 +208,7 @@ public class PigeonEntity extends TameableBirdEntity {
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        return !this.isTamed() && stack.isOf(Items.WHEAT_SEEDS);
+        return !this.isTamed() && this.getFood().test(stack);
     }
 
     @Override
@@ -218,6 +218,11 @@ public class PigeonEntity extends TameableBirdEntity {
             return false;
         }
         return equipmentSlot == EquipmentSlot.MAINHAND || equipmentSlot == EquipmentSlot.OFFHAND && super.canEquip(stack);
+    }
+
+    @Override
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.PIGEON_FOOD);
     }
 
     @Override
@@ -239,25 +244,29 @@ public class PigeonEntity extends TameableBirdEntity {
         if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.idleAnimationState.stop();
             }
 
             if (!this.isOnGround()) {
                 this.flyAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.flyAnimationState.stop();
             }
 
             if (this.isWalking()) {
                 this.walkAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.walkAnimationState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.floatAnimationState.stop();
             }
         }
@@ -380,7 +389,8 @@ public class PigeonEntity extends TameableBirdEntity {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
             this.playSound(soundEvent, 2.0F, this.getSoundPitch());
-        } else {
+        }
+        else {
             super.playAmbientSound();
         }
     }

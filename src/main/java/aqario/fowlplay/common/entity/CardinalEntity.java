@@ -47,7 +47,8 @@ public class CardinalEntity extends BirdEntity {
         if (isFlying) {
             this.moveControl = new BirdFlightMoveControl(this, 40, false);
             this.isFlightMoveControl = true;
-        } else {
+        }
+        else {
             this.moveControl = new MoveControl(this);
             this.isFlightMoveControl = false;
         }
@@ -79,27 +80,32 @@ public class CardinalEntity extends BirdEntity {
         if (this.getWorld().isClient()) {
             if (!this.isOnGround()) {
                 this.flapState.start(this.age);
-            } else if (this.flapAnimationTimeout <= 0) {
+            }
+            else if (this.flapAnimationTimeout <= 0) {
                 this.flapAnimationTimeout = this.getFlapFrequency();
                 this.flapState.restart(this.age);
-            } else {
+            }
+            else {
                 --this.flapAnimationTimeout;
             }
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
-            } else {
+            }
+            else {
                 this.idleState.stop();
             }
 
             if (!this.isOnGround()) {
                 this.flyState.start(this.age);
-            } else {
+            }
+            else {
                 this.flyState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatState.start(this.age);
-            } else {
+            }
+            else {
                 this.floatState.stop();
             }
         }
@@ -122,7 +128,8 @@ public class CardinalEntity extends BirdEntity {
         super.tickMovement();
         if (this.isFlying()) {
             this.glide();
-        } else {
+        }
+        else {
             this.flapWings();
         }
     }
@@ -155,7 +162,8 @@ public class CardinalEntity extends BirdEntity {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_CARDINAL_SONG) {
             this.playSound(soundEvent, 4.0F, this.getSoundPitch());
-        } else {
+        }
+        else {
             super.playAmbientSound();
         }
     }

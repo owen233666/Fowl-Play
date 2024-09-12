@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class TameableBirdEntity extends BirdEntity implements Tameable {
+public abstract class TameableBirdEntity extends TrustingBirdEntity implements Tameable {
     protected static final TrackedData<Byte> TAMEABLE_FLAGS = DataTracker.registerData(TameableBirdEntity.class, TrackedDataHandlerRegistry.BYTE);
-    protected static final TrackedData<Optional<UUID>> OWNER_UUID = DataTracker.registerData(TameableBirdEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+    protected static final TrackedData<Optional<UUID>> OWNER = DataTracker.registerData(TameableBirdEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private boolean sitting;
 
     protected TameableBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
@@ -32,8 +32,8 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
-        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte)0);
-        this.dataTracker.startTracking(OWNER_UUID, Optional.empty());
+        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte) 0);
+        this.dataTracker.startTracking(OWNER, Optional.empty());
     }
 
     @Override
@@ -49,19 +49,21 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        UUID uUID;
+        UUID uuid;
         if (nbt.containsUuid("Owner")) {
-            uUID = nbt.getUuid("Owner");
-        } else {
+            uuid = nbt.getUuid("Owner");
+        }
+        else {
             String string = nbt.getString("Owner");
-            uUID = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
+            uuid = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
         }
 
-        if (uUID != null) {
+        if (uuid != null) {
             try {
-                this.setOwnerUuid(uUID);
+                this.setOwnerUuid(uuid);
                 this.setTamed(true);
-            } catch (Throwable var4) {
+            }
+            catch (Throwable throwable) {
                 this.setTamed(false);
             }
         }
@@ -81,7 +83,7 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
             particleEffect = ParticleTypes.SMOKE;
         }
 
-        for(int i = 0; i < 7; ++i) {
+        for (int i = 0; i < 7; ++i) {
             double d = this.random.nextGaussian() * 0.02;
             double e = this.random.nextGaussian() * 0.02;
             double f = this.random.nextGaussian() * 0.02;
@@ -93,9 +95,11 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     public void handleStatus(byte status) {
         if (status == EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES) {
             this.showEmoteParticle(true);
-        } else if (status == EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES) {
+        }
+        else if (status == EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES) {
             this.showEmoteParticle(false);
-        } else {
+        }
+        else {
             super.handleStatus(status);
         }
     }
@@ -107,9 +111,10 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     public void setTamed(boolean tamed) {
         byte b = this.dataTracker.get(TAMEABLE_FLAGS);
         if (tamed) {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 4));
-        } else {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -5));
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte) (b | 4));
+        }
+        else {
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte) (b & -5));
         }
 
         this.onTamedChanged();
@@ -125,27 +130,28 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
     public void setInSittingPose(boolean inSittingPose) {
         byte b = this.dataTracker.get(TAMEABLE_FLAGS);
         if (inSittingPose) {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 1));
-        } else {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -2));
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte) (b | 1));
+        }
+        else {
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte) (b & -2));
         }
     }
 
     @Nullable
     @Override
     public UUID getOwnerUuid() {
-        return this.dataTracker.get(OWNER_UUID).orElse(null);
+        return this.dataTracker.get(OWNER).orElse(null);
     }
 
     public void setOwnerUuid(@Nullable UUID uuid) {
-        this.dataTracker.set(OWNER_UUID, Optional.ofNullable(uuid));
+        this.dataTracker.set(OWNER, Optional.ofNullable(uuid));
     }
 
     public void setOwner(PlayerEntity player) {
         this.setTamed(true);
         this.setOwnerUuid(player.getUuid());
         if (player instanceof ServerPlayerEntity) {
-            Criteria.TAME_ANIMAL.trigger((ServerPlayerEntity)player, this);
+            Criteria.TAME_ANIMAL.trigger((ServerPlayerEntity) player, this);
         }
     }
 
@@ -154,7 +160,8 @@ public abstract class TameableBirdEntity extends BirdEntity implements Tameable 
         try {
             UUID uUID = this.getOwnerUuid();
             return uUID == null ? null : this.getWorld().getPlayerByUuid(uUID);
-        } catch (IllegalArgumentException var2) {
+        }
+        catch (IllegalArgumentException var2) {
             return null;
         }
     }

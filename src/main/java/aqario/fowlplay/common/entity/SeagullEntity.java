@@ -57,7 +57,8 @@ public class SeagullEntity extends TrustingBirdEntity {
         if (isFlying) {
             this.moveControl = new FlightMoveControl(this, 10, false);
             this.isFlightMoveControl = true;
-        } else {
+        }
+        else {
             this.moveControl = new MoveControl(this);
             this.isFlightMoveControl = false;
         }
@@ -160,25 +161,29 @@ public class SeagullEntity extends TrustingBirdEntity {
         if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
                 this.idleAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.idleAnimationState.stop();
             }
 
             if (!this.isOnGround()) {
                 this.flyAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.flyAnimationState.stop();
             }
 
             if (this.isWalking()) {
                 this.walkAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.walkAnimationState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatAnimationState.start(this.age);
-            } else {
+            }
+            else {
                 this.floatAnimationState.stop();
             }
         }
