@@ -99,11 +99,6 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public boolean isBreedingItem(ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public boolean isBaby() {
         return false;
     }

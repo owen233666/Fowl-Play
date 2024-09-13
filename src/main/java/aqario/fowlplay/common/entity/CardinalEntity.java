@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -12,6 +13,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
@@ -41,6 +43,11 @@ public class CardinalEntity extends BirdEntity {
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @Override
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.CARDINAL_FOOD);
     }
 
     private void setMoveControl(boolean isFlying) {

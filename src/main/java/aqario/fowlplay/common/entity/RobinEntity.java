@@ -3,8 +3,10 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
+import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
@@ -15,13 +17,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -48,7 +49,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public float prevMaxWingDeviation;
     public float prevFlapProgress;
     public float flapSpeed = 1.0f;
-    private int eatingTime;
     private boolean isFlightMoveControl;
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
@@ -122,40 +122,25 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     @Override
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.ROBIN_FOOD);
+    }
+
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(2, new PickupItemGoal(this));
+        this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(3, new FlyAroundGoal(this));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(5, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(7, new LookAroundGoal(this));
+        this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
+        this.goalSelector.add(6, new LookAroundGoal(this));
     }
 
     @Override
     protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
         return 0.3f;
-    }
-
-    @Override
-    public boolean isBreedingItem(ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean canEquip(ItemStack stack) {
-        EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(stack);
-        if (!this.getEquippedStack(equipmentSlot).isEmpty()) {
-            return false;
-        }
-        return equipmentSlot == EquipmentSlot.MAINHAND && super.canEquip(stack);
-    }
-
-    @Override
-    public boolean canPickupItem(ItemStack stack) {
-        Item item = stack.getItem();
-        ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-        return itemStack.isEmpty() || this.eatingTime > 0 && item.isFood() && !itemStack.getItem().isFood();
     }
 
     @Override
@@ -226,23 +211,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         else {
             this.flapWings();
         }
-        if (!this.getWorld().isClient && this.isAlive() && this.movesIndependently()) {
-            ++this.eatingTime;
-            ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-            if (this.canEat(itemStack)) {
-                if (this.eatingTime > 600) {
-                    ItemStack itemStack2 = itemStack.finishUsing(this.getWorld(), this);
-                    if (!itemStack2.isEmpty()) {
-                        this.equipStack(EquipmentSlot.MAINHAND, itemStack2);
-                    }
-                    this.eatingTime = 0;
-                }
-                else if (this.eatingTime > 560 && this.random.nextFloat() < 0.1f) {
-                    this.playSound(this.getEatSound(itemStack), 1.0f, 1.0f);
-                    this.getWorld().sendEntityStatus(this, (byte) 45);
-                }
-            }
-        }
     }
 
     private void glide() {
@@ -266,10 +234,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
             this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
-    }
-
-    private boolean canEat(ItemStack stack) {
-        return stack.getItem().isFood() && this.getTarget() == null && this.isOnGround() && !this.isSleeping();
     }
 
     @Override

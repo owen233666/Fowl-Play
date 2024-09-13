@@ -75,7 +75,12 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD).test(stack);
+        return this.getFood().test(stack);
+    }
+
+    @Override
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
     }
 
     public static DefaultAttributeContainer.Builder createPenguinAttributes() {
