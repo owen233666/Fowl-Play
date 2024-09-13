@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.SeagullEntity;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
@@ -70,6 +69,7 @@ public class SeagullBrain {
     public static Brain<?> create(Brain<SeagullEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
+        addAvoidActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
@@ -94,15 +94,16 @@ public class SeagullBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(0, C_lygsomtd.follow(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
+                Pair.of(0, PacifyTask.create(MemoryModuleType.NEAREST_REPELLENT, 200)),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.SEAGULL, WALK_SPEED)),
-                Pair.of(2, new TemptTask(seagull -> TEMPTED_SPEED)),
-                Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(4, new C_jcahukeq(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(2, C_lygsomtd.follow(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
+                Pair.of(3, new TemptTask(seagull -> TEMPTED_SPEED)),
+                Pair.of(4, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(5, new C_jcahukeq(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
-                    5,
+                    6,
                     new RandomTask<>(
-                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+//                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(StrollTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
@@ -115,6 +116,26 @@ public class SeagullBrain {
             ImmutableSet.of(
                 Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT)
             )
+        );
+    }
+
+    private static void addAvoidActivities(Brain<SeagullEntity> brain) {
+        brain.setTaskList(
+            Activity.AVOID,
+            10,
+            ImmutableList.of(
+                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, 1.3F, 15, false),
+                makeRandomWalkTask(),
+                C_lygsomtd.follow(8.0F, UniformIntProvider.create(30, 60)),
+                ForgetTask.create(entity -> true, MemoryModuleType.AVOID_TARGET)
+            ),
+            MemoryModuleType.AVOID_TARGET
+        );
+    }
+
+    private static RandomTask<SeagullEntity> makeRandomWalkTask() {
+        return new RandomTask<>(
+            ImmutableList.of(Pair.of(StrollTask.create(PANICKING_SPEED), 2), Pair.of(GoTowardsLookTarget.create(PANICKING_SPEED, 3), 2), Pair.of(new WaitTask(30, 60), 1))
         );
     }
 
