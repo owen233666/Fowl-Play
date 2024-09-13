@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "angling:worm",
-      "required": false
-    },
     "minecraft:beetroot_seeds",
     "minecraft:glow_berries",
     "minecraft:melon_seeds",

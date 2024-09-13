@@ -1,7 +1,9 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
+import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
+import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
@@ -12,10 +14,12 @@ import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -71,15 +75,22 @@ public class CardinalEntity extends BirdEntity {
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(2, new PickupItemGoal(this));
+        this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(3, new FlyAroundGoal(this));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(7, new LookAroundGoal(this));
+        this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
+        this.goalSelector.add(6, new LookAroundGoal(this));
     }
 
     @Override
     public int getFlapFrequency() {
         return 7;
+    }
+
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override

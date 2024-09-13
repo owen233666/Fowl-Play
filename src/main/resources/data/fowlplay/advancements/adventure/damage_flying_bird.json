@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:adventure/shoot_arrow",
   "criteria": {
-    "requirement": {
+    "shoot_bird": {
       "conditions": {
         "entity": [
           {
@@ -24,6 +24,11 @@
       "trigger": "minecraft:player_hurt_entity"
     }
   },
+  "requirements": [
+    [
+      "shoot_bird"
+    ]
+  ],
   "display": {
     "announce_to_chat": true,
     "description": {

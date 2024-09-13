@@ -6,7 +6,21 @@ import net.minecraft.client.render.animation.Animator;
 import net.minecraft.client.render.animation.PartAnimation;
 
 public class PigeonEntityAnimations {
-    public static final Animation IDLE = Animation.Builder.withLength(1.0f).looping()
+    public static final Animation PIGEON_IDLE = Animation.Builder.withLength(1.0f).looping()
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0.3f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(2.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
         .addPartAnimation(
             "left_wing",
             new PartAnimation(
@@ -18,7 +32,7 @@ public class PigeonEntityAnimations {
             "left_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0.22f, -5.95f, -2.32f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(0.31f, -3.68f, -3.37f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -32,28 +46,14 @@ public class PigeonEntityAnimations {
             "right_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0.22f, 5.95f, 2.32f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(0.31f, 3.68f, 3.37f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "body",
+            "tail",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-10f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "head",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, -0.1f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "head",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(10f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -72,7 +72,7 @@ public class PigeonEntityAnimations {
         )
         .build();
 
-    public static final Animation WALK = Animation.Builder.withLength(1.0f).looping()
+    public static final Animation PIGEON_WALK = Animation.Builder.withLength(1.0f).looping()
         .addPartAnimation(
             "body",
             new PartAnimation(
@@ -176,10 +176,10 @@ public class PigeonEntityAnimations {
         )
         .build();
 
-    public static final Animation FLY = Animation.Builder.withLength(0f)
+    public static final Animation PIGEON_FLY = Animation.Builder.withLength(0f)
         .build();
 
-    public static final Animation FLOAT = Animation.Builder.withLength(0f).looping()
+    public static final Animation PIGEON_FLOAT = Animation.Builder.withLength(0f).looping()
         .build();
 
     public static final Animation SIT = Animation.Builder.withLength(0f).looping()

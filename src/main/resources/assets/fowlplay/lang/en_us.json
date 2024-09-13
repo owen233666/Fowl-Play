@@ -1,4 +1,8 @@
 {
+  "advancements.adventure.damage_flying_bird.title": "Restricted Airspace",
+  "advancements.adventure.damage_flying_bird.description": "Shoot a Seagull mid-flight",
+  "advancements.adventure.fly_penguin.title": "When Penguins Fly",
+  "advancements.adventure.fly_penguin.description": "Ride a Penguin off a cliff",
   "entity.fowlplay.cardinal": "Cardinal",
   "entity.fowlplay.penguin": "Penguin",
   "entity.fowlplay.pigeon": "Pigeon",
@@ -25,7 +29,5 @@
   "subtitles.entity.robin.death": "Robin dies",
   "subtitles.entity.seagull.ambient": "Seagull squawks",
   "subtitles.entity.seagull.hurt": "Seagull hurts",
-  "subtitles.entity.seagull.death": "Seagull dies",
-  "advancements.adventure.fly_penguin.title": "When Penguins Fly",
-  "advancements.adventure.fly_penguin.description": "Fly a Penguin off a cliff"
+  "subtitles.entity.seagull.death": "Seagull dies"
 }

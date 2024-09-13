@@ -388,7 +388,7 @@ public class PigeonEntity extends TameableBirdEntity {
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
-            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
         }
         else {
             super.playAmbientSound();
@@ -410,7 +410,7 @@ public class PigeonEntity extends TameableBirdEntity {
 
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_GENERIC_EAT;
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Nullable

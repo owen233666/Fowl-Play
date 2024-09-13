@@ -310,7 +310,8 @@ public abstract class BirdEntity extends AnimalEntity {
         if (distFromGround > 8) {
             final int flightHeight = 4 + this.getRandom().nextInt(10);
             newPos = ground.up(flightHeight);
-        } else {
+        }
+        else {
             newPos = ground.up(this.getRandom().nextInt(6) + 1);
         }
 
@@ -320,7 +321,7 @@ public abstract class BirdEntity extends AnimalEntity {
         return null;
     }
 
-    private BlockPos getGroundPos(BlockPos in){
+    private BlockPos getGroundPos(BlockPos in) {
         BlockPos pos = new BlockPos(in.getX(), (int) this.getY(), in.getZ());
         while (pos.getY() > -64 && !getWorld().getBlockState(pos).isSolid() && getWorld().getFluidState(pos).isEmpty()) {
             pos = pos.down();
@@ -337,7 +338,8 @@ public abstract class BirdEntity extends AnimalEntity {
         BlockPos ground = this.getGroundPos(radialPos);
         if (ground.getY() == -64) {
             return this.getPos();
-        } else {
+        }
+        else {
             ground = this.getBlockPos();
             while (ground.getY() > -64 && !getWorld().getBlockState(ground).isSolid()) {
                 ground = ground.down();
