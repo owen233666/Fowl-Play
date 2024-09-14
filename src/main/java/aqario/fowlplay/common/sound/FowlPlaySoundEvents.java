@@ -7,6 +7,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class FowlPlaySoundEvents {
+    public static final SoundEvent ENTITY_BLUE_JAY_CALL = register("entity.blue_jay.call");
+
     public static final SoundEvent ENTITY_CARDINAL_SONG = register("entity.cardinal.song");
 
     public static final SoundEvent ENTITY_PENGUIN_AMBIENT = register("entity.penguin.ambient");

@@ -15,7 +15,7 @@
         "sources": "https://github.com/aqariio/fowl-play",
         "issues": "https://github.com/aqariio/fowl-play/issues"
       },
-      "icon": "assets/fowlplay/icon.png"
+      "icon": "assets/fowlplay/blue_jay_icon.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {

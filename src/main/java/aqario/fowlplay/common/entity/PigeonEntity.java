@@ -7,6 +7,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -31,6 +32,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
@@ -39,13 +41,15 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PigeonEntity extends TameableBirdEntity {
+public class PigeonEntity extends TameableBirdEntity implements VariantProvider<PigeonEntity.Variant> {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     public static final TrackedData<Boolean> DELIVERING = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState walkAnimationState = new AnimationState();
     public final AnimationState flyAnimationState = new AnimationState();
@@ -77,11 +81,23 @@ public class PigeonEntity extends TameableBirdEntity {
         super.initDataTracker(builder);
         builder.add(RECIPIENT, Optional.empty());
         builder.add(DELIVERING, false);
+        builder.add(VARIANT, Util.getRandom(Variant.VARIANTS, random).toString());
+    }
+
+    @Override
+    public PigeonEntity.Variant getVariant() {
+        return PigeonEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
+    }
+
+    @Override
+    public void setVariant(PigeonEntity.Variant variant) {
+        this.dataTracker.set(VARIANT, variant.toString());
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+        nbt.putString("variant", this.getVariant().toString());
         nbt.putBoolean("Delivering", this.dataTracker.get(DELIVERING));
         if (this.getRecipientUuid() != null) {
             nbt.putUuid("Recipient", this.getRecipientUuid());
@@ -97,6 +113,9 @@ public class PigeonEntity extends TameableBirdEntity {
             return;
         }
         this.setRecipientUuid(nbt.getUuid("Receiver"));
+        if (nbt.contains("variant")) {
+            this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
+        }
     }
 
     @Override
@@ -125,7 +144,7 @@ public class PigeonEntity extends TameableBirdEntity {
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new DeliverBundleGoal<>(this, 1.0, 6.0F, 128.0F, false));
+        this.goalSelector.add(1, new DeliverBundleGoal(this, 1.0, 6.0F, 128.0F, false));
         this.goalSelector.add(2, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
         this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(3, new PickupItemGoal(this));
@@ -154,17 +173,17 @@ public class PigeonEntity extends TameableBirdEntity {
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
+        ItemStack playerStack = player.getStackInHand(hand);
 
-        if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && stack.getItem() instanceof BundleItem && stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
+        if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
             if (!this.getWorld().isClient) {
-                this.setStackInHand(Hand.OFF_HAND, stack);
+                this.setStackInHand(Hand.OFF_HAND, playerStack);
                 player.setStackInHand(hand, ItemStack.EMPTY);
             }
             return ActionResult.success(this.getWorld().isClient);
         }
 
-        if (stack.isEmpty() && this.getStackInHand(Hand.OFF_HAND).getItem() instanceof BundleItem) {
+        if (playerStack.isEmpty() && this.getStackInHand(Hand.OFF_HAND).getItem() instanceof BundleItem) {
             if (!this.getWorld().isClient) {
                 player.setStackInHand(hand, this.getStackInHand(Hand.OFF_HAND));
                 this.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
@@ -172,21 +191,13 @@ public class PigeonEntity extends TameableBirdEntity {
             return ActionResult.success(this.getWorld().isClient);
         }
 
-//        if (!stack.isEmpty() && !this.isBreedingItem(stack)) {
-//            if (!this.getWorld().isClient) {
-//                this.setStackInHand(Hand.MAIN_HAND, stack);
-//                player.setStackInHand(hand, ItemStack.EMPTY);
-//            }
-//            return ActionResult.success(this.getWorld().isClient);
-//        }
-
-        if (!this.isBreedingItem(stack)) {
+        if (!this.isBreedingItem(playerStack)) {
             return super.interactMob(player, hand);
         }
 
         if (!this.isTamed()) {
             if (!this.getWorld().isClient) {
-                this.eat(player, hand, stack);
+                this.eat(player, hand, playerStack);
                 if (this.random.nextInt(4) == 0) {
                     this.setOwner(player);
                     this.navigation.stop();
@@ -273,11 +284,6 @@ public class PigeonEntity extends TameableBirdEntity {
     @Override
     protected void mobTick() {
         super.mobTick();
-        if (!this.getWorld().isClient) {
-//            if (this.isFlying() != this.isFlightMoveControl) {
-//                this.setMoveControl(this.isFlying());
-//            }
-        }
 
         if (this.getServer() == null) {
             return;
@@ -384,7 +390,7 @@ public class PigeonEntity extends TameableBirdEntity {
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
-            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 6.0F, this.getSoundPitch());
         }
         else {
             super.playAmbientSound();
@@ -424,5 +430,26 @@ public class PigeonEntity extends TameableBirdEntity {
     @Override
     public EntityView getEntityView() {
         return null;
+    }
+
+    public enum Variant {
+        BANDED("banded"),
+        CHECKERED("checkered"),
+        GRAY("gray"),
+        RUSTY("rusty"),
+        WHITE("white");
+
+        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
+            .toArray(Variant[]::new));
+
+        private final String id;
+
+        Variant(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 }

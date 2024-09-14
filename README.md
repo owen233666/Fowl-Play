@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/icon.png" alt="Fowl Play Icon">
+<img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/robin_icon.png" alt="Robin Icon">
+<img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/blue_jay_icon.png" alt="Blue Jay Icon">
 
 # Fowl Play
 
@@ -12,14 +13,16 @@ Current mobs:
 - Robin
 - Pigeon
 - Cardinal
+- Blue Jay
 
 Planned additions:
 
-- Blue Jay
+- Crow
 - Sparrow
 - Grackle
-- Crow
 - Duck
 - Goose
 - Falcon
+- Eagle
+- Owl
 - Other songbirds

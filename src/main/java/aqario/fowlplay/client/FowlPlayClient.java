@@ -11,6 +11,9 @@ import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 public class FowlPlayClient implements ClientModInitializer {
     @Override
     public void onInitializeClient(ModContainer mod) {
+        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.BLUE_JAY, BlueJayEntityModel::getTexturedModelData);
+        EntityRendererRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntityRenderer::new);
+
         EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.CARDINAL, CardinalEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntityRenderer::new);
 

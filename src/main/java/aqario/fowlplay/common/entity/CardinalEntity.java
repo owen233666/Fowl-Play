@@ -179,7 +179,7 @@ public class CardinalEntity extends BirdEntity {
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_CARDINAL_SONG) {
-            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
         }
         else {
             super.playAmbientSound();

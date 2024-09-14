@@ -11,6 +11,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 public class FowlPlayEntityType {
+    public static final EntityType<BlueJayEntity> BLUE_JAY = register("blue_jay",
+        EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.4f, 0.5f)
+            .setEyeHeight(0.3f)
+    );
+
     public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
         EntityType.Builder.create(CardinalEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.4f, 0.5f)
@@ -47,6 +53,7 @@ public class FowlPlayEntityType {
     }
 
     public static void init() {
+        FabricDefaultAttributeRegistry.register(BLUE_JAY, BlueJayEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(CARDINAL, CardinalEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PENGUIN, PenguinEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PIGEON, PigeonEntity.createAttributes());

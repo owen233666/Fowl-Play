@@ -1,11 +1,11 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.CardinalEntityAnimations;
-import aqario.fowlplay.common.entity.CardinalEntity;
+import aqario.fowlplay.client.render.animation.BlueJayEntityAnimations;
+import aqario.fowlplay.common.entity.BlueJayEntity;
 import net.minecraft.client.model.*;
 import net.minecraft.util.math.MathHelper;
 
-public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
+public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
     public final ModelPart root;
     public final ModelPart body;
     public final ModelPart head;
@@ -17,7 +17,7 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
     public final ModelPart rightLeg;
     public final ModelPart tail;
 
-    public CardinalEntityModel(ModelPart root) {
+    public BlueJayEntityModel(ModelPart root) {
         super(root);
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
@@ -40,7 +40,7 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
 
         ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 8).cuboid(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
 
-        ModelPartData crest = head.addChild("crest", ModelPartBuilder.create().uv(6, 6).cuboid(0.0F, -2.0F, -1.0F, 0.0F, 2.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -3.5F, 0.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData crest = head.addChild("crest", ModelPartBuilder.create().uv(8, 8).cuboid(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -4.0F, 0.2F, 0.4363F, 0.0F, 0.0F));
 
         ModelPartData beak = head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -3.0F, -1.0F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, -1.0F));
 
@@ -51,7 +51,7 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
         ModelPartData right_wing = body.addChild("right_wing", ModelPartBuilder.create().uv(16, 0).mirrored().cuboid(-0.25F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.75F, -2.5F, -1.5F, -0.3927F, 0.0F, 0.0F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(11, 0).cuboid(-1.0F, -1.0F, 1.0F, 2.0F, 1.0F, 2.0F, new Dilation(0.0F))
-            .uv(13, 3).cuboid(-1.0F, -1.0F, 3.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -0.25F, 0.0F, -0.2618F, 0.0F, 0.0F));
+            .uv(20, 0).cuboid(-1.0F, -1.0F, 3.0F, 2.0F, 0.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -0.25F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
         ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(1, 3).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
@@ -64,15 +64,15 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
     }
 
     @Override
-    public void setAngles(CardinalEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(BlueJayEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
         if (entity.isOnGround() && !entity.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbSwing, limbSwingAmount, 5.0F, 2.5F);
+            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbSwing, limbSwingAmount, 5.0F, 2.5F);
         }
-        this.animate(entity.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
-        this.animate(entity.flyState, CardinalEntityAnimations.CARDINAL_FLY, ageInTicks);
-        this.animate(entity.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
+        this.animate(entity.idleState, BlueJayEntityAnimations.BLUE_JAY_IDLE, ageInTicks);
+        this.animate(entity.flyState, BlueJayEntityAnimations.BLUE_JAY_FLY, ageInTicks);
+        this.animate(entity.floatState, BlueJayEntityAnimations.BLUE_JAY_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

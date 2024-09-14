@@ -4,10 +4,13 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.SeagullEntity;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ReportingTaskControl;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -17,6 +20,7 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.unmapped.C_lygsomtd;
+import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.util.random.RandomGenerator;
 
@@ -52,6 +56,7 @@ public class SeagullBrain {
         MemoryModuleType.IS_PREGNANT,
         MemoryModuleType.IS_PANICKING
     );
+    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final float PANICKING_SPEED = 1.6F;
     private static final float TEMPTED_SPEED = 1.2F;
@@ -81,6 +86,7 @@ public class SeagullBrain {
             ImmutableList.of(
                 new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
+//                makeRunFromPlayerTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
@@ -91,7 +97,6 @@ public class SeagullBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(0, PacifyTask.create(MemoryModuleType.NEAREST_REPELLENT, 200)),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.SEAGULL, WALK_SPEED, 20)),
                 Pair.of(2, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
                 Pair.of(3, new TemptTask(seagull -> TEMPTED_SPEED)),
@@ -100,7 +105,7 @@ public class SeagullBrain {
                 Pair.of(
                     6,
                     new RandomTask<>(
-//                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
@@ -121,23 +126,53 @@ public class SeagullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, 1.3F, 15, false),
-                makeRandomWalkTask(),
-                C_lygsomtd.method_47067(8.0F, UniformIntProvider.create(30, 60)),
+                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, PANICKING_SPEED, 15, true),
+                makeRandomFollowTask(),
+                makeRandomWanderTask(),
                 ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
             ),
             MemoryModuleType.AVOID_TARGET
         );
     }
 
-    private static RandomTask<SeagullEntity> makeRandomWalkTask() {
+    private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
+        return ImmutableList.of(
+            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.SEAGULL, 8.0F), 1),
+            Pair.of(FollowMobTask.create(8.0F), 1)
+        );
+    }
+
+    private static RandomTask<LivingEntity> makeRandomFollowTask() {
+        return new RandomTask<>(
+            ImmutableList.<Pair<? extends TaskControl<? super LivingEntity>, Integer>>builder().addAll(createLookTasks()).add(Pair.of(new WaitTask(30, 60), 1)).build()
+        );
+    }
+
+    private static RandomTask<SeagullEntity> makeRandomWanderTask() {
         return new RandomTask<>(
             ImmutableList.of(
-                Pair.of(MeanderTask.create(PANICKING_SPEED), 2),
-                Pair.of(GoTowardsLookTarget.create(PANICKING_SPEED, 3), 2),
+                Pair.of(MeanderTask.create(0.6F), 2),
+                Pair.of(TaskBuilder.sequence(livingEntity -> true, GoTowardsLookTarget.create(0.6F, 3)), 2),
                 Pair.of(new WaitTask(30, 60), 1)
             )
         );
+    }
+
+    private static TaskControl<SeagullEntity> makeRunFromPlayerTask() {
+        return MemoryTransferTask.create(
+            SeagullBrain::getNearestPlayer, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
+        );
+    }
+
+    private static boolean getNearestPlayer(SeagullEntity seagull) {
+        Brain<SeagullEntity> brain = seagull.getBrain();
+        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
+            LivingEntity livingEntity = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
+            return seagull.isInRange(livingEntity, 10.0);
+        }
+        else {
+            return false;
+        }
     }
 
     public static void reset(SeagullEntity seagull) {
@@ -148,7 +183,7 @@ public class SeagullBrain {
         seagull.getBrain().remember(MemoryModuleType.LIKED_PLAYER, seagull.getTrustedUuid());
     }
 
-    public static Ingredient getTemptItems() {
+    public static Ingredient getTemptIngredient() {
         return Ingredient.ofTag(FowlPlayItemTags.SEAGULL_FOOD);
     }
 }

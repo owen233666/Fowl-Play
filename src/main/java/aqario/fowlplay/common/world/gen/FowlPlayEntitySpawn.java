@@ -12,6 +12,13 @@ import net.minecraft.world.Heightmap;
 
 public class FowlPlayEntitySpawn {
     public static void addEntitySpawn() {
+        BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_BLUE_JAYS),
+            SpawnGroup.CREATURE, FowlPlayEntityType.BLUE_JAY, 75, 1, 3
+        );
+        SpawnRestriction.register(FowlPlayEntityType.BLUE_JAY, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING, RobinEntity::canSpawn
+        );
+
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_CARDINALS),
             SpawnGroup.CREATURE, FowlPlayEntityType.CARDINAL, 75, 1, 3
         );

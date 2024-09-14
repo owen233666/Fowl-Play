@@ -13,7 +13,7 @@ import net.minecraft.world.WorldView;
 import java.util.EnumSet;
 
 public class DelivererFollowOwnerGoal extends Goal {
-    private final TameableBirdEntity tameable;
+    private final TameableBirdEntity deliverer;
     private LivingEntity owner;
     private final WorldView world;
     private final double speed;
@@ -25,7 +25,7 @@ public class DelivererFollowOwnerGoal extends Goal {
     private final boolean leavesAllowed;
 
     public DelivererFollowOwnerGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
-        this.tameable = bird;
+        this.deliverer = bird;
         this.world = bird.getWorld();
         this.speed = speed;
         this.navigation = bird.getNavigation();
@@ -40,20 +40,20 @@ public class DelivererFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        LivingEntity livingEntity = this.tameable.getOwner();
+        LivingEntity livingEntity = this.deliverer.getOwner();
         if (livingEntity == null) {
             return false;
         }
         if (livingEntity.isSpectator()) {
             return false;
         }
-        if (this.tameable.isSitting()) {
+        if (this.deliverer.isSitting()) {
             return false;
         }
-        if (this.tameable.squaredDistanceTo(livingEntity) < (double) (this.minDistance * this.minDistance)) {
+        if (this.deliverer.squaredDistanceTo(livingEntity) < (double) (this.minDistance * this.minDistance)) {
             return false;
         }
-        if (this.tameable.getDataTracker().get(PigeonEntity.DELIVERING)) {
+        if (this.deliverer.getDataTracker().get(PigeonEntity.DELIVERING)) {
             return false;
         }
         this.owner = livingEntity;
@@ -62,40 +62,40 @@ public class DelivererFollowOwnerGoal extends Goal {
 
     @Override
     public boolean shouldContinue() {
-        if (this.tameable.getDataTracker().get(PigeonEntity.DELIVERING)) {
+        if (this.deliverer.getDataTracker().get(PigeonEntity.DELIVERING)) {
             return false;
         }
         if (this.navigation.isIdle()) {
             return false;
         }
-        if (this.tameable.isSitting()) {
+        if (this.deliverer.isSitting()) {
             return false;
         }
 
-        return !(this.tameable.squaredDistanceTo(this.owner) <= (double) (this.maxDistance * this.maxDistance));
+        return !(this.deliverer.squaredDistanceTo(this.owner) <= (double) (this.maxDistance * this.maxDistance));
     }
 
     @Override
     public void start() {
         this.updateCountdownTicks = 0;
-        this.oldWaterPathfindingPenalty = this.tameable.getPenalty(PathNodeType.WATER);
-        this.tameable.addPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.oldWaterPathfindingPenalty = this.deliverer.getPenalty(PathNodeType.WATER);
+        this.deliverer.addPathfindingPenalty(PathNodeType.WATER, 0.0F);
     }
 
     @Override
     public void stop() {
         this.owner = null;
         this.navigation.stop();
-        this.tameable.addPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
+        this.deliverer.addPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
     }
 
     @Override
     public void tick() {
-        this.tameable.getLookControl().lookAt(this.owner, 10.0F, (float) this.tameable.getLookPitchSpeed());
+        this.deliverer.getLookControl().lookAt(this.owner, 10.0F, (float) this.deliverer.getLookPitchSpeed());
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = this.getTickCount(10);
-            if (!this.tameable.isLeashed() && !this.tameable.hasVehicle()) {
-                if (this.tameable.squaredDistanceTo(this.owner) >= 144.0) {
+            if (!this.deliverer.isLeashed() && !this.deliverer.hasVehicle()) {
+                if (this.deliverer.squaredDistanceTo(this.owner) >= 144.0) {
                     this.tryTeleport();
                 }
                 else {
@@ -127,14 +127,14 @@ public class DelivererFollowOwnerGoal extends Goal {
             return false;
         }
         else {
-            this.tameable.refreshPositionAndAngles((double) x + 0.5, (double) y, (double) z + 0.5, this.tameable.getYaw(), this.tameable.getPitch());
+            this.deliverer.refreshPositionAndAngles((double) x + 0.5, (double) y, (double) z + 0.5, this.deliverer.getYaw(), this.deliverer.getPitch());
             this.navigation.stop();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.tameable, pos.mutableCopy());
+        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.deliverer, pos.mutableCopy());
         if (pathNodeType != PathNodeType.WALKABLE) {
             return false;
         }
@@ -144,13 +144,13 @@ public class DelivererFollowOwnerGoal extends Goal {
                 return false;
             }
             else {
-                BlockPos blockPos = pos.subtract(this.tameable.getBlockPos());
-                return this.world.isSpaceEmpty(this.tameable, this.tameable.getBounds().offset(blockPos));
+                BlockPos blockPos = pos.subtract(this.deliverer.getBlockPos());
+                return this.world.isSpaceEmpty(this.deliverer, this.deliverer.getBounds().offset(blockPos));
             }
         }
     }
 
     private int getRandomInt(int min, int max) {
-        return this.tameable.getRandom().nextInt(max - min + 1) + min;
+        return this.deliverer.getRandom().nextInt(max - min + 1) + min;
     }
 }

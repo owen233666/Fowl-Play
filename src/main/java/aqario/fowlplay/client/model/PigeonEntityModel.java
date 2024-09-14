@@ -44,18 +44,18 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
 
         ModelPartData left_wing = body.addChild("left_wing", ModelPartBuilder.create().uv(18, 0).cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
 
-        ModelPartData right_wing = body.addChild("right_wing", ModelPartBuilder.create().uv(18, 0).cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(-1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
+        ModelPartData right_wing = body.addChild("right_wing", ModelPartBuilder.create().uv(18, 0).mirrored().cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(12, 0).cuboid(-1.0F, -1.0F, 1.0F, 2.0F, 1.0F, 2.0F, new Dilation(0.0F))
             .uv(17, 0).cuboid(-1.0F, -1.0F, 3.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.3491F, 0.0F, 0.0F));
 
         ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(1, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
-        left_leg.addChild("left_foot", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+        ModelPartData cube_r1 = left_leg.addChild("cube_r1", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
 
         ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(1, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
-        right_leg.addChild("right_foot", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+        ModelPartData cube_r2 = right_leg.addChild("cube_r2", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
         return TexturedModelData.of(modelData, 32, 32);
     }
 

@@ -1,4 +1,19 @@
 {
+  "entity.blue_jay.call": {
+    "sounds": [
+      "fowlplay:mob/blue_jay/call1",
+      "fowlplay:mob/blue_jay/call2",
+      "fowlplay:mob/blue_jay/call3"
+    ],
+    "subtitle": "subtitles.entity.blue_jay.call"
+  },
+  "entity.cardinal.song": {
+    "sounds": [
+      "fowlplay:mob/cardinal/song1",
+      "fowlplay:mob/cardinal/song2"
+    ],
+    "subtitle": "subtitles.entity.cardinal.song"
+  },
   "entity.penguin.ambient": {
     "sounds": [
       "fowlplay:mob/penguin/ambient1",
@@ -82,12 +97,5 @@
       "fowlplay:mob/robin/hurt2"
     ],
     "subtitle": "subtitles.entity.robin.hurt"
-  },
-  "entity.cardinal.song": {
-    "sounds": [
-      "fowlplay:mob/cardinal/song1",
-      "fowlplay:mob/cardinal/song2"
-    ],
-    "subtitle": "subtitles.entity.cardinal.song"
   }
 }

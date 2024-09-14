@@ -1,25 +1,24 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
-import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
+import aqario.fowlplay.common.entity.ai.brain.SeagullBrain;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -84,17 +83,17 @@ public class SeagullEntity extends TrustingBirdEntity {
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
     }
 
-    protected void initGoals() {
-        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.25));
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new PickupItemGoal(this));
-        this.goalSelector.add(1, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(2, new FlyAroundGoal(this));
-        this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getFood(), true));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(7, new LookAroundGoal(this));
-    }
+//    protected void initGoals() {
+//        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.25));
+//        this.goalSelector.add(0, new SwimGoal(this));
+//        this.goalSelector.add(1, new PickupItemGoal(this));
+//        this.goalSelector.add(1, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
+//        this.goalSelector.add(2, new FlyAroundGoal(this));
+//        this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getFood(), true));
+//        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
+//        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
+//        this.goalSelector.add(7, new LookAroundGoal(this));
+//    }
 
     @Override
     public boolean isBaby() {
@@ -180,16 +179,6 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     @Override
-    protected void mobTick() {
-        super.mobTick();
-        if (!this.getWorld().isClient) {
-            if (this.isFlying() != this.isFlightMoveControl) {
-                this.setMoveControl(this.isFlying());
-            }
-        }
-    }
-
-    @Override
     protected void addFlapEffects() {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
@@ -202,7 +191,7 @@ public class SeagullEntity extends TrustingBirdEntity {
     @Override
     public void playAmbientSound() {
         if (this.random.nextFloat() < 0.1F) {
-            this.playSound(this.getAmbientSound(), 4.0F, this.getSoundPitch());
+            this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }
 
@@ -221,5 +210,44 @@ public class SeagullEntity extends TrustingBirdEntity {
     @Override
     protected SoundEvent getDeathSound() {
         return null;
+    }
+
+    @Override
+    protected Brain.Profile<SeagullEntity> createBrainProfile() {
+        return SeagullBrain.createProfile();
+    }
+
+    @Override
+    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
+        return SeagullBrain.create(this.createBrainProfile().deserialize(dynamic));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Brain<SeagullEntity> getBrain() {
+        return (Brain<SeagullEntity>) super.getBrain();
+    }
+
+    @Override
+    protected void mobTick() {
+        this.getWorld().getProfiler().push("seagullBrain");
+        this.getBrain().tick((ServerWorld) this.getWorld(), this);
+        this.getWorld().getProfiler().pop();
+        this.getWorld().getProfiler().push("seagullActivityUpdate");
+        SeagullBrain.reset(this);
+        this.getWorld().getProfiler().pop();
+        super.mobTick();
+
+        if (!this.getWorld().isClient) {
+            if (this.isFlying() != this.isFlightMoveControl) {
+//                this.setMoveControl(this.isFlying());
+            }
+        }
+    }
+
+    @Override
+    protected void sendAiDebugData() {
+        super.sendAiDebugData();
+        DebugInfoSender.sendBrainDebugData(this);
     }
 }

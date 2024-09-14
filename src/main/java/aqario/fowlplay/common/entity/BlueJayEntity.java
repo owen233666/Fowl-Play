@@ -5,43 +5,27 @@ import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class RobinEntity extends BirdEntity implements VariantProvider<RobinEntity.Variant> {
-    private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
+public class BlueJayEntity extends BirdEntity {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState flyState = new AnimationState();
@@ -54,7 +38,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public float flapSpeed = 1.0f;
     private boolean isFlightMoveControl;
 
-    public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
+    protected BlueJayEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
@@ -63,6 +47,11 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @Override
+    public Ingredient getFood() {
+        return Ingredient.ofTag(FowlPlayItemTags.BLUE_JAY_FOOD);
     }
 
     private void setMoveControl(boolean isFlying) {
@@ -76,57 +65,10 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         }
     }
 
-    @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
-        builder.add(VARIANT, /*Util.getRandom(Variant.VARIANTS, random).toString()*/ Variant.AMERICAN.toString());
-    }
-
-    @Override
-    public Variant getVariant() {
-        return Variant.valueOf(this.dataTracker.get(VARIANT));
-    }
-
-    @Override
-    public void setVariant(Variant variant) {
-        this.dataTracker.set(VARIANT, variant.toString());
-    }
-
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putString("variant", this.getVariant().toString());
-    }
-
-    @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("variant")) {
-            this.setVariant(Variant.valueOf(nbt.getString("variant")));
-        }
-    }
-
     @Nullable
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return null;
-    }
-
-    @Override
-    public boolean isBaby() {
-        return false;
-    }
-
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return BirdEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f);
-    }
-
-    @Override
-    public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.ROBIN_FOOD);
     }
 
     @Override
@@ -142,13 +84,13 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_PARROT_EAT;
+    public int getFlapFrequency() {
+        return 7;
     }
 
     @Override
-    public int getFlapFrequency() {
-        return 7;
+    public SoundEvent getEatSound(ItemStack stack) {
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override
@@ -164,7 +106,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
             else {
                 --this.flapAnimationTimeout;
             }
-
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
             }
@@ -172,7 +113,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
                 this.idleState.stop();
             }
 
-            if (this.isFlying()) {
+            if (!this.isOnGround()) {
                 this.flyState.start(this.age);
             }
             else {
@@ -235,66 +176,34 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
-    }
-
-    @Override
-    public Vec3d getLeashOffset() {
-        return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
-    }
-
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
-    }
-
-    @Override
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_ROBIN_SONG) {
-            this.playSound(soundEvent, 6.0F, this.getSoundPitch());
+        if (soundEvent == FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL) {
+            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
         }
         else {
-            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
+            super.playAmbientSound();
         }
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
-            return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
+            return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL;
         }
 
-        return FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+        return null;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_HURT;
+        return null;
     }
 
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
         return null;
-    }
-
-    public enum Variant {
-        AMERICAN("american"),
-        REDBREAST("redbreast");
-
-        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(Variant[]::new));
-
-        private final String id;
-
-        Variant(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
     }
 }
