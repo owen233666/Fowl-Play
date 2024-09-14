@@ -11,6 +11,6 @@ public final class FowlPlayBlockTags {
     public static final TagKey<Block> PASSERINES_SPAWNABLE_ON = create("passerines_spawnable_on");
 
     private static TagKey<Block> create(String id) {
-        return TagKey.of(RegistryKeys.BLOCK, new Identifier(FowlPlay.ID, id));
+        return TagKey.of(RegistryKeys.BLOCK, Identifier.of(FowlPlay.ID, id));
     }
 }

@@ -30,30 +30,30 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
             this.getContextModel().root.pivotY / 16.0F,
             this.getContextModel().root.pivotZ / 16.0F
         );
-        matrices.multiply(Axis.Z_POSITIVE.rotation(this.getContextModel().root.getTransform().roll));
-        matrices.multiply(Axis.Y_POSITIVE.rotation(this.getContextModel().root.getTransform().yaw));
-        matrices.multiply(Axis.X_POSITIVE.rotation(this.getContextModel().root.getTransform().pitch));
+        matrices.rotate(Axis.Z_POSITIVE.rotation(this.getContextModel().root.getTransform().roll));
+        matrices.rotate(Axis.Y_POSITIVE.rotation(this.getContextModel().root.getTransform().yaw));
+        matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().root.getTransform().pitch));
 
         matrices.translate(
             this.getContextModel().body.pivotX / 16.0F,
             this.getContextModel().body.pivotY / 16.0F,
             this.getContextModel().body.pivotZ / 16.0F
         );
-        matrices.multiply(Axis.Z_POSITIVE.rotation(this.getContextModel().body.getTransform().roll));
-        matrices.multiply(Axis.Y_POSITIVE.rotation(this.getContextModel().body.getTransform().yaw));
-        matrices.multiply(Axis.X_POSITIVE.rotation(this.getContextModel().body.getTransform().pitch));
+        matrices.rotate(Axis.Z_POSITIVE.rotation(this.getContextModel().body.getTransform().roll));
+        matrices.rotate(Axis.Y_POSITIVE.rotation(this.getContextModel().body.getTransform().yaw));
+        matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().body.getTransform().pitch));
 
         matrices.translate(
             this.getContextModel().head.pivotX / 16.0F,
             this.getContextModel().head.pivotY / 16.0F,
             this.getContextModel().head.pivotZ / 16.0F
         );
-        matrices.multiply(Axis.Z_POSITIVE.rotation(this.getContextModel().head.getTransform().roll));
-        matrices.multiply(Axis.Y_POSITIVE.rotation(this.getContextModel().head.getTransform().yaw));
-        matrices.multiply(Axis.X_POSITIVE.rotation(this.getContextModel().head.getTransform().pitch));
+        matrices.rotate(Axis.Z_POSITIVE.rotation(this.getContextModel().head.getTransform().roll));
+        matrices.rotate(Axis.Y_POSITIVE.rotation(this.getContextModel().head.getTransform().yaw));
+        matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().head.getTransform().pitch));
 
         matrices.translate(this.getItemOffset().x, this.getItemOffset().y, this.getItemOffset().z);
-        matrices.multiply(Axis.X_POSITIVE.rotationDegrees(90.0F));
+        matrices.rotate(Axis.X_POSITIVE.rotationDegrees(90.0F));
         matrices.scale(0.5F, 0.5F, 0.5F);
 
         ItemStack stack = bird.getEquippedStack(EquipmentSlot.MAINHAND);

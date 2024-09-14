@@ -23,6 +23,6 @@ public class CardinalEntityRenderer extends MobEntityRenderer<CardinalEntity, Ca
 
     @Override
     public Identifier getTexture(CardinalEntity entity) {
-        return new Identifier(FowlPlay.ID, "textures/entity/cardinal/cardinal.png");
+        return Identifier.of(FowlPlay.ID, "textures/entity/cardinal/cardinal.png");
     }
 }

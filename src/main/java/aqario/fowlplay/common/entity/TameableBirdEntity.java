@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.scoreboard.AbstractTeam;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameRules;
@@ -30,10 +30,10 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte) 0);
-        this.dataTracker.startTracking(OWNER, Optional.empty());
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(TAMEABLE_FLAGS, (byte) 0);
+        builder.add(OWNER, Optional.empty());
     }
 
     @Override
@@ -70,11 +70,6 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
         this.sitting = nbt.getBoolean("Sitting");
         this.setInSittingPose(this.sitting);
-    }
-
-    @Override
-    public boolean canBeLeashedBy(PlayerEntity player) {
-        return !this.isLeashed();
     }
 
     protected void showEmoteParticle(boolean positive) {
@@ -180,7 +175,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     }
 
     @Override
-    public AbstractTeam getScoreboardTeam() {
+    public Team getScoreboardTeam() {
         if (this.isTamed()) {
             LivingEntity livingEntity = this.getOwner();
             if (livingEntity != null) {
@@ -209,7 +204,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
+        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBooleanValue(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
             this.getOwner().sendSystemMessage(this.getDamageTracker().getDeathMessage());
         }
 

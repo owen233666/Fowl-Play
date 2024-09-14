@@ -23,6 +23,6 @@ public class SeagullEntityRenderer extends MobEntityRenderer<SeagullEntity, Seag
 
     @Override
     public Identifier getTexture(SeagullEntity entity) {
-        return new Identifier(FowlPlay.ID, "textures/entity/seagull/seagull.png");
+        return Identifier.of(FowlPlay.ID, "textures/entity/seagull/seagull.png");
     }
 }

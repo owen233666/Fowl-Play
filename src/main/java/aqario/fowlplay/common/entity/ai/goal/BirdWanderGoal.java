@@ -46,7 +46,7 @@ public class BirdWanderGoal extends FlyOntoTreeGoal {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutable2 = new BlockPos.Mutable();
 
-        for(BlockPos blockPos2 : BlockPos.iterate(
+        for (BlockPos blockPos2 : BlockPos.iterate(
             MathHelper.floor(this.mob.getX() - 3.0),
             MathHelper.floor(this.mob.getY() - 6.0),
             MathHelper.floor(this.mob.getZ() - 3.0),

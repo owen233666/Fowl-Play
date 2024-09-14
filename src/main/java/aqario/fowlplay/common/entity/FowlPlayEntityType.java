@@ -1,60 +1,56 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.FowlPlay;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder;
+import net.minecraft.util.math.Vec3d;
 
 public class FowlPlayEntityType {
     public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
-        QuiltEntityTypeBuilder.createMob()
-            .entityFactory(CardinalEntity::new)
-            .defaultAttributes(CardinalEntity.createAttributes())
-            .setDimensions(EntityDimensions.changing(0.4f, 0.5f))
-            .spawnGroup(SpawnGroup.CREATURE)
+        EntityType.Builder.create(CardinalEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.4f, 0.5f)
+            .setEyeHeight(0.3f)
     );
 
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
-        QuiltEntityTypeBuilder.createMob()
-            .entityFactory(PenguinEntity::new)
-            .defaultAttributes(PenguinEntity.createPenguinAttributes())
-            .setDimensions(EntityDimensions.changing(0.5f, 1.4f))
-            .spawnGroup(SpawnGroup.CREATURE)
+        EntityType.Builder.create(PenguinEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.5f, 1.4f)
+            .setEyeHeight(1.35f)
+            .passengerAttachments(new Vec3d(0, 0.75, -0.1))
     );
 
     public static final EntityType<PigeonEntity> PIGEON = register("pigeon",
-        QuiltEntityTypeBuilder.createMob()
-            .entityFactory(PigeonEntity::new)
-            .defaultAttributes(PigeonEntity.createPigeonAttributes())
-            .setDimensions(EntityDimensions.changing(0.5f, 0.6f))
-            .spawnGroup(SpawnGroup.CREATURE)
+        EntityType.Builder.create(PigeonEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.5f, 0.6f)
+            .setEyeHeight(0.45f)
     );
 
     public static final EntityType<RobinEntity> ROBIN = register("robin",
-        QuiltEntityTypeBuilder.createMob()
-            .entityFactory(RobinEntity::new)
-            .defaultAttributes(RobinEntity.createAttributes())
-            .setDimensions(EntityDimensions.changing(0.4f, 0.5f))
-            .spawnGroup(SpawnGroup.CREATURE)
+        EntityType.Builder.create(RobinEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.4f, 0.5f)
+            .setEyeHeight(0.3f)
     );
 
     public static final EntityType<SeagullEntity> SEAGULL = register("seagull",
-        QuiltEntityTypeBuilder.createMob()
-            .entityFactory(SeagullEntity::new)
-            .defaultAttributes(SeagullEntity.createAttributes())
-            .setDimensions(EntityDimensions.fixed(0.6f, 0.8f))
-            .spawnGroup(SpawnGroup.AMBIENT)
+        EntityType.Builder.create(SeagullEntity::new, SpawnGroup.AMBIENT)
+            .setDimensions(0.6f, 0.8f)
+            .setEyeHeight(0.5f)
     );
 
-    private static <T extends Entity> EntityType<T> register(String id, QuiltEntityTypeBuilder<T> builder) {
-        return Registry.register(Registries.ENTITY_TYPE, new Identifier(FowlPlay.ID, id), builder.build());
+    private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
+        return Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), builder.build());
     }
 
     public static void init() {
+        FabricDefaultAttributeRegistry.register(CARDINAL, CardinalEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(PENGUIN, PenguinEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(PIGEON, PigeonEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ROBIN, RobinEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SEAGULL, SeagullEntity.createAttributes());
     }
 }

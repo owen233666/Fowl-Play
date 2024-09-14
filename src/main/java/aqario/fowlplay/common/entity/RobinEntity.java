@@ -7,7 +7,10 @@ import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
-import net.minecraft.entity.*;
+import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -54,12 +57,12 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     private void setMoveControl(boolean isFlying) {
@@ -74,9 +77,9 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(VARIANT, /*Util.getRandom(Variant.VARIANTS, random).toString()*/ Variant.AMERICAN.toString());
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(VARIANT, /*Util.getRandom(Variant.VARIANTS, random).toString()*/ Variant.AMERICAN.toString());
     }
 
     @Override
@@ -136,11 +139,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(6, new LookAroundGoal(this));
-    }
-
-    @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        return 0.3f;
     }
 
     @Override

@@ -28,9 +28,9 @@ public abstract class TrustingBirdEntity extends BirdEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(TRUSTED, Optional.empty());
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(TRUSTED, Optional.empty());
     }
 
     protected NbtList toNbtList(UUID... values) {

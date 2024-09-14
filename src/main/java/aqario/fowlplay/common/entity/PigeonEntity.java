@@ -3,7 +3,10 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.goal.*;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
-import net.minecraft.entity.*;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -15,7 +18,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BundleItem;
@@ -53,29 +55,28 @@ public class PigeonEntity extends TameableBirdEntity {
     public float prevMaxWingDeviation;
     public float prevFlapProgress;
     public float flapSpeed = 1.0f;
-    private int eatingTime;
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
-        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
     protected void initEquipment(RandomGenerator random, LocalDifficulty difficulty) {
-        this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 1.0f);
-        this.setEquipmentDropChance(EquipmentSlot.OFFHAND, 1.0f);
+        this.setDropChance(EquipmentSlot.MAINHAND, 1.0f);
+        this.setDropChance(EquipmentSlot.OFFHAND, 1.0f);
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(RECIPIENT, Optional.empty());
-        this.dataTracker.startTracking(DELIVERING, false);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(RECIPIENT, Optional.empty());
+        builder.add(DELIVERING, false);
     }
 
     @Override
@@ -114,7 +115,7 @@ public class PigeonEntity extends TameableBirdEntity {
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createPigeonAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
@@ -152,15 +153,10 @@ public class PigeonEntity extends TameableBirdEntity {
     }
 
     @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        return 0.45f;
-    }
-
-    @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
 
-        if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && stack.getItem() instanceof BundleItem && stack.hasCustomName() && this.isTamed()) {
+        if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && stack.getItem() instanceof BundleItem && stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
             if (!this.getWorld().isClient) {
                 this.setStackInHand(Hand.OFF_HAND, stack);
                 player.setStackInHand(hand, ItemStack.EMPTY);
@@ -213,7 +209,7 @@ public class PigeonEntity extends TameableBirdEntity {
 
     @Override
     public boolean canEquip(ItemStack stack) {
-        EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(stack);
+        EquipmentSlot equipmentSlot = this.getPreferredEquipmentSlot(stack);
         if (!this.getEquippedStack(equipmentSlot).isEmpty()) {
             return false;
         }
@@ -290,7 +286,7 @@ public class PigeonEntity extends TameableBirdEntity {
         ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
         ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
 
-        if (!(stack.getItem() instanceof BundleItem) || !stack.hasCustomName() || recipient == null || recipient.getUuid() == null) {
+        if (!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
             this.setRecipientUuid(null);
             this.dataTracker.set(DELIVERING, false);
             return;

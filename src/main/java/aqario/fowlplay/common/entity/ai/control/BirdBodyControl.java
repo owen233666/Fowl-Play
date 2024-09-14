@@ -20,7 +20,8 @@ public class BirdBodyControl extends BodyControl {
             this.entity.bodyYaw = this.entity.getYaw();
             this.rotateHead();
             this.lastHeadYaw = this.entity.headYaw;
-        } else {
+        }
+        else {
             if (this.isIndependent()) {
                 if (Math.abs(this.entity.headYaw - this.lastHeadYaw) > 15.0F) {
                     this.lastHeadYaw = this.entity.headYaw;
@@ -31,11 +32,11 @@ public class BirdBodyControl extends BodyControl {
     }
 
     private void rotateLook() {
-        this.entity.bodyYaw = MathHelper.stepAngleTowards(this.entity.bodyYaw, this.entity.headYaw, (float)this.entity.getBodyYawSpeed());
+        this.entity.bodyYaw = MathHelper.stepAngleTowards(this.entity.bodyYaw, this.entity.headYaw, (float) this.entity.getBodyYawSpeed());
     }
 
     private void rotateHead() {
-        this.entity.headYaw = MathHelper.stepAngleTowards(this.entity.headYaw, this.entity.bodyYaw, (float)this.entity.getBodyYawSpeed());
+        this.entity.headYaw = MathHelper.stepAngleTowards(this.entity.headYaw, this.entity.bodyYaw, (float) this.entity.getBodyYawSpeed());
     }
 
     private boolean isIndependent() {

@@ -5,8 +5,6 @@ import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -45,12 +43,12 @@ public class SeagullEntity extends TrustingBirdEntity {
     public SeagullEntity(EntityType<? extends SeagullEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     private void setMoveControl(boolean isFlying) {
@@ -111,11 +109,6 @@ public class SeagullEntity extends TrustingBirdEntity {
 
     public Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.SEAGULL_FOOD);
-    }
-
-    @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        return 0.5f;
     }
 
     @Override

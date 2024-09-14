@@ -24,7 +24,7 @@ public class PickupItemGoal extends Goal {
             return false;
         }
         List<ItemEntity> list = animal.getWorld()
-            .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
+            .getEntitiesByClass(ItemEntity.class, animal.getBounds().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
         if (!list.isEmpty()) {
             for (ItemEntity item : list) {
                 if (animal.canPickupItem(item.getStack())) {
@@ -38,7 +38,7 @@ public class PickupItemGoal extends Goal {
     @Override
     public void tick() {
         List<ItemEntity> list = animal.getWorld()
-            .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
+            .getEntitiesByClass(ItemEntity.class, animal.getBounds().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
         if (!list.isEmpty()) {
             for (ItemEntity item : list) {
                 if (animal.canPickupItem(item.getStack())) {
@@ -51,7 +51,7 @@ public class PickupItemGoal extends Goal {
     @Override
     public void start() {
         List<ItemEntity> list = animal.getWorld()
-            .getEntitiesByClass(ItemEntity.class, animal.getBoundingBox().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
+            .getEntitiesByClass(ItemEntity.class, animal.getBounds().expand(32.0, 32.0, 32.0), PICKABLE_DROP_FILTER);
         if (!list.isEmpty()) {
             for (ItemEntity item : list) {
                 if (animal.canPickupItem(item.getStack())) {

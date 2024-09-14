@@ -25,13 +25,14 @@ public class FowlPlayEntityModelLayers {
         EntityModelLayer entityModelLayer = create(id, layer);
         if (!LAYERS.add(entityModelLayer)) {
             throw new IllegalStateException("Duplicate registration for " + entityModelLayer);
-        } else {
+        }
+        else {
             return entityModelLayer;
         }
     }
 
     private static EntityModelLayer create(String id, String layer) {
-        return new EntityModelLayer(new Identifier(FowlPlay.ID, id), layer);
+        return new EntityModelLayer(Identifier.of(FowlPlay.ID, id), layer);
     }
 
     private static EntityModelLayer createInnerArmor(String id) {

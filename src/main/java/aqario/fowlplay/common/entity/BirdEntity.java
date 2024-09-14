@@ -5,6 +5,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -65,7 +66,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public boolean canEquip(ItemStack stack) {
-        EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(stack);
+        EquipmentSlot equipmentSlot = this.getPreferredEquipmentSlot(stack);
         if (!this.getEquippedStack(equipmentSlot).isEmpty()) {
             return false;
         }
@@ -120,8 +121,8 @@ public abstract class BirdEntity extends AnimalEntity {
             ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
             if (this.canEat(stack)) {
                 if ((this.eatingTime > 40 && this.random.nextFloat() < 0.05f) || this.eatingTime > 200) {
-                    if (stack.getItem().getFoodComponent() != null) {
-                        this.heal(stack.getItem().getFoodComponent().getHunger());
+                    if (stack.getItem().getComponents().contains(DataComponentTypes.FOOD)) {
+                        this.heal(stack.getItem().getComponents().get(DataComponentTypes.FOOD).nutrition());
                     }
                     else {
                         stack.decrement(1);
@@ -198,9 +199,9 @@ public abstract class BirdEntity extends AnimalEntity {
 //    }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(FLYING, false);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(FLYING, false);
     }
 
     @Override

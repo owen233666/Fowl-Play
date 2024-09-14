@@ -10,6 +10,6 @@ public final class FowlPlayEntityTypeTags {
     public static final TagKey<EntityType<?>> BIRDS = create("birds");
 
     private static TagKey<EntityType<?>> create(String id) {
-        return TagKey.of(RegistryKeys.ENTITY_TYPE, new Identifier(FowlPlay.ID, id));
+        return TagKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id));
     }
 }

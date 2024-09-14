@@ -29,5 +29,18 @@
   "subtitles.entity.robin.death": "Robin dies",
   "subtitles.entity.seagull.ambient": "Seagull squawks",
   "subtitles.entity.seagull.hurt": "Seagull hurts",
-  "subtitles.entity.seagull.death": "Seagull dies"
+  "subtitles.entity.seagull.death": "Seagull dies",
+  "tag.block.fowlplay.passerines_spawnable_on": "Spawns perching birds",
+  "tag.block.fowlplay.penguins_slide_on": "Penguins slide on",
+  "tag.entity.fowlplay.birds": "Birds",
+  "tag.item.fowlplay.cardinal_food": "Cardinal food",
+  "tag.item.fowlplay.penguin_food": "Penguin food",
+  "tag.item.fowlplay.pigeon_food": "Pigeon food",
+  "tag.item.fowlplay.robin_food": "Robin food",
+  "tag.item.fowlplay.seagull_food": "Seagull food",
+  "tag.biome.fowlplay.spawns_cardinals": "Spawns Cardinals",
+  "tag.biome.fowlplay.spawns_penguins": "Spawns Penguins",
+  "tag.biome.fowlplay.spawns_pigeons": "Spawns Pigeons",
+  "tag.biome.fowlplay.spawns_robins": "Spawns Robins",
+  "tag.biome.fowlplay.spawns_seagulls": "Spawns Seagulls"
 }

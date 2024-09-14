@@ -19,9 +19,7 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.unmapped.C_jcahukeq;
 import net.minecraft.unmapped.C_lygsomtd;
-import net.minecraft.unmapped.C_rcqaryar;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.util.random.RandomGenerator;
 
@@ -85,7 +83,7 @@ public class PenguinBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new WalkTask(PANICKING_SPEED),
+                new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -98,19 +96,19 @@ public class PenguinBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(0, C_lygsomtd.follow(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
-                Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED)),
+                Pair.of(0, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 20)),
                 Pair.of(2, new TemptTask(penguin -> TEMPTED_SPEED)),
                 Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(4, new C_jcahukeq(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
                     5,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(StrollTask.create(WALK_SPEED), 1),
+                            Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
-                            Pair.of(C_rcqaryar.predicate(Entity::isInsideWaterOrBubbleColumn), 2),
+                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new PenguinBrain.RandomSlideTask(20), 1),
                             Pair.of(new WaitTask(400, 800), 2)
                         )

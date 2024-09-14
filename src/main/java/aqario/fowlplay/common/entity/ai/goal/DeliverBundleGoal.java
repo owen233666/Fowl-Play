@@ -45,15 +45,16 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
         this.maxDistance = maxDistance;
         this.leavesAllowed = leavesAllowed;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
-        if ((!(bird.getNavigation() instanceof MobNavigation) && !(bird.getNavigation() instanceof BirdNavigation)) || !(bird instanceof PigeonEntity))
+        if ((!(bird.getNavigation() instanceof MobNavigation) && !(bird.getNavigation() instanceof BirdNavigation)) || !(bird instanceof PigeonEntity)) {
             throw new IllegalArgumentException("Unsupported mob type for DeliverBundleGoal");
+        }
     }
 
     @Override
     public boolean canStart() {
         LivingEntity owner = this.tameable.getOwner();
-        if (((PigeonEntity)this.tameable).getRecipientUuid() != null) {
-            this.recipient = this.tameable.getWorld().getPlayerByUuid(((PigeonEntity)this.tameable).getRecipientUuid());
+        if (((PigeonEntity) this.tameable).getRecipientUuid() != null) {
+            this.recipient = this.tameable.getWorld().getPlayerByUuid(((PigeonEntity) this.tameable).getRecipientUuid());
             PlayerEntity recipient = this.recipient;
             if (this.recipient != null) {
                 if (owner == null) {
@@ -75,16 +76,17 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
 
     @Override
     public boolean shouldContinue() {
-        if (this.navigation.isIdle())
+        if (this.navigation.isIdle()) {
             return false;
+        }
         return (this.tameable.squaredDistanceTo(this.recipient) > (this.maxDistance * this.maxDistance));
     }
 
     @Override
     public void start() {
         this.updateCountdownTicks = 0;
-        this.oldWaterPathfindingPenalty = this.tameable.getPathfindingPenalty(PathNodeType.WATER);
-        this.tameable.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.oldWaterPathfindingPenalty = this.tameable.getPenalty(PathNodeType.WATER);
+        this.tameable.addPathfindingPenalty(PathNodeType.WATER, 0.0F);
         this.tameable.getDataTracker().set(PigeonEntity.DELIVERING, true);
     }
 
@@ -92,7 +94,7 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
     public void stop() {
         this.recipient = null;
         this.navigation.stop();
-        this.tameable.setPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
+        this.tameable.addPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
     }
 
     @Override
@@ -102,7 +104,8 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
             this.updateCountdownTicks = 10;
             if (this.tameable.squaredDistanceTo(this.recipient) >= 10000.0D) {
                 tryTeleport();
-            } else {
+            }
+            else {
                 this.navigation.startMovingTo(this.recipient, this.speed);
             }
         }
@@ -115,30 +118,35 @@ public class DeliverBundleGoal<T extends TameableBirdEntity> extends Goal {
             int k = getRandomInt(-1, 1);
             int l = getRandomInt(-3, 3);
             boolean bl = this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
-            if (bl)
+            if (bl) {
                 return;
+            }
         }
     }
 
     private boolean tryTeleportTo(int x, int y, int z) {
-        if (Math.abs(x - this.recipient.getX()) < 2.0D && Math.abs(z - this.recipient.getZ()) < 2.0D)
+        if (Math.abs(x - this.recipient.getX()) < 2.0D && Math.abs(z - this.recipient.getZ()) < 2.0D) {
             return false;
-        if (!canTeleportTo(new BlockPos(x, y, z)))
+        }
+        if (!canTeleportTo(new BlockPos(x, y, z))) {
             return false;
+        }
         this.tameable.refreshPositionAndAngles(x + 0.5D, y, z + 0.5D, this.tameable.headYaw, this.tameable.getPitch());
         this.navigation.stop();
         return true;
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.world, pos.mutableCopy());
-        if (pathNodeType != PathNodeType.WALKABLE)
+        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.tameable, pos.mutableCopy());
+        if (pathNodeType != PathNodeType.WALKABLE) {
             return false;
+        }
         BlockState state = this.world.getBlockState(pos.down());
-        if (!this.leavesAllowed && state.getBlock() instanceof LeavesBlock)
+        if (!this.leavesAllowed && state.getBlock() instanceof LeavesBlock) {
             return false;
+        }
         BlockPos blockPos = pos.subtract(this.tameable.getBlockPos());
-        return this.world.isSpaceEmpty(this.tameable, this.tameable.getBoundingBox().offset(blockPos));
+        return this.world.isSpaceEmpty(this.tameable, this.tameable.getBounds().offset(blockPos));
     }
 
     private int getRandomInt(int min, int max) {

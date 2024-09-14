@@ -23,6 +23,6 @@ public class RobinEntityRenderer extends MobEntityRenderer<RobinEntity, RobinEnt
 
     @Override
     public Identifier getTexture(RobinEntity entity) {
-        return new Identifier(FowlPlay.ID, "textures/entity/robin/" + entity.getVariant().getId() + "_robin.png");
+        return Identifier.of(FowlPlay.ID, "textures/entity/robin/" + entity.getVariant().getId() + "_robin.png");
     }
 }

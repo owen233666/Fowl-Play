@@ -23,8 +23,8 @@ public class BirdMoveControl extends MoveControl {
 
     public void tick() {
         if (this.state == MoveControl.State.STRAFE) {
-            float f = (float)this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-            float g = (float)this.speed * f;
+            float f = (float) this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+            float g = (float) this.speed * f;
             float h = this.forwardMovement;
             float i = this.sidewaysMovement;
             float j = MathHelper.sqrt(h * h + i * i);
@@ -48,7 +48,8 @@ public class BirdMoveControl extends MoveControl {
             this.bird.setForwardSpeed(this.forwardMovement);
             this.bird.setSidewaysSpeed(this.sidewaysMovement);
             this.state = MoveControl.State.WAIT;
-        } else if (this.state == MoveControl.State.MOVE_TO) {
+        }
+        else if (this.state == MoveControl.State.MOVE_TO) {
             this.state = MoveControl.State.WAIT;
             double d = this.targetX - this.bird.getX();
             double e = this.targetZ - this.bird.getZ();
@@ -59,26 +60,28 @@ public class BirdMoveControl extends MoveControl {
                 return;
             }
 
-            float n = (float)(MathHelper.atan2(e, d) * 180.0F / (float)Math.PI) - 90.0F;
+            float n = (float) (MathHelper.atan2(e, d) * 180.0F / (float) Math.PI) - 90.0F;
             this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), n, 15.0F));
-            this.bird.setMovementSpeed((float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
+            this.bird.setMovementSpeed((float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
             BlockPos blockPos = this.bird.getBlockPos();
             BlockState blockState = this.bird.getWorld().getBlockState(blockPos);
             VoxelShape voxelShape = blockState.getCollisionShape(this.bird.getWorld(), blockPos);
-            if (o > (double)this.bird.getStepHeight() && d * d + e * e < (double)Math.max(1.0F, this.bird.getWidth())
+            if (o > (double) this.bird.getStepHeight() && d * d + e * e < (double) Math.max(1.0F, this.bird.getWidth())
                 || !voxelShape.isEmpty()
-                && this.bird.getY() < voxelShape.getMax(Direction.Axis.Y) + (double)blockPos.getY()
+                && this.bird.getY() < voxelShape.getMax(Direction.Axis.Y) + (double) blockPos.getY()
                 && !blockState.isIn(BlockTags.DOORS)
                 && !blockState.isIn(BlockTags.FENCES)) {
                 this.bird.getJumpControl().setActive();
                 this.state = MoveControl.State.JUMPING;
             }
-        } else if (this.state == MoveControl.State.JUMPING) {
-            this.bird.setMovementSpeed((float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
+        }
+        else if (this.state == MoveControl.State.JUMPING) {
+            this.bird.setMovementSpeed((float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
             if (this.bird.isOnGround()) {
                 this.state = MoveControl.State.WAIT;
             }
-        } else {
+        }
+        else {
             this.bird.setForwardSpeed(0.0F);
         }
     }
@@ -89,7 +92,7 @@ public class BirdMoveControl extends MoveControl {
             PathNodeMaker pathNodeMaker = entityNavigation.getNodeMaker();
             return pathNodeMaker == null
                 || pathNodeMaker.getDefaultNodeType(
-                this.bird.getWorld(), MathHelper.floor(this.bird.getX() + (double) x), this.bird.getBlockY(), MathHelper.floor(this.bird.getZ() + (double) z)
+                this.bird, BlockPos.create(this.bird.getX() + (double) x, this.bird.getBlockY(), this.bird.getZ() + (double) z)
             ) == PathNodeType.WALKABLE;
         }
 

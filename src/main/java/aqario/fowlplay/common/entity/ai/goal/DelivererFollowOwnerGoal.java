@@ -13,10 +13,6 @@ import net.minecraft.world.WorldView;
 import java.util.EnumSet;
 
 public class DelivererFollowOwnerGoal extends Goal {
-    public static final int TELEPORT_AT_DISTANCE = 12;
-    private static final int HORIZONTAL_RANGE = 2;
-    private static final int HORIZONTAL_VARIATION = 3;
-    private static final int VERTICAL_VARIATION = 1;
     private final TameableBirdEntity tameable;
     private LivingEntity owner;
     private final WorldView world;
@@ -54,7 +50,7 @@ public class DelivererFollowOwnerGoal extends Goal {
         if (this.tameable.isSitting()) {
             return false;
         }
-        if (this.tameable.squaredDistanceTo(livingEntity) < (double)(this.minDistance * this.minDistance)) {
+        if (this.tameable.squaredDistanceTo(livingEntity) < (double) (this.minDistance * this.minDistance)) {
             return false;
         }
         if (this.tameable.getDataTracker().get(PigeonEntity.DELIVERING)) {
@@ -76,32 +72,33 @@ public class DelivererFollowOwnerGoal extends Goal {
             return false;
         }
 
-        return !(this.tameable.squaredDistanceTo(this.owner) <= (double)(this.maxDistance * this.maxDistance));
+        return !(this.tameable.squaredDistanceTo(this.owner) <= (double) (this.maxDistance * this.maxDistance));
     }
 
     @Override
     public void start() {
         this.updateCountdownTicks = 0;
-        this.oldWaterPathfindingPenalty = this.tameable.getPathfindingPenalty(PathNodeType.WATER);
-        this.tameable.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.oldWaterPathfindingPenalty = this.tameable.getPenalty(PathNodeType.WATER);
+        this.tameable.addPathfindingPenalty(PathNodeType.WATER, 0.0F);
     }
 
     @Override
     public void stop() {
         this.owner = null;
         this.navigation.stop();
-        this.tameable.setPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
+        this.tameable.addPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
     }
 
     @Override
     public void tick() {
-        this.tameable.getLookControl().lookAt(this.owner, 10.0F, (float)this.tameable.getLookPitchSpeed());
+        this.tameable.getLookControl().lookAt(this.owner, 10.0F, (float) this.tameable.getLookPitchSpeed());
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = this.getTickCount(10);
             if (!this.tameable.isLeashed() && !this.tameable.hasVehicle()) {
                 if (this.tameable.squaredDistanceTo(this.owner) >= 144.0) {
                     this.tryTeleport();
-                } else {
+                }
+                else {
                     this.navigation.startMovingTo(this.owner, this.speed);
                 }
             }
@@ -111,7 +108,7 @@ public class DelivererFollowOwnerGoal extends Goal {
     private void tryTeleport() {
         BlockPos blockPos = this.owner.getBlockPos();
 
-        for(int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             int j = this.getRandomInt(-3, 3);
             int k = this.getRandomInt(-1, 1);
             int l = this.getRandomInt(-3, 3);
@@ -123,28 +120,32 @@ public class DelivererFollowOwnerGoal extends Goal {
     }
 
     private boolean tryTeleportTo(int x, int y, int z) {
-        if (Math.abs((double)x - this.owner.getX()) < 2.0 && Math.abs((double)z - this.owner.getZ()) < 2.0) {
+        if (Math.abs((double) x - this.owner.getX()) < 2.0 && Math.abs((double) z - this.owner.getZ()) < 2.0) {
             return false;
-        } else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
+        }
+        else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
             return false;
-        } else {
-            this.tameable.refreshPositionAndAngles((double)x + 0.5, (double)y, (double)z + 0.5, this.tameable.getYaw(), this.tameable.getPitch());
+        }
+        else {
+            this.tameable.refreshPositionAndAngles((double) x + 0.5, (double) y, (double) z + 0.5, this.tameable.getYaw(), this.tameable.getPitch());
             this.navigation.stop();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.world, pos.mutableCopy());
+        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.tameable, pos.mutableCopy());
         if (pathNodeType != PathNodeType.WALKABLE) {
             return false;
-        } else {
+        }
+        else {
             BlockState blockState = this.world.getBlockState(pos.down());
             if (!this.leavesAllowed && blockState.getBlock() instanceof LeavesBlock) {
                 return false;
-            } else {
+            }
+            else {
                 BlockPos blockPos = pos.subtract(this.tameable.getBlockPos());
-                return this.world.isSpaceEmpty(this.tameable, this.tameable.getBoundingBox().offset(blockPos));
+                return this.world.isSpaceEmpty(this.tameable, this.tameable.getBounds().offset(blockPos));
             }
         }
     }

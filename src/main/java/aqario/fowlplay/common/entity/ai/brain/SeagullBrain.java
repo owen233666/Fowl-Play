@@ -16,9 +16,7 @@ import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.unmapped.C_jcahukeq;
 import net.minecraft.unmapped.C_lygsomtd;
-import net.minecraft.unmapped.C_rcqaryar;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.util.random.RandomGenerator;
 
@@ -81,9 +79,8 @@ public class SeagullBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new WalkTask(PANICKING_SPEED),
+                new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
-                new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
@@ -95,19 +92,19 @@ public class SeagullBrain {
             Activity.IDLE,
             ImmutableList.of(
                 Pair.of(0, PacifyTask.create(MemoryModuleType.NEAREST_REPELLENT, 200)),
-                Pair.of(1, new BreedTask(FowlPlayEntityType.SEAGULL, WALK_SPEED)),
-                Pair.of(2, C_lygsomtd.follow(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.SEAGULL, WALK_SPEED, 20)),
+                Pair.of(2, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
                 Pair.of(3, new TemptTask(seagull -> TEMPTED_SPEED)),
                 Pair.of(4, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(5, new C_jcahukeq(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
                     6,
                     new RandomTask<>(
 //                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(StrollTask.create(WALK_SPEED), 1),
+                            Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
-                            Pair.of(C_rcqaryar.predicate(Entity::isInsideWaterOrBubbleColumn), 2),
+                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new WaitTask(100, 300), 2)
                         )
                     )
@@ -126,8 +123,8 @@ public class SeagullBrain {
             ImmutableList.of(
                 GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, 1.3F, 15, false),
                 makeRandomWalkTask(),
-                C_lygsomtd.follow(8.0F, UniformIntProvider.create(30, 60)),
-                ForgetTask.create(entity -> true, MemoryModuleType.AVOID_TARGET)
+                C_lygsomtd.method_47067(8.0F, UniformIntProvider.create(30, 60)),
+                ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
             ),
             MemoryModuleType.AVOID_TARGET
         );
@@ -135,7 +132,11 @@ public class SeagullBrain {
 
     private static RandomTask<SeagullEntity> makeRandomWalkTask() {
         return new RandomTask<>(
-            ImmutableList.of(Pair.of(StrollTask.create(PANICKING_SPEED), 2), Pair.of(GoTowardsLookTarget.create(PANICKING_SPEED, 3), 2), Pair.of(new WaitTask(30, 60), 1))
+            ImmutableList.of(
+                Pair.of(MeanderTask.create(PANICKING_SPEED), 2),
+                Pair.of(GoTowardsLookTarget.create(PANICKING_SPEED, 3), 2),
+                Pair.of(new WaitTask(30, 60), 1)
+            )
         );
     }
 

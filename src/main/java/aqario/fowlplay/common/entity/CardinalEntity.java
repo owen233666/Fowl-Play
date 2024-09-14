@@ -41,12 +41,12 @@ public class CardinalEntity extends BirdEntity {
     protected CardinalEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override

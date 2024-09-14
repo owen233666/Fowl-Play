@@ -19,7 +19,7 @@ public class FowlPlaySensorType {
 //    public static final SensorType<NearestVisiblePenguinSensor> NEAREST_PENGUINS = register("nearest_penguins", NearestVisiblePenguinSensor::new);
 
     private static <U extends Sensor<?>> SensorType<U> register(String id, Supplier<U> factory) {
-        return Registry.register(Registries.SENSOR_TYPE, new Identifier(FowlPlay.ID, id), new SensorType<>(factory));
+        return Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), new SensorType<>(factory));
     }
 
     public static void init() {

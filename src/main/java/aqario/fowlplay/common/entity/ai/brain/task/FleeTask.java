@@ -55,7 +55,7 @@ public class FleeTask<T extends LivingEntity> extends Task<PathAwareEntity> {
 
     @Override
     protected boolean shouldRun(ServerWorld world, PathAwareEntity entity) {
-        this.targetEntity = this.mob.getWorld().getClosestEntity(this.mob.getWorld().getEntitiesByClass(this.classToFleeFrom, this.mob.getBoundingBox().expand(this.fleeDistance, 3.0, this.fleeDistance), livingEntity -> true), this.withinRangePredicate, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
+        this.targetEntity = this.mob.getWorld().getClosestEntity(this.mob.getWorld().getEntitiesByClass(this.classToFleeFrom, this.mob.getBounds().expand(this.fleeDistance, 3.0, this.fleeDistance), livingEntity -> true), this.withinRangePredicate, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
         if (this.targetEntity == null) {
             return false;
         }
@@ -74,7 +74,8 @@ public class FleeTask<T extends LivingEntity> extends Task<PathAwareEntity> {
     protected void run(ServerWorld world, PathAwareEntity entity, long time) {
         if (this.mob.squaredDistanceTo(this.targetEntity) < 49.0) {
             this.mob.getNavigation().setSpeed(this.fastSpeed);
-        } else {
+        }
+        else {
             this.mob.getNavigation().setSpeed(this.slowSpeed);
         }
         super.run(world, entity, time);

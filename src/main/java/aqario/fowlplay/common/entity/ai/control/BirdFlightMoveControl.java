@@ -21,7 +21,7 @@ public class BirdFlightMoveControl extends BirdMoveControl {
     @Override
     public void tick() {
         if (this.bird.timeFlying < 20 + this.bird.getRandom().nextInt(20)) {
-            float speed = (float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
+            float speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
             this.bird.setUpwardSpeed(speed / 4);
         }
         if (this.state == MoveControl.State.MOVE_TO) {
@@ -35,26 +35,27 @@ public class BirdFlightMoveControl extends BirdMoveControl {
                 return;
             }
 
-            float h = (float)(MathHelper.atan2(vec3d.z, vec3d.x) * 180.0F / (float)Math.PI) - 90.0F;
+            float h = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * 180.0F / (float) Math.PI) - 90.0F;
             this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), h, 5.0F));
             float speed;
 //            if (this.bird.isOnGround()) {
 //                speed = (float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
 //            } else {
-                speed = (float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
+            speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
 //            }
 
             this.bird.setMovementSpeed(speed);
             double j = vec3d.horizontalLength();
             if (Math.abs(vec3d.y) > 1.0E-5F || Math.abs(j) > 1.0E-5F) {
-                float k = (float)(-(MathHelper.atan2(vec3d.y, j) * 180.0F / (float)Math.PI));
-                this.bird.setPitch(this.wrapDegrees(this.bird.getPitch(), k, (float)this.maxPitchChange));
+                float k = (float) (-(MathHelper.atan2(vec3d.y, j) * 180.0F / (float) Math.PI));
+                this.bird.setPitch(this.wrapDegrees(this.bird.getPitch(), k, (float) this.maxPitchChange));
                 this.bird.setUpwardSpeed(vec3d.y > 0.0 ? speed / 4 : -speed / 4);
             }
             if (this.bird.getPitch() < 0.0F && vec3d.length() < 1.0F) {
                 this.bird.setUpwardSpeed(speed / 4);
             }
-        } else {
+        }
+        else {
             if (!this.noGravity) {
                 this.bird.setNoGravity(false);
             }

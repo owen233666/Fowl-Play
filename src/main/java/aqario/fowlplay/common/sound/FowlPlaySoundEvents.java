@@ -25,7 +25,7 @@ public class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_SEAGULL_AMBIENT = register("entity.seagull.ambient");
 
     private static SoundEvent register(String id) {
-        Identifier identifier = new Identifier(FowlPlay.ID, id);
+        Identifier identifier = Identifier.of(FowlPlay.ID, id);
         return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
     }
 

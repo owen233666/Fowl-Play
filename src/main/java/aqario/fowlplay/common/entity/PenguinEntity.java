@@ -52,19 +52,19 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
-        this.setPathfindingPenalty(PathNodeType.WATER, 4.0F);
+        this.addPathfindingPenalty(PathNodeType.WATER, 4.0F);
         this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, false);
-        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER, 12.0f);
-        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, 12.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         PenguinBrain.initialize(this, world.getRandom());
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Nullable
@@ -83,7 +83,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
     }
 
-    public static DefaultAttributeContainer.Builder createPenguinAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
@@ -91,10 +91,10 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(SLIDING, false);
-        this.dataTracker.startTracking(LAST_ANIMATION_TICK, 0L);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(SLIDING, false);
+        builder.add(LAST_ANIMATION_TICK, 0L);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     }
 
     @Override
-    public void onTrackedDataUpdate(TrackedData<?> data) {
-        super.onTrackedDataUpdate(data);
+    public void onTrackedDataUpdate(List<DataTracker.SerializedEntry<?>> entries) {
+        super.onTrackedDataUpdate(entries);
         this.calculateDimensions();
     }
 
@@ -189,13 +189,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
-        if (!this.hasPassenger(passenger)) {
-            return;
-        }
-        float g = (float) ((this.isRemoved() ? 0.01F : this.getMountedHeightOffset()) + passenger.getHeightOffset());
-
-        Vec3d vec3d = new Vec3d(this.getMountedXOffset(), 0.0, 0.0).rotateY(-this.getYaw() * (float) (Math.PI / 180.0) - (float) (Math.PI / 2));
-        passenger.setPosition(this.getX() + vec3d.x, this.getY() + (double) g, this.getZ() + vec3d.z);
+        super.updatePassengerPosition(passenger, positionUpdater);
         this.clampPassengerYaw(passenger);
     }
 
@@ -232,33 +226,14 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     }
 
     @Override
-    public double getMountedHeightOffset() {
-        return 0.0;
-    }
-
-    public double getMountedXOffset() {
-        return -0.1;
-    }
-
-    @Override
     public float getStepHeight() {
         return 1.1F;
     }
 
     @Override
-    public EntityDimensions getDimensions(EntityPose pose) {
-        EntityDimensions entityDimensions = super.getDimensions(pose);
+    public EntityDimensions getDefaultDimensions(EntityPose pose) {
+        EntityDimensions entityDimensions = super.getDefaultDimensions(pose);
         return this.isSliding() || this.isTouchingWater() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
-    }
-
-    @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        return this.isSliding() || this.isTouchingWater() ? dimensions.height * 0.35F : dimensions.height * 0.965F;
-    }
-
-    @Override
-    public boolean canBreatheInWater() {
-        return false;
     }
 
     @Override

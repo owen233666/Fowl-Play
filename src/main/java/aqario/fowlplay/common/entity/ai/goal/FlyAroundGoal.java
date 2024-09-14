@@ -33,7 +33,8 @@ public class FlyAroundGoal extends Goal {
         }
         if (this.bird.isOnGround()) {
             this.flightTarget = random.nextBoolean();
-        } else {
+        }
+        else {
             this.flightTarget = random.nextInt(5) > 0 && this.bird.timeFlying < 200;
         }
         Vec3d pos = this.getPosition();
@@ -50,7 +51,8 @@ public class FlyAroundGoal extends Goal {
     public void tick() {
         if (flightTarget) {
             this.bird.getMoveControl().moveTo(x, y, z, 1.0F);
-        } else {
+        }
+        else {
             this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1.0F);
 
             if (this.bird.isFlying() && (this.bird.isOnGround() || this.bird.isTouchingWater())) {
@@ -66,16 +68,18 @@ public class FlyAroundGoal extends Goal {
     @Nullable
     protected Vec3d getPosition() {
         final Vec3d vec3d = this.bird.getPos();
-        if (this.bird.isOverWater()){
+        if (this.bird.isOverWater()) {
             flightTarget = true;
         }
         if (flightTarget) {
             if (this.bird.timeFlying < 50 || this.bird.isOverWater()) {
                 return this.bird.getBlockInViewAway(vec3d, 0);
-            } else {
+            }
+            else {
                 return this.bird.getBlockGrounding(vec3d);
             }
-        } else {
+        }
+        else {
             return FuzzyTargeting.find(this.bird, 50, 20);
         }
     }
@@ -84,7 +88,8 @@ public class FlyAroundGoal extends Goal {
     public boolean shouldContinue() {
         if (flightTarget) {
             return this.bird.isFlying() && this.bird.squaredDistanceTo(x, y, z) > 2F;
-        } else {
+        }
+        else {
             return (!this.bird.getNavigation().isIdle()) && !this.bird.hasPassengers();
         }
     }
@@ -94,7 +99,8 @@ public class FlyAroundGoal extends Goal {
         if (flightTarget) {
             this.bird.setFlying(true);
             this.bird.getMoveControl().moveTo(x, y, z, 1.0F);
-        } else {
+        }
+        else {
             this.bird.getNavigation().startMovingTo(this.x, this.y, this.z, 1.0F);
         }
     }
