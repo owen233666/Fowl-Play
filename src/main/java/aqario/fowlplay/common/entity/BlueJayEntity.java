@@ -179,7 +179,7 @@ public class BlueJayEntity extends BirdEntity {
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL) {
-            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 12.0F, this.getSoundPitch());
         }
         else {
             super.playAmbientSound();
@@ -188,7 +188,7 @@ public class BlueJayEntity extends BirdEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
+        if (this.getWorld().isDay() && this.random.nextFloat() < 0.3F) {
             return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL;
         }
 

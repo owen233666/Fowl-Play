@@ -77,7 +77,7 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
+        headYaw = MathHelper.clamp(headYaw, -105.0F, 105.0F);
         headPitch = MathHelper.clamp(headPitch, -30.0F, 60.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);

@@ -390,7 +390,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
-            this.playSound(soundEvent, 6.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
         }
         else {
             super.playAmbientSound();

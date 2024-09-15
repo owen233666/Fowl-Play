@@ -252,7 +252,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_ROBIN_SONG) {
-            this.playSound(soundEvent, 6.0F, this.getSoundPitch());
+            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
         }
         else {
             this.playSound(soundEvent, 2.0F, this.getSoundPitch());
@@ -261,7 +261,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
+        if (this.getWorld().isDay() && this.random.nextFloat() < 0.3F) {
             return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
         }
 

@@ -190,7 +190,7 @@ public class SeagullEntity extends TrustingBirdEntity {
 
     @Override
     public void playAmbientSound() {
-        if (this.random.nextFloat() < 0.1F) {
+        if (this.random.nextFloat() < 0.2F) {
             this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }

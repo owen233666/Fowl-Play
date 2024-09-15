@@ -36,26 +36,30 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
 
         ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -2.75F, 0.0F));
 
-        ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 9).cuboid(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
+        ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 10).cuboid(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
 
-        ModelPartData beak = head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -3.5F, -1.0F));
+        head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -3.5F, -1.0F));
 
-        ModelPartData torso = body.addChild("torso", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -2.0F, -4.0F, 3.0F, 3.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.6109F, 0.0F, 0.0F));
+        body.addChild("torso", ModelPartBuilder.create().uv(16, 0).cuboid(-1.5F, -2.0F, -4.0F, 3.0F, 3.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.6109F, 0.0F, 0.0F));
 
-        ModelPartData left_wing = body.addChild("left_wing", ModelPartBuilder.create().uv(18, 0).cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
+        body.addChild("left_wing", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
 
-        ModelPartData right_wing = body.addChild("right_wing", ModelPartBuilder.create().uv(18, 0).mirrored().cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
+        body.addChild("right_wing", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-0.5F, -1.0F, -0.5F, 1.0F, 3.0F, 7.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -2.75F, -2.0F, -0.4363F, 0.0F, 0.0F));
 
-        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(12, 0).cuboid(-1.0F, -1.0F, 1.0F, 2.0F, 1.0F, 2.0F, new Dilation(0.0F))
-            .uv(17, 0).cuboid(-1.0F, -1.0F, 3.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(9, 0).cuboid(-1.0F, -1.0F, 1.0F, 2.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -0.25F, 0.0F, -0.3491F, 0.0F, 0.0F));
+
+        tail.addChild("cube_r1", ModelPartBuilder.create().uv(12, 0).cuboid(-1.0F, 0.0F, 0.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(-0.25F, -1.0F, 1.0F, 0.0F, -0.2182F, 0.0F));
+
+        tail.addChild("cube_r2", ModelPartBuilder.create().uv(12, 0).mirrored().cuboid(-1.0F, 0.0F, 0.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.25F, -1.0F, 1.0F, 0.0F, 0.2182F, 0.0F));
 
         ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(1, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
-        ModelPartData cube_r1 = left_leg.addChild("cube_r1", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+        left_leg.addChild("cube_r3", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
 
         ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(1, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.0F, -2.0F, 0.0F, -0.2618F, 0.0F, 0.0F));
 
-        ModelPartData cube_r2 = right_leg.addChild("cube_r2", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+        right_leg.addChild("cube_r4", ModelPartBuilder.create().uv(-1, 3).cuboid(-0.5F, 0.0F, -1.0F, 1.0F, 0.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 2.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+
         return TexturedModelData.of(modelData, 32, 32);
     }
 
