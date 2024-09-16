@@ -153,22 +153,21 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     public void handleStatus(byte status) {
         if (status == EntityStatuses.CREATE_EATING_PARTICLES) {
-            ItemStack itemStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
-            if (!itemStack.isEmpty()) {
+            ItemStack food = this.getEquippedStack(EquipmentSlot.MAINHAND);
+            if (!food.isEmpty()) {
                 for (int i = 0; i < 8; i++) {
                     Vec3d vec3d = new Vec3d(((double) this.random.nextFloat() - 0.5) * 0.1, Math.random() * 0.1 + 0.1, 0.0)
                         .rotateX(-this.getPitch() * (float) (Math.PI / 180.0))
                         .rotateY(-this.getYaw() * (float) (Math.PI / 180.0));
-                    this.getWorld()
-                        .addParticle(
-                            new ItemStackParticleEffect(ParticleTypes.ITEM, itemStack),
-                            this.getX() + this.getRotationVector().x / 2.0,
-                            this.getY(),
-                            this.getZ() + this.getRotationVector().z / 2.0,
-                            vec3d.x,
-                            vec3d.y + 0.05,
-                            vec3d.z
-                        );
+                    this.getWorld().addParticle(
+                        new ItemStackParticleEffect(ParticleTypes.ITEM, food),
+                        this.getX() + this.getRotationVector().x / 2.0,
+                        this.getY(),
+                        this.getZ() + this.getRotationVector().z / 2.0,
+                        vec3d.x,
+                        vec3d.y + 0.05,
+                        vec3d.z
+                    );
                 }
             }
         }
@@ -288,8 +287,8 @@ public abstract class BirdEntity extends AnimalEntity {
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
 
-        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
-        this.navigation = flying ? this.flyNavigation : this.landNavigation;
+//        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
+//        this.navigation = flying ? this.flyNavigation : this.landNavigation;
     }
 
     public boolean isTargetBlocked(Vec3d target) {
@@ -368,6 +367,6 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public float getSoundPitch() {
-        return this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
+        return /*this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.5F : */(this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
     }
 }

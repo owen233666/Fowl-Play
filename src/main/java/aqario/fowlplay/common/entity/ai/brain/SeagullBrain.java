@@ -86,7 +86,7 @@ public class SeagullBrain {
             ImmutableList.of(
                 new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
-//                makeRunFromPlayerTask(),
+                makeRunFromPlayerTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
