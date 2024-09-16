@@ -13,10 +13,10 @@ public class FowlPlayEntityModelLayers {
     private static final Set<EntityModelLayer> LAYERS = Sets.newHashSet();
     public static final EntityModelLayer BLUE_JAY = registerMain("blue_jay");
     public static final EntityModelLayer CARDINAL = registerMain("cardinal");
+    public static final EntityModelLayer GULL = registerMain("gull");
     public static final EntityModelLayer PENGUIN = registerMain("penguin");
     public static final EntityModelLayer PIGEON = registerMain("pigeon");
     public static final EntityModelLayer ROBIN = registerMain("robin");
-    public static final EntityModelLayer SEAGULL = registerMain("seagull");
 
     private static EntityModelLayer registerMain(String id) {
         return register(id, MAIN);

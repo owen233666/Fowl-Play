@@ -287,8 +287,8 @@ public abstract class BirdEntity extends AnimalEntity {
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
 
-//        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
-//        this.navigation = flying ? this.flyNavigation : this.landNavigation;
+        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
+        this.navigation = flying ? this.flyNavigation : this.landNavigation;
     }
 
     public boolean isTargetBlocked(Vec3d target) {
@@ -367,6 +367,6 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public float getSoundPitch() {
-        return /*this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.5F : */(this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
+        return (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
     }
 }

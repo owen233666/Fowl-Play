@@ -23,6 +23,12 @@ public class FowlPlayEntityType {
             .setEyeHeight(0.3f)
     );
 
+    public static final EntityType<GullEntity> GULL = register("gull",
+        EntityType.Builder.create(GullEntity::new, SpawnGroup.AMBIENT)
+            .setDimensions(0.6f, 0.8f)
+            .setEyeHeight(0.5f)
+    );
+
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
         EntityType.Builder.create(PenguinEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.5f, 1.4f)
@@ -42,12 +48,6 @@ public class FowlPlayEntityType {
             .setEyeHeight(0.3f)
     );
 
-    public static final EntityType<SeagullEntity> SEAGULL = register("seagull",
-        EntityType.Builder.create(SeagullEntity::new, SpawnGroup.AMBIENT)
-            .setDimensions(0.6f, 0.8f)
-            .setEyeHeight(0.5f)
-    );
-
     private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
         return Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), builder.build());
     }
@@ -55,9 +55,9 @@ public class FowlPlayEntityType {
     public static void init() {
         FabricDefaultAttributeRegistry.register(BLUE_JAY, BlueJayEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(CARDINAL, CardinalEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GULL, GullEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PENGUIN, PenguinEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PIGEON, PigeonEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ROBIN, RobinEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(SEAGULL, SeagullEntity.createAttributes());
     }
 }

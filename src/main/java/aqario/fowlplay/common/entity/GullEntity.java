@@ -1,12 +1,15 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.brain.SeagullBrain;
+import aqario.fowlplay.common.entity.ai.brain.GullBrain;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -24,10 +27,12 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class SeagullEntity extends TrustingBirdEntity {
+public class GullEntity extends TrustingBirdEntity {
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState walkAnimationState = new AnimationState();
     public final AnimationState flyAnimationState = new AnimationState();
@@ -39,15 +44,22 @@ public class SeagullEntity extends TrustingBirdEntity {
     private boolean isFlightMoveControl;
     public float flapSpeed = 1.0f;
 
-    public SeagullEntity(EntityType<? extends SeagullEntity> entityType, World world) {
+    public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
         super(entityType, world);
-        this.setMoveControl(false);
+        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, true);
+//        this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        GullBrain.initialize(this, world.getRandom());
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     private void setMoveControl(boolean isFlying) {
@@ -79,8 +91,8 @@ public class SeagullEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3f)
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
 //    protected void initGoals() {
@@ -107,7 +119,7 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.SEAGULL_FOOD);
+        return Ingredient.ofTag(FowlPlayItemTags.GULL_FOOD);
     }
 
     @Override
@@ -197,7 +209,7 @@ public class SeagullEntity extends TrustingBirdEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return FowlPlaySoundEvents.ENTITY_SEAGULL_AMBIENT;
+        return FowlPlaySoundEvents.ENTITY_GULL_AMBIENT;
     }
 
     @Nullable
@@ -213,28 +225,28 @@ public class SeagullEntity extends TrustingBirdEntity {
     }
 
     @Override
-    protected Brain.Profile<SeagullEntity> createBrainProfile() {
-        return SeagullBrain.createProfile();
+    protected Brain.Profile<GullEntity> createBrainProfile() {
+        return GullBrain.createProfile();
     }
 
     @Override
     protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
-        return SeagullBrain.create(this.createBrainProfile().deserialize(dynamic));
+        return GullBrain.create(this.createBrainProfile().deserialize(dynamic));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Brain<SeagullEntity> getBrain() {
-        return (Brain<SeagullEntity>) super.getBrain();
+    public Brain<GullEntity> getBrain() {
+        return (Brain<GullEntity>) super.getBrain();
     }
 
     @Override
     protected void mobTick() {
-        this.getWorld().getProfiler().push("seagullBrain");
+        this.getWorld().getProfiler().push("gullBrain");
         this.getBrain().tick((ServerWorld) this.getWorld(), this);
         this.getWorld().getProfiler().pop();
-        this.getWorld().getProfiler().push("seagullActivityUpdate");
-        SeagullBrain.reset(this);
+        this.getWorld().getProfiler().push("gullActivityUpdate");
+        GullBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
 

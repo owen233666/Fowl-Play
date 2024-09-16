@@ -47,10 +47,10 @@ public class FowlPlayEntitySpawn {
             Heightmap.Type.MOTION_BLOCKING, RobinEntity::canSpawn
         );
 
-        BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_SEAGULLS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.SEAGULL, 75, 5, 12
+        BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_GULLS),
+            SpawnGroup.AMBIENT, FowlPlayEntityType.GULL, 75, 5, 12
         );
-        SpawnRestriction.register(FowlPlayEntityType.SEAGULL, SpawnLocationTypes.ON_GROUND,
+        SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::isValidNaturalSpawn
         );
     }

@@ -26,7 +26,7 @@ public class FowlPlayClient implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.ROBIN, RobinEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.SEAGULL, SeagullEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.SEAGULL, SeagullEntityRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.GULL, GullEntityModel::getTexturedModelData);
+        EntityRendererRegistry.register(FowlPlayEntityType.GULL, GullEntityRenderer::new);
     }
 }

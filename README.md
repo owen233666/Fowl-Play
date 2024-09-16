@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/robin_icon.png" alt="Robin Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/blue_jay_icon.png" alt="Blue Jay Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/cardinal_icon.png" alt="Cardinal Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/pigeon_icon.png" alt="Pigeon Icon">
+<img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/blue_jay_icon.png" alt="Blue Jay Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/cardinal_icon.png" alt="Cardinal Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/gull_icon.png" alt="Gull Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/pigeon_icon.png" alt="Pigeon Icon"> <img src="https://raw.githubusercontent.com/aqariio/Fowl-Play/main/src/main/resources/assets/fowlplay/robin_icon.png" alt="Robin Icon">
 
 # Fowl Play
 
@@ -8,7 +8,7 @@ them try to annoy you as much as they can, just like real birds!
 Current mobs:
 
 - Penguin
-- Seagull
+- Gull
 - Robin
 - Pigeon
 - Cardinal

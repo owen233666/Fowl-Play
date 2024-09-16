@@ -52,7 +52,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.WATER, 4.0F);
         this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, 12.0f);

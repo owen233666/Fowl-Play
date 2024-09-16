@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.entity.SeagullEntity;
+import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -24,8 +24,8 @@ import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.util.random.RandomGenerator;
 
-public class SeagullBrain {
-    private static final ImmutableList<SensorType<? extends Sensor<? super SeagullEntity>>> SENSORS = ImmutableList.of(
+public class GullBrain {
+    private static final ImmutableList<SensorType<? extends Sensor<? super GullEntity>>> SENSORS = ImmutableList.of(
         SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
@@ -58,18 +58,18 @@ public class SeagullBrain {
     );
     private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
-    private static final float PANICKING_SPEED = 1.6F;
+    private static final float PANICKING_SPEED = 2.0F;
     private static final float TEMPTED_SPEED = 1.2F;
     private static final float WALK_SPEED = 1.0F;
 
-    public static void initialize(SeagullEntity seagull, RandomGenerator random) {
+    public static void initialize(GullEntity gull, RandomGenerator random) {
     }
 
-    public static Brain.Profile<SeagullEntity> createProfile() {
+    public static Brain.Profile<GullEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
     }
 
-    public static Brain<?> create(Brain<SeagullEntity> brain) {
+    public static Brain<?> create(Brain<GullEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
         addAvoidActivities(brain);
@@ -79,7 +79,7 @@ public class SeagullBrain {
         return brain;
     }
 
-    private static void addCoreActivities(Brain<SeagullEntity> brain) {
+    private static void addCoreActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
             Activity.CORE,
             0,
@@ -87,23 +87,24 @@ public class SeagullBrain {
                 new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
                 makeRunFromPlayerTask(),
+                new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
         );
     }
 
-    private static void addIdleActivities(Brain<SeagullEntity> brain) {
+    private static void addIdleActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(1, new BreedTask(FowlPlayEntityType.SEAGULL, WALK_SPEED, 20)),
-                Pair.of(2, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
-                Pair.of(3, new TemptTask(seagull -> TEMPTED_SPEED)),
-                Pair.of(4, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(0, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
+                Pair.of(2, new TemptTask(gull -> TEMPTED_SPEED)),
+                Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
-                    6,
+                    5,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -121,7 +122,7 @@ public class SeagullBrain {
         );
     }
 
-    private static void addAvoidActivities(Brain<SeagullEntity> brain) {
+    private static void addAvoidActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
             Activity.AVOID,
             10,
@@ -137,7 +138,7 @@ public class SeagullBrain {
 
     private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
         return ImmutableList.of(
-            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.SEAGULL, 8.0F), 1),
+            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.GULL, 8.0F), 1),
             Pair.of(FollowMobTask.create(8.0F), 1)
         );
     }
@@ -148,7 +149,7 @@ public class SeagullBrain {
         );
     }
 
-    private static RandomTask<SeagullEntity> makeRandomWanderTask() {
+    private static RandomTask<GullEntity> makeRandomWanderTask() {
         return new RandomTask<>(
             ImmutableList.of(
                 Pair.of(MeanderTask.create(0.6F), 2),
@@ -158,32 +159,28 @@ public class SeagullBrain {
         );
     }
 
-    private static TaskControl<SeagullEntity> makeRunFromPlayerTask() {
+    private static TaskControl<GullEntity> makeRunFromPlayerTask() {
         return MemoryTransferTask.create(
-            SeagullBrain::getNearestPlayer, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
+            GullBrain::getNearestPlayer, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
         );
     }
 
-    private static boolean getNearestPlayer(SeagullEntity seagull) {
-        Brain<SeagullEntity> brain = seagull.getBrain();
+    private static boolean getNearestPlayer(GullEntity gull) {
+        Brain<GullEntity> brain = gull.getBrain();
         if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             LivingEntity livingEntity = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-            return seagull.isInRange(livingEntity, 10.0);
+            return gull.isInRange(livingEntity, 10.0);
         }
         else {
             return false;
         }
     }
 
-    public static void reset(SeagullEntity seagull) {
-        seagull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE));
-    }
-
-    protected static void trusting(SeagullEntity seagull) {
-        seagull.getBrain().remember(MemoryModuleType.LIKED_PLAYER, seagull.getTrustedUuid());
+    public static void reset(GullEntity gull) {
+        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE));
     }
 
     public static Ingredient getTemptIngredient() {
-        return Ingredient.ofTag(FowlPlayItemTags.SEAGULL_FOOD);
+        return Ingredient.ofTag(FowlPlayItemTags.GULL_FOOD);
     }
 }

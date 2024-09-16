@@ -64,15 +64,15 @@
     ],
     "subtitle": "subtitles.entity.pigeon.call"
   },
-  "entity.seagull.ambient": {
+  "entity.gull.ambient": {
     "sounds": [
-      "fowlplay:mob/seagull/ambient1",
-      "fowlplay:mob/seagull/ambient2",
-      "fowlplay:mob/seagull/ambient3",
-      "fowlplay:mob/seagull/ambient4",
-      "fowlplay:mob/seagull/ambient5"
+      "fowlplay:mob/gull/ambient1",
+      "fowlplay:mob/gull/ambient2",
+      "fowlplay:mob/gull/ambient3",
+      "fowlplay:mob/gull/ambient4",
+      "fowlplay:mob/gull/ambient5"
     ],
-    "subtitle": "subtitles.entity.seagull.ambient"
+    "subtitle": "subtitles.entity.gull.ambient"
   },
   "entity.robin.ambient": {
     "sounds": [
