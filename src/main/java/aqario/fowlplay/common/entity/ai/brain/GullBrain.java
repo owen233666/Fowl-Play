@@ -2,6 +2,10 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.GullEntity;
+import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
+import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -22,14 +26,16 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
-import net.minecraft.util.random.RandomGenerator;
 
 public class GullBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super GullEntity>>> SENSORS = ImmutableList.of(
         SensorType.NEAREST_LIVING_ENTITIES,
+        SensorType.NEAREST_PLAYERS,
+        SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
-        SensorType.IS_IN_WATER
+        SensorType.IS_IN_WATER,
+        FowlPlaySensorType.GULL_TEMPTATIONS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -41,6 +47,7 @@ public class GullBrain {
         MemoryModuleType.BREED_TARGET,
         MemoryModuleType.NEAREST_VISIBLE_PLAYER,
         MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
+        MemoryModuleType.AVOID_TARGET,
         MemoryModuleType.ATTACK_COOLING_DOWN,
         MemoryModuleType.NEAREST_VISIBLE_ADULT,
         MemoryModuleType.ATTACK_TARGET,
@@ -54,7 +61,11 @@ public class GullBrain {
         MemoryModuleType.NEAREST_ATTACKABLE,
         MemoryModuleType.IS_IN_WATER,
         MemoryModuleType.IS_PREGNANT,
-        MemoryModuleType.IS_PANICKING
+        MemoryModuleType.IS_PANICKING,
+        MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
+        MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
+        FowlPlayMemoryModuleType.HAS_FOOD,
+        FowlPlayMemoryModuleType.CANNOT_EAT_FOOD
     );
     private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
@@ -62,7 +73,7 @@ public class GullBrain {
     private static final float TEMPTED_SPEED = 1.2F;
     private static final float WALK_SPEED = 1.0F;
 
-    public static void initialize(GullEntity gull, RandomGenerator random) {
+    public static void init() {
     }
 
     public static Brain.Profile<GullEntity> createProfile() {
@@ -86,6 +97,7 @@ public class GullBrain {
             ImmutableList.of(
                 new WalkTask<>(PANICKING_SPEED),
                 new LookAroundTask(45, 90),
+                LocateFoodTask.run(),
                 makeRunFromPlayerTask(),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -108,6 +120,7 @@ public class GullBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
+                            Pair.of(FlyTask.create(WALK_SPEED, 64, 32), 1),
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
@@ -117,7 +130,7 @@ public class GullBrain {
                 )
             ),
             ImmutableSet.of(
-                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }
@@ -161,11 +174,11 @@ public class GullBrain {
 
     private static TaskControl<GullEntity> makeRunFromPlayerTask() {
         return MemoryTransferTask.create(
-            GullBrain::getNearestPlayer, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
+            GullBrain::hasNearbyVisiblePlayer, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
         );
     }
 
-    private static boolean getNearestPlayer(GullEntity gull) {
+    private static boolean hasNearbyVisiblePlayer(GullEntity gull) {
         Brain<GullEntity> brain = gull.getBrain();
         if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             LivingEntity livingEntity = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
@@ -180,7 +193,7 @@ public class GullBrain {
         gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE));
     }
 
-    public static Ingredient getTemptIngredient() {
+    public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.GULL_FOOD);
     }
 }

@@ -56,7 +56,7 @@ public class GullEntity extends TrustingBirdEntity {
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        GullBrain.initialize(this, world.getRandom());
+        GullBrain.init();
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
@@ -248,11 +248,11 @@ public class GullEntity extends TrustingBirdEntity {
         this.getWorld().getProfiler().pop();
         super.mobTick();
 
-//        if (!this.getWorld().isClient) {
-//            if (this.isFlying() != this.isFlightMoveControl) {
-//                this.setMoveControl(this.isFlying());
-//            }
-//        }
+        if (!this.getWorld().isClient) {
+            if (this.isFlying() != this.isFlightMoveControl) {
+                this.setMoveControl(this.isFlying());
+            }
+        }
     }
 
     @Override

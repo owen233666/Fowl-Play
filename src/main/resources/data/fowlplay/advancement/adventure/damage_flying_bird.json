@@ -1,47 +1,45 @@
 {
-  "parent": "minecraft:adventure/shoot_arrow",
+  "display": {
+    "icon": {
+      "id": "minecraft:arrow"
+    },
+    "title": {
+      "translate": "advancements.adventure.damage_flying_bird.title"
+    },
+    "description": {
+      "translate": "advancements.adventure.damage_flying_bird.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
   "criteria": {
-    "shoot_bird": {
+    "requirement": {
+      "trigger": "minecraft:player_hurt_entity",
       "conditions": {
+        "player": [],
+        "damage": {
+          "type": {
+            "tags": [
+              {
+                "id": "minecraft:is_projectile",
+                "expected": true
+              }
+            ]
+          }
+        },
         "entity": [
           {
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "#fowlplay:birds"
+              "type": "#fowlplay:birds",
+              "nbt": "{Flying:1b}"
             }
           }
-        ],
-        "damage": {
-          "tags": [
-            {
-              "expected": true,
-              "id": "minecraft:is_projectile"
-            }
-          ]
-        }
-      },
-      "trigger": "minecraft:player_hurt_entity"
-    }
-  },
-  "requirements": [
-    [
-      "shoot_bird"
-    ]
-  ],
-  "display": {
-    "announce_to_chat": true,
-    "description": {
-      "translate": "advancements.adventure.damage_flying_bird.description"
-    },
-    "frame": "goal",
-    "hidden": false,
-    "icon": {
-      "item": "minecraft:arrow"
-    },
-    "show_toast": true,
-    "title": {
-      "translate": "advancements.adventure.damage_flying_bird.title"
+        ]
+      }
     }
   }
 }

@@ -1,7 +1,22 @@
 {
-  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:feather"
+    },
+    "title": {
+      "translate": "advancements.adventure.fly_penguin.title"
+    },
+    "description": {
+      "translate": "advancements.adventure.fly_penguin.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
   "criteria": {
-    "fall_with_penguin": {
+    "requirement": {
+      "trigger": "minecraft:fall_from_height",
       "conditions": {
         "player": [
           {
@@ -14,28 +29,7 @@
             }
           }
         ]
-      },
-      "trigger": "minecraft:fall_from_height"
-    }
-  },
-  "requirements": [
-    [
-      "fall_with_penguin"
-    ]
-  ],
-  "display": {
-    "announce_to_chat": true,
-    "description": {
-      "translate": "advancements.adventure.fly_penguin.description"
-    },
-    "frame": "goal",
-    "hidden": false,
-    "icon": {
-      "item": "minecraft:feather"
-    },
-    "show_toast": true,
-    "title": {
-      "translate": "advancements.adventure.fly_penguin.title"
+      }
     }
   }
 }
