@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -46,8 +45,7 @@ public class GullEntity extends TrustingBirdEntity {
 
     public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
         super(entityType, world);
-        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, true);
-//        this.setMoveControl(false);
+        this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
@@ -91,7 +89,7 @@ public class GullEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
@@ -202,7 +200,7 @@ public class GullEntity extends TrustingBirdEntity {
 
     @Override
     public void playAmbientSound() {
-        if (this.random.nextFloat() < 0.2F) {
+        if (this.random.nextFloat() < 0.3F) {
             this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }
@@ -250,11 +248,11 @@ public class GullEntity extends TrustingBirdEntity {
         this.getWorld().getProfiler().pop();
         super.mobTick();
 
-        if (!this.getWorld().isClient) {
-            if (this.isFlying() != this.isFlightMoveControl) {
+//        if (!this.getWorld().isClient) {
+//            if (this.isFlying() != this.isFlightMoveControl) {
 //                this.setMoveControl(this.isFlying());
-            }
-        }
+//            }
+//        }
     }
 
     @Override

@@ -26,13 +26,13 @@ public class FowlPlayEntityType {
     public static final EntityType<GullEntity> GULL = register("gull",
         EntityType.Builder.create(GullEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.6f, 0.8f)
-            .setEyeHeight(0.5f)
+            .setEyeHeight(0.7f)
     );
 
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
         EntityType.Builder.create(PenguinEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.5f, 1.4f)
-            .setEyeHeight(1.35f)
+            .setEyeHeight(1.2f)
             .passengerAttachments(new Vec3d(0, 0.75, -0.1))
     );
 

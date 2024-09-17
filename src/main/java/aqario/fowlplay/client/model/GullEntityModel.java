@@ -34,7 +34,7 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData root = modelPartData.addChild("root", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -2.5F, 0.0F));
+        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -3.5F, 0.0F));
 
         ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 12).cuboid(-1.0F, -7.0F, -1.0F, 2.0F, 7.0F, 3.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -2.5F, -2.5F));
 
@@ -53,13 +53,13 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
 
         tail.addChild("cube_r2", ModelPartBuilder.create().uv(23, 0).mirrored().cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 2.5F, 0.0F, 0.3491F, 0.0F));
 
-        ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(0, 5).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 3.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.25F, -3.0F, 1.5F, -0.1745F, 0.0F, 0.0F));
+        ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(0, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.25F, -4.0F, 2.5F, -0.1745F, 0.0F, 0.0F));
 
-        left_leg.addChild("cube_r3", ModelPartBuilder.create().uv(0, 5).mirrored().cuboid(0.5F, 0.0F, -2.0F, 2.0F, 0.0F, 2.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, 3.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
+        left_leg.addChild("cube_r3", ModelPartBuilder.create().uv(0, 5).mirrored().cuboid(0.5F, 0.0F, -2.0F, 2.0F, 0.0F, 2.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, 4.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
 
-        ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(0, 5).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 3.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.25F, -3.0F, 1.5F, -0.1745F, 0.0F, 0.0F));
+        ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(0, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(-1.25F, -4.0F, 2.5F, -0.1745F, 0.0F, 0.0F));
 
-        right_leg.addChild("cube_r4", ModelPartBuilder.create().uv(0, 5).cuboid(-0.5F, 0.0F, -2.0F, 2.0F, 0.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, 3.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
+        right_leg.addChild("cube_r4", ModelPartBuilder.create().uv(0, 5).cuboid(-0.5F, 0.0F, -2.0F, 2.0F, 0.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, 4.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
 
         return TexturedModelData.of(modelData, 32, 32);
     }
@@ -68,10 +68,10 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
     public void setAngles(GullEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        this.animateWalk(GullEntityAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleAnimationState, GullEntityAnimations.IDLE, ageInTicks);
-        this.animate(entity.flyAnimationState, GullEntityAnimations.FLY, ageInTicks);
-        this.animate(entity.floatAnimationState, GullEntityAnimations.FLOAT, ageInTicks);
+        this.animateWalk(GullEntityAnimations.GULL_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
+        this.animate(entity.idleAnimationState, GullEntityAnimations.GULL_IDLE, ageInTicks);
+        this.animate(entity.flyAnimationState, GullEntityAnimations.GULL_FLY, ageInTicks);
+        this.animate(entity.floatAnimationState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
