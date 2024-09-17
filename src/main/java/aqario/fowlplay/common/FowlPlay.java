@@ -1,6 +1,7 @@
 package aqario.fowlplay.common;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
+import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.item.FowlPlayItems;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
@@ -19,6 +20,7 @@ public class FowlPlay implements ModInitializer {
         LOGGER.info("Loading {} {}", mod.metadata().name(), mod.metadata().version());
         FowlPlayEntityType.init();
         FowlPlayItems.init();
+        FowlPlayMemoryModuleType.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayWorldGen.init();

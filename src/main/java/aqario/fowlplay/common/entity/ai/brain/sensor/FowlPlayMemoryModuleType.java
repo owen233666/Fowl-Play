@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class FowlPlayMemoryModuleType {
     public static final MemoryModuleType<LivingEntity> NEAREST_VISIBLE_PENGUIN = register("nearest_visible_penguin");
-    public static final MemoryModuleType<Boolean> HAS_FOOD = register("has_food", Codec.BOOL);
+    public static final MemoryModuleType<Boolean> SEES_FOOD = register("sees_food", Codec.BOOL);
     public static final MemoryModuleType<Boolean> CANNOT_EAT_FOOD = register("cannot_eat_food", Codec.BOOL);
 
     private static <U> MemoryModuleType<U> register(String id, Codec<U> codec) {
@@ -21,5 +21,8 @@ public class FowlPlayMemoryModuleType {
 
     private static <U> MemoryModuleType<U> register(String id) {
         return Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), new MemoryModuleType<>(Optional.empty()));
+    }
+
+    public static void init() {
     }
 }
