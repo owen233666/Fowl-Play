@@ -38,11 +38,12 @@ public class BirdFlightMoveControl extends BirdMoveControl {
             float h = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * 180.0F / (float) Math.PI) - 90.0F;
             this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), h, 5.0F));
             float speed;
-//            if (this.bird.isOnGround()) {
-//                speed = (float)(this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
-//            } else {
-            speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
-//            }
+            if (this.bird.isOnGround()) {
+                speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 2);
+            }
+            else {
+                speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
+            }
 
             this.bird.setMovementSpeed(speed);
             double j = vec3d.horizontalLength();

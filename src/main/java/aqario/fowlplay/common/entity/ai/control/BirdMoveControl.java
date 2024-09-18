@@ -11,6 +11,7 @@ import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
 public class BirdMoveControl extends MoveControl {
@@ -22,51 +23,21 @@ public class BirdMoveControl extends MoveControl {
     }
 
     public void tick() {
-        if (this.state == MoveControl.State.STRAFE) {
-            float f = (float) this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-            float g = (float) this.speed * f;
-            float h = this.forwardMovement;
-            float i = this.sidewaysMovement;
-            float j = MathHelper.sqrt(h * h + i * i);
-            if (j < 1.0F) {
-                j = 1.0F;
-            }
-
-            j = g / j;
-            h *= j;
-            i *= j;
-            float k = MathHelper.sin(this.bird.getYaw() * (float) (Math.PI / 180.0));
-            float l = MathHelper.cos(this.bird.getYaw() * (float) (Math.PI / 180.0));
-            float m = h * l - i * k;
-            float n = i * l + h * k;
-            if (!this.isWalkable(m, n)) {
-                this.forwardMovement = 1.0F;
-                this.sidewaysMovement = 0.0F;
-            }
-
-            this.bird.setMovementSpeed(g);
-            this.bird.setForwardSpeed(this.forwardMovement);
-            this.bird.setSidewaysSpeed(this.sidewaysMovement);
-            this.state = MoveControl.State.WAIT;
-        }
-        else if (this.state == MoveControl.State.MOVE_TO) {
-            this.state = MoveControl.State.WAIT;
-            double d = this.targetX - this.bird.getX();
-            double e = this.targetZ - this.bird.getZ();
-            double o = this.targetY - this.bird.getY();
-            double p = d * d + o * o + e * e;
-            if (p < 2.5000003E-7F) {
+        if (this.state == State.MOVE_TO) {
+            Vec3d distance = new Vec3d(this.targetX - this.bird.getX(), this.targetY - this.bird.getY(), this.targetZ - this.bird.getZ());
+            if (distance.lengthSquared() < this.bird.getBounds().getAverageSideLength()) {
                 this.bird.setForwardSpeed(0.0F);
+                this.state = State.WAIT;
                 return;
             }
 
-            float n = (float) (MathHelper.atan2(e, d) * 180.0F / (float) Math.PI) - 90.0F;
-            this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), n, 15.0F));
+            float angle = (float) (MathHelper.atan2(distance.z, distance.x) * 180.0F / (float) Math.PI) - 90.0F;
+            this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), angle, 15.0F));
             this.bird.setMovementSpeed((float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
             BlockPos blockPos = this.bird.getBlockPos();
             BlockState blockState = this.bird.getWorld().getBlockState(blockPos);
             VoxelShape voxelShape = blockState.getCollisionShape(this.bird.getWorld(), blockPos);
-            if (o > (double) this.bird.getStepHeight() && d * d + e * e < (double) Math.max(1.0F, this.bird.getWidth())
+            if (distance.y > (double) this.bird.getStepHeight() && distance.x * distance.x + distance.z * distance.z < (double) Math.max(1.0F, this.bird.getWidth())
                 || !voxelShape.isEmpty()
                 && this.bird.getY() < voxelShape.getMax(Direction.Axis.Y) + (double) blockPos.getY()
                 && !blockState.isIn(BlockTags.DOORS)
@@ -80,6 +51,9 @@ public class BirdMoveControl extends MoveControl {
             if (this.bird.isOnGround()) {
                 this.state = MoveControl.State.WAIT;
             }
+        }
+        else if (this.state == MoveControl.State.STRAFE) {
+            this.state = State.WAIT;
         }
         else {
             this.bird.setForwardSpeed(0.0F);

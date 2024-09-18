@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.AvoidRainTask;
 import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
 import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
@@ -100,7 +101,8 @@ public class GullBrain {
                 new WalkTask<>(FAST_WALK_SPEED),
                 new LookAroundTask(45, 90),
                 LocateFoodTask.run(),
-                makeRunFromPlayerTask(),
+                makeAddPlayerToAvoidTargetTask(),
+                AvoidRainTask.run(),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
@@ -124,7 +126,6 @@ public class GullBrain {
                         ImmutableList.of(
                             Pair.of(FlyTask.create(WALK_SPEED, 64, 32), 1),
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
-//                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new WaitTask(100, 300), 2)
 //                            Pair.of(TaskBuilder.triggerIf(Entity::isOnGround), 2)
@@ -174,7 +175,10 @@ public class GullBrain {
 
     private static RandomTask<LivingEntity> makeRandomFollowTask() {
         return new RandomTask<>(
-            ImmutableList.<Pair<? extends TaskControl<? super LivingEntity>, Integer>>builder().addAll(createLookTasks()).add(Pair.of(new WaitTask(30, 60), 1)).build()
+            ImmutableList.<Pair<? extends TaskControl<? super LivingEntity>, Integer>>builder()
+                .addAll(createLookTasks())
+                .add(Pair.of(new WaitTask(30, 60), 1))
+                .build()
         );
     }
 
@@ -188,7 +192,7 @@ public class GullBrain {
         );
     }
 
-    private static TaskControl<GullEntity> makeRunFromPlayerTask() {
+    private static TaskControl<GullEntity> makeAddPlayerToAvoidTargetTask() {
         return MemoryTransferTask.create(
             GullBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
         );

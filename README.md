@@ -18,10 +18,11 @@ Planned additions:
 
 - Crow
 - Sparrow
-- Grackle
 - Duck
 - Goose
+- Grackle
 - Falcon
 - Eagle
 - Owl
+- Woodpecker
 - Other songbirds

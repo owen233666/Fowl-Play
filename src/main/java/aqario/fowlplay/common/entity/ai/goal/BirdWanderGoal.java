@@ -24,7 +24,7 @@ public class BirdWanderGoal extends FlyOntoTreeGoal {
     protected Vec3d getWanderTarget() {
         Vec3d vec3d = null;
         if (this.mob.isTouchingWater()) {
-            vec3d = FuzzyTargeting.find(this.mob, 15, 15);
+            vec3d = FuzzyTargeting.find(this.mob, 32, 32);
         }
 
         if (this.mob.getRandom().nextFloat() >= this.probability) {
@@ -36,8 +36,8 @@ public class BirdWanderGoal extends FlyOntoTreeGoal {
 
     private Vec3d wander() {
         Vec3d vec3d = this.mob.getRotationVec(0.0F);
-        Vec3d vec3d2 = AboveGroundTargeting.find(this.mob, 32, 16, vec3d.x, vec3d.z, (float) (Math.PI / 2), 3, 1);
-        return vec3d2 != null ? vec3d2 : NoPenaltySolidTargeting.find(this.mob, 12, 4, -2, vec3d.x, vec3d.z, (float) (Math.PI / 2));
+        Vec3d vec3d2 = AboveGroundTargeting.find(this.mob, 32, 32, vec3d.x, vec3d.z, (float) (Math.PI / 2), 3, 1);
+        return vec3d2 != null ? vec3d2 : NoPenaltySolidTargeting.find(this.mob, 32, 32, -2, vec3d.x, vec3d.z, (float) (Math.PI / 2));
     }
 
     @Nullable
@@ -47,12 +47,12 @@ public class BirdWanderGoal extends FlyOntoTreeGoal {
         BlockPos.Mutable mutable2 = new BlockPos.Mutable();
 
         for (BlockPos blockPos2 : BlockPos.iterate(
-            MathHelper.floor(this.mob.getX() - 3.0),
-            MathHelper.floor(this.mob.getY() - 6.0),
-            MathHelper.floor(this.mob.getZ() - 3.0),
-            MathHelper.floor(this.mob.getX() + 3.0),
-            MathHelper.floor(this.mob.getY() + 6.0),
-            MathHelper.floor(this.mob.getZ() + 3.0)
+            MathHelper.floor(this.mob.getX() - 16.0),
+            MathHelper.floor(this.mob.getY() - 16.0),
+            MathHelper.floor(this.mob.getZ() - 16.0),
+            MathHelper.floor(this.mob.getX() + 16.0),
+            MathHelper.floor(this.mob.getY() + 16.0),
+            MathHelper.floor(this.mob.getZ() + 16.0)
         )) {
             if (!blockPos.equals(blockPos2)) {
                 BlockState blockState = this.mob.getWorld().getBlockState(mutable2.set(blockPos2, Direction.DOWN));
