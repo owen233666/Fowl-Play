@@ -32,10 +32,9 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class GullEntity extends TrustingBirdEntity {
-    public final AnimationState idleAnimationState = new AnimationState();
-    public final AnimationState walkAnimationState = new AnimationState();
-    public final AnimationState flyAnimationState = new AnimationState();
-    public final AnimationState floatAnimationState = new AnimationState();
+    public final AnimationState idleState = new AnimationState();
+    public final AnimationState flyState = new AnimationState();
+    public final AnimationState floatState = new AnimationState();
     public float flapProgress;
     public float maxWingDeviation;
     public float prevMaxWingDeviation;
@@ -89,7 +88,7 @@ public class GullEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
@@ -156,32 +155,25 @@ public class GullEntity extends TrustingBirdEntity {
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            if (this.isOnGround() && !this.isWalking()) {
-                this.idleAnimationState.start(this.age);
+            if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
+                this.idleState.start(this.age);
             }
             else {
-                this.idleAnimationState.stop();
+                this.idleState.stop();
             }
 
             if (!this.isOnGround()) {
-                this.flyAnimationState.start(this.age);
+                this.flyState.start(this.age);
             }
             else {
-                this.flyAnimationState.stop();
-            }
-
-            if (this.isWalking()) {
-                this.walkAnimationState.start(this.age);
-            }
-            else {
-                this.walkAnimationState.stop();
+                this.flyState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatAnimationState.start(this.age);
+                this.floatState.start(this.age);
             }
             else {
-                this.floatAnimationState.stop();
+                this.floatState.stop();
             }
         }
 

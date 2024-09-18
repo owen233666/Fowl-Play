@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
-import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeesFoodTask;
+import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ReportingTaskControl;
 import net.minecraft.entity.ai.brain.Activity;
@@ -113,8 +114,8 @@ public class GullBrain {
             ImmutableList.of(
 //                Pair.of(0, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
-//                Pair.of(2, new TemptTask(gull -> TEMPTED_SPEED)),
-                Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(3, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(
                     5,
@@ -123,9 +124,10 @@ public class GullBrain {
                         ImmutableList.of(
                             Pair.of(FlyTask.create(WALK_SPEED, 64, 32), 1),
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
-                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
+//                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 3), 2),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new WaitTask(100, 300), 2)
+//                            Pair.of(TaskBuilder.triggerIf(Entity::isOnGround), 2)
                         )
                     )
                 )
@@ -143,7 +145,7 @@ public class GullBrain {
             10,
             ImmutableList.of(
                 WalkToNearestVisibleWantedItemTask.create(GullBrain::doesNotHaveFoodInHand, RUN_SPEED, true, 32),
-                ForgetSeesFoodTask.create(1)
+                ForgetSeenFoodTask.create(32)
             ),
             FowlPlayMemoryModuleType.SEES_FOOD
         );
@@ -154,7 +156,7 @@ public class GullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, FAST_WALK_SPEED, 15, true),
+                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, FAST_WALK_SPEED, 10, true),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
                 ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
@@ -204,6 +206,10 @@ public class GullBrain {
         else {
             return false;
         }
+    }
+
+    public static boolean isPlayerHoldingFood(LivingEntity target) {
+        return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
     private static boolean doesNotHaveFoodInHand(GullEntity gull) {

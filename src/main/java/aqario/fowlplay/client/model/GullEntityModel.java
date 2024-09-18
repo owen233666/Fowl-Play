@@ -68,10 +68,12 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
     public void setAngles(GullEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        this.animateWalk(GullEntityAnimations.GULL_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleAnimationState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.animate(entity.flyAnimationState, GullEntityAnimations.GULL_FLY, ageInTicks);
-        this.animate(entity.floatAnimationState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
+        if (entity.isOnGround() && !entity.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(GullEntityAnimations.GULL_WALK, limbSwing, limbSwingAmount, 3.0F, 2.5F);
+        }
+        this.animate(entity.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
+        this.animate(entity.flyState, GullEntityAnimations.GULL_FLY, ageInTicks);
+        this.animate(entity.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

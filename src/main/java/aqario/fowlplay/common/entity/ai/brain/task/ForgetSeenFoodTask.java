@@ -9,7 +9,7 @@ import net.minecraft.entity.ai.brain.task.TaskControl;
 
 import java.util.Optional;
 
-public class ForgetSeesFoodTask {
+public class ForgetSeenFoodTask {
     public static TaskControl<BirdEntity> create(int radius) {
         return TaskBuilder.task(
             instance -> instance.group(
