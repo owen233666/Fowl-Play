@@ -4,12 +4,10 @@ import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
+import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -30,8 +28,10 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 public abstract class BirdEntity extends AnimalEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(BirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -261,6 +261,10 @@ public abstract class BirdEntity extends AnimalEntity {
         if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setUpwardSpeed(this.getMovementSpeed());
         }
+    }
+
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
     }
 
     @Override

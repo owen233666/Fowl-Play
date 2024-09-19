@@ -20,6 +20,7 @@ public abstract class LivingEntityMixin extends Entity implements Sliding {
 
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getSlipperiness()F"))
     private float fowlplay$modifySlipperiness(Block instance) {
+        // instanceof won't compile so I'm using this instead; no pattern variables so I'm relying on an interface
         if (this.getClass().isAssignableFrom(PenguinEntity.class) && this.isSliding()) {
             return instance.getDefaultState().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) ? 1.025F : instance.getSlipperiness();
         }

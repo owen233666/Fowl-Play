@@ -5,11 +5,9 @@ import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
@@ -29,12 +27,9 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -242,10 +237,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     @Override
     public Vec3d getLeashOffset() {
         return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
-    }
-
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
     }
 
     @Override
