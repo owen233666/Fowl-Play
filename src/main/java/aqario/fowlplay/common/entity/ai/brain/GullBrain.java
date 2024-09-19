@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.AvoidRainTask;
 import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
 import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
@@ -102,7 +101,6 @@ public class GullBrain {
                 new LookAroundTask(45, 90),
                 LocateFoodTask.run(),
                 makeAddPlayerToAvoidTargetTask(),
-                AvoidRainTask.run(),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)

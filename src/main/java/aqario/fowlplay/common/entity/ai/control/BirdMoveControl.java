@@ -24,8 +24,9 @@ public class BirdMoveControl extends MoveControl {
 
     public void tick() {
         if (this.state == State.MOVE_TO) {
+            this.state = State.WAIT;
             Vec3d distance = new Vec3d(this.targetX - this.bird.getX(), this.targetY - this.bird.getY(), this.targetZ - this.bird.getZ());
-            if (distance.lengthSquared() < this.bird.getBounds().getAverageSideLength()) {
+            if (distance.lengthSquared() < 2.5000003E-7F) {
                 this.bird.setForwardSpeed(0.0F);
                 this.state = State.WAIT;
                 return;
@@ -44,6 +45,13 @@ public class BirdMoveControl extends MoveControl {
                 && !blockState.isIn(BlockTags.FENCES)) {
                 this.bird.getJumpControl().setActive();
                 this.state = MoveControl.State.JUMPING;
+            }
+            if (distance.y < (double) this.bird.getStepHeight() && distance.x * distance.x + distance.z * distance.z < (double) Math.max(1.0F, this.bird.getWidth())
+                || !voxelShape.isEmpty()
+                && this.bird.getY() > voxelShape.getMax(Direction.Axis.Y) + (double) blockPos.getY()
+                && !blockState.isIn(BlockTags.DOORS)
+                && !blockState.isIn(BlockTags.FENCES)) {
+                this.bird.setSneaking(true);
             }
         }
         else if (this.state == MoveControl.State.JUMPING) {
