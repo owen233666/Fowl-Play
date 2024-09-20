@@ -50,10 +50,13 @@ public class BirdFlightMoveControl extends BirdMoveControl {
             if (Math.abs(vec3d.y) > 1.0E-5F || Math.abs(j) > 1.0E-5F) {
                 float k = (float) (-(MathHelper.atan2(vec3d.y, j) * 180.0F / (float) Math.PI));
                 this.bird.setPitch(this.wrapDegrees(this.bird.getPitch(), k, (float) this.maxPitchChange));
-                this.bird.setUpwardSpeed(vec3d.y > 0.0 ? speed / 4 : -speed / 4);
+                this.bird.setUpwardSpeed(vec3d.y > 0.0 ? speed / 4 : -speed / 2);
             }
             if (this.bird.getPitch() < 0.0F && vec3d.length() < 1.0F) {
                 this.bird.setUpwardSpeed(speed / 4);
+            }
+            if (this.bird.getPitch() > 0.0F && vec3d.length() < 1.0F) {
+                this.bird.setUpwardSpeed(-speed / 2);
             }
         }
         else {

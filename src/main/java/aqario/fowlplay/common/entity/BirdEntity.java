@@ -11,6 +11,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -52,7 +53,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
         this.landNavigation = new MobNavigation(this, getWorld());
 
-        this.flightMoveControl = new BirdFlightMoveControl(this, 20, true);
+        this.flightMoveControl = new BirdFlightMoveControl(this, 40, false);
         this.landMoveControl = new BirdMoveControl(this);
         this.lookControl = new BirdLookControl(this);
     }
@@ -176,26 +177,20 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
-    //    @Override
-//    protected EntityNavigation createNavigation(World getWorld()) {
-//        if (!this.isFlying()) {
-//            MobNavigation mobNavigation = new MobNavigation(this, getWorld());
-//            mobNavigation.setCanPathThroughDoors(false);
-//            mobNavigation.setCanSwim(true);
-//            mobNavigation.setCanEnterOpenDoors(true);
-//            return mobNavigation;
-//        }
-//        BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());
-//        birdNavigation.setCanPathThroughDoors(false);
-//        birdNavigation.setCanEnterOpenDoors(true);
-//        return birdNavigation;
-//    }
-
-
-//    @Override
-//    public LookControl getLookControl() {
-//        return this.lookControl;
-//    }
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        if (!this.isFlying()) {
+            MobNavigation mobNavigation = new MobNavigation(this, this.getWorld());
+            mobNavigation.setCanPathThroughDoors(false);
+            mobNavigation.setCanSwim(true);
+            mobNavigation.setCanEnterOpenDoors(true);
+            return mobNavigation;
+        }
+        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
+        birdNavigation.setCanPathThroughDoors(false);
+        birdNavigation.setCanEnterOpenDoors(true);
+        return birdNavigation;
+    }
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
@@ -295,10 +290,10 @@ public abstract class BirdEntity extends AnimalEntity {
         this.navigation = flying ? this.flyNavigation : this.landNavigation;
     }
 
-    public boolean isTargetBlocked(Vec3d target) {
+    public boolean canAccessTarget(Vec3d target) {
         Vec3d vec3d = new Vec3d(this.getX(), this.getEyeY(), this.getZ());
 
-        return this.getWorld().raycast(new RaycastContext(vec3d, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this)).getType() != HitResult.Type.MISS;
+        return this.getWorld().raycast(new RaycastContext(vec3d, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this)).getType() == HitResult.Type.MISS;
     }
 
     public Vec3d getBlockInViewAway(Vec3d fleePos, float radiusAdd) {
@@ -319,7 +314,7 @@ public abstract class BirdEntity extends AnimalEntity {
             newPos = ground.up(this.getRandom().nextInt(6) + 1);
         }
 
-        if (!this.isTargetBlocked(Vec3d.ofCenter(newPos)) && this.squaredDistanceTo(Vec3d.ofCenter(newPos)) > 1) {
+        if (this.canAccessTarget(Vec3d.ofCenter(newPos)) && this.squaredDistanceTo(Vec3d.ofCenter(newPos)) > 1) {
             return Vec3d.ofCenter(newPos);
         }
         return null;
@@ -349,7 +344,7 @@ public abstract class BirdEntity extends AnimalEntity {
                 ground = ground.down();
             }
         }
-        if (!this.isTargetBlocked(Vec3d.ofCenter(ground.up()))) {
+        if (this.canAccessTarget(Vec3d.ofCenter(ground.up()))) {
             return Vec3d.ofCenter(ground);
         }
         return null;
@@ -363,14 +358,50 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public boolean isOverWater() {
         BlockPos pos = this.getBlockPos();
-        while (pos.getY() > -64 && getWorld().isAir(pos)) {
+        while (pos.getY() > -64 && this.getWorld().isAir(pos)) {
             pos = pos.down();
         }
-        return !getWorld().getFluidState(pos).isEmpty();
+        return !this.getWorld().getFluidState(pos).isEmpty();
     }
 
     @Override
     public float getSoundPitch() {
         return (this.random.nextFloat() - this.random.nextFloat()) * 0.05F + 1.0F;
+    }
+
+    @Override
+    public void travel(Vec3d movementInput) {
+        if (!this.isFlying()) {
+            super.travel(movementInput);
+        }
+
+        if (this.isLogicalSideForUpdatingMovement()) {
+            if (this.isTouchingWater()) {
+                this.updateVelocity(0.02F, movementInput);
+                this.move(MovementType.SELF, this.getVelocity());
+                this.setVelocity(this.getVelocity().multiply(0.8F));
+            }
+            else if (this.isInLava()) {
+                this.updateVelocity(0.02F, movementInput);
+                this.move(MovementType.SELF, this.getVelocity());
+                this.setVelocity(this.getVelocity().multiply(0.5));
+            }
+            else {
+                float friction = 0.91F;
+                if (this.isOnGround()) {
+                    friction = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getBlock().getSlipperiness() * 0.91F;
+                }
+
+                float g = 0.16277137F / (friction * friction * friction);
+                friction = 0.91F;
+                if (this.isOnGround()) {
+                    friction = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getBlock().getSlipperiness() * 0.91F;
+                }
+
+                this.updateVelocity(this.isOnGround() ? 0.1F * g : 0.02F, movementInput);
+                this.move(MovementType.SELF, this.getVelocity());
+                this.setVelocity(this.getVelocity().multiply(friction));
+            }
+        }
     }
 }
