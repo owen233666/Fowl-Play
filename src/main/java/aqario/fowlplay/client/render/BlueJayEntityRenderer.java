@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class BlueJayEntityRenderer extends MobEntityRenderer<BlueJayEntity, BlueJayEntityModel> {
     public BlueJayEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new BlueJayEntityModel(context.getPart(FowlPlayEntityModelLayers.BLUE_JAY)), 0.1f);
+        super(context, new BlueJayEntityModel(context.getPart(FowlPlayEntityModelLayers.BLUE_JAY)), 0.15f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

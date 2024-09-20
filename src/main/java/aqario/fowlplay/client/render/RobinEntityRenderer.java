@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class RobinEntityRenderer extends MobEntityRenderer<RobinEntity, RobinEntityModel> {
     public RobinEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new RobinEntityModel(context.getPart(FowlPlayEntityModelLayers.ROBIN)), 0.1f);
+        super(context, new RobinEntityModel(context.getPart(FowlPlayEntityModelLayers.ROBIN)), 0.15f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

@@ -11,8 +11,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 public class GullEntityRenderer extends MobEntityRenderer<GullEntity, GullEntityModel> {
+    private static final Identifier HERRING_GULL_TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/gull/herring_gull.png");
+    private static final Identifier RING_BILLED_GULL_TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/gull/ring_billed_gull.png");
+
     public GullEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new GullEntityModel(context.getPart(FowlPlayEntityModelLayers.GULL)), 0.1f);
+        super(context, new GullEntityModel(context.getPart(FowlPlayEntityModelLayers.GULL)), 0.3f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {
@@ -22,7 +25,7 @@ public class GullEntityRenderer extends MobEntityRenderer<GullEntity, GullEntity
     }
 
     @Override
-    public Identifier getTexture(GullEntity entity) {
-        return Identifier.of(FowlPlay.ID, "textures/entity/gull/herring_gull.png");
+    public Identifier getTexture(GullEntity gull) {
+        return HERRING_GULL_TEXTURE;
     }
 }

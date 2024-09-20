@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class PigeonEntityRenderer extends MobEntityRenderer<PigeonEntity, PigeonEntityModel> {
     public PigeonEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new PigeonEntityModel(context.getPart(FowlPlayEntityModelLayers.PIGEON)), 0.1f);
+        super(context, new PigeonEntityModel(context.getPart(FowlPlayEntityModelLayers.PIGEON)), 0.2f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

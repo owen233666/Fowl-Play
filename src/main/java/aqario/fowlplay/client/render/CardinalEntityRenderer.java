@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class CardinalEntityRenderer extends MobEntityRenderer<CardinalEntity, CardinalEntityModel> {
     public CardinalEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new CardinalEntityModel(context.getPart(FowlPlayEntityModelLayers.CARDINAL)), 0.1f);
+        super(context, new CardinalEntityModel(context.getPart(FowlPlayEntityModelLayers.CARDINAL)), 0.15f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {
