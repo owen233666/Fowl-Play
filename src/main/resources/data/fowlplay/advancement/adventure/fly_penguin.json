@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:adventure/root",
   "display": {
     "icon": {
       "id": "minecraft:feather"
@@ -15,21 +16,36 @@
     "hidden": false
   },
   "criteria": {
-    "requirement": {
+    "fall_with_penguin": {
       "trigger": "minecraft:fall_from_height",
       "conditions": {
+        "distance": {
+          "y": {
+            "min": 5
+          }
+        },
         "player": [
           {
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
               "vehicle": {
-                "type": "fowlplay:penguin"
+                "type": "fowlplay:penguin",
+                "distance": {
+                  "y": {
+                    "min": 5
+                  }
+                }
               }
             }
           }
         ]
       }
     }
-  }
+  },
+  "requirements": [
+    [
+      "fall_with_penguin"
+    ]
+  ]
 }

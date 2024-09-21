@@ -42,7 +42,6 @@ public class GullEntity extends TrustingBirdEntity {
         super(entityType, world);
         this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);

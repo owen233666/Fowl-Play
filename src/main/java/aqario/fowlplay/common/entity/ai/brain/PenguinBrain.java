@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity.ai.brain;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -138,11 +139,12 @@ public class PenguinBrain {
         }
 
         @Override
-        protected boolean shouldRun(ServerWorld serverWorld, PenguinEntity penguin) {
+        protected boolean shouldRun(ServerWorld world, PenguinEntity penguin) {
             return !penguin.isTouchingWater()
                 && penguin.getAnimationTicks() >= (long) this.minimalSlideTicks
                 && !penguin.hasPassengers()
-                && penguin.isOnGround();
+                && penguin.isOnGround()
+                && (penguin.isSliding() || world.getBlockState(penguin.getBlockPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON));
         }
 
         @Override
