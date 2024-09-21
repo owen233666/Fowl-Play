@@ -205,34 +205,38 @@ public class GullBrain {
 
     private static boolean hasAvoidTarget(GullEntity gull) {
         Brain<GullEntity> brain = gull.getBrain();
-        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            PlayerEntity entity = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-            if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(entity) || gull.isTrusted(entity)) {
-                return false;
-            }
-            return gull.isInRange(entity, 10.0);
-        }
-        else {
+        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             return false;
         }
+        PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || gull.isTrusted(player)) {
+            return false;
+        }
+
+        return gull.isInRange(player, 10.0);
     }
 
     public static void onAttacked(GullEntity gull, LivingEntity attacker) {
-        if (!(attacker instanceof GullEntity)) {
-            Brain<GullEntity> brain = gull.getBrain();
-            brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
-            if (attacker instanceof PlayerEntity player) {
-                brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 100L);
-                gull.stopTrusting(player);
-            }
-            brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 100L);
-            alertOthers(gull, attacker);
+        if (attacker instanceof GullEntity) {
+            return;
         }
+        Brain<GullEntity> brain = gull.getBrain();
+        brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
+        if (attacker instanceof PlayerEntity player) {
+            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 100L);
+            gull.stopTrusting(player);
+        }
+        brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 100L);
+        alertOthers(gull, attacker);
     }
 
     protected static void alertOthers(GullEntity gull, LivingEntity attacker) {
-        getNearbyVisibleGulls(gull)
-            .forEach(other -> runAwayFrom(other, attacker));
+        getNearbyVisibleGulls(gull).forEach(other -> {
+            if (attacker instanceof PlayerEntity player) {
+                other.stopTrusting(player);
+            }
+            runAwayFrom(other, attacker);
+        });
     }
 
     protected static void runAwayFrom(GullEntity gull, LivingEntity target) {
