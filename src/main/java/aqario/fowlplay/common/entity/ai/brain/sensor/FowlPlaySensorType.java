@@ -19,8 +19,9 @@ public class FowlPlaySensorType {
     public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register(
         "gull_temptations", () -> new TemptationsSensor(GullBrain.getFood())
     );
-//    public static final SensorType<PenguinAttackablesSensor> PENGUIN_ATTACKABLES = register("penguin_attackables", PenguinAttackablesSensor::new);
-//    public static final SensorType<NearestVisiblePenguinSensor> NEAREST_PENGUINS = register("nearest_penguins", NearestVisiblePenguinSensor::new);
+    public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register(
+        "nearest_adults", NearestVisibleAdultsSensor::new
+    );
 
     private static <U extends Sensor<?>> SensorType<U> register(String id, Supplier<U> factory) {
         return Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), new SensorType<>(factory));

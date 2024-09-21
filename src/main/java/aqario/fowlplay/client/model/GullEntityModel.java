@@ -65,15 +65,15 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
     }
 
     @Override
-    public void setAngles(GullEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(GullEntity gull, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        if (!entity.isFlying() && !entity.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(GullEntityAnimations.GULL_WALK, limbSwing, limbSwingAmount, 2.75F, 2.5F);
+        if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(GullEntityAnimations.GULL_WALK, limbSwing, limbSwingAmount, 2.85F, 2.5F);
         }
-        this.animate(entity.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.animate(entity.flyState, GullEntityAnimations.GULL_FLY, ageInTicks);
-        this.animate(entity.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
+        this.animate(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
+        this.animate(gull.flyState, GullEntityAnimations.GULL_FLY, ageInTicks);
+        this.animate(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

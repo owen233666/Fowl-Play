@@ -48,7 +48,7 @@ public class FowlPlayWorldGen {
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_ROBINS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.ROBIN, 75, 2, 4
+            SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 75, 2, 4
         );
         SpawnRestriction.register(FowlPlayEntityType.ROBIN, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn

@@ -13,9 +13,10 @@ public class LocateFoodTask {
         return TaskBuilder.task(
             builder -> builder.group(
                     builder.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
-                    builder.absentMemory(FowlPlayMemoryModuleType.SEES_FOOD)
+                    builder.absentMemory(FowlPlayMemoryModuleType.SEES_FOOD),
+                    builder.absentMemory(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD)
                 )
-                .apply(builder, (nearestVisibleWantedItem, seesFood) -> (world, entity, time) -> {
+                .apply(builder, (nearestVisibleWantedItem, seesFood, cannotEatFood) -> (world, entity, time) -> {
                     ItemEntity item = builder.getValue(nearestVisibleWantedItem);
                     if (!GullBrain.getFood().test(item.getStack())) {
                         return false;

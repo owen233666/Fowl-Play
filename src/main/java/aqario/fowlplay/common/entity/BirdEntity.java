@@ -50,7 +50,6 @@ public abstract class BirdEntity extends AnimalEntity {
         this.flyNavigation.setCanPathThroughDoors(false);
         this.flyNavigation.setCanEnterOpenDoors(true);
         this.flyNavigation.setCanSwim(false);
-        this.flyNavigation.setSpeed(1.0F);
 
         this.landNavigation = new MobNavigation(this, getWorld());
 
@@ -88,18 +87,22 @@ public abstract class BirdEntity extends AnimalEntity {
         return this.getFood().test(stack) && !this.getFood().test(heldStack);
     }
 
-    private void dropWithoutDelay(ItemStack stack) {
+    private void dropWithoutDelay(ItemStack stack, Entity thrower) {
         ItemEntity item = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), stack);
+        if (thrower != null) {
+            item.setThrower(thrower);
+        }
         this.getWorld().spawnEntity(item);
     }
 
     @Override
     protected void loot(ItemEntity item) {
+        Entity thrower = item.getOwner();
         ItemStack stack = item.getStack();
         if (this.canPickupItem(stack)) {
             int i = stack.getCount();
             if (i > 1) {
-                this.dropWithoutDelay(stack.split(i - 1));
+                this.dropWithoutDelay(stack.split(i - 1), thrower);
             }
             this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
             this.triggerItemPickedUpByEntityCriteria(item);
@@ -191,7 +194,7 @@ public abstract class BirdEntity extends AnimalEntity {
         birdNavigation.setCanPathThroughDoors(false);
         birdNavigation.setCanEnterOpenDoors(true);
         birdNavigation.setCanSwim(false);
-        birdNavigation.setSpeed(1.0F);
+        birdNavigation.setSpeed(10.0F);
         return birdNavigation;
     }
 
@@ -283,6 +286,10 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
+        if (!flying){
+            this.fallDistance = 0;
+            this.setNoGravity(false);
+        }
 
         this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
         this.navigation = flying ? this.flyNavigation : this.landNavigation;
@@ -360,6 +367,11 @@ public abstract class BirdEntity extends AnimalEntity {
             pos = pos.down();
         }
         return !this.getWorld().getFluidState(pos).isEmpty();
+    }
+
+    @Override
+    protected MoveEffect getMoveEffect() {
+        return MoveEffect.SOUNDS;
     }
 
     @Override

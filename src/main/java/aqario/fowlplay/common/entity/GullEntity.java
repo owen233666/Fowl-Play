@@ -4,10 +4,7 @@ import aqario.fowlplay.common.entity.ai.brain.GullBrain;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -18,7 +15,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
@@ -71,38 +67,31 @@ public class GullEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-    }
-
-    @Override
     public int getFlapFrequency() {
         return 0;
-    }
-
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.175f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
-//    protected void initGoals() {
-//        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.25));
-//        this.goalSelector.add(0, new SwimGoal(this));
-//        this.goalSelector.add(1, new PickupItemGoal(this));
-//        this.goalSelector.add(1, new FleeEntityGoal<>(this, PlayerEntity.class, (entity) -> !this.isTrusted(entity), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-//        this.goalSelector.add(2, new FlyAroundGoal(this));
-//        this.goalSelector.add(4, new TemptGoal(this, 1.0, this.getFood(), true));
-//        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
-//        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-//        this.goalSelector.add(7, new LookAroundGoal(this));
-//    }
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        boolean bl = super.damage(source, amount);
+        if (this.getWorld().isClient) {
+            return false;
+        }
+        else {
+            if (bl && source.getAttacker() instanceof LivingEntity entity) {
+                GullBrain.onAttacked(this, entity);
+            }
+
+            return bl;
+        }
+    }
 
     @Override
     public boolean isBaby() {
@@ -146,10 +135,6 @@ public class GullEntity extends TrustingBirdEntity {
             this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
         }
         this.flapProgress += this.flapSpeed * 2.0f;
-    }
-
-    private boolean isWalking() {
-        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
     }
 
     @Override

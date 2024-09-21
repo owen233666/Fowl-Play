@@ -40,7 +40,8 @@ public class BirdFlightMoveControl extends BirdMoveControl {
             this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), h, 5.0F));
             float speed;
             if (this.bird.isOnGround()) {
-                speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 2);
+                this.bird.setFlying(false);
+                speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
             }
             else {
                 speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
