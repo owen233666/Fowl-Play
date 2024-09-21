@@ -50,6 +50,7 @@ public abstract class BirdEntity extends AnimalEntity {
         this.flyNavigation.setCanPathThroughDoors(false);
         this.flyNavigation.setCanEnterOpenDoors(true);
         this.flyNavigation.setCanSwim(false);
+        this.flyNavigation.setSpeed(1.0F);
 
         this.landNavigation = new MobNavigation(this, getWorld());
 
@@ -61,7 +62,7 @@ public abstract class BirdEntity extends AnimalEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
     }
 
@@ -189,6 +190,8 @@ public abstract class BirdEntity extends AnimalEntity {
         BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
         birdNavigation.setCanPathThroughDoors(false);
         birdNavigation.setCanEnterOpenDoors(true);
+        birdNavigation.setCanSwim(false);
+        birdNavigation.setSpeed(1.0F);
         return birdNavigation;
     }
 
@@ -238,16 +241,11 @@ public abstract class BirdEntity extends AnimalEntity {
         if (this.isOnGround() || this.isTouchingWater()) {
             this.setFlying(false);
         }
-        if (this.fallDistance > 2 && this.getHealth() > 2.0F) {
-            this.setFlying(true);
-        }
         if (this.isFlying()) {
             this.timeFlying++;
-            this.setNoGravity(true);
         }
         else {
             this.timeFlying = 0;
-            this.setNoGravity(false);
         }
     }
 

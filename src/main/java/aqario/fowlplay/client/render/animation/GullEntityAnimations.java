@@ -67,6 +67,30 @@ public class GullEntityAnimations {
 
     public static final Animation GULL_WALK = Animation.Builder.withLength(1.0f).looping()
         .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.2916767f, Animator.translate(-0.25f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.7916766f, Animator.translate(0.25f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, -1f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.2916767f, Animator.rotate(0f, 2.5f, -5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.4167667f, Animator.rotate(0f, 1.5f, -1f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, 1f, 0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.7916766f, Animator.rotate(0f, -2.5f, 5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.9167666f, Animator.rotate(0f, -1.5f, 1f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, -1f, -0.5f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
@@ -133,13 +157,13 @@ public class GullEntityAnimations {
             "body",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 0.5f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.2916767f, Animator.rotate(0f, 0f, 5f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.4167667f, Animator.rotate(0f, 0f, 1f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.7916766f, Animator.rotate(0f, 0f, -5f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.9167666f, Animator.rotate(0f, 0f, -1f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(1f, Animator.rotate(0f, 0f, 0.5f), PartAnimation.Interpolations.SPLINE)
+                new AnimationKeyframe(0f, Animator.rotate(0f, 1f, 0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.2916767f, Animator.rotate(0f, -2.5f, 5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.4167667f, Animator.rotate(0f, -1.5f, 1f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, -1f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.7916766f, Animator.rotate(0f, 2.5f, -5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.9167666f, Animator.rotate(0f, 1.5f, -1f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, 1f, 0.5f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .build();

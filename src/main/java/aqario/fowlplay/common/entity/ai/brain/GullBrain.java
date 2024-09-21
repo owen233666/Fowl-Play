@@ -7,6 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
 import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
+import aqario.fowlplay.common.entity.ai.brain.task.StopFallingTask;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -71,7 +72,7 @@ public class GullBrain {
     private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final float FAST_WALK_SPEED = 1.2F;
-    private static final float RUN_SPEED = 1.5F;
+    private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
 
     public static void init() {
@@ -98,6 +99,7 @@ public class GullBrain {
             0,
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
+                new StopFallingTask(),
                 new WalkTask<>(FAST_WALK_SPEED),
                 new LookAroundTask(45, 90),
                 LocateFoodTask.run(),
