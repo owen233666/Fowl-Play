@@ -1,13 +1,15 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.brain.GullBrain;
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
+import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
+import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.control.FlightMoveControl;
-import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -40,7 +42,7 @@ public class GullEntity extends TrustingBirdEntity {
 
     public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
         super(entityType, world);
-        this.setMoveControl(false);
+//        this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
@@ -56,11 +58,17 @@ public class GullEntity extends TrustingBirdEntity {
 
     private void setMoveControl(boolean isFlying) {
         if (isFlying) {
-            this.moveControl = new FlightMoveControl(this, 10, false);
+            this.moveControl = new BirdFlightMoveControl(this, 40);
+            BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());
+            birdNavigation.setCanPathThroughDoors(false);
+            birdNavigation.setCanEnterOpenDoors(true);
+            birdNavigation.setCanSwim(false);
+            this.navigation = birdNavigation;
             this.isFlightMoveControl = true;
         }
         else {
-            this.moveControl = new MoveControl(this);
+            this.moveControl = new BirdMoveControl(this);
+            this.navigation = new MobNavigation(this, getWorld());
             this.isFlightMoveControl = false;
         }
     }
@@ -72,9 +80,9 @@ public class GullEntity extends TrustingBirdEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.175f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
     }
 
     @Override
@@ -224,11 +232,11 @@ public class GullEntity extends TrustingBirdEntity {
         this.getWorld().getProfiler().pop();
         super.mobTick();
 
-        if (!this.getWorld().isClient) {
-            if (this.isFlying() != this.isFlightMoveControl) {
-                this.setMoveControl(this.isFlying());
-            }
-        }
+//        if (!this.getWorld().isClient) {
+//            if (this.isFlying() != this.isFlightMoveControl) {
+//                this.setMoveControl(this.isFlying());
+//            }
+//        }
     }
 
     @Override

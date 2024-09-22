@@ -13,21 +13,21 @@ import net.minecraft.world.Heightmap;
 public class FowlPlayWorldGen {
     public static void init() {
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_BLUE_JAYS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.BLUE_JAY, 75, 1, 3
+            SpawnGroup.AMBIENT, FowlPlayEntityType.BLUE_JAY, 50, 1, 3
         );
         SpawnRestriction.register(FowlPlayEntityType.BLUE_JAY, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_CARDINALS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.CARDINAL, 75, 1, 3
+            SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 50, 1, 3
         );
         SpawnRestriction.register(FowlPlayEntityType.CARDINAL, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_GULLS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.GULL, 75, 5, 12
+            SpawnGroup.AMBIENT, FowlPlayEntityType.GULL, 50, 5, 12
         );
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::isValidNaturalSpawn
@@ -48,7 +48,7 @@ public class FowlPlayWorldGen {
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_ROBINS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 75, 2, 4
+            SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 50, 2, 4
         );
         SpawnRestriction.register(FowlPlayEntityType.ROBIN, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn

@@ -62,7 +62,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
 
     private void setMoveControl(boolean isFlying) {
         if (isFlying) {
-            this.moveControl = new BirdFlightMoveControl(this, 40, false);
+            this.moveControl = new BirdFlightMoveControl(this, 40);
             this.isFlightMoveControl = true;
         }
         else {

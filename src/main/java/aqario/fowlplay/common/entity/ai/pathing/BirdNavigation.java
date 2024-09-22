@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity.ai.pathing;
 
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.BirdPathNodeMaker;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.Path;
@@ -14,8 +15,22 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class BirdNavigation extends MobNavigation {
+    private final MobEntity mob;
     public BirdNavigation(MobEntity mobEntity, World world) {
         super(mobEntity, world);
+        this.mob = mobEntity;
+    }
+
+    @Override
+    public boolean startMovingTo(double x, double y, double z, double speed) {
+        mob.getMoveControl().moveTo(x, y, z, speed);
+        return true;
+    }
+
+    @Override
+    public boolean startMovingTo(Entity entity, double speed) {
+        mob.getMoveControl().moveTo(entity.getX(), entity.getY(), entity.getZ(), speed);
+        return true;
     }
 
     @Override

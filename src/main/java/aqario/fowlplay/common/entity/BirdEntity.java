@@ -10,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.BodyControl;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -36,25 +35,14 @@ import net.minecraft.world.WorldAccess;
 
 public abstract class BirdEntity extends AnimalEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(BirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private final BirdNavigation flyNavigation;
-    private final MobNavigation landNavigation;
-    private final BirdFlightMoveControl flightMoveControl;
-    private final MoveControl landMoveControl;
+    private boolean isFlightMoveControl;
     public int timeFlying = 0;
     private int eatingTime;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setCanPickUpLoot(true);
-        this.flyNavigation = new BirdNavigation(this, getWorld());
-        this.flyNavigation.setCanPathThroughDoors(false);
-        this.flyNavigation.setCanEnterOpenDoors(true);
-        this.flyNavigation.setCanSwim(false);
-
-        this.landNavigation = new MobNavigation(this, getWorld());
-
-        this.flightMoveControl = new BirdFlightMoveControl(this, 40, false);
-        this.landMoveControl = new BirdMoveControl(this);
+        this.setMoveControl(false);
         this.lookControl = new BirdLookControl(this);
     }
 
@@ -62,7 +50,7 @@ public abstract class BirdEntity extends AnimalEntity {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.15f);
     }
 
     @Override
@@ -194,7 +182,6 @@ public abstract class BirdEntity extends AnimalEntity {
         birdNavigation.setCanPathThroughDoors(false);
         birdNavigation.setCanEnterOpenDoors(true);
         birdNavigation.setCanSwim(false);
-        birdNavigation.setSpeed(10.0F);
         return birdNavigation;
     }
 
@@ -241,14 +228,38 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.isOnGround() || this.isTouchingWater()) {
-            this.setFlying(false);
+        if (!this.getWorld().isClient) {
+            if (this.isFlying()) {
+                this.timeFlying++;
+                this.setNoGravity(true);
+                if (this.isOnGround() || this.isTouchingWater()) {
+                    this.setFlying(false);
+                }
+            }
+            else {
+                this.timeFlying = 0;
+                this.setNoGravity(false);
+            }
+            if (this.isFlying() != this.isFlightMoveControl) {
+                this.setMoveControl(this.isFlying());
+            }
         }
-        if (this.isFlying()) {
-            this.timeFlying++;
+    }
+
+    private void setMoveControl(boolean isFlying) {
+        if (isFlying) {
+            this.moveControl = new BirdFlightMoveControl(this, 40);
+            BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());
+            birdNavigation.setCanPathThroughDoors(false);
+            birdNavigation.setCanEnterOpenDoors(true);
+            birdNavigation.setCanSwim(false);
+            this.navigation = birdNavigation;
+            this.isFlightMoveControl = true;
         }
         else {
-            this.timeFlying = 0;
+            this.moveControl = new BirdMoveControl(this);
+            this.navigation = new MobNavigation(this, getWorld());
+            this.isFlightMoveControl = false;
         }
     }
 
@@ -257,6 +268,11 @@ public abstract class BirdEntity extends AnimalEntity {
         if (!this.isOnGround() && vec3d.y < 0.0) {
             this.setUpwardSpeed(this.getMovementSpeed());
         }
+    }
+
+    @Override
+    protected float getAirSpeed() {
+        return this.isFlying() ? this.getMovementSpeed() : super.getAirSpeed();
     }
 
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
@@ -286,13 +302,6 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
-        if (!flying){
-            this.fallDistance = 0;
-            this.setNoGravity(false);
-        }
-
-        this.moveControl = flying ? this.flightMoveControl : this.landMoveControl;
-        this.navigation = flying ? this.flyNavigation : this.landNavigation;
     }
 
     public boolean canAccessTarget(Vec3d target) {
@@ -383,6 +392,7 @@ public abstract class BirdEntity extends AnimalEntity {
     public void travel(Vec3d movementInput) {
         if (!this.isFlying()) {
             super.travel(movementInput);
+            return;
         }
 
         if (this.isLogicalSideForUpdatingMovement()) {
@@ -397,18 +407,9 @@ public abstract class BirdEntity extends AnimalEntity {
                 this.setVelocity(this.getVelocity().multiply(0.5));
             }
             else {
-                float friction = 0.91F;
-                if (this.isOnGround()) {
-                    friction = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getBlock().getSlipperiness() * 0.91F;
-                }
+                float friction = 0.75F;
 
-                float g = 0.16277137F / (friction * friction * friction);
-                friction = 0.91F;
-                if (this.isOnGround()) {
-                    friction = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getBlock().getSlipperiness() * 0.91F;
-                }
-
-                this.updateVelocity(this.isOnGround() ? 0.1F * g : 0.02F, movementInput);
+                this.updateVelocity(this.getMovementSpeed(), movementInput);
                 this.move(MovementType.SELF, this.getVelocity());
                 this.setVelocity(this.getVelocity().multiply(friction));
             }

@@ -56,7 +56,7 @@ public class BlueJayEntity extends BirdEntity {
 
     private void setMoveControl(boolean isFlying) {
         if (isFlying) {
-            this.moveControl = new BirdFlightMoveControl(this, 40, false);
+            this.moveControl = new BirdFlightMoveControl(this, 40);
             this.isFlightMoveControl = true;
         }
         else {
