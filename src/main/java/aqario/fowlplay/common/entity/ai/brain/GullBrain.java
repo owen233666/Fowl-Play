@@ -223,16 +223,17 @@ public class GullBrain {
         Brain<GullEntity> brain = gull.getBrain();
         brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
         if (attacker instanceof PlayerEntity player) {
-            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 100L);
+            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
             gull.stopTrusting(player);
         }
-        brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 100L);
+        brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 160L);
         alertOthers(gull, attacker);
     }
 
     protected static void alertOthers(GullEntity gull, LivingEntity attacker) {
         getNearbyVisibleGulls(gull).forEach(other -> {
             if (attacker instanceof PlayerEntity player) {
+                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
                 other.stopTrusting(player);
             }
             runAwayFrom(other, attacker);
@@ -241,7 +242,7 @@ public class GullBrain {
 
     protected static void runAwayFrom(GullEntity gull, LivingEntity target) {
         gull.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        gull.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 100L);
+        gull.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
     protected static List<GullEntity> getNearbyVisibleGulls(GullEntity gull) {
@@ -261,6 +262,6 @@ public class GullBrain {
     }
 
     public static void reset(GullEntity gull) {
-        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.ADMIRE_ITEM, Activity.AVOID));
+        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, Activity.ADMIRE_ITEM));
     }
 }

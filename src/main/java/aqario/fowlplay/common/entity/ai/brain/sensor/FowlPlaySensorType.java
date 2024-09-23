@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class FowlPlaySensorType {
     public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register(
-        "penguin_temptations", () -> new TemptationsSensor(PenguinBrain.getTemptIngredient())
+        "penguin_temptations", () -> new TemptationsSensor(PenguinBrain.getFood())
     );
     public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register(
         "gull_temptations", () -> new TemptationsSensor(GullBrain.getFood())

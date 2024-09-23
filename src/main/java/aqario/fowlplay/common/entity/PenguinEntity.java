@@ -62,7 +62,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        PenguinBrain.initialize(this, world.getRandom());
+        PenguinBrain.init();
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 

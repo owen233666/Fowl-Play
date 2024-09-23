@@ -2,7 +2,10 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PenguinEntity;
+import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
+import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
@@ -22,15 +25,15 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
-import net.minecraft.util.random.RandomGenerator;
 
 public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
         SensorType.NEAREST_LIVING_ENTITIES,
+        SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
-        FowlPlaySensorType.PENGUIN_TEMPTATIONS,
-        SensorType.IS_IN_WATER
+        SensorType.IS_IN_WATER,
+        FowlPlaySensorType.PENGUIN_TEMPTATIONS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -55,7 +58,12 @@ public class PenguinBrain {
         MemoryModuleType.NEAREST_ATTACKABLE,
         MemoryModuleType.IS_IN_WATER,
         MemoryModuleType.IS_PREGNANT,
-        MemoryModuleType.IS_PANICKING
+        MemoryModuleType.IS_PANICKING,
+        MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
+        MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
+        MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS,
+        FowlPlayMemoryModuleType.SEES_FOOD,
+        FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD
     );
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final float PANICKING_SPEED = 1.5F;
@@ -63,7 +71,7 @@ public class PenguinBrain {
     private static final float WALK_SPEED = 1.0F;
     private static final float SWIM_SPEED = 4.0F;
 
-    public static void initialize(PenguinEntity penguin, RandomGenerator random) {
+    public static void init() {
     }
 
     public static Brain.Profile<PenguinEntity> createProfile() {
@@ -73,6 +81,7 @@ public class PenguinBrain {
     public static Brain<?> create(Brain<PenguinEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
+        addPickupFoodActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
@@ -85,6 +94,7 @@ public class PenguinBrain {
             0,
             ImmutableList.of(
                 new WalkTask<>(PANICKING_SPEED),
+                LocateFoodTask.run(),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -117,17 +127,34 @@ public class PenguinBrain {
                 )
             ),
             ImmutableSet.of(
-                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }
 
-    public static void reset(PenguinEntity penguin) {
-        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE));
+    private static void addPickupFoodActivities(Brain<PenguinEntity> brain) {
+        brain.setTaskList(
+            Activity.ADMIRE_ITEM,
+            10,
+            ImmutableList.of(
+                WalkToNearestVisibleWantedItemTask.create(PenguinBrain::doesNotHaveFoodInHand, WALK_SPEED, true, 32),
+                ForgetSeenFoodTask.create(32)
+            ),
+            FowlPlayMemoryModuleType.SEES_FOOD
+        );
     }
 
-    public static Ingredient getTemptIngredient() {
+    private static boolean doesNotHaveFoodInHand(PenguinEntity penguin) {
+        return !getFood().test(penguin.getMainHandStack());
+    }
+
+    public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
+    }
+
+    public static void reset(PenguinEntity penguin) {
+        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.ADMIRE_ITEM));
     }
 
     public static class RandomSlideTask extends Task<PenguinEntity> {
