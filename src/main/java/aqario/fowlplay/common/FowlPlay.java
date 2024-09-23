@@ -1,8 +1,10 @@
 package aqario.fowlplay.common;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.common.item.FowlPlayItems;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.world.gen.FowlPlayWorldGen;
@@ -18,11 +20,13 @@ public class FowlPlay implements ModInitializer {
     @Override
     public void onInitialize(ModContainer mod) {
         LOGGER.info("Loading {} {}", mod.metadata().name(), mod.metadata().version());
+        FowlPlayActivities.init();
         FowlPlayEntityType.init();
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
+        FowlPlayTrackedDataHandlerRegistry.init();
         FowlPlayWorldGen.init();
     }
 }

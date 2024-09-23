@@ -171,18 +171,8 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     protected EntityNavigation createNavigation(World world) {
-        if (!this.isFlying()) {
-            MobNavigation mobNavigation = new MobNavigation(this, this.getWorld());
-            mobNavigation.setCanPathThroughDoors(false);
-            mobNavigation.setCanSwim(true);
-            mobNavigation.setCanEnterOpenDoors(true);
-            return mobNavigation;
-        }
-        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        birdNavigation.setCanSwim(false);
-        return birdNavigation;
+        setMoveControl(this.isFlying());
+        return this.navigation;
     }
 
     @Override
@@ -263,18 +253,12 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
-    public void flap() {
-        Vec3d vec3d = this.getVelocity();
-        if (!this.isOnGround() && vec3d.y < 0.0) {
-            this.setUpwardSpeed(this.getMovementSpeed());
-        }
-    }
-
     @Override
     protected float getAirSpeed() {
         return this.isFlying() ? this.getMovementSpeed() : super.getAirSpeed();
     }
 
+    @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
         return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
     }

@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.ForgetSeenFoodTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -14,6 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -25,6 +25,8 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
+
+import java.util.Optional;
 
 public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
@@ -66,6 +68,7 @@ public class PenguinBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD
     );
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
+    private static final int PICK_UP_RANGE = 32;
     private static final float PANICKING_SPEED = 1.5F;
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
@@ -86,6 +89,10 @@ public class PenguinBrain {
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
         return brain;
+    }
+
+    public static void reset(PenguinEntity penguin) {
+        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, FowlPlayActivities.PICK_UP));
     }
 
     private static void addCoreActivities(Brain<PenguinEntity> brain) {
@@ -135,14 +142,34 @@ public class PenguinBrain {
 
     private static void addPickupFoodActivities(Brain<PenguinEntity> brain) {
         brain.setTaskList(
-            Activity.ADMIRE_ITEM,
+            FowlPlayActivities.PICK_UP,
             10,
             ImmutableList.of(
-                WalkToNearestVisibleWantedItemTask.create(PenguinBrain::doesNotHaveFoodInHand, WALK_SPEED, true, 32),
-                ForgetSeenFoodTask.create(32)
+                WalkToNearestVisibleWantedItemTask.create(PenguinBrain::doesNotHaveFoodInHand, WALK_SPEED, true, PICK_UP_RANGE),
+//                ForgetSeenFoodTask.create(PICK_UP_RANGE),
+                ForgetTask.run(PenguinBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD)
             ),
             FowlPlayMemoryModuleType.SEES_FOOD
         );
+    }
+
+    private static void addFightActivities(Brain<PenguinEntity> brain) {
+        brain.setTaskList(
+            Activity.FIGHT,
+            0,
+            ImmutableList.of(
+                ForgetAttackTargetTask.create(),
+                RangedApproachTask.create(SWIM_SPEED),
+                MeleeAttackTask.create(20),
+                ForgetTask.run(LookTargetUtil::isValidBreedingTarget, MemoryModuleType.ATTACK_TARGET)
+            ),
+            MemoryModuleType.ATTACK_TARGET
+        );
+    }
+
+    private static boolean noFoodInRange(PenguinEntity penguin) {
+        Optional<ItemEntity> item = penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+        return item.isEmpty() || !item.get().isInRange(penguin, PICK_UP_RANGE);
     }
 
     private static boolean doesNotHaveFoodInHand(PenguinEntity penguin) {
@@ -151,10 +178,6 @@ public class PenguinBrain {
 
     public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
-    }
-
-    public static void reset(PenguinEntity penguin) {
-        penguin.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.ADMIRE_ITEM));
     }
 
     public static class RandomSlideTask extends Task<PenguinEntity> {

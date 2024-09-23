@@ -17,18 +17,13 @@ public class ForgetSeenFoodTask {
                     instance.registeredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)
                 )
                 .apply(instance, (seesFood, nearestVisibleWantedItem) -> (world, livingEntity, l) -> {
-                    if (!livingEntity.getOffHandStack().isEmpty()) {
+                    Optional<ItemEntity> item = instance.getValueOptional(nearestVisibleWantedItem);
+                    if (item.isPresent() && item.get().isInRange(livingEntity, radius)) {
                         return false;
                     }
                     else {
-                        Optional<ItemEntity> item = instance.getValueOptional(nearestVisibleWantedItem);
-                        if (item.isPresent() && item.get().isInRange(livingEntity, radius)) {
-                            return false;
-                        }
-                        else {
-                            seesFood.forget();
-                            return true;
-                        }
+                        seesFood.forget();
+                        return true;
                     }
                 })
         );

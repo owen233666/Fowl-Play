@@ -15,4 +15,7 @@ public class FowlPlayTrackedDataHandlerRegistry {
         TrackedDataHandlerRegistry.register(handler);
         return handler;
     }
+
+    public static void init() {
+    }
 }

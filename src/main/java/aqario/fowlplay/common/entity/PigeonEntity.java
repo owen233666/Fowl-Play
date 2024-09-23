@@ -33,7 +33,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.EntityView;
@@ -54,11 +53,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public final AnimationState walkAnimationState = new AnimationState();
     public final AnimationState flyAnimationState = new AnimationState();
     public final AnimationState floatAnimationState = new AnimationState();
-    public float flapProgress;
-    public float maxWingDeviation;
-    public float prevMaxWingDeviation;
-    public float prevFlapProgress;
-    public float flapSpeed = 1.0f;
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
@@ -300,73 +294,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
         this.setRecipientUuid(recipient.getUuid());
     }
-
-    private void flapWings() {
-        this.prevFlapProgress = this.flapProgress;
-        this.prevMaxWingDeviation = this.maxWingDeviation;
-        this.maxWingDeviation += (float) (this.isOnGround() || this.hasVehicle() ? -1 : 4) * 0.3f;
-        this.maxWingDeviation = MathHelper.clamp(this.maxWingDeviation, 0.0f, 1.0f);
-        if (!this.isOnGround() && this.flapSpeed < 1.0f) {
-            this.flapSpeed = 1.0f;
-        }
-        this.flapSpeed *= 0.9f;
-        Vec3d vec3d = this.getVelocity();
-        if (!this.isOnGround() && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.add(0.0f, 1.5f, 0.0f));
-        }
-        this.flapProgress += this.flapSpeed * 2.0f;
-    }
-
-//    @Override
-//    public void travel(Vec3d movementInput) {
-//        if (!this.isFlying()) {
-//            super.travel(movementInput);
-//            return;
-//        }
-//
-//        if (this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement()) {
-//            double d = 0.08;
-//            Vec3d vec3d4 = this.getVelocity();
-//            if (vec3d4.y > -0.5) {
-//                this.fallDistance = 1.0F;
-//            }
-//
-//            Vec3d vec3d5 = this.getRotationVector();
-//            float f = this.getPitch() * (float) (Math.PI / 180.0);
-//            double i = Math.sqrt(vec3d5.x * vec3d5.x + vec3d5.z * vec3d5.z);
-//            double j = vec3d4.horizontalLength();
-//            double k = vec3d5.length();
-//            double l = Math.cos(f);
-//            l = l * l * Math.min(1.0, k / 0.4);
-//            vec3d4 = this.getVelocity().add(0.0, d * (-1.0 + l * 0.75), 0.0);
-//            if (vec3d4.y < 0.0 && i > 0.0) {
-//                double m = vec3d4.y * -0.1 * l;
-//                vec3d4 = vec3d4.add(vec3d5.x * m / i, m, vec3d5.z * m / i);
-//            }
-//
-//            if (f < 0.0F && i > 0.0) {
-//                double m = j * (double)(-MathHelper.sin(f)) * 0.04;
-//                vec3d4 = vec3d4.add(-vec3d5.x * m / i, m * 3.2, -vec3d5.z * m / i);
-//            }
-//
-//            if (i > 0.0) {
-//                vec3d4 = vec3d4.add((vec3d5.x / i * j - vec3d4.x) * 0.1, 0.0, (vec3d5.z / i * j - vec3d4.z) * 0.1);
-//            }
-//
-//            this.setVelocity(vec3d4.multiply(0.99F, 0.98F, 0.99F));
-//            this.move(MovementType.SELF, this.getVelocity());
-//            if (this.horizontalCollision && !this.getWorld().isClient) {
-//                double m = this.getVelocity().horizontalLength();
-//                double n = j - m;
-//                float o = (float)(n * 10.0 - 3.0);
-//                if (o > 0.0F) {
-//                    this.damage(DamageSource.FLY_INTO_WALL, o);
-//                }
-//            }
-//        }
-//
-//        this.updateLimbs(this, false);
-//    }
 
     @Override
     protected void addFlapEffects() {

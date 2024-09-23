@@ -4,16 +4,16 @@ import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
+import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
+import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
+import aqario.fowlplay.common.entity.ai.brain.task.StayNearClosestEntityTask;
+import aqario.fowlplay.common.entity.ai.brain.task.StopFallingTask;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ReportingTaskControl;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -28,6 +28,8 @@ import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class GullBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super GullEntity>>> SENSORS = ImmutableList.of(
@@ -75,6 +77,8 @@ public class GullBrain {
     private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
+    private static final int PICK_UP_RANGE = 32;
+    private static final int AVOID_PLAYER_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
 
@@ -94,6 +98,10 @@ public class GullBrain {
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
         return brain;
+    }
+
+    public static void reset(GullEntity gull) {
+        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, FowlPlayActivities.PICK_UP));
     }
 
     private static void addCoreActivities(Brain<GullEntity> brain) {
@@ -118,7 +126,6 @@ public class GullBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-//                Pair.of(0, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
@@ -150,7 +157,7 @@ public class GullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, RUN_SPEED, 10, true),
+                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, RUN_SPEED, AVOID_PLAYER_RADIUS, true),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
                 ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
@@ -161,13 +168,16 @@ public class GullBrain {
 
     private static void addPickupFoodActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
-            Activity.ADMIRE_ITEM,
-            10,
+            FowlPlayActivities.PICK_UP,
             ImmutableList.of(
-                WalkToNearestVisibleWantedItemTask.create(GullBrain::doesNotHaveFoodInHand, RUN_SPEED, true, 32),
-                ForgetSeenFoodTask.create(32)
+                Pair.of(0, WalkToNearestVisibleWantedItemTask.create(GullBrain::doesNotHaveFoodInHand, RUN_SPEED, true, PICK_UP_RANGE)),
+//                Pair.of(1, ForgetSeenFoodTask.create(PICK_UP_RANGE)),
+                Pair.of(1, ForgetTask.run(GullBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
-            FowlPlayMemoryModuleType.SEES_FOOD
+            Set.of(
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
+                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT)
+            )
         );
     }
 
@@ -213,7 +223,7 @@ public class GullBrain {
             return false;
         }
 
-        return gull.isInRange(player, 10.0);
+        return gull.isInRange(player, AVOID_PLAYER_RADIUS);
     }
 
     public static void onAttacked(GullEntity gull, LivingEntity attacker) {
@@ -249,6 +259,11 @@ public class GullBrain {
         return gull.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 
+    private static boolean noFoodInRange(GullEntity gull) {
+        Optional<ItemEntity> item = gull.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+        return item.isEmpty() || !item.get().isInRange(gull, PICK_UP_RANGE);
+    }
+
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
@@ -259,9 +274,5 @@ public class GullBrain {
 
     public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.GULL_FOOD);
-    }
-
-    public static void reset(GullEntity gull) {
-        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, Activity.ADMIRE_ITEM));
     }
 }
