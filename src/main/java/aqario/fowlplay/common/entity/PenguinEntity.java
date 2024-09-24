@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.brain.PenguinBrain;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -9,6 +8,8 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.pathing.AmphibiousNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -48,21 +49,41 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     public final AnimationState standUpState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    public int fleeTime = 0;
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
-        this.moveControl = new AquaticMoveControl(this, 85, 10, 1.5F, 1F, false);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, 12.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+//        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
+//        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+//        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+//        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.moveControl = new AquaticMoveControl(this, 85, 10, 2.0F, 1.0F, false);
+    }
+
+    @Override
+    protected void setMoveControl(boolean isFlying) {
+    }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new AmphibiousNavigation(this, world);
+    }
+
+    @Override
+    public float getPathfindingFavor(BlockPos pos) {
+        return 0.0F;
+    }
+
+    @Nullable
+    @Override
+    public LivingEntity getTarget() {
+        return this.getAttackTarget();
     }
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         PenguinBrain.init();
+        this.setLastAnimationTick(world.toServerWorld().getTime());
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
@@ -85,8 +106,8 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0f);
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.15f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f);
     }
 
     @Override
@@ -169,6 +190,12 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             }
         }
 
+        if (!this.getWorld().isClient) {
+            if (this.isSliding() && this.isInsideWaterOrBubbleColumn()) {
+                this.standUp();
+            }
+        }
+
         super.tick();
     }
 
@@ -226,7 +253,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public float getStepHeight() {
-        return 1.1F;
+        return this.isSliding() ? 1.1F : super.getStepHeight();
     }
 
     @Override

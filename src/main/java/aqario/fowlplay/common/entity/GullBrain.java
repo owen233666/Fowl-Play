@@ -1,8 +1,7 @@
-package aqario.fowlplay.common.entity.ai.brain;
+package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.entity.GullEntity;
-import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
@@ -101,7 +100,7 @@ public class GullBrain {
     }
 
     public static void reset(GullEntity gull) {
-        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, FowlPlayActivities.PICK_UP));
+        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, FowlPlayActivities.PICKUP_FOOD));
     }
 
     private static void addCoreActivities(Brain<GullEntity> brain) {
@@ -140,7 +139,6 @@ public class GullBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new WaitTask(100, 300), 2)
-//                            Pair.of(TaskBuilder.triggerIf(Entity::isOnGround), 2)
                         )
                     )
                 )
@@ -168,10 +166,9 @@ public class GullBrain {
 
     private static void addPickupFoodActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
-            FowlPlayActivities.PICK_UP,
+            FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
                 Pair.of(0, WalkToNearestVisibleWantedItemTask.create(GullBrain::doesNotHaveFoodInHand, RUN_SPEED, true, PICK_UP_RANGE)),
-//                Pair.of(1, ForgetSeenFoodTask.create(PICK_UP_RANGE)),
                 Pair.of(1, ForgetTask.run(GullBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(

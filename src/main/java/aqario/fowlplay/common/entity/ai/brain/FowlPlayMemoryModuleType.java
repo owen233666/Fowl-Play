@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.sensor;
+package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.GullEntity;
@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Optional;
 
-public class FowlPlayMemoryModuleType {
+public final class FowlPlayMemoryModuleType {
     public static final MemoryModuleType<LivingEntity> NEAREST_VISIBLE_PENGUIN = register("nearest_visible_penguin");
     public static final MemoryModuleType<List<GullEntity>> NEAREST_VISIBLE_ADULTS = register("nearest_visible_adults");
     public static final MemoryModuleType<Boolean> SEES_FOOD = register("sees_food", Codec.BOOL);

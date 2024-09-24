@@ -6,8 +6,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class FowlPlayActivities {
-    public static final Activity PICK_UP = register("pick_up");
+public final class FowlPlayActivities {
+    public static final Activity PICKUP_FOOD = register("pickup_food");
     public static final Activity SEARCH = register("search");
 
     private static Activity register(String id) {

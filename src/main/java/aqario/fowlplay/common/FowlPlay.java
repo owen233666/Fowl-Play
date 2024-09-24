@@ -2,7 +2,7 @@ package aqario.fowlplay.common;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
-import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.common.item.FowlPlayItems;

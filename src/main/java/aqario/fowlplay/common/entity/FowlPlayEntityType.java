@@ -10,7 +10,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-public class FowlPlayEntityType {
+public final class FowlPlayEntityType {
     public static final EntityType<BlueJayEntity> BLUE_JAY = register("blue_jay",
         EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.4f, 0.5f)

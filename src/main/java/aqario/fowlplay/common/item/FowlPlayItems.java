@@ -13,7 +13,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 @SuppressWarnings("unused")
-public class FowlPlayItems {
+public final class FowlPlayItems {
     public static final Item BLUE_JAY_SPAWN_EGG = register(
         "blue_jay_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.BLUE_JAY, 0x598FCC, 0xCED8E5, new Item.Settings()),

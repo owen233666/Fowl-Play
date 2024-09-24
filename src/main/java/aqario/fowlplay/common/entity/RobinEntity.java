@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
 import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
@@ -9,7 +8,6 @@ import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.VariantProvider;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -27,7 +25,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -42,33 +39,15 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public final AnimationState flyState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
     private int flapAnimationTimeout = 0;
-    public float flapProgress;
-    public float maxWingDeviation;
-    public float prevMaxWingDeviation;
-    public float prevFlapProgress;
-    public float flapSpeed = 1.0f;
-    private boolean isFlightMoveControl;
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);
-        this.setMoveControl(false);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-    }
-
-    private void setMoveControl(boolean isFlying) {
-        if (isFlying) {
-            this.moveControl = new BirdFlightMoveControl(this, 40);
-            this.isFlightMoveControl = true;
-        }
-        else {
-            this.moveControl = new MoveControl(this);
-            this.isFlightMoveControl = false;
-        }
     }
 
     @Override
@@ -183,50 +162,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
         }
 
         super.tick();
-    }
-
-    @Override
-    public void mobTick() {
-        super.mobTick();
-        if (!this.getWorld().isClient) {
-            if (this.isFlying() != this.isFlightMoveControl) {
-                this.setMoveControl(this.isFlying());
-            }
-        }
-    }
-
-    @Override
-    public void tickMovement() {
-        super.tickMovement();
-        if (this.isFlying()) {
-            this.glide();
-        }
-        else {
-            this.flapWings();
-        }
-    }
-
-    private void glide() {
-        Vec3d vec3d = this.getVelocity();
-        if (!this.isOnGround() && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
-        }
-    }
-
-    private void flapWings() {
-        this.prevFlapProgress = this.flapProgress;
-        this.prevMaxWingDeviation = this.maxWingDeviation;
-        this.maxWingDeviation += (float) (this.isOnGround() || this.hasVehicle() ? -1 : 4) * 0.3f;
-        this.maxWingDeviation = MathHelper.clamp(this.maxWingDeviation, 0.0f, 1.0f);
-        if (!this.isOnGround() && this.flapSpeed < 1.0f) {
-            this.flapSpeed = 1.0f;
-        }
-        this.flapSpeed *= 0.9f;
-        Vec3d vec3d = this.getVelocity();
-        if (!this.isOnGround() && vec3d.y < 0.0) {
-            this.setVelocity(vec3d.multiply(1.0, 0.9, 1.0));
-        }
-        this.flapProgress += this.flapSpeed * 2.0f;
     }
 
     @Override

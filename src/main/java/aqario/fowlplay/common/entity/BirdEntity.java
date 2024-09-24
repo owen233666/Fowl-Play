@@ -236,7 +236,7 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
-    private void setMoveControl(boolean isFlying) {
+    protected void setMoveControl(boolean isFlying) {
         if (isFlying) {
             this.moveControl = new BirdFlightMoveControl(this, 40);
             BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());

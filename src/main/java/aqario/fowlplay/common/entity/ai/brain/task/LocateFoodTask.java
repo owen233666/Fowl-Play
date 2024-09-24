@@ -1,8 +1,8 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.ai.brain.GullBrain;
-import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.GullBrain;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.TaskBuilder;

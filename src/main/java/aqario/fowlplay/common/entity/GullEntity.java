@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.brain.GullBrain;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;

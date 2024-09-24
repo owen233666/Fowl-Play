@@ -10,7 +10,7 @@ import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.world.Heightmap;
 
-public class FowlPlayWorldGen {
+public final class FowlPlayWorldGen {
     public static void init() {
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_BLUE_JAYS),
             SpawnGroup.AMBIENT, FowlPlayEntityType.BLUE_JAY, 50, 1, 3
