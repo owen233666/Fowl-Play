@@ -260,7 +260,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) && isBrightEnoughForNaturalSpawn(world, pos);
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON)/* && isBrightEnoughForNaturalSpawn(world, pos)*/;
     }
 
     @Override
