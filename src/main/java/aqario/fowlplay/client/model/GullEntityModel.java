@@ -42,9 +42,9 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
 
         body.addChild("torso", ModelPartBuilder.create().uv(0, 0).cuboid(-2.0F, -3.5F, -6.5F, 4.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -0.05F, 2.5F, -0.3491F, 0.0F, 0.0F));
 
-        body.addChild("left_wing", ModelPartBuilder.create().uv(10, 12).cuboid(-0.75F, -1.0F, -0.5F, 1.0F, 4.0F, 10.0F, new Dilation(0.0F)), ModelTransform.of(2.25F, -4.55F, -0.5F, -0.3491F, 0.0F, 0.0F));
+        body.addChild("left_wing", ModelPartBuilder.create().uv(6, 12).cuboid(-0.75F, -1.0F, -0.5F, 1.0F, 4.0F, 12.0F, new Dilation(0.0F)), ModelTransform.of(2.25F, -4.55F, -0.5F, -0.3491F, 0.0F, 0.0F));
 
-        body.addChild("right_wing", ModelPartBuilder.create().uv(10, 12).mirrored().cuboid(-0.25F, -1.0F, -0.5F, 1.0F, 4.0F, 10.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.25F, -4.55F, -0.5F, -0.3491F, 0.0F, 0.0F));
+        body.addChild("right_wing", ModelPartBuilder.create().uv(6, 12).mirrored().cuboid(-0.25F, -1.0F, -0.5F, 1.0F, 4.0F, 12.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.25F, -4.55F, -0.5F, -0.3491F, 0.0F, 0.0F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(16, 0).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 1.0F, 3.0F, new Dilation(0.0F))
             .uv(23, 0).cuboid(-1.0F, -1.002F, 3.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.55F, 3.5F, -0.2618F, 0.0F, 0.0F));
