@@ -1,6 +1,5 @@
 package aqario.fowlplay.client.render;
 
-import aqario.fowlplay.client.model.FowlPlayEntityModelLayers;
 import aqario.fowlplay.client.model.RobinEntityModel;
 import aqario.fowlplay.client.render.feature.BirdHeldItemFeatureRenderer;
 import aqario.fowlplay.common.FowlPlay;
@@ -12,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class RobinEntityRenderer extends MobEntityRenderer<RobinEntity, RobinEntityModel> {
     public RobinEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new RobinEntityModel(context.getPart(FowlPlayEntityModelLayers.ROBIN)), 0.15f);
+        super(context, new RobinEntityModel(context.getPart(RobinEntityModel.MODEL_LAYER)), 0.15f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

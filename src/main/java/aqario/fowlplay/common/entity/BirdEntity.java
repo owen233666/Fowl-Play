@@ -222,6 +222,7 @@ public abstract class BirdEntity extends AnimalEntity {
             if (this.isFlying()) {
                 this.timeFlying++;
                 this.setNoGravity(true);
+                this.fallDistance = 0.0F;
                 if (this.isOnGround() || this.isTouchingWater()) {
                     this.setFlying(false);
                 }

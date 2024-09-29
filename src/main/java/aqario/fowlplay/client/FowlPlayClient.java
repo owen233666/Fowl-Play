@@ -2,31 +2,39 @@ package aqario.fowlplay.client;
 
 import aqario.fowlplay.client.model.*;
 import aqario.fowlplay.client.render.*;
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.entity.EntityType;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 
+@SuppressWarnings("unused")
 public class FowlPlayClient implements ClientModInitializer {
     @Override
     public void onInitializeClient(ModContainer mod) {
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.BLUE_JAY, BlueJayEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(BlueJayEntityModel.MODEL_LAYER, BlueJayEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.CARDINAL, CardinalEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(CardinalEntityModel.MODEL_LAYER, CardinalEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.PENGUIN, PenguinEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(PenguinEntityModel.MODEL_LAYER, PenguinEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.PIGEON, PigeonEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(PigeonEntityModel.MODEL_LAYER, PigeonEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.ROBIN, RobinEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(RobinEntityModel.MODEL_LAYER, RobinEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(FowlPlayEntityModelLayers.GULL, GullEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(GullEntityModel.MODEL_LAYER, GullEntityModel::getTexturedModelData);
         EntityRendererRegistry.register(FowlPlayEntityType.GULL, GullEntityRenderer::new);
+
+        if (FowlPlayConfig.customChickenModel) {
+            EntityModelLayerRegistry.registerModelLayer(CustomChickenEntityModel.MODEL_LAYER, CustomChickenEntityModel::getTexturedModelData);
+            EntityRendererRegistry.register(EntityType.CHICKEN, CustomChickenEntityRenderer::new);
+        }
     }
 }

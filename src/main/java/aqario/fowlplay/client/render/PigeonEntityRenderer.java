@@ -1,6 +1,5 @@
 package aqario.fowlplay.client.render;
 
-import aqario.fowlplay.client.model.FowlPlayEntityModelLayers;
 import aqario.fowlplay.client.model.PigeonEntityModel;
 import aqario.fowlplay.client.render.feature.BirdHeldItemFeatureRenderer;
 import aqario.fowlplay.client.render.feature.PigeonBundleFeatureRenderer;
@@ -13,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class PigeonEntityRenderer extends MobEntityRenderer<PigeonEntity, PigeonEntityModel> {
     public PigeonEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new PigeonEntityModel(context.getPart(FowlPlayEntityModelLayers.PIGEON)), 0.2f);
+        super(context, new PigeonEntityModel(context.getPart(PigeonEntityModel.MODEL_LAYER)), 0.2f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

@@ -1,11 +1,15 @@
 package aqario.fowlplay.client.model;
 
 import aqario.fowlplay.client.render.animation.RobinEntityAnimations;
+import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.RobinEntity;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
+    public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "robin"), "main");
     public final ModelPart root;
     public final ModelPart body;
     public final ModelPart head;

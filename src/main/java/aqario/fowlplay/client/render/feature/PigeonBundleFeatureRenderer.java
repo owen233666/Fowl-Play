@@ -13,17 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Axis;
 
 public class PigeonBundleFeatureRenderer extends FeatureRenderer<PigeonEntity, PigeonEntityModel> {
-    private final HeldItemRenderer heldItemRenderer;
+    private final HeldItemRenderer itemRenderer;
 
     public PigeonBundleFeatureRenderer(FeatureRendererContext<PigeonEntity, PigeonEntityModel> context, HeldItemRenderer heldItemRenderer) {
         super(context);
-        this.heldItemRenderer = heldItemRenderer;
+        this.itemRenderer = heldItemRenderer;
     }
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PigeonEntity pigeon, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        boolean sleeping = pigeon.isSleeping();
-        boolean baby = pigeon.isBaby();
         matrices.push();
 
         matrices.translate(
@@ -50,7 +48,7 @@ public class PigeonBundleFeatureRenderer extends FeatureRenderer<PigeonEntity, P
         matrices.scale(0.25F, 0.25F, 0.25F);
 
         ItemStack stack = pigeon.getEquippedStack(EquipmentSlot.OFFHAND);
-        this.heldItemRenderer.renderItem(pigeon, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
+        this.itemRenderer.renderItem(pigeon, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
         matrices.pop();
     }
 }

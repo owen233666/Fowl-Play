@@ -14,11 +14,11 @@ import net.minecraft.util.math.Axis;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extends BirdEntityModel<E>> extends FeatureRenderer<E, M> {
-    private final HeldItemRenderer heldItemRenderer;
+    private final HeldItemRenderer itemRenderer;
 
     public BirdHeldItemFeatureRenderer(FeatureRendererContext<E, M> context, HeldItemRenderer heldItemRenderer) {
         super(context);
-        this.heldItemRenderer = heldItemRenderer;
+        this.itemRenderer = heldItemRenderer;
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
         matrices.scale(0.5F, 0.5F, 0.5F);
 
         ItemStack stack = bird.getEquippedStack(EquipmentSlot.MAINHAND);
-        this.heldItemRenderer.renderItem(bird, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
+        this.itemRenderer.renderItem(bird, stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light);
         matrices.pop();
     }
 

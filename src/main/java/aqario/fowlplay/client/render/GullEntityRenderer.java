@@ -1,6 +1,5 @@
 package aqario.fowlplay.client.render;
 
-import aqario.fowlplay.client.model.FowlPlayEntityModelLayers;
 import aqario.fowlplay.client.model.GullEntityModel;
 import aqario.fowlplay.client.render.feature.BirdHeldItemFeatureRenderer;
 import aqario.fowlplay.common.FowlPlay;
@@ -12,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class GullEntityRenderer extends MobEntityRenderer<GullEntity, GullEntityModel> {
     public GullEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new GullEntityModel(context.getPart(FowlPlayEntityModelLayers.GULL)), 0.3f);
+        super(context, new GullEntityModel(context.getPart(GullEntityModel.MODEL_LAYER)), 0.3f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {

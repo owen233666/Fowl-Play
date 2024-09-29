@@ -50,9 +50,12 @@ dependencies {
     modRuntimeOnly("maven.modrinth:isnrmn:${project.isnrmn_version}")
 
     // Mod Menu
-    modRuntimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
+    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
         transitive = false
     }
+
+    // MidnightLib
+    modImplementation include("maven.modrinth:midnightlib:${project.midnightlib_version}")
 }
 
 processResources {
