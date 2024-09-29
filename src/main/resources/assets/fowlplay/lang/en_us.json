@@ -39,5 +39,6 @@
   "tag.item.fowlplay.penguin_food": "Penguin food",
   "tag.item.fowlplay.pigeon_food": "Pigeon food",
   "tag.item.fowlplay.robin_food": "Robin food",
+  "fowlplay.midnightconfig.title": "Fowl Play Config",
   "fowlplay.midnightconfig.customChickenModel": "Use Custom Chicken Model (requires restart)"
 }
