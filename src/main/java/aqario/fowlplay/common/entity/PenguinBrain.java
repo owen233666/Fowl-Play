@@ -11,19 +11,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.kinds.K1;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.unmapped.C_lygsomtd;
-import net.minecraft.util.math.int_provider.IntProvider;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -74,7 +73,7 @@ public class PenguinBrain {
     private static final float RUN_SPEED = 1.5F;
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
-    private static final float SWIM_SPEED = 3.0F;
+    private static final float SWIM_SPEED = 4.0F;
 
     public static void init() {
     }
@@ -86,6 +85,7 @@ public class PenguinBrain {
     public static Brain<?> create(Brain<PenguinEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
+        addSwimActivities(brain);
         addPickupFoodActivities(brain);
         addFightActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
@@ -97,7 +97,14 @@ public class PenguinBrain {
     public static void reset(PenguinEntity penguin) {
         Brain<PenguinEntity> brain = penguin.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
-        brain.resetPossibleActivities(ImmutableList.of(Activity.IDLE, FowlPlayActivities.PICKUP_FOOD, Activity.FIGHT));
+        brain.resetPossibleActivities(
+            ImmutableList.of(
+                Activity.IDLE,
+                Activity.SWIM,
+                FowlPlayActivities.PICKUP_FOOD,
+                Activity.FIGHT
+            )
+        );
         if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
             brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
@@ -122,31 +129,51 @@ public class PenguinBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(0, C_lygsomtd.method_47069(EntityType.PLAYER, 16.0f, UniformIntProvider.create(30, 60))),
-                Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 2)),
+                Pair.of(0, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 10)),
+                Pair.of(1, FollowMobTask.createMatchingType(EntityType.PLAYER, 32.0F)),
                 Pair.of(2, new TemptTask(penguin -> TEMPTED_SPEED)),
                 Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(4, new PenguinRandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(5, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
                     6,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.createSwim(SWIM_SPEED), 2),
-                            Pair.of(MeanderTask.create(WALK_SPEED, false), 2),
-                            Pair.of(GoTowardsLookTarget.create(
-                                entity -> true,
-                                entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED,
-                                10
-                            ), 3),
+                            Pair.of(MeanderTask.create(WALK_SPEED), 2),
+                            Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 10), 3),
                             Pair.of(new RandomSlideTask(20), 5),
-                            Pair.of(new PenguinWaitTask(400, 800), 5)
+                            Pair.of(new WaitTask(400, 800), 5)
                         )
                     )
                 )
             ),
             ImmutableSet.of(
+                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
+            )
+        );
+    }
+
+    private static void addSwimActivities(Brain<PenguinEntity> brain) {
+        brain.setTaskList(
+            Activity.SWIM,
+            ImmutableList.of(
+                Pair.of(0, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, SWIM_SPEED)),
+                Pair.of(1, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
+                Pair.of(
+                    2,
+                    new RandomTask<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+                        ImmutableList.of(
+                            Pair.of(PenguinSwimTask.create(SWIM_SPEED), 2)
+                        )
+                    )
+                )
+            ),
+            ImmutableSet.of(
+                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_PRESENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
@@ -237,17 +264,49 @@ public class PenguinBrain {
         }
     }
 
-    public static class PenguinRandomLookAroundTask extends RandomLookAroundTask {
-        public PenguinRandomLookAroundTask(IntProvider interval, float maxYaw, float minPitch, float maxPitch) {
-            super(interval, maxYaw, minPitch, maxPitch);
+    public static class PenguinSwimTask {
+        private static final int[][] SWIM_DISTANCES = new int[][]{/*{15, 7}, */{31, 15}};
+
+        public static TaskControl<PathAwareEntity> create(float speed) {
+            return create(speed, PenguinSwimTask::findSwimTargetPos, Entity::isInsideWaterOrBubbleColumn);
         }
 
-        @Override
-        protected boolean shouldRun(ServerWorld world, MobEntity entity) {
-            if (entity.isInsideWaterOrBubbleColumn()) {
-                return false;
+        private static ReportingTaskControl<PathAwareEntity> create(float speed, Function<PathAwareEntity, Vec3d> targetGetter, Predicate<PathAwareEntity> predicate) {
+            return TaskBuilder.task(
+                instance -> instance.group(instance.absentMemory(MemoryModuleType.WALK_TARGET)).apply(instance, memoryAccessor -> (world, entity, time) -> {
+                    if (!predicate.test(entity)) {
+                        return false;
+                    }
+                    else {
+                        Optional<Vec3d> optional = Optional.ofNullable(targetGetter.apply(entity));
+                        memoryAccessor.remember(optional.map(vec3d -> new WalkTarget(vec3d, speed, 0)));
+                        return true;
+                    }
+                })
+            );
+        }
+
+        @Nullable
+        private static Vec3d findSwimTargetPos(PathAwareEntity entity) {
+            Vec3d vec3d = null;
+            Vec3d vec3d2 = null;
+
+            for (int[] is : SWIM_DISTANCES) {
+                if (vec3d == null) {
+                    vec3d2 = LookTargetUtil.find(entity, is[0], is[1]);
+                }
+                else {
+                    vec3d2 = entity.getPos().add(entity.getPos().relativize(vec3d).normalize().multiply(is[0], is[1], is[0]));
+                }
+
+                if (vec3d2 == null || entity.getWorld().getFluidState(BlockPos.fromPosition(vec3d2)).isEmpty()) {
+                    return vec3d;
+                }
+
+                vec3d = vec3d2;
             }
-            return super.shouldRun(world, entity);
+
+            return vec3d2;
         }
     }
 
@@ -276,51 +335,6 @@ public class PenguinBrain {
             else {
                 penguin.startSliding();
             }
-        }
-    }
-
-    public static class PenguinWaitTask implements TaskControl<PenguinEntity> {
-        private final int minDuration;
-        private final int maxDuration;
-        private Task.Status status = Task.Status.STOPPED;
-        private long endTimestamp;
-
-        public PenguinWaitTask(int minRunTime, int maxRunTime) {
-            this.minDuration = minRunTime;
-            this.maxDuration = maxRunTime;
-        }
-
-        @Override
-        public Task.Status getStatus() {
-            return this.status;
-        }
-
-        @Override
-        public final boolean tryStart(ServerWorld world, PenguinEntity penguin, long time) {
-            if (penguin.isInsideWaterOrBubbleColumn()) {
-                return false;
-            }
-            this.status = Task.Status.RUNNING;
-            int i = this.minDuration + world.getRandom().nextInt(this.maxDuration + 1 - this.minDuration);
-            this.endTimestamp = time + (long) i;
-            return true;
-        }
-
-        @Override
-        public final void tick(ServerWorld world, PenguinEntity penguin, long time) {
-            if (time > this.endTimestamp) {
-                this.stop(world, penguin, time);
-            }
-        }
-
-        @Override
-        public final void stop(ServerWorld world, PenguinEntity penguin, long time) {
-            this.status = Task.Status.STOPPED;
-        }
-
-        @Override
-        public String debugString() {
-            return this.getClass().getSimpleName();
         }
     }
 }

@@ -84,7 +84,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     private boolean canEat(ItemStack stack) {
-        return this.getFood().test(stack) && this.isOnGround()/* && !this.isSleeping()*/;
+        return this.getFood().test(stack)/* && !this.isSleeping()*/;
     }
 
     @Override

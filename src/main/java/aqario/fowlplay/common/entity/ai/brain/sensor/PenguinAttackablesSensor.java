@@ -7,7 +7,7 @@ import net.minecraft.entity.ai.brain.sensor.NearestVisibleLivingEntitySensor;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 
 public class PenguinAttackablesSensor extends NearestVisibleLivingEntitySensor {
-    public static final float TARGET_DETECTION_DISTANCE = 16.0F;
+    public static final float TARGET_DETECTION_DISTANCE = 32.0F;
 
     @Override
     protected boolean matches(LivingEntity penguin, LivingEntity target) {

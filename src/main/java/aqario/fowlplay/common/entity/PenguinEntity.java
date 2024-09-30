@@ -24,6 +24,7 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
@@ -66,7 +67,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     protected float getAirSpeed() {
-        return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() * 10 : super.getAirSpeed();
+        return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() : super.getAirSpeed();
     }
 
     protected void setMoveControl(boolean isSwimming) {
@@ -124,7 +125,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
-            .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.8f);
+            .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0f);
     }
 
     @Override
@@ -217,6 +218,24 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         }
 
         super.tick();
+
+        if (this.getWorld().isClient && this.isInsideWaterOrBubbleColumn() && this.getVelocity().lengthSquared() > 0.02) {
+            this.addSwimParticles();
+        }
+    }
+
+    private void addSwimParticles() {
+        for (int i = 0; i < 20; i++) {
+            this.getWorld().addParticle(
+                ParticleTypes.DOLPHIN,
+                (this.getX() + (this.random.nextFloat() * 0.5F - 0.25F)),
+                (this.getY() + this.getBounds().getYLength() / 2) + (this.random.nextFloat() * 0.5F - 0.25F),
+                (this.getZ() + (this.random.nextFloat() * 0.5F - 0.25F)),
+                0.0,
+                0.0,
+                0.0
+            );
+        }
     }
 
     protected void clampPassengerYaw(Entity entity) {
@@ -279,7 +298,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     public EntityDimensions getDefaultDimensions(EntityPose pose) {
         EntityDimensions entityDimensions = super.getDefaultDimensions(pose);
-        return this.isSliding() || this.isTouchingWater() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
+        return this.isSliding() || this.isInsideWaterOrBubbleColumn() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
     }
 
     @Override
@@ -310,6 +329,16 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     protected boolean canAddPassenger(Entity passenger) {
         return super.canAddPassenger(passenger) && !this.isSubmergedInWater();
+    }
+
+    @Override
+    protected boolean updateWaterState() {
+        boolean touchingWater = this.isTouchingWater();
+        boolean bl = super.updateWaterState();
+        if (touchingWater != this.isTouchingWater()) {
+            this.calculateDimensions();
+        }
+        return bl;
     }
 
     @Override
@@ -429,7 +458,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.random.nextFloat() < 0.1F) {
+        if (!this.isInsideWaterOrBubbleColumn() && this.random.nextFloat() < 0.1F) {
             return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
         }
 
