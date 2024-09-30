@@ -100,7 +100,13 @@ public class GullBrain {
     }
 
     public static void reset(GullEntity gull) {
-        gull.getBrain().resetPossibleActivities(ImmutableList.of(Activity.IDLE, Activity.AVOID, FowlPlayActivities.PICKUP_FOOD));
+        gull.getBrain().resetPossibleActivities(
+            ImmutableList.of(
+                Activity.IDLE,
+                Activity.AVOID,
+                FowlPlayActivities.PICKUP_FOOD
+            )
+        );
     }
 
     private static void addCoreActivities(Brain<GullEntity> brain) {
@@ -129,7 +135,12 @@ public class GullBrain {
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
-                Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(5, new RandomLookAroundTask(
+                    UniformIntProvider.create(150, 250),
+                    30.0F,
+                    0.0F,
+                    0.0F
+                )),
                 Pair.of(
                     6,
                     new RandomTask<>(
@@ -155,7 +166,12 @@ public class GullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET, RUN_SPEED, AVOID_PLAYER_RADIUS, true),
+                GoToRememberedPositionTask.toEntity(
+                    MemoryModuleType.AVOID_TARGET,
+                    RUN_SPEED,
+                    AVOID_PLAYER_RADIUS,
+                    true
+                ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
                 ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
@@ -168,7 +184,12 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, WalkToNearestVisibleWantedItemTask.create(GullBrain::doesNotHaveFoodInHand, RUN_SPEED, true, PICK_UP_RANGE)),
+                Pair.of(0, WalkToNearestVisibleWantedItemTask.create(
+                    GullBrain::doesNotHaveFoodInHand,
+                    RUN_SPEED,
+                    true,
+                    PICK_UP_RANGE
+                )),
                 Pair.of(1, ForgetTask.run(GullBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
@@ -198,7 +219,10 @@ public class GullBrain {
         return new RandomTask<>(
             ImmutableList.of(
                 Pair.of(MeanderTask.create(0.6F), 2),
-                Pair.of(TaskBuilder.sequence(livingEntity -> true, GoTowardsLookTarget.create(0.6F, 3)), 2),
+                Pair.of(TaskBuilder.sequence(
+                    livingEntity -> true,
+                    GoTowardsLookTarget.create(0.6F, 3)
+                ), 2),
                 Pair.of(new WaitTask(30, 60), 1)
             )
         );
