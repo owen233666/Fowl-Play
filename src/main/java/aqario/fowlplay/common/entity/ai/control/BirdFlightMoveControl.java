@@ -1,16 +1,16 @@
 package aqario.fowlplay.common.entity.ai.control;
 
-import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class BirdFlightMoveControl extends BirdMoveControl {
-    private final BirdEntity bird;
+    private final FlyingBirdEntity bird;
     private final int maxPitchChange;
 
-    public BirdFlightMoveControl(BirdEntity bird, int maxPitchChange) {
+    public BirdFlightMoveControl(FlyingBirdEntity bird, int maxPitchChange) {
         super(bird);
         this.bird = bird;
         this.maxPitchChange = maxPitchChange;

@@ -36,9 +36,9 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
-        ModelPartData root = modelPartData.addChild("root", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
+        ModelPartData root = modelPartData.addChild("root", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 13.0F, 0.0F));
 
-        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 11.0F, 0.0F));
 
         ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -17.0F, 0.0F));
 
@@ -57,28 +57,35 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
         ModelPartData cube_r2 = tail.addChild("cube_r2", ModelPartBuilder.create().uv(24, 0).cuboid(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.3491F));
 
         ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(24, 14).cuboid(-1.0F, -2.0F, -0.5F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F))
-            .uv(24, 20).mirrored().cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(1.5F, -3.0F, 0.0F));
+            .uv(24, 20).mirrored().cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(1.5F, 8.0F, 0.0F));
 
         ModelPartData right_leg = root.addChild("right_leg", ModelPartBuilder.create().uv(24, 14).mirrored().cuboid(-1.0F, -2.0F, -0.5F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F)).mirrored(false)
-            .uv(24, 20).cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-1.5F, -3.0F, 0.0F));
+            .uv(24, 20).cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-1.5F, 8.0F, 0.0F));
+
         return TexturedModelData.of(modelData, 64, 64);
     }
 
     @Override
-    public void setAngles(PenguinEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(PenguinEntity penguin, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
-        this.updateHeadRotation(netHeadYaw, headPitch);
+        this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), netHeadYaw, headPitch);
         this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
-        this.animate(entity.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
-        this.animate(entity.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
-        this.animate(entity.floatState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
+        this.animate(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
+        this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.animate(penguin.floatState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
     }
 
-    private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -75.0F, 75.0F);
-        headPitch = MathHelper.clamp(headPitch, -45.0F, 45.0F);
-        this.head.yaw = headYaw * (float) (Math.PI / 180.0);
-        this.head.pitch = headPitch * (float) (Math.PI / 180.0);
+    private void updateHeadRotation(boolean swimming, float headYaw, float headPitch) {
+        if (swimming) {
+            this.root.yaw = headYaw * (float) (Math.PI / 180.0);
+            this.root.pitch = headPitch * (float) (Math.PI / 180.0);
+        }
+        else {
+            headYaw = MathHelper.clamp(headYaw, -75.0F, 75.0F);
+            headPitch = MathHelper.clamp(headPitch, -45.0F, 45.0F);
+            this.head.yaw = headYaw * (float) (Math.PI / 180.0);
+            this.head.pitch = headPitch * (float) (Math.PI / 180.0);
+        }
     }
 }

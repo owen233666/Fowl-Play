@@ -17,7 +17,7 @@ public class PenguinEntityAnimations {
             "root",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 3f, 10f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -8f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -100,7 +100,7 @@ public class PenguinEntityAnimations {
             "root",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 3f, 10f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -8f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -135,14 +135,14 @@ public class PenguinEntityAnimations {
             "left_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-30f, -62.5f, -37.5f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(-5f, -20f, -10f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "right_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-30f, 62.5f, 37.5f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(-5f, 20f, 10f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(

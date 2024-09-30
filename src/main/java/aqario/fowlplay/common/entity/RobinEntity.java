@@ -29,10 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class RobinEntity extends BirdEntity implements VariantProvider<RobinEntity.Variant> {
+public class RobinEntity extends FlyingBirdEntity implements VariantProvider<RobinEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
@@ -92,7 +89,7 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return BirdEntity.createAttributes()
+        return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
@@ -209,9 +206,6 @@ public class RobinEntity extends BirdEntity implements VariantProvider<RobinEnti
     public enum Variant {
         AMERICAN("american"),
         REDBREAST("redbreast");
-
-        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(Variant[]::new));
 
         private final String id;
 

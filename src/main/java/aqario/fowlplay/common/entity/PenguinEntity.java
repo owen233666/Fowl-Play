@@ -7,7 +7,9 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.control.AquaticLookControl;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.AmphibiousNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -42,6 +44,7 @@ import java.util.List;
 public class PenguinEntity extends BirdEntity implements Sliding {
     public static final TrackedData<Boolean> SLIDING = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     public static final TrackedData<Long> LAST_ANIMATION_TICK = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.LONG);
+    private boolean isAquaticMoveControl;
     public final AnimationState idleState = new AnimationState();
     public final AnimationState walkState = new AnimationState();
     public final AnimationState slideState = new AnimationState();
@@ -52,16 +55,29 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
+        this.setMoveControl(false);
 //        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
 //        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
 //        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
 //        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-        this.moveControl = new AquaticMoveControl(this, 85, 10, 2.0F, 1.0F, false);
+        this.lookControl = new AquaticLookControl(this, 85);
     }
 
     @Override
-    protected void setMoveControl(boolean isFlying) {
+    protected float getAirSpeed() {
+        return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() * 10 : super.getAirSpeed();
+    }
+
+    protected void setMoveControl(boolean isSwimming) {
+        if (isSwimming) {
+            this.moveControl = new AquaticMoveControl(this, 85, 10, 1.0F, 1.0F, false);
+            this.isAquaticMoveControl = true;
+        }
+        else {
+            this.moveControl = new MoveControl(this);
+            this.isAquaticMoveControl = false;
+        }
     }
 
     @Override
@@ -106,8 +122,9 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.15f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f);
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
+            .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.8f);
     }
 
     @Override
@@ -193,6 +210,9 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         if (!this.getWorld().isClient) {
             if (this.isSliding() && this.isInsideWaterOrBubbleColumn()) {
                 this.standUp();
+            }
+            if (this.isInsideWaterOrBubbleColumn() != this.isAquaticMoveControl) {
+                this.setMoveControl(this.isInsideWaterOrBubbleColumn());
             }
         }
 
@@ -343,11 +363,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         return super.interactMob(player, hand);
     }
 
-    @Override
-    public int getFlapFrequency() {
-        return 0;
-    }
-
     public boolean isSliding() {
         return this.dataTracker.get(LAST_ANIMATION_TICK) < 0L;
     }
@@ -434,15 +449,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     protected SoundEvent getDeathSound() {
         return FowlPlaySoundEvents.ENTITY_PENGUIN_DEATH;
-    }
-
-    @Override
-    public boolean isFlying() {
-        return false;
-    }
-
-    @Override
-    public void setFlying(boolean flying) {
     }
 
     @Override

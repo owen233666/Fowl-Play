@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.world.gen;
 
-import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -16,14 +16,14 @@ public final class FowlPlayWorldGen {
             SpawnGroup.AMBIENT, FowlPlayEntityType.BLUE_JAY, 50, 1, 3
         );
         SpawnRestriction.register(FowlPlayEntityType.BLUE_JAY, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawn
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_CARDINALS),
             SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 50, 1, 3
         );
         SpawnRestriction.register(FowlPlayEntityType.CARDINAL, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawn
         );
 
         BiomeModifications.addSpawn(biome -> biome.hasTag(FowlPlayBiomeTags.SPAWNS_GULLS),
@@ -51,7 +51,7 @@ public final class FowlPlayWorldGen {
             SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 50, 2, 4
         );
         SpawnRestriction.register(FowlPlayEntityType.ROBIN, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING, BirdEntity::canSpawn
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawn
         );
     }
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class TrustingBirdEntity extends BirdEntity {
+public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     protected static final TrackedData<List<UUID>> TRUSTED = DataTracker.registerData(TrustingBirdEntity.class, FowlPlayTrackedDataHandlerRegistry.UUID_LIST);
 
     protected TrustingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {

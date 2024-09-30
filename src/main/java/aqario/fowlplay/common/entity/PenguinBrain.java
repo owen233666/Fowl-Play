@@ -71,7 +71,7 @@ public class PenguinBrain {
     private static final float RUN_SPEED = 1.5F;
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
-    private static final float SWIM_SPEED = 4.0F;
+    private static final float SWIM_SPEED = 2.0F;
 
     public static void init() {
     }
@@ -134,9 +134,8 @@ public class PenguinBrain {
 //                        CompositeTask.RunMode.TRY_ALL,
                         ImmutableList.of(
                             Pair.of(MeanderTask.createSwim(SWIM_SPEED), 2),
-                            Pair.of(MeanderTask.create(WALK_SPEED, true), 2),
-                            Pair.of(GoTowardsLookTarget.create(PenguinBrain::canGoToLookTarget, entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED, 1), 3),
-//                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 5),
+                            Pair.of(MeanderTask.create(WALK_SPEED, false), 2),
+                            Pair.of(GoTowardsLookTarget.create(entity -> true, entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED, 1), 3),
                             Pair.of(new RandomSlideTask(20), 5),
                             Pair.of(new PenguinWaitTask(400, 800), 5)
                         )

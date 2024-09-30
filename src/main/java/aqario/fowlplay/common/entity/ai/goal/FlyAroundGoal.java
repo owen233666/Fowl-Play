@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
-import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.Vec3d;
@@ -10,14 +10,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 public class FlyAroundGoal extends Goal {
-    private final BirdEntity bird;
+    private final FlyingBirdEntity bird;
     private final RandomGenerator random;
     private double x;
     private double y;
     private double z;
     private boolean flightTarget = false;
 
-    public FlyAroundGoal(BirdEntity bird) {
+    public FlyAroundGoal(FlyingBirdEntity bird) {
         this.bird = bird;
         this.setControls(EnumSet.of(Control.MOVE));
         this.random = this.bird.getRandom();

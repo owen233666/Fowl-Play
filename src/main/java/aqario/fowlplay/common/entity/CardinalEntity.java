@@ -21,7 +21,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class CardinalEntity extends BirdEntity {
+public class CardinalEntity extends FlyingBirdEntity {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState flyState = new AnimationState();
