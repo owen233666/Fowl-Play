@@ -61,13 +61,13 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putBoolean("Flying", this.isFlying());
+        nbt.putBoolean("flying", this.isFlying());
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.setFlying(nbt.getBoolean("Flying"));
+        this.setFlying(nbt.getBoolean("flying"));
     }
 
     public abstract int getFlapFrequency();

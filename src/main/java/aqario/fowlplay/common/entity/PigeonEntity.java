@@ -4,10 +4,7 @@ import aqario.fowlplay.common.entity.ai.goal.*;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.VariantProvider;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -37,6 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,6 +63,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
+        return super.initialize(world, difficulty, spawnReason, entityData);
+    }
+
+    @Override
     protected void initEquipment(RandomGenerator random, LocalDifficulty difficulty) {
         this.setDropChance(EquipmentSlot.MAINHAND, 1.0f);
         this.setDropChance(EquipmentSlot.OFFHAND, 1.0f);
@@ -75,7 +79,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         super.initDataTracker(builder);
         builder.add(RECIPIENT, Optional.empty());
         builder.add(DELIVERING, false);
-        builder.add(VARIANT, Util.getRandom(Variant.VARIANTS, random).toString());
+        builder.add(VARIANT, Variant.BANDED.toString());
     }
 
     @Override
@@ -92,21 +96,21 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("variant", this.getVariant().toString());
-        nbt.putBoolean("Delivering", this.dataTracker.get(DELIVERING));
+        nbt.putBoolean("delivering", this.dataTracker.get(DELIVERING));
         if (this.getRecipientUuid() != null) {
-            nbt.putUuid("Recipient", this.getRecipientUuid());
+            nbt.putUuid("recipient", this.getRecipientUuid());
         }
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.dataTracker.set(DELIVERING, nbt.getBoolean("Delivering"));
-        if (!nbt.containsUuid("Receiver")) {
+        this.dataTracker.set(DELIVERING, nbt.getBoolean("delivering"));
+        if (!nbt.containsUuid("receiver")) {
             this.setRecipientUuid(null);
             return;
         }
-        this.setRecipientUuid(nbt.getUuid("Receiver"));
+        this.setRecipientUuid(nbt.getUuid("receiver"));
         if (nbt.contains("variant")) {
             this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
         }

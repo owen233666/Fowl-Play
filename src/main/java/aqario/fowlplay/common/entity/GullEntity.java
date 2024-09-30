@@ -49,6 +49,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         GullBrain.init();
+        this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
@@ -67,7 +68,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(VARIANT, Util.getRandom(Variant.VARIANTS, this.random).toString());
+        builder.add(VARIANT, Variant.HERRING.toString());
     }
 
     @Override

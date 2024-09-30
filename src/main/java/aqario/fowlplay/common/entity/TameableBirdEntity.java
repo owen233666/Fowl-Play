@@ -40,21 +40,21 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         if (this.getOwnerUuid() != null) {
-            nbt.putUuid("Owner", this.getOwnerUuid());
+            nbt.putUuid("owner", this.getOwnerUuid());
         }
 
-        nbt.putBoolean("Sitting", this.sitting);
+        nbt.putBoolean("sitting", this.sitting);
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         UUID uuid;
-        if (nbt.containsUuid("Owner")) {
-            uuid = nbt.getUuid("Owner");
+        if (nbt.containsUuid("owner")) {
+            uuid = nbt.getUuid("owner");
         }
         else {
-            String string = nbt.getString("Owner");
+            String string = nbt.getString("owner");
             uuid = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
         }
 
@@ -68,7 +68,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
             }
         }
 
-        this.sitting = nbt.getBoolean("Sitting");
+        this.sitting = nbt.getBoolean("sitting");
         this.setInSittingPose(this.sitting);
     }
 
@@ -163,15 +163,11 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     @Override
     public boolean canTarget(LivingEntity target) {
-        return this.isOwner(target) ? false : super.canTarget(target);
+        return !this.isOwner(target) && super.canTarget(target);
     }
 
     public boolean isOwner(LivingEntity entity) {
         return entity == this.getOwner();
-    }
-
-    public boolean canAttackWithOwner(LivingEntity target, LivingEntity owner) {
-        return true;
     }
 
     @Override

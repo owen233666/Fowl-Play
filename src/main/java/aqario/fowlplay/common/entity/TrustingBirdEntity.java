@@ -45,16 +45,16 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.put("Trusted", this.toNbtList(this.getTrustedUuids()));
+        nbt.put("trusted", this.toNbtList(this.getTrustedUuids()));
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (!nbt.contains("Trusted")) {
+        if (!nbt.contains("trusted")) {
             return;
         }
-        NbtList list = (NbtList) nbt.get("Trusted");
+        NbtList list = (NbtList) nbt.get("trusted");
         if (list != null) {
             list.forEach(element -> this.addTrustedUuid(NbtHelper.toUuid(element)));
         }
@@ -113,10 +113,6 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
         List<UUID> trusted = this.dataTracker.get(TRUSTED);
         trusted.remove(uuid);
         this.dataTracker.set(TRUSTED, trusted);
-    }
-
-    public void startTrusting(PlayerEntity player) {
-        this.addTrustedUuid(player.getUuid());
     }
 
     public void stopTrusting(PlayerEntity player) {

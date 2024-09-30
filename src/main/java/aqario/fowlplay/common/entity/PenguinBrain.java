@@ -9,6 +9,7 @@ import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.kinds.K1;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -21,12 +22,12 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.unmapped.C_lygsomtd;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.int_provider.IntProvider;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
-import net.minecraft.world.World;
 
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
@@ -134,7 +135,11 @@ public class PenguinBrain {
                         ImmutableList.of(
                             Pair.of(MeanderTask.createSwim(SWIM_SPEED), 2),
                             Pair.of(MeanderTask.create(WALK_SPEED, false), 2),
-                            Pair.of(GoTowardsLookTarget.create(entity -> true, entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED, 10), 3),
+                            Pair.of(GoTowardsLookTarget.create(
+                                entity -> true,
+                                entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED,
+                                10
+                            ), 3),
                             Pair.of(new RandomSlideTask(20), 5),
                             Pair.of(new PenguinWaitTask(400, 800), 5)
                         )
@@ -142,7 +147,6 @@ public class PenguinBrain {
                 )
             ),
             ImmutableSet.of(
-//                Pair.of(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
@@ -154,7 +158,12 @@ public class PenguinBrain {
             FowlPlayActivities.PICKUP_FOOD,
             10,
             ImmutableList.of(
-                WalkToNearestVisibleWantedItemTask.create(PenguinBrain::doesNotHaveFoodInHand, RUN_SPEED, true, PICK_UP_RANGE),
+                PenguinWalkToNearestWantedItemTask.create(
+                    PenguinBrain::doesNotHaveFoodInHand,
+                    entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
+                    true,
+                    PICK_UP_RANGE
+                ),
                 ForgetTask.run(PenguinBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD)
             ),
             FowlPlayMemoryModuleType.SEES_FOOD
@@ -175,18 +184,6 @@ public class PenguinBrain {
         );
     }
 
-    private static boolean canGoToLookTarget(LivingEntity entity) {
-        World world = entity.getWorld();
-        Optional<LookTarget> optional = entity.getBrain().getOptionalMemory(MemoryModuleType.LOOK_TARGET);
-        if (optional.isPresent()) {
-            BlockPos blockPos = optional.get().getBlockPos();
-            return world.isWater(blockPos) == entity.isInsideWaterOrBubbleColumn();
-        }
-        else {
-            return false;
-        }
-    }
-
     private static Optional<? extends LivingEntity> getAttackTarget(PenguinEntity penguin) {
         return LookTargetUtil.isValidBreedingTarget(penguin) ? Optional.empty() : penguin.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE);
     }
@@ -202,6 +199,42 @@ public class PenguinBrain {
 
     public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
+    }
+
+    public static class PenguinWalkToNearestWantedItemTask {
+        public static <E extends LivingEntity> TaskControl<E> create(Predicate<E> startPredicate, Function<LivingEntity, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
+            return TaskBuilder.task(
+                instance -> {
+                    TaskBuilder<E, ? extends MemoryAccessor<? extends K1, WalkTarget>> taskBuilder = requiresWalkTarget
+                        ? instance.registeredMemory(MemoryModuleType.WALK_TARGET)
+                        : instance.absentMemory(MemoryModuleType.WALK_TARGET);
+                    return instance.group(
+                            instance.registeredMemory(MemoryModuleType.LOOK_TARGET),
+                            taskBuilder,
+                            instance.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
+                            instance.registeredMemory(MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
+                        )
+                        .apply(
+                            instance,
+                            (memoryAccessor, memoryAccessor2, memoryAccessor3, memoryAccessor4) -> (world, livingEntity, l) -> {
+                                ItemEntity itemEntity = instance.getValue(memoryAccessor3);
+                                if (instance.getValueOptional(memoryAccessor4).isEmpty()
+                                    && startPredicate.test(livingEntity)
+                                    && itemEntity.isInRange(livingEntity, radius)
+                                    && livingEntity.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
+                                    WalkTarget walkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(livingEntity), 0);
+                                    memoryAccessor.remember(new EntityLookTarget(itemEntity, true));
+                                    memoryAccessor2.remember(walkTarget);
+                                    return true;
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                        );
+                }
+            );
+        }
     }
 
     public static class PenguinRandomLookAroundTask extends RandomLookAroundTask {

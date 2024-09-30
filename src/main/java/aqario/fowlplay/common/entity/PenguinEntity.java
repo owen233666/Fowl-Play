@@ -137,14 +137,14 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putLong("LastPoseTick", this.dataTracker.get(LAST_ANIMATION_TICK));
-        nbt.putBoolean("Sliding", this.dataTracker.get(SLIDING));
+        nbt.putLong("lastPoseTick", this.dataTracker.get(LAST_ANIMATION_TICK));
+        nbt.putBoolean("sliding", this.dataTracker.get(SLIDING));
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        long l = nbt.getLong("LastPoseTick");
+        long l = nbt.getLong("lastPoseTick");
         if (l < 0L) {
             this.setSliding(true);
         }
