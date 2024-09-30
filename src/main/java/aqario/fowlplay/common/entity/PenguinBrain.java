@@ -17,10 +17,12 @@ import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.unmapped.C_lygsomtd;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.int_provider.IntProvider;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.world.World;
 
@@ -71,7 +73,7 @@ public class PenguinBrain {
     private static final float RUN_SPEED = 1.5F;
     private static final float TEMPTED_SPEED = 0.8F;
     private static final float WALK_SPEED = 1.0F;
-    private static final float SWIM_SPEED = 2.0F;
+    private static final float SWIM_SPEED = 3.0F;
 
     public static void init() {
     }
@@ -123,19 +125,16 @@ public class PenguinBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 2)),
                 Pair.of(2, new TemptTask(penguin -> TEMPTED_SPEED)),
                 Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(4, new PenguinRandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(5, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
                     6,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
-//                        ImmutableSet.of(),
-//                        CompositeTask.Order.ORDERED,
-//                        CompositeTask.RunMode.TRY_ALL,
                         ImmutableList.of(
                             Pair.of(MeanderTask.createSwim(SWIM_SPEED), 2),
                             Pair.of(MeanderTask.create(WALK_SPEED, false), 2),
-                            Pair.of(GoTowardsLookTarget.create(entity -> true, entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED, 1), 3),
+                            Pair.of(GoTowardsLookTarget.create(entity -> true, entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : WALK_SPEED, 10), 3),
                             Pair.of(new RandomSlideTask(20), 5),
                             Pair.of(new PenguinWaitTask(400, 800), 5)
                         )
@@ -203,6 +202,20 @@ public class PenguinBrain {
 
     public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
+    }
+
+    public static class PenguinRandomLookAroundTask extends RandomLookAroundTask {
+        public PenguinRandomLookAroundTask(IntProvider interval, float maxYaw, float minPitch, float maxPitch) {
+            super(interval, maxYaw, minPitch, maxPitch);
+        }
+
+        @Override
+        protected boolean shouldRun(ServerWorld world, MobEntity entity) {
+            if (entity.isInsideWaterOrBubbleColumn()) {
+                return false;
+            }
+            return super.shouldRun(world, entity);
+        }
     }
 
     public static class RandomSlideTask extends Task<PenguinEntity> {

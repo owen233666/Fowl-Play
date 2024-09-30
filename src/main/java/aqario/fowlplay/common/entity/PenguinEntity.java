@@ -71,7 +71,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     protected void setMoveControl(boolean isSwimming) {
         if (isSwimming) {
-            this.moveControl = new AquaticMoveControl(this, 85, 10, 1.0F, 1.0F, false);
+            this.moveControl = new AquaticMoveControl(this, 85, 10, 1.0F, 1.0F, true);
             this.isAquaticMoveControl = true;
         }
         else {
@@ -343,7 +343,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public int getMaxAir() {
-        return 2400;
+        return 9600;
     }
 
     @Override
