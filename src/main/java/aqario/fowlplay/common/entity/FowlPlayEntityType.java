@@ -12,19 +12,19 @@ import net.minecraft.util.math.Vec3d;
 
 public final class FowlPlayEntityType {
     public static final EntityType<BlueJayEntity> BLUE_JAY = register("blue_jay",
-        EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
             .setEyeHeight(0.3f)
     );
 
     public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
-        EntityType.Builder.create(CardinalEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(CardinalEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
             .setEyeHeight(0.3f)
     );
 
     public static final EntityType<GullEntity> GULL = register("gull",
-        EntityType.Builder.create(GullEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(GullEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.6f, 0.8f)
             .setEyeHeight(0.7f)
     );
@@ -43,7 +43,7 @@ public final class FowlPlayEntityType {
     );
 
     public static final EntityType<RobinEntity> ROBIN = register("robin",
-        EntityType.Builder.create(RobinEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(RobinEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
             .setEyeHeight(0.3f)
     );

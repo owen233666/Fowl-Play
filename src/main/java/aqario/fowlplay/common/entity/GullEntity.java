@@ -47,6 +47,11 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     @Override
+    public boolean cannotDespawn() {
+        return super.cannotDespawn();
+    }
+
+    @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         GullBrain.init();
         this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));

@@ -1,7 +1,11 @@
 {
   "values": [
-    "minecraft:grass_block",
+    "minecraft:blue_ice",
     "minecraft:ice",
-    "minecraft:snow_block"
+    "minecraft:packed_ice",
+    "minecraft:powder_snow",
+    "minecraft:snow_block",
+    "minecraft:grass_block",
+    "minecraft:sand"
   ]
 }
