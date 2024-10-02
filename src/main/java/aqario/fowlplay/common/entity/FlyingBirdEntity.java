@@ -43,7 +43,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @SuppressWarnings("unused")
     public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON)/* && isBrightEnoughForNaturalSpawn(world, pos)*/;
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @SuppressWarnings("unused")

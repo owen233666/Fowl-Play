@@ -2,6 +2,7 @@ package aqario.fowlplay.common.world.gen;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
+import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -27,7 +28,7 @@ public final class FowlPlayWorldGen {
         );
 
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, FlyingBirdEntity::canSpawnShorebirds
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_GULLS),
             SpawnGroup.CREATURE, FowlPlayEntityType.GULL, 10, 5, 12
