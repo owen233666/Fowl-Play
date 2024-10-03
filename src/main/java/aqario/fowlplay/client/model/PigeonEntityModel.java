@@ -72,9 +72,9 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
         this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
-        this.animate(entity.idleAnimationState, PigeonEntityAnimations.PIGEON_IDLE, ageInTicks);
-        this.animate(entity.flyAnimationState, PigeonEntityAnimations.PIGEON_FLY, ageInTicks);
-        this.animate(entity.floatAnimationState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);
+        this.animate(entity.idleState, PigeonEntityAnimations.PIGEON_IDLE, ageInTicks);
+        this.animate(entity.flyState, PigeonEntityAnimations.PIGEON_FLY, ageInTicks);
+        this.animate(entity.floatState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

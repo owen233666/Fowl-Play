@@ -2,7 +2,6 @@ package aqario.fowlplay.common.world.gen;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PigeonEntity;
-import net.minecraft.data.server.tag.StructureTags;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,13 +39,9 @@ public class PigeonSpawner implements Spawner {
             if (!world.isRegionLoaded(pos.getX() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getZ() + 10)) {
                 return 0;
             }
-            BlockPos villagePos = world.findFirstPos(StructureTags.VILLAGE, pos, 5, false);
-            if (villagePos == null || pos.getManhattanDistance(villagePos) > 300) {
-                return 0;
-            }
             if (SpawnRestriction.isSpawnPositionOk(FowlPlayEntityType.PIGEON, world, pos)) {
                 if (world.isNearOccupiedPointOfInterest(pos, 2)) {
-                    return this.spawnInVillage(world, pos);
+                    return this.spawnNearPoi(world, pos);
                 }
             }
         }
@@ -54,7 +49,7 @@ public class PigeonSpawner implements Spawner {
         return 0;
     }
 
-    private int spawnInVillage(ServerWorld world, BlockPos pos) {
+    private int spawnNearPoi(ServerWorld world, BlockPos pos) {
         if (world.getPointOfInterestStorage()
             .count(holder -> holder.isRegistryKey(PointOfInterestTypes.MEETING), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
             > 4L) {

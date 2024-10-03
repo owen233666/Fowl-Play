@@ -75,7 +75,6 @@ public class DeliverBundleGoal extends Goal {
         this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.deliverer.getPenalty(PathNodeType.WATER);
         this.deliverer.addPathfindingPenalty(PathNodeType.WATER, 0.0F);
-        this.deliverer.getDataTracker().set(PigeonEntity.DELIVERING, true);
     }
 
     @Override

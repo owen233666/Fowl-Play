@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
 import aqario.fowlplay.common.entity.PigeonEntity;
-import aqario.fowlplay.common.entity.TameableBirdEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.LivingEntity;
@@ -13,7 +12,7 @@ import net.minecraft.world.WorldView;
 import java.util.EnumSet;
 
 public class DelivererFollowOwnerGoal extends Goal {
-    private final TameableBirdEntity deliverer;
+    private final PigeonEntity deliverer;
     private LivingEntity owner;
     private final WorldView world;
     private final double speed;
@@ -24,7 +23,7 @@ public class DelivererFollowOwnerGoal extends Goal {
     private float oldWaterPathfindingPenalty;
     private final boolean leavesAllowed;
 
-    public DelivererFollowOwnerGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
+    public DelivererFollowOwnerGoal(PigeonEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
         this.deliverer = bird;
         this.world = bird.getWorld();
         this.speed = speed;
@@ -53,7 +52,7 @@ public class DelivererFollowOwnerGoal extends Goal {
         if (this.deliverer.squaredDistanceTo(livingEntity) < (double) (this.minDistance * this.minDistance)) {
             return false;
         }
-        if (this.deliverer.getDataTracker().get(PigeonEntity.DELIVERING)) {
+        if (this.deliverer.getRecipientUuid() != null) {
             return false;
         }
         this.owner = livingEntity;
@@ -62,7 +61,7 @@ public class DelivererFollowOwnerGoal extends Goal {
 
     @Override
     public boolean shouldContinue() {
-        if (this.deliverer.getDataTracker().get(PigeonEntity.DELIVERING)) {
+        if (this.deliverer.getRecipientUuid() != null) {
             return false;
         }
         if (this.navigation.isIdle()) {

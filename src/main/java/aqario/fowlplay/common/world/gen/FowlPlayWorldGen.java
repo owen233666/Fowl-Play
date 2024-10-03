@@ -1,9 +1,6 @@
 package aqario.fowlplay.common.world.gen;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.entity.GullEntity;
-import aqario.fowlplay.common.entity.PenguinEntity;
+import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.entity.SpawnGroup;
@@ -42,7 +39,7 @@ public final class FowlPlayWorldGen {
         );
 
         SpawnRestriction.register(FowlPlayEntityType.PIGEON, SpawnLocationTypes.ON_GROUND,
-            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnShorebirds
+            Heightmap.Type.MOTION_BLOCKING, PigeonEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS),
             SpawnGroup.CREATURE, FowlPlayEntityType.PIGEON, 10, 4, 8

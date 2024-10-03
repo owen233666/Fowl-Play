@@ -2,6 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.goal.*;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
+import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
@@ -30,12 +32,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
-import net.minecraft.world.EntityView;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -45,12 +45,11 @@ import java.util.UUID;
 
 public class PigeonEntity extends TameableBirdEntity implements VariantProvider<PigeonEntity.Variant> {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    public static final TrackedData<Boolean> DELIVERING = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
-    public final AnimationState idleAnimationState = new AnimationState();
-    public final AnimationState walkAnimationState = new AnimationState();
-    public final AnimationState flyAnimationState = new AnimationState();
-    public final AnimationState floatAnimationState = new AnimationState();
+    public final AnimationState idleState = new AnimationState();
+    public final AnimationState walkState = new AnimationState();
+    public final AnimationState flyState = new AnimationState();
+    public final AnimationState floatState = new AnimationState();
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
@@ -60,6 +59,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+        return spawnReason == SpawnReason.NATURAL || world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_GULLS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
     @Override
@@ -78,7 +82,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
         builder.add(RECIPIENT, Optional.empty());
-        builder.add(DELIVERING, false);
         builder.add(VARIANT, Variant.BANDED.toString());
     }
 
@@ -96,7 +99,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("variant", this.getVariant().toString());
-        nbt.putBoolean("delivering", this.dataTracker.get(DELIVERING));
         if (this.getRecipientUuid() != null) {
             nbt.putUuid("recipient", this.getRecipientUuid());
         }
@@ -105,12 +107,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.dataTracker.set(DELIVERING, nbt.getBoolean("delivering"));
-        if (!nbt.containsUuid("receiver")) {
+        if (!nbt.containsUuid("recipient")) {
             this.setRecipientUuid(null);
             return;
         }
-        this.setRecipientUuid(nbt.getUuid("receiver"));
+        this.setRecipientUuid(nbt.getUuid("recipient"));
         if (nbt.contains("variant")) {
             this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
         }
@@ -248,31 +249,31 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public void tick() {
         if (this.getWorld().isClient()) {
             if (this.isOnGround() && !this.isWalking()) {
-                this.idleAnimationState.start(this.age);
+                this.idleState.start(this.age);
             }
             else {
-                this.idleAnimationState.stop();
+                this.idleState.stop();
             }
 
             if (!this.isOnGround()) {
-                this.flyAnimationState.start(this.age);
+                this.flyState.start(this.age);
             }
             else {
-                this.flyAnimationState.stop();
+                this.flyState.stop();
             }
 
             if (this.isWalking()) {
-                this.walkAnimationState.start(this.age);
+                this.walkState.start(this.age);
             }
             else {
-                this.walkAnimationState.stop();
+                this.walkState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatAnimationState.start(this.age);
+                this.floatState.start(this.age);
             }
             else {
-                this.floatAnimationState.stop();
+                this.floatState.stop();
             }
         }
 
@@ -287,12 +288,15 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return;
         }
 
+        if (!this.isTamed()) {
+            return;
+        }
+
         ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
         ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
 
         if (!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
             this.setRecipientUuid(null);
-            this.dataTracker.set(DELIVERING, false);
             return;
         }
 
