@@ -28,7 +28,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_GULLS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.GULL, 10, 5, 12
+            SpawnGroup.CREATURE, FowlPlayEntityType.GULL, 30, 8, 12
         );
 
         SpawnRestriction.register(FowlPlayEntityType.PENGUIN, SpawnLocationTypes.UNRESTRICTED,
@@ -42,7 +42,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING, PigeonEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.PIGEON, 10, 4, 8
+            SpawnGroup.CREATURE, FowlPlayEntityType.PIGEON, 20, 4, 8
         );
 
         SpawnRestriction.register(FowlPlayEntityType.ROBIN, SpawnLocationTypes.UNRESTRICTED,

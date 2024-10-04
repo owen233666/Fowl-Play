@@ -3,7 +3,6 @@ package aqario.fowlplay.common.world.gen;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -39,10 +38,8 @@ public class PigeonSpawner implements Spawner {
             if (!world.isRegionLoaded(pos.getX() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getZ() + 10)) {
                 return 0;
             }
-            if (SpawnRestriction.isSpawnPositionOk(FowlPlayEntityType.PIGEON, world, pos)) {
-                if (world.isNearOccupiedPointOfInterest(pos, 2)) {
-                    return this.spawnNearPoi(world, pos);
-                }
+            if (world.isNearOccupiedPointOfInterest(pos, 2)) {
+                return this.spawnNearPoi(world, pos);
             }
         }
 
@@ -51,7 +48,7 @@ public class PigeonSpawner implements Spawner {
 
     private int spawnNearPoi(ServerWorld world, BlockPos pos) {
         if (world.getPointOfInterestStorage()
-            .count(holder -> holder.isRegistryKey(PointOfInterestTypes.MEETING), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
+            .count(holder -> holder.isRegistryKey(PointOfInterestTypes.HOME), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
             > 4L) {
             List<PigeonEntity> nearbyPigeons = world.getNonSpectatingEntities(PigeonEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
             if (nearbyPigeons.size() < 12) {
