@@ -1,10 +1,8 @@
 package aqario.fowlplay.common.entity.ai.goal;
 
 import aqario.fowlplay.common.entity.PigeonEntity;
-import aqario.fowlplay.common.entity.TameableBirdEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +12,7 @@ import net.minecraft.world.WorldView;
 import java.util.EnumSet;
 
 public class DeliverBundleGoal extends Goal {
-    private final TameableBirdEntity deliverer;
+    private final PigeonEntity deliverer;
     private final WorldView world;
     private final double speed;
     private final EntityNavigation navigation;
@@ -25,41 +23,33 @@ public class DeliverBundleGoal extends Goal {
     private final boolean leavesAllowed;
     private PlayerEntity recipient;
 
-    public DeliverBundleGoal(TameableBirdEntity bird, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
-        this.deliverer = bird;
-        this.world = bird.getWorld();
+    public DeliverBundleGoal(PigeonEntity pigeon, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
+        this.deliverer = pigeon;
+        this.world = pigeon.getWorld();
         this.speed = speed;
-        this.navigation = bird.getNavigation();
+        this.navigation = pigeon.getNavigation();
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
         this.leavesAllowed = leavesAllowed;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
-        if ((!(bird.getNavigation() instanceof MobNavigation) && !(bird.getNavigation() instanceof BirdNavigation)) || !(bird instanceof PigeonEntity)) {
+        if (!(pigeon.getNavigation() instanceof MobNavigation) && !(pigeon.getNavigation() instanceof BirdNavigation)) {
             throw new IllegalArgumentException("Unsupported mob type for DeliverBundleGoal");
         }
     }
 
     @Override
     public boolean canStart() {
-        LivingEntity owner = this.deliverer.getOwner();
-        if (((PigeonEntity) this.deliverer).getRecipientUuid() != null) {
-            this.recipient = this.deliverer.getWorld().getPlayerByUuid(((PigeonEntity) this.deliverer).getRecipientUuid());
-            PlayerEntity recipient = this.recipient;
-            if (this.recipient != null) {
-                if (owner == null) {
-                    return false;
-                }
-                if (owner.isSpectator()) {
-                    return false;
-                }
-                if (this.deliverer.squaredDistanceTo(recipient) < (this.minDistance * this.minDistance)) {
-                    return false;
-                }
-                return true;
-            }
+        if (!this.deliverer.isTamed()) {
             return false;
         }
-        return false;
+        if (this.deliverer.getRecipientUuid() == null) {
+            return false;
+        }
+        this.recipient = this.deliverer.getWorld().getPlayerByUuid(this.deliverer.getRecipientUuid());
+        if (this.recipient == null) {
+            return false;
+        }
+        return this.deliverer.squaredDistanceTo(this.recipient) > (this.minDistance * this.minDistance);
     }
 
     @Override
@@ -67,7 +57,7 @@ public class DeliverBundleGoal extends Goal {
         if (this.navigation.isIdle()) {
             return false;
         }
-        return (this.deliverer.squaredDistanceTo(this.recipient) > (this.maxDistance * this.maxDistance));
+        return this.deliverer.squaredDistanceTo(this.recipient) < (this.maxDistance * this.maxDistance);
     }
 
     @Override
@@ -89,8 +79,8 @@ public class DeliverBundleGoal extends Goal {
         this.deliverer.getLookControl().lookAt(this.recipient, 10.0F, this.deliverer.getLookPitchSpeed());
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = 10;
-            if (this.deliverer.squaredDistanceTo(this.recipient) >= 10000.0D) {
-                tryTeleport();
+            if (this.deliverer.squaredDistanceTo(this.recipient) > 10000 && this.deliverer.squaredDistanceTo(this.deliverer.getOwner()) > 1024) {
+                this.tryTeleport();
             }
             else {
                 this.navigation.startMovingTo(this.recipient, this.speed);
@@ -104,21 +94,20 @@ public class DeliverBundleGoal extends Goal {
             int j = getRandomInt(-3, 3);
             int k = getRandomInt(-1, 1);
             int l = getRandomInt(-3, 3);
-            boolean bl = this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
-            if (bl) {
+            if (this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l)) {
                 return;
             }
         }
     }
 
     private boolean tryTeleportTo(int x, int y, int z) {
-        if (Math.abs(x - this.recipient.getX()) < 2.0D && Math.abs(z - this.recipient.getZ()) < 2.0D) {
+        if (Math.abs(x - this.recipient.getX()) < 2.0 && Math.abs(z - this.recipient.getZ()) < 2.0) {
             return false;
         }
         if (!canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         }
-        this.deliverer.refreshPositionAndAngles(x + 0.5D, y, z + 0.5D, this.deliverer.headYaw, this.deliverer.getPitch());
+        this.deliverer.refreshPositionAndAngles(x + 0.5, y, z + 0.5, this.deliverer.headYaw, this.deliverer.getPitch());
         this.navigation.stop();
         return true;
     }

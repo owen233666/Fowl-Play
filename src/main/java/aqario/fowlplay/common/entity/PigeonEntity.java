@@ -35,7 +35,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
-import net.minecraft.world.*;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -63,7 +66,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return spawnReason == SpawnReason.NATURAL || world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_GULLS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+        return spawnReason == SpawnReason.NATURAL || world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
     @Override
@@ -143,7 +146,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     protected void initGoals() {
         this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new DeliverBundleGoal(this, 1.0, 6.0F, 128.0F, false));
+        this.goalSelector.add(1, new DeliverBundleGoal(this, 1.0, 4.0F, 1024.0F, false));
         this.goalSelector.add(2, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
         this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
         this.goalSelector.add(3, new PickupItemGoal(this));
@@ -173,8 +176,9 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack playerStack = player.getStackInHand(hand);
+        ItemStack bundleStack = this.getStackInHand(Hand.OFF_HAND);
 
-        if (this.getStackInHand(Hand.OFF_HAND).isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
+        if (bundleStack.isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
             if (!this.getWorld().isClient) {
                 this.setStackInHand(Hand.OFF_HAND, playerStack);
                 player.setStackInHand(hand, ItemStack.EMPTY);
@@ -182,9 +186,9 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return ActionResult.success(this.getWorld().isClient);
         }
 
-        if (playerStack.isEmpty() && this.getStackInHand(Hand.OFF_HAND).getItem() instanceof BundleItem) {
+        if (playerStack.isEmpty() && bundleStack.getItem() instanceof BundleItem) {
             if (!this.getWorld().isClient) {
-                player.setStackInHand(hand, this.getStackInHand(Hand.OFF_HAND));
+                player.setStackInHand(hand, bundleStack);
                 this.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
             }
             return ActionResult.success(this.getWorld().isClient);
@@ -359,11 +363,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
-        return null;
-    }
-
-    @Override
-    public EntityView getEntityView() {
         return null;
     }
 

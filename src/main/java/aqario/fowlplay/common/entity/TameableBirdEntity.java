@@ -13,6 +13,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.EntityView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -213,5 +214,10 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     public void setSitting(boolean sitting) {
         this.sitting = sitting;
+    }
+
+    @Override
+    public EntityView getEntityView() {
+        return null;
     }
 }
