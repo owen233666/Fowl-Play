@@ -338,7 +338,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
+        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.05F) {
             List<PlayerEntity> list = this.getWorld()
                 .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
             if (list.isEmpty()) {

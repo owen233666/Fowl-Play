@@ -38,7 +38,7 @@ public final class FowlPlayWorldGen {
             SpawnGroup.CREATURE, FowlPlayEntityType.PENGUIN, 1, 1, 2
         );
 
-        SpawnRestriction.register(FowlPlayEntityType.PIGEON, SpawnLocationTypes.ON_GROUND,
+        SpawnRestriction.register(FowlPlayEntityType.PIGEON, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, PigeonEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS),

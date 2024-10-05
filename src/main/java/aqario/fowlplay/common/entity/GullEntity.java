@@ -180,7 +180,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     @Override
     public void playAmbientSound() {
-        if (this.random.nextFloat() < 0.3F) {
+        if ((!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) || this.random.nextFloat() < 0.3F) {
             this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }
