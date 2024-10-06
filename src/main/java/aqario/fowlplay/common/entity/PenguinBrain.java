@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.BreatheAirTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -115,6 +116,7 @@ public class PenguinBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
+                new BreatheAirTask(SWIM_SPEED),
                 new WalkTask<>(RUN_SPEED),
                 LocateFoodTask.run(),
                 new LookAroundTask(45, 90),

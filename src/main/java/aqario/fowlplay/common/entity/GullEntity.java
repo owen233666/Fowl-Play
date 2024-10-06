@@ -279,7 +279,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
             double maxWaterHeight = 0.35; // how much of the hitbox the water should cover
             BlockPos blockPos = BlockPos.create(this.entity.getX(), this.entity.getY() + maxWaterHeight, this.entity.getZ());
             double waterHeight = this.entity.getBlockPos().getY() + this.entity.getWorld().getFluidState(blockPos).getHeight(this.entity.getWorld(), blockPos);
-            if (waterHeight > this.entity.getY() + maxWaterHeight) {
+            if (this.entity.isSubmergedInWater() || waterHeight > this.entity.getY() + maxWaterHeight) {
                 this.entity.setVelocity(this.entity.getVelocity().add(0.0, 0.05, 0.0));
             }
             super.tick();

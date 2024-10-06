@@ -119,7 +119,6 @@ public class GullBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-//                new StayAboveWaterTask(0.5F),
                 new StopFallingTask(),
                 new WalkTask<>(RUN_SPEED),
                 new LookAroundTask(45, 90),
