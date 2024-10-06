@@ -9,31 +9,31 @@ import net.minecraft.util.math.Vec3d;
 public class BirdFlightMoveControl extends BirdMoveControl {
     private final FlyingBirdEntity bird;
     private final int maxPitchChange;
+    private final int maxYawChange;
 
-    public BirdFlightMoveControl(FlyingBirdEntity bird, int maxPitchChange) {
+    public BirdFlightMoveControl(FlyingBirdEntity bird, int maxPitchChange, int maxYawChange) {
         super(bird);
         this.bird = bird;
         this.maxPitchChange = maxPitchChange;
+        this.maxYawChange = maxYawChange;
     }
 
     @Override
     public void tick() {
-//        if (this.bird.timeFlying < 20 + this.bird.getRandom().nextInt(20)) {
-//            float speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
-//            this.bird.setUpwardSpeed(speed);
-//        }
         if (this.state == MoveControl.State.MOVE_TO && !this.entity.getNavigation().isIdle()) {
-//            this.state = MoveControl.State.WAIT;
+            // distance to target
             Vec3d distance = new Vec3d(this.targetX - this.bird.getX(), this.targetY - this.bird.getY(), this.targetZ - this.bird.getZ());
             double squaredDistance = distance.lengthSquared();
             if (squaredDistance < 2.5000003E-7F) {
-                this.bird.setUpwardSpeed(0.0F);
                 this.bird.setForwardSpeed(0.0F);
                 return;
             }
 
             float yaw = (float) (MathHelper.atan2(distance.z, distance.x) * 180.0F / (float) Math.PI) - 90.0F;
-            this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), yaw, 5.0F));
+            this.bird.setYaw(this.wrapDegrees(this.bird.getYaw(), yaw, this.maxYawChange));
+            this.bird.bodyYaw = this.bird.getYaw();
+            this.bird.headYaw = this.bird.getYaw();
+
             float speed = (float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
             if (this.bird.isFlying()) {
                 this.bird.setMovementSpeed(speed);

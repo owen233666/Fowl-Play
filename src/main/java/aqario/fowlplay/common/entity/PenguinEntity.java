@@ -75,7 +75,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     protected void setMoveControl(boolean isSwimming) {
         if (isSwimming) {
-            this.moveControl = new AquaticMoveControl(this, 85, 10, 1.0F, 1.0F, true);
+            this.moveControl = new AquaticMoveControl(this, 85, 15, 1.0F, 1.0F, true);
             this.isAquaticMoveControl = true;
         }
         else {

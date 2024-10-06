@@ -86,7 +86,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.timeFlying++;
                 this.setNoGravity(true);
                 this.fallDistance = 0.0F;
-                if (this.isOnGround() || this.isTouchingWater()) {
+                if (this.isOnGround() || this.isInsideWaterOrBubbleColumn()) {
                     this.setFlying(false);
                 }
             }
@@ -109,7 +109,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40);
+        return new BirdFlightMoveControl(this, 40, 10);
     }
 
     protected BirdNavigation getFlightNavigation() {

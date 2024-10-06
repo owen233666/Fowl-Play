@@ -25,7 +25,7 @@ public abstract class BirdEntity extends AnimalEntity {
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setCanPickUpLoot(true);
-        this.lookControl = new BirdLookControl(this);
+        this.lookControl = new BirdLookControl(this, 85);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

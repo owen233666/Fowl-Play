@@ -22,6 +22,13 @@ public class BirdNavigation extends MobNavigation {
     }
 
     @Override
+    protected PathNodeNavigator createPathNodeNavigator(int range) {
+        this.nodeMaker = new BirdPathNodeMaker();
+        this.nodeMaker.setCanEnterOpenDoors(true);
+        return new PathNodeNavigator(this.nodeMaker, range);
+    }
+
+    @Override
     public boolean startMovingTo(double x, double y, double z, double speed) {
         mob.getMoveControl().moveTo(x, y, z, speed);
         return true;
@@ -31,13 +38,6 @@ public class BirdNavigation extends MobNavigation {
     public boolean startMovingTo(Entity entity, double speed) {
         mob.getMoveControl().moveTo(entity.getX(), entity.getY(), entity.getZ(), speed);
         return true;
-    }
-
-    @Override
-    protected PathNodeNavigator createPathNodeNavigator(int range) {
-        this.nodeMaker = new BirdPathNodeMaker();
-        this.nodeMaker.setCanEnterOpenDoors(true);
-        return new PathNodeNavigator(this.nodeMaker, range);
     }
 
     @Override
@@ -53,6 +53,11 @@ public class BirdNavigation extends MobNavigation {
     @Override
     protected Vec3d getPos() {
         return this.entity.getPos();
+    }
+
+    @Override
+    protected double adjustTargetY(Vec3d pos) {
+        return pos.y;
     }
 
     @Nullable
@@ -90,6 +95,6 @@ public class BirdNavigation extends MobNavigation {
 
     @Override
     public boolean isValidPosition(BlockPos pos) {
-        return this.world.getBlockState(pos).hasSolidTopSurface(this.world, pos, this.entity);
+        return true;
     }
 }
