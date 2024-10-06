@@ -13,18 +13,11 @@ import net.minecraft.util.Identifier;
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
-    public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register(
-        "penguin_temptations", () -> new TemptationsSensor(PenguinBrain.getFood())
-    );
-    public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register(
-        "gull_temptations", () -> new TemptationsSensor(GullBrain.getFood())
-    );
-    public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register(
-        "nearest_adults", NearestVisibleAdultsSensor::new
-    );
-    public static final SensorType<PenguinAttackablesSensor> PENGUIN_ATTACKABLES = register(
-        "penguin_attackables", PenguinAttackablesSensor::new
-    );
+    public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register("penguin_temptations", () -> new TemptationsSensor(PenguinBrain.getFood()));
+    public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations", () -> new TemptationsSensor(GullBrain.getFood()));
+    public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register("nearest_adults", NearestVisibleAdultsSensor::new);
+    public static final SensorType<PenguinAttackablesSensor> PENGUIN_ATTACKABLES = register("penguin_attackables", PenguinAttackablesSensor::new);
+    public static final SensorType<FlyingBirdSensor> IS_FLYING = register("is_flying", FlyingBirdSensor::new);
 
     private static <U extends Sensor<?>> SensorType<U> register(String id, Supplier<U> factory) {
         return Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), new SensorType<>(factory));

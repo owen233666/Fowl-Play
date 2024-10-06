@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 
 public final class FowlPlayActivities {
     public static final Activity DELIVER = register("deliver");
+    public static final Activity FLY = register("fly");
     public static final Activity PICKUP_FOOD = register("pickup_food");
     public static final Activity SEARCH = register("search");
 

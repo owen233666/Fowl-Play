@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -99,19 +100,35 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         }
     }
 
+    protected MoveControl getLandMoveControl() {
+        return new BirdMoveControl(this);
+    }
+
+    protected EntityNavigation getLandNavigation() {
+        return new MobNavigation(this, this.getWorld());
+    }
+
+    protected BirdFlightMoveControl getFlightMoveControl() {
+        return new BirdFlightMoveControl(this, 40);
+    }
+
+    protected BirdNavigation getFlightNavigation() {
+        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
+        birdNavigation.setCanPathThroughDoors(false);
+        birdNavigation.setCanEnterOpenDoors(true);
+        birdNavigation.setCanSwim(false);
+        return birdNavigation;
+    }
+
     protected void setMoveControl(boolean isFlying) {
         if (isFlying) {
-            this.moveControl = new BirdFlightMoveControl(this, 40);
-            BirdNavigation birdNavigation = new BirdNavigation(this, getWorld());
-            birdNavigation.setCanPathThroughDoors(false);
-            birdNavigation.setCanEnterOpenDoors(true);
-            birdNavigation.setCanSwim(false);
-            this.navigation = birdNavigation;
+            this.moveControl = this.getFlightMoveControl();
+            this.navigation = this.getFlightNavigation();
             this.isFlightMoveControl = true;
         }
         else {
-            this.moveControl = new BirdMoveControl(this);
-            this.navigation = new MobNavigation(this, getWorld());
+            this.moveControl = this.getLandMoveControl();
+            this.navigation = this.getLandNavigation();
             this.isFlightMoveControl = false;
         }
     }

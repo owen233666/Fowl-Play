@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -7,6 +8,9 @@ import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.pathing.AmphibiousNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -46,9 +50,20 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         super(entityType, world);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @Override
+    protected MoveControl getLandMoveControl() {
+        return new GullMoveControl(this);
+    }
+
+    @Override
+    protected EntityNavigation getLandNavigation() {
+        return new AmphibiousNavigation(this, this.getWorld());
     }
 
     @SuppressWarnings("unused")
@@ -70,9 +85,10 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0)
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 
     @Override
@@ -180,7 +196,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     @Override
     public void playAmbientSound() {
-        if ((!this.getWorld().isDay() && this.random.nextFloat() < 0.1F) || this.random.nextFloat() < 0.3F) {
+        if ((!this.getWorld().isDay() && this.random.nextFloat() < 0.05F) || this.random.nextFloat() < 0.3F) {
             this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }
@@ -250,6 +266,23 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
         public String getId() {
             return id;
+        }
+    }
+
+    private static class GullMoveControl extends BirdMoveControl {
+        public GullMoveControl(GullEntity entity) {
+            super(entity);
+        }
+
+        @Override
+        public void tick() {
+            double maxWaterHeight = 0.35; // how much of the hitbox the water should cover
+            BlockPos blockPos = BlockPos.create(this.entity.getX(), this.entity.getY() + maxWaterHeight, this.entity.getZ());
+            double waterHeight = this.entity.getBlockPos().getY() + this.entity.getWorld().getFluidState(blockPos).getHeight(this.entity.getWorld(), blockPos);
+            if (waterHeight > this.entity.getY() + maxWaterHeight) {
+                this.entity.setVelocity(this.entity.getVelocity().add(0.0, 0.05, 0.0));
+            }
+            super.tick();
         }
     }
 }

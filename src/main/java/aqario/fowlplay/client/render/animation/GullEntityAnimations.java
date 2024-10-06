@@ -168,9 +168,93 @@ public class GullEntityAnimations {
         )
         .build();
 
-    public static final Animation GULL_FLY = Animation.Builder.withLength(0f)
+    public static final Animation GULL_FLOAT = Animation.Builder.withLength(1f).looping()
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-21.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(-0.2f, -0.2f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-2.22f, -4.2f, -4.71f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0.2f, -0.2f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-2.22f, 4.2f, 4.71f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "tail",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-2.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 1f, -1f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(21.57f, -8.12f, -9.95f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 1f, -1f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(21.57f, 8.12f, 9.95f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "body",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(22.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
         .build();
 
-    public static final Animation GULL_FLOAT = Animation.Builder.withLength(0f).looping()
+    public static final Animation GULL_FLY = Animation.Builder.withLength(0f)
         .build();
 }

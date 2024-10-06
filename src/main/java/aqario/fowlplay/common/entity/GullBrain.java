@@ -38,6 +38,7 @@ public class GullBrain {
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
         FowlPlaySensorType.GULL_TEMPTATIONS
     );
@@ -69,6 +70,7 @@ public class GullBrain {
         MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
         MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
         MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS,
+        FowlPlayMemoryModuleType.IS_FLYING,
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
@@ -80,6 +82,7 @@ public class GullBrain {
     private static final int AVOID_PLAYER_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
+    private static final float FLY_SPEED = 2.0F;
 
     public static void init() {
     }
@@ -91,6 +94,7 @@ public class GullBrain {
     public static Brain<?> create(Brain<GullEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
+        addFlyActivities(brain);
         addAvoidActivities(brain);
         addPickupFoodActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
@@ -103,6 +107,7 @@ public class GullBrain {
         gull.getBrain().resetPossibleActivities(
             ImmutableList.of(
                 Activity.IDLE,
+                FowlPlayActivities.FLY,
                 Activity.AVOID,
                 FowlPlayActivities.PICKUP_FOOD
             )
@@ -114,7 +119,7 @@ public class GullBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new StayAboveWaterTask(0.5F),
+//                new StayAboveWaterTask(0.5F),
                 new StopFallingTask(),
                 new WalkTask<>(RUN_SPEED),
                 new LookAroundTask(45, 90),
@@ -146,7 +151,6 @@ public class GullBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(FlyTask.create(WALK_SPEED, 64, 32), 1),
                             Pair.of(MeanderTask.create(WALK_SPEED), 1),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
                             Pair.of(new WaitTask(100, 300), 2)
@@ -155,6 +159,37 @@ public class GullBrain {
                 )
             ),
             ImmutableSet.of(
+                Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            )
+        );
+    }
+
+    private static void addFlyActivities(Brain<GullEntity> brain) {
+        brain.setTaskList(
+            FowlPlayActivities.FLY,
+            ImmutableList.of(
+                Pair.of(1, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
+                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(3, new RandomLookAroundTask(
+                    UniformIntProvider.create(150, 250),
+                    30.0F,
+                    0.0F,
+                    0.0F
+                )),
+                Pair.of(
+                    4,
+                    new RandomTask<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+                        ImmutableList.of(
+                            Pair.of(FlyTask.create(FLY_SPEED, 64, 32), 1)
+                        )
+                    )
+                )
+            ),
+            ImmutableSet.of(
+                Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT),
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
             )

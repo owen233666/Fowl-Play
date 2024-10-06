@@ -1,9 +1,11 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Unit;
 
 public class StopFallingTask extends Task<FlyingBirdEntity> {
     public StopFallingTask() {
@@ -27,5 +29,6 @@ public class StopFallingTask extends Task<FlyingBirdEntity> {
     @Override
     protected void keepRunning(ServerWorld world, FlyingBirdEntity bird, long l) {
         bird.setFlying(true);
+        bird.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
     }
 }
