@@ -5,8 +5,10 @@ import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -25,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -71,6 +74,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        PigeonBrain.init();
         this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
@@ -117,6 +121,21 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         this.setRecipientUuid(nbt.getUuid("recipient"));
         if (nbt.contains("variant")) {
             this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
+        }
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        boolean bl = super.damage(source, amount);
+        if (this.getWorld().isClient) {
+            return false;
+        }
+        else {
+            if (bl && source.getAttacker() instanceof LivingEntity entity) {
+                PigeonBrain.onAttacked(this, entity);
+            }
+
+            return bl;
         }
     }
 
@@ -204,10 +223,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
                 if (this.random.nextInt(4) == 0) {
                     this.setOwner(player);
                     this.navigation.stop();
-                    this.getWorld().sendEntityStatus(this, (byte) 7);
+                    this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
                 }
                 else {
-                    this.getWorld().sendEntityStatus(this, (byte) 6);
+                    this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
                 }
             }
             return ActionResult.success(this.getWorld().isClient);
@@ -286,6 +305,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     protected void mobTick() {
+        this.getWorld().getProfiler().push("pigeonBrain");
+        this.getBrain().tick((ServerWorld) this.getWorld(), this);
+        this.getWorld().getProfiler().pop();
+        this.getWorld().getProfiler().push("pigeonActivityUpdate");
+        PigeonBrain.reset(this);
+        this.getWorld().getProfiler().pop();
         super.mobTick();
 
         if (this.getServer() == null) {
@@ -364,6 +389,28 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     protected SoundEvent getDeathSound() {
         return null;
+    }
+
+    @Override
+    protected Brain.Profile<PigeonEntity> createBrainProfile() {
+        return PigeonBrain.createProfile();
+    }
+
+    @Override
+    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
+        return PigeonBrain.create(this.createBrainProfile().deserialize(dynamic));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Brain<PigeonEntity> getBrain() {
+        return (Brain<PigeonEntity>) super.getBrain();
+    }
+
+    @Override
+    protected void sendAiDebugData() {
+        super.sendAiDebugData();
+        DebugInfoSender.sendBrainDebugData(this);
     }
 
     public enum Variant {

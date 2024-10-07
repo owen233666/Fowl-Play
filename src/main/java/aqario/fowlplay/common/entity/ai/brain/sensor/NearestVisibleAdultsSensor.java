@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
-import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -23,11 +22,11 @@ public class NearestVisibleAdultsSensor extends Sensor<PassiveEntity> {
     @Override
     protected void sense(ServerWorld world, PassiveEntity entity) {
         Brain<?> brain = entity.getBrain();
-        List<GullEntity> nearbyVisibleAdults = Lists.newArrayList();
+        List<PassiveEntity> nearbyVisibleAdults = Lists.newArrayList();
         VisibleLivingEntitiesCache visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS)
             .orElse(VisibleLivingEntitiesCache.getEmpty());
 
-        visibleMobs.stream(living -> living instanceof GullEntity gull && !gull.isBaby()).forEach(living -> nearbyVisibleAdults.add((GullEntity) living));
+        visibleMobs.stream(living -> living.getType() == entity.getType() && !entity.isBaby()).forEach(living -> nearbyVisibleAdults.add((PassiveEntity) living));
 
         brain.remember(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS, nearbyVisibleAdults);
     }

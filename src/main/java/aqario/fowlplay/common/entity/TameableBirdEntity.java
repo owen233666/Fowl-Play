@@ -154,8 +154,8 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     @Nullable
     public LivingEntity getOwner() {
         try {
-            UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.getWorld().getPlayerByUuid(uUID);
+            UUID uuid = this.getOwnerUuid();
+            return uuid == null ? null : this.getWorld().getPlayerByUuid(uuid);
         }
         catch (IllegalArgumentException var2) {
             return null;

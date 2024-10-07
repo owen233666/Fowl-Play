@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity.ai.brain.sensor;
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.GullBrain;
 import aqario.fowlplay.common.entity.PenguinBrain;
+import aqario.fowlplay.common.entity.PigeonBrain;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.sensor.TemptationsSensor;
@@ -14,6 +15,7 @@ import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
     public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register("penguin_temptations", () -> new TemptationsSensor(PenguinBrain.getFood()));
+    public static final SensorType<TemptationsSensor> PIGEON_TEMPTATIONS = register("pigeon_temptations", () -> new TemptationsSensor(PigeonBrain.getFood()));
     public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations", () -> new TemptationsSensor(GullBrain.getFood()));
     public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register("nearest_adults", NearestVisibleAdultsSensor::new);
     public static final SensorType<PenguinAttackablesSensor> PENGUIN_ATTACKABLES = register("penguin_attackables", PenguinAttackablesSensor::new);
