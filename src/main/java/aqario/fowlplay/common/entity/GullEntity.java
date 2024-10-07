@@ -166,12 +166,12 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
                 this.idleState.stop();
             }
 
-//            if (!this.isOnGround()) {
-//                this.flyState.start(this.age);
-//            }
-//            else {
-//                this.flyState.stop();
-//            }
+            if (this.isFlying()) {
+                this.flyState.start(this.age);
+            }
+            else {
+                this.flyState.stop();
+            }
 
             if (this.isInsideWaterOrBubbleColumn()) {
                 this.floatState.start(this.age);
