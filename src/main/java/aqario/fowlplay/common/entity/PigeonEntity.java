@@ -158,8 +158,8 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public static DefaultAttributeContainer.Builder createAttributes() {
         return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
     }
 
     protected void initGoals() {

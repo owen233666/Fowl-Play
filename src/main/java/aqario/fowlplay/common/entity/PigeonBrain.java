@@ -170,16 +170,9 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FollowMobTask.create(PigeonBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
-                Pair.of(3, new RandomLookAroundTask(
-                    UniformIntProvider.create(150, 250),
-                    30.0F,
-                    0.0F,
-                    0.0F
-                )),
+                Pair.of(1, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
-                    4,
+                    2,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(

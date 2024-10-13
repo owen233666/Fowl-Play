@@ -6,6 +6,8 @@ import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -23,5 +25,24 @@ public class PenguinEntityRenderer extends MobEntityRenderer<PenguinEntity, Peng
     @Override
     public Identifier getTexture(PenguinEntity entity) {
         return entity.isBaby() ? Identifier.of(FowlPlay.ID, "textures/entity/penguin/penguin_baby.png") : Identifier.of(FowlPlay.ID, "textures/entity/penguin/penguin.png");
+    }
+
+    @Override
+    protected void scale(PenguinEntity penguin, MatrixStack matrices, float amount) {
+        super.scale(penguin, matrices, amount);
+
+        String name = Formatting.strip(penguin.getName().getString());
+        if (name.equalsIgnoreCase("rico")) {
+            matrices.scale(1.1F, 1F, 1F);
+        }
+        if (name.equalsIgnoreCase("skipper")) {
+            matrices.scale(1.25F, 0.9F, 1F);
+        }
+        if (name.equalsIgnoreCase("kowalski")) {
+            matrices.scale(1F, 1.1F, 1F);
+        }
+        if (name.equalsIgnoreCase("private")) {
+            matrices.scale(1.2F, 0.85F, 1F);
+        }
     }
 }

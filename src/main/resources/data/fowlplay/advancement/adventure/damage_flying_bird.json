@@ -10,6 +10,7 @@
     "description": {
       "translate": "advancements.adventure.damage_flying_bird.description"
     },
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -34,7 +35,7 @@
             "entity": "this",
             "predicate": {
               "type": "#fowlplay:birds",
-              "nbt": "{Flying:1b}"
+              "nbt": "{flying:1b}"
             }
           }
         ]
