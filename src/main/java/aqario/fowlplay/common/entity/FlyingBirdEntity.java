@@ -113,7 +113,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if (difference < -180.0F) {
             difference = -(360.0F + difference);
         }
-        return -difference * 4;
+        return -difference * 3;
     }
 
     public float getRoll(float tickDelta) {
@@ -129,7 +129,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 10);
+        return new BirdFlightMoveControl(this, 40, 15);
     }
 
     protected BirdNavigation getFlightNavigation() {

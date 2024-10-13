@@ -3,10 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
-import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
-import aqario.fowlplay.common.entity.ai.brain.task.StayNearClosestEntityTask;
-import aqario.fowlplay.common.entity.ai.brain.task.StopFallingTask;
+import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -170,9 +167,10 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(1, new StopFlyingTask()),
+                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
-                    2,
+                    3,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
