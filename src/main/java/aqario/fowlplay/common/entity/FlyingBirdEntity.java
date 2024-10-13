@@ -20,6 +20,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
@@ -28,6 +29,8 @@ import net.minecraft.world.WorldAccess;
 public abstract class FlyingBirdEntity extends BirdEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private boolean isFlightMoveControl;
+    private float prevRoll;
+    private float visualRoll;
     public int timeFlying = 0;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
@@ -98,6 +101,23 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.setMoveControl(this.isFlying());
             }
         }
+        this.prevRoll = this.visualRoll;
+        this.visualRoll = this.calculateRoll(this.prevYaw, this.getYaw());
+    }
+
+    private float calculateRoll(float prevYaw, float currentYaw) {
+        float difference = currentYaw - prevYaw;
+        if (difference >= 180.0F) {
+            difference = 360.0F - difference;
+        }
+        if (difference < -180.0F) {
+            difference = -(360.0F + difference);
+        }
+        return -difference * 4;
+    }
+
+    public float getRoll(float tickDelta) {
+        return tickDelta == 1.0F ? this.visualRoll : MathHelper.lerp(tickDelta, this.prevRoll, this.visualRoll);
     }
 
     protected MoveControl getLandMoveControl() {

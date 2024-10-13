@@ -35,14 +35,14 @@ public class PenguinEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 2f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-75f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
@@ -92,9 +92,6 @@ public class PenguinEntityAnimations {
         )
         .build();
 
-    public static final Animation PENGUIN_FLAP = Animation.Builder.withLength(0f)
-        .build();
-
     public static final Animation PENGUIN_SWIM = Animation.Builder.withLength(0f).looping()
         .addPartAnimation(
             "root",
@@ -118,14 +115,14 @@ public class PenguinEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 1.75f, -1.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-90f, 0f, 0f), PartAnimation.Interpolations.LINEAR)

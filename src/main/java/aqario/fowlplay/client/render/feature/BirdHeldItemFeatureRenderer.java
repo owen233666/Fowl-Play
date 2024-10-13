@@ -44,6 +44,15 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
         matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().body.getTransform().pitch));
 
         matrices.translate(
+            this.getContextModel().neck.pivotX / 16.0F,
+            this.getContextModel().neck.pivotY / 16.0F,
+            this.getContextModel().neck.pivotZ / 16.0F
+        );
+        matrices.rotate(Axis.Z_POSITIVE.rotation(this.getContextModel().neck.getTransform().roll));
+        matrices.rotate(Axis.Y_POSITIVE.rotation(this.getContextModel().neck.getTransform().yaw));
+        matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().neck.getTransform().pitch));
+
+        matrices.translate(
             this.getContextModel().head.pivotX / 16.0F,
             this.getContextModel().head.pivotY / 16.0F,
             this.getContextModel().head.pivotZ / 16.0F
@@ -61,5 +70,6 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
         matrices.pop();
     }
 
+    // Should be ((number of pixels offset from head pivot point) / 16 + 0.0225) * -1
     public abstract Vec3d getItemOffset();
 }

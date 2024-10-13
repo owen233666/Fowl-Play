@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 public abstract class BirdEntityModel<E extends BirdEntity> extends SinglePartEntityModel<E> {
     public final ModelPart root;
     public final ModelPart body;
+    public final ModelPart neck;
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart leftWing;
@@ -18,7 +19,8 @@ public abstract class BirdEntityModel<E extends BirdEntity> extends SinglePartEn
     public BirdEntityModel(ModelPart root) {
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
-        this.head = this.body.getChild("head");
+        this.neck = this.body.getChild("neck");
+        this.head = this.neck.getChild("head");
         this.torso = this.body.getChild("torso");
         this.leftWing = this.body.getChild("left_wing");
         this.rightWing = this.body.getChild("right_wing");

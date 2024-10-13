@@ -12,6 +12,7 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "pigeon"), "main");
     public final ModelPart root;
     public final ModelPart body;
+    public final ModelPart neck;
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart leftWing;
@@ -24,7 +25,8 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         super(root);
         this.root = root.getChild("root");
         this.body = this.root.getChild("body");
-        this.head = this.body.getChild("head");
+        this.neck = this.body.getChild("neck");
+        this.head = this.neck.getChild("head");
         this.torso = this.body.getChild("torso");
         this.leftWing = this.body.getChild("left_wing");
         this.rightWing = this.body.getChild("right_wing");
@@ -40,7 +42,9 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
 
         ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -2.75F, 0.0F));
 
-        ModelPartData head = body.addChild("head", ModelPartBuilder.create().uv(0, 10).cuboid(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
+        ModelPartData neck = body.addChild("neck", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
+
+        ModelPartData head = neck.addChild("head", ModelPartBuilder.create().uv(0, 10).cuboid(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
         head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -3.5F, -1.0F));
 
@@ -80,7 +84,7 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
     private void updateHeadRotation(float headYaw, float headPitch) {
         headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
-        this.head.yaw = headYaw * (float) (Math.PI / 180.0);
-        this.head.pitch = headPitch * (float) (Math.PI / 180.0);
+        this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
+        this.neck.pitch = headPitch * (float) (Math.PI / 180.0);
     }
 }

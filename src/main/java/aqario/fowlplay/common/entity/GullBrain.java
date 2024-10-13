@@ -20,6 +20,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
+import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
@@ -169,16 +170,9 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
-                Pair.of(3, new RandomLookAroundTask(
-                    UniformIntProvider.create(150, 250),
-                    30.0F,
-                    0.0F,
-                    0.0F
-                )),
+                Pair.of(1, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
-                    4,
+                    2,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -299,9 +293,9 @@ public class GullBrain {
         getNearbyVisibleGulls(gull).forEach(other -> {
             if (attacker instanceof PlayerEntity player) {
                 other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-                other.stopTrusting(player);
+                ((GullEntity) other).stopTrusting(player);
             }
-            runAwayFrom(other, attacker);
+            runAwayFrom((GullEntity) other, attacker);
         });
     }
 
@@ -310,7 +304,7 @@ public class GullBrain {
         gull.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<GullEntity> getNearbyVisibleGulls(GullEntity gull) {
+    protected static List<PassiveEntity> getNearbyVisibleGulls(GullEntity gull) {
         return gull.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

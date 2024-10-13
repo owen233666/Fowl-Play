@@ -43,14 +43,14 @@ public class RobinEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, -0.1f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(10f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
@@ -96,14 +96,14 @@ public class RobinEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, -0.15f, -0.2f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-15f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
@@ -177,85 +177,5 @@ public class RobinEntityAnimations {
         .build();
 
     public static final Animation ROBIN_FLOAT = Animation.Builder.withLength(0f).looping()
-        .build();
-
-    public static final Animation ROBIN_SIT = Animation.Builder.withLength(0f).looping()
-        .addPartAnimation(
-            "root",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, -1.9f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "body",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(17.64f, 7.15f, 2.27f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "head",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(-0.1f, 0.55f, 0.5f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "head",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-56.85f, 59.49f, -51.83f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "left_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-0.08f, -4.53f, -22.88f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "right_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 15f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "tail",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0.75f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "tail",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(30f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "left_leg",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(-0.4f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "left_leg",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-75f, -25f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "right_leg",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-75f, 22.5f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
         .build();
 }

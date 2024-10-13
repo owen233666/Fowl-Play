@@ -15,7 +15,7 @@ public class GullEntityRenderer extends MobEntityRenderer<GullEntity, GullEntity
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {
-                return new Vec3d(0.0F, -0.3325F, -0.225F);
+                return new Vec3d(0.0F, -0.085F, -0.25F);
             }
         });
     }

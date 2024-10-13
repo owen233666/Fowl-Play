@@ -43,14 +43,14 @@ public class BlueJayEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0.1f, -0.25f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(12.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
@@ -96,14 +96,14 @@ public class BlueJayEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, -0.15f, -0.2f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-15f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
