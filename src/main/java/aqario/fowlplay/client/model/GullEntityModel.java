@@ -93,8 +93,8 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
 
     @Override
     public void animateModel(GullEntity gull, float limbAngle, float limbDistance, float tickDelta) {
-        super.animateModel(gull, limbAngle, limbDistance, tickDelta);
         this.getPart().traverse().forEach(ModelPart::resetTransform);
+        super.animateModel(gull, limbAngle, limbDistance, tickDelta);
         float ageInTicks = gull.age + tickDelta;
         if (gull.isFlying()) {
             this.root.pitch = gull.getPitch(tickDelta) * (float) (Math.PI / 180.0);

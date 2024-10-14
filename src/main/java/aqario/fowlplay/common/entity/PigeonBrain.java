@@ -3,10 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.FlyTask;
-import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
-import aqario.fowlplay.common.entity.ai.brain.task.StayNearClosestEntityTask;
-import aqario.fowlplay.common.entity.ai.brain.task.StopFallingTask;
+import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -74,7 +71,8 @@ public class PigeonBrain {
         FowlPlayMemoryModuleType.IS_FLYING,
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
-        FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
+        FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
+        FowlPlayMemoryModuleType.TELEPORT_TARGET
     );
     private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
@@ -121,10 +119,13 @@ public class PigeonBrain {
             0,
             ImmutableList.of(
                 new StopFallingTask(),
+                new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
-                new LookAroundTask(45, 90),
+                new DelivererFollowOwnerTask(WALK_SPEED, 5, 10),
+                new DeliverBundleTask(WALK_SPEED, 4, 1024),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
+                new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)

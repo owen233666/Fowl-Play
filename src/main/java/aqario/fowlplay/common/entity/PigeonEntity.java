@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.*;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -9,7 +8,6 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
@@ -160,20 +158,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
-    }
-
-    protected void initGoals() {
-        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.8));
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new DeliverBundleGoal(this, 1.0, 4.0F, 1024.0F, false));
-        this.goalSelector.add(2, new DelivererFollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
-        this.goalSelector.add(3, new FleeEntityGoal<>(this, PlayerEntity.class, entity -> !this.isTamed(), 6.0f, 1.4, 1.8, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(3, new PickupItemGoal(this));
-        this.goalSelector.add(4, new AnimalMateGoal(this, 1.0));
-        this.goalSelector.add(5, new FlyAroundGoal(this));
-        this.goalSelector.add(6, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(8, new LookAroundGoal(this));
     }
 
     @Override

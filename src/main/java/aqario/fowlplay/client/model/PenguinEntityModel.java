@@ -70,10 +70,10 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
     }
 
     @Override
-    public void setAngles(PenguinEntity penguin, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(PenguinEntity penguin, float limbAngle, float limbDistance, float ageInTicks, float headYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
-        this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), netHeadYaw, headPitch);
-        this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbSwing, limbSwingAmount, 2.0F, 2.5F);
+        this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
+        this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbAngle, limbDistance, 2.0F, 2.5F);
         this.animate(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
         this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
         this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);

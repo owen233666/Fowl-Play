@@ -455,22 +455,20 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT) {
-            this.playSound(soundEvent, 4.0F, this.getSoundPitch());
-        }
-        else {
-            super.playAmbientSound();
+        if (!this.isInsideWaterOrBubbleColumn() && this.random.nextFloat() < 0.1F) {
+            SoundEvent soundEvent = this.getAmbientSound();
+            if (soundEvent == FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT) {
+                this.playSound(soundEvent, 4.0F, this.getSoundPitch());
+            }
+            else {
+                super.playAmbientSound();
+            }
         }
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!this.isInsideWaterOrBubbleColumn() && this.random.nextFloat() < 0.1F) {
-            return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
-        }
-
-        return null;
+        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
     }
 
     @Override
