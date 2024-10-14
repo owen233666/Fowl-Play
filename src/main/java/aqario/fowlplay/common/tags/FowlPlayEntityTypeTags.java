@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 
 public final class FowlPlayEntityTypeTags {
     public static final TagKey<EntityType<?>> BIRDS = create("birds");
+    public static final TagKey<EntityType<?>> GULL_HUNT_TARGETS = create("gull_hunt_targets");
     public static final TagKey<EntityType<?>> PENGUIN_HUNT_TARGETS = create("penguin_hunt_targets");
 
     private static TagKey<EntityType<?>> create(String id) {

@@ -38,7 +38,8 @@ public class GullBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.GULL_TEMPTATIONS
+        FowlPlaySensorType.GULL_TEMPTATIONS,
+        FowlPlaySensorType.GULL_ATTACKABLES
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -95,6 +96,7 @@ public class GullBrain {
         addFlyActivities(brain);
         addAvoidActivities(brain);
         addPickupFoodActivities(brain);
+        addFightActivities(brain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
@@ -107,7 +109,8 @@ public class GullBrain {
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
                 Activity.AVOID,
-                FowlPlayActivities.PICKUP_FOOD
+                FowlPlayActivities.PICKUP_FOOD,
+                Activity.FIGHT
             )
         );
     }
@@ -119,9 +122,9 @@ public class GullBrain {
             ImmutableList.of(
                 new StopFallingTask(),
                 new WalkTask<>(RUN_SPEED),
-                new LookAroundTask(45, 90),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
+                new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
@@ -158,7 +161,8 @@ public class GullBrain {
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
-                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }
@@ -168,9 +172,10 @@ public class GullBrain {
             FowlPlayActivities.FLY,
             ImmutableList.of(
                 Pair.of(1, new StopFlyingTask()),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
+                Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
-                    3,
+                    4,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -182,7 +187,8 @@ public class GullBrain {
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT),
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
-                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }
@@ -223,6 +229,24 @@ public class GullBrain {
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
         );
+    }
+
+    private static void addFightActivities(Brain<GullEntity> brain) {
+        brain.setTaskList(
+            Activity.FIGHT,
+            0,
+            ImmutableList.of(
+                ForgetAttackTargetTask.create(),
+                RangedApproachTask.create(FLY_SPEED),
+                MeleeAttackTask.create(20),
+                ForgetTask.run(LookTargetUtil::isValidBreedingTarget, MemoryModuleType.ATTACK_TARGET)
+            ),
+            MemoryModuleType.ATTACK_TARGET
+        );
+    }
+
+    private static Optional<? extends LivingEntity> getAttackTarget(GullEntity gull) {
+        return LookTargetUtil.isValidBreedingTarget(gull) ? Optional.empty() : gull.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE);
     }
 
     private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
