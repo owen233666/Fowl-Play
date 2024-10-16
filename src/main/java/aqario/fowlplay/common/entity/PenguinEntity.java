@@ -6,6 +6,7 @@ import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Dynamic;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.AquaticLookControl;
@@ -56,6 +57,10 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     public final AnimationState standUpState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    public final AnimationState danceState = new AnimationState();
+    private boolean songPlaying;
+    @Nullable
+    private BlockPos songSource;
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
@@ -129,6 +134,28 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
             .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0f);
+    }
+
+    @Override
+    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
+        this.songSource = songPosition;
+        this.songPlaying = playing;
+    }
+
+    @Override
+    public void tickMovement() {
+        if (this.songSource == null
+            || !this.songSource.isCenterWithinDistance(this.getPos(), 3.46)
+            || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
+            this.songPlaying = false;
+            this.songSource = null;
+        }
+
+        super.tickMovement();
+    }
+
+    public boolean isSongPlaying() {
+        return this.songPlaying;
     }
 
     @Override
@@ -208,6 +235,13 @@ public class PenguinEntity extends BirdEntity implements Sliding {
                 this.slideState.stop();
                 this.fallingState.stop();
                 this.standUpState.animateIf(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
+            }
+
+            if (this.isSongPlaying()) {
+                this.danceState.start(this.age);
+            }
+            else {
+                this.danceState.stop();
             }
         }
 

@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.BetterWalkToNearestWantedItemTask;
 import aqario.fowlplay.common.entity.ai.brain.task.BreatheAirTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -10,7 +11,6 @@ import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.kinds.K1;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.*;
@@ -187,7 +187,7 @@ public class PenguinBrain {
             FowlPlayActivities.PICKUP_FOOD,
             10,
             ImmutableList.of(
-                PenguinWalkToNearestWantedItemTask.create(
+                BetterWalkToNearestWantedItemTask.create(
                     PenguinBrain::doesNotHaveFoodInHand,
                     entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
                     true,
@@ -228,42 +228,6 @@ public class PenguinBrain {
 
     public static Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
-    }
-
-    public static class PenguinWalkToNearestWantedItemTask {
-        public static <E extends LivingEntity> TaskControl<E> create(Predicate<E> startPredicate, Function<LivingEntity, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
-            return TaskBuilder.task(
-                instance -> {
-                    TaskBuilder<E, ? extends MemoryAccessor<? extends K1, WalkTarget>> taskBuilder = requiresWalkTarget
-                        ? instance.registeredMemory(MemoryModuleType.WALK_TARGET)
-                        : instance.absentMemory(MemoryModuleType.WALK_TARGET);
-                    return instance.group(
-                            instance.registeredMemory(MemoryModuleType.LOOK_TARGET),
-                            taskBuilder,
-                            instance.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
-                            instance.registeredMemory(MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
-                        )
-                        .apply(
-                            instance,
-                            (memoryAccessor, memoryAccessor2, memoryAccessor3, memoryAccessor4) -> (world, livingEntity, l) -> {
-                                ItemEntity itemEntity = instance.getValue(memoryAccessor3);
-                                if (instance.getValueOptional(memoryAccessor4).isEmpty()
-                                    && startPredicate.test(livingEntity)
-                                    && itemEntity.isInRange(livingEntity, radius)
-                                    && livingEntity.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
-                                    WalkTarget walkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(livingEntity), 0);
-                                    memoryAccessor.remember(new EntityLookTarget(itemEntity, true));
-                                    memoryAccessor2.remember(walkTarget);
-                                    return true;
-                                }
-                                else {
-                                    return false;
-                                }
-                            }
-                        );
-                }
-            );
-        }
     }
 
     public static class PenguinSwimTask {

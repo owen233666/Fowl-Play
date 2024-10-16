@@ -40,31 +40,31 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData root = modelPartData.addChild("root", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 13.0F, 0.0F));
 
-        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 11.0F, 0.0F));
+        ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 8.0F, 0.0F));
 
-        ModelPartData neck = body.addChild("neck", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -17.0F, 0.0F));
+        ModelPartData neck = body.addChild("neck", ModelPartBuilder.create().uv(0, 7).cuboid(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(-0.001F)), ModelTransform.pivot(0.0F, -12.0F, 0.0F));
 
-        ModelPartData head = neck.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData head = neck.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-2.0F, -3.0F, -2.0F, 4.0F, 3.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -3.0F, 0.0F));
 
-        head.addChild("beak", ModelPartBuilder.create().uv(12, 0).cuboid(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 3.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -2.5F, -5.0F));
+        head.addChild("beak", ModelPartBuilder.create().uv(12, 3).cuboid(-0.5F, -0.5F, -3.5F, 1.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.5F, -2.0F));
 
-        body.addChild("torso", ModelPartBuilder.create().uv(0, 8).cuboid(-3.0F, -12.0F, -3.0F, 6.0F, 14.0F, 6.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -5.0F, 0.0F));
+        body.addChild("torso", ModelPartBuilder.create().uv(0, 21).cuboid(-3.5F, -12.0F, -3.0F, 7.0F, 14.0F, 6.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -2.0F, 0.0F));
 
-        body.addChild("left_wing", ModelPartBuilder.create().uv(19, 0).mirrored().cuboid(0.0F, -1.0F, -2.0F, 1.0F, 10.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(3.0F, -14.0F, 0.0F));
+        body.addChild("left_wing", ModelPartBuilder.create().uv(28, 0).mirrored().cuboid(0.0F, -1.0F, -2.0F, 1.0F, 10.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(3.5F, -11.0F, 0.0F));
 
-        body.addChild("right_wing", ModelPartBuilder.create().uv(19, 0).cuboid(-1.0F, -1.0F, -2.0F, 1.0F, 10.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-3.0F, -14.0F, 0.0F));
+        body.addChild("right_wing", ModelPartBuilder.create().uv(28, 0).cuboid(-1.0F, -1.0F, -2.0F, 1.0F, 10.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-3.5F, -11.0F, 0.0F));
 
-        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create(), ModelTransform.of(0.0F, -4.5F, 3.0F, -0.7854F, 0.0F, 0.0F));
+        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create(), ModelTransform.of(0.0F, -1.5F, 3.0F, -0.7854F, 0.0F, 0.0F));
 
-        tail.addChild("cube_r1", ModelPartBuilder.create().uv(30, 0).cuboid(0.0F, 0.0F, 0.0F, 3.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.3491F));
+        tail.addChild("cube_r1", ModelPartBuilder.create().uv(39, 0).cuboid(0.0F, 0.0F, 0.0F, 3.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.3491F));
 
-        tail.addChild("cube_r2", ModelPartBuilder.create().uv(24, 0).cuboid(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.3491F));
+        tail.addChild("cube_r2", ModelPartBuilder.create().uv(33, 0).cuboid(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.3491F));
 
         root.addChild("left_leg", ModelPartBuilder.create().uv(24, 14).cuboid(-1.0F, -2.0F, -0.5F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F))
-            .uv(24, 20).mirrored().cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(1.5F, 8.0F, 0.0F));
+            .uv(24, 20).mirrored().cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(2.0F, 8.0F, 0.0F));
 
         root.addChild("right_leg", ModelPartBuilder.create().uv(24, 14).mirrored().cuboid(-1.0F, -2.0F, -0.5F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F)).mirrored(false)
-            .uv(24, 20).cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-1.5F, 8.0F, 0.0F));
+            .uv(24, 20).cuboid(-1.0F, 2.0F, -2.5F, 2.0F, 1.0F, 4.0F, new Dilation(0.0F)), ModelTransform.pivot(-2.0F, 8.0F, 0.0F));
 
         return TexturedModelData.of(modelData, 64, 64);
     }
@@ -78,6 +78,7 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
         this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
         this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
         this.animate(penguin.floatState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
+        this.animate(penguin.danceState, PenguinEntityAnimations.PENGUIN_DANCE, ageInTicks);
     }
 
     private void updateHeadRotation(boolean swimming, float headYaw, float headPitch) {

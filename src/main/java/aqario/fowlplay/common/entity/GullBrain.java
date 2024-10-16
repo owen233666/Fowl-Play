@@ -216,9 +216,9 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, WalkToNearestVisibleWantedItemTask.create(
+                Pair.of(0, BetterWalkToNearestWantedItemTask.create(
                     GullBrain::doesNotHaveFoodInHand,
-                    RUN_SPEED,
+                    entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
                 )),
