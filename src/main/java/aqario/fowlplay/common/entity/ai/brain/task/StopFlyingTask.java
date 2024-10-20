@@ -14,7 +14,7 @@ public class StopFlyingTask extends Task<FlyingBirdEntity> {
 
     @Override
     protected boolean shouldRun(ServerWorld world, FlyingBirdEntity bird) {
-        return bird.isOnGround();
+        return bird.isOnGround() || bird.isInsideWaterOrBubbleColumn();
     }
 
     @Override
