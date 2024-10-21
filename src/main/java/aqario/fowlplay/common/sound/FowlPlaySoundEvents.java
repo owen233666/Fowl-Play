@@ -12,6 +12,8 @@ public final class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_CARDINAL_SONG = register("entity.cardinal.song");
 
     public static final SoundEvent ENTITY_GULL_AMBIENT = register("entity.gull.ambient");
+    public static final SoundEvent ENTITY_GULL_CALL = register("entity.gull.call");
+    public static final SoundEvent ENTITY_GULL_HURT = register("entity.gull.hurt");
 
     public static final SoundEvent ENTITY_PENGUIN_AMBIENT = register("entity.penguin.ambient");
     public static final SoundEvent ENTITY_PENGUIN_BABY_AMBIENT = register("entity.penguin_baby.ambient");

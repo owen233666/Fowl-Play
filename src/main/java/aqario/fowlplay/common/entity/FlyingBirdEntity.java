@@ -129,7 +129,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 15);
+        return new BirdFlightMoveControl(this, 40, 8);
     }
 
     protected BirdNavigation getFlightNavigation() {

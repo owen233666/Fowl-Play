@@ -203,20 +203,23 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     @Override
     public void playAmbientSound() {
-        if (!this.getWorld().isDay() ? this.random.nextFloat() < 0.01F : this.random.nextFloat() < 0.2F) {
+        if (this.getWorld().isNight() ? this.random.nextFloat() < 0.01F : this.random.nextFloat() < 0.2F) {
             this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
         }
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
+        if (this.random.nextFloat() < 0.03F) {
+            return FowlPlaySoundEvents.ENTITY_GULL_CALL;
+        }
         return FowlPlaySoundEvents.ENTITY_GULL_AMBIENT;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
+        return FowlPlaySoundEvents.ENTITY_GULL_HURT;
     }
 
     @Nullable
