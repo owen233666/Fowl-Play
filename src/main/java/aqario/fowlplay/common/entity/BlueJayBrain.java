@@ -116,7 +116,7 @@ public class BlueJayBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new StopFallingTask(),
+                FlyingTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -147,9 +147,10 @@ public class BlueJayBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.create(WALK_SPEED), 1),
-                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
-                            Pair.of(new WaitTask(100, 300), 2)
+                            Pair.of(MeanderTask.create(WALK_SPEED), 3),
+                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
+                            Pair.of(new WaitTask(100, 300), 4),
+                            Pair.of(FlyingTaskControl.startFlying(blueJay -> blueJay.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -166,7 +167,7 @@ public class BlueJayBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, new StopFlyingTask()),
+                Pair.of(1, FlyingTaskControl.stopFlying(blueJay -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -191,9 +192,10 @@ public class BlueJayBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(
+                FlyingTaskControl.startFlying(blueJay -> true),
+                BetterGoToRememberedPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
-                    RUN_SPEED,
+                    blueJay -> blueJay.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
                     true
                 ),

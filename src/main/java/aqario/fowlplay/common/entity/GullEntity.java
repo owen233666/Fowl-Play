@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class GullEntity extends TrustingBirdEntity implements VariantProvider<GullEntity.Variant> {
+public class GullEntity extends TrustingBirdEntity implements VariantProvider<GullEntity.Variant>, Aquatic {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(GullEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
@@ -260,6 +260,14 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         DebugInfoSender.sendBrainDebugData(this);
     }
 
+    @Override
+    public boolean isFloating() {
+        double maxWaterHeight = 0.35; // how much of the hitbox the water should cover
+        BlockPos blockPos = BlockPos.create(this.getX(), this.getY() + maxWaterHeight, this.getZ());
+        double waterHeight = this.getBlockPos().getY() + this.getWorld().getFluidState(blockPos).getHeight(this.getWorld(), blockPos);
+        return this.isSubmergedInWater() || waterHeight > this.getY() + maxWaterHeight;
+    }
+
     public enum Variant {
         HERRING("herring"),
         RING_BILLED("ring_billed");
@@ -285,10 +293,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
         @Override
         public void tick() {
-            double maxWaterHeight = 0.35; // how much of the hitbox the water should cover
-            BlockPos blockPos = BlockPos.create(this.entity.getX(), this.entity.getY() + maxWaterHeight, this.entity.getZ());
-            double waterHeight = this.entity.getBlockPos().getY() + this.entity.getWorld().getFluidState(blockPos).getHeight(this.entity.getWorld(), blockPos);
-            if (this.entity.isSubmergedInWater() || waterHeight > this.entity.getY() + maxWaterHeight) {
+            if (((GullEntity) this.entity).isFloating()) {
                 this.entity.setVelocity(this.entity.getVelocity().add(0.0, 0.05, 0.0));
             }
             super.tick();

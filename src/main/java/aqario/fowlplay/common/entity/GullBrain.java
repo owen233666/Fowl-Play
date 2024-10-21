@@ -120,7 +120,7 @@ public class GullBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new StopFallingTask(),
+                FlyingTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -151,9 +151,10 @@ public class GullBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.create(WALK_SPEED), 1),
-                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
-                            Pair.of(new WaitTask(100, 300), 2)
+                            Pair.of(MeanderTask.create(WALK_SPEED), 4),
+                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
+                            Pair.of(new WaitTask(100, 300), 3),
+                            Pair.of(FlyingTaskControl.startFlying(gull -> gull.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -171,7 +172,7 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, new StopFlyingTask()),
+                Pair.of(1, FlyingTaskControl.stopFlying(gull -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
                 Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
@@ -198,9 +199,10 @@ public class GullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(
+                FlyingTaskControl.startFlying(gull -> true),
+                BetterGoToRememberedPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
-                    RUN_SPEED,
+                    gull -> gull.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
                     true
                 ),

@@ -116,7 +116,7 @@ public class RobinBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                new StopFallingTask(),
+                FlyingTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -147,9 +147,10 @@ public class RobinBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.create(WALK_SPEED), 1),
-                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 2),
-                            Pair.of(new WaitTask(100, 300), 2)
+                            Pair.of(MeanderTask.create(WALK_SPEED), 4),
+                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
+                            Pair.of(new WaitTask(100, 300), 3),
+                            Pair.of(FlyingTaskControl.startFlying(robin -> robin.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -166,7 +167,7 @@ public class RobinBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, new StopFlyingTask()),
+                Pair.of(1, FlyingTaskControl.stopFlying(robin -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -191,9 +192,10 @@ public class RobinBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                GoToRememberedPositionTask.toEntity(
+                FlyingTaskControl.startFlying(robin -> true),
+                BetterGoToRememberedPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
-                    RUN_SPEED,
+                    robin -> robin.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
                     true
                 ),
