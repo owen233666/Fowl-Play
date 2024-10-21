@@ -1,19 +1,18 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
-import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -46,17 +45,6 @@ public class CardinalEntity extends FlyingBirdEntity {
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return null;
-    }
-
-    @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new PickupItemGoal(this));
-        this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(6, new LookAroundGoal(this));
     }
 
     @Override
@@ -108,6 +96,19 @@ public class CardinalEntity extends FlyingBirdEntity {
     }
 
     @Override
+    public boolean damage(DamageSource source, float amount) {
+        boolean bl = super.damage(source, amount);
+        if (this.getWorld().isClient) {
+            return false;
+        }
+        if (bl && source.getAttacker() instanceof LivingEntity entity) {
+            CardinalBrain.onAttacked(this, entity);
+        }
+
+        return bl;
+    }
+
+    @Override
     public void playAmbientSound() {
         SoundEvent soundEvent = this.getAmbientSound();
         if (soundEvent == FowlPlaySoundEvents.ENTITY_CARDINAL_SONG) {
@@ -137,5 +138,38 @@ public class CardinalEntity extends FlyingBirdEntity {
     @Override
     protected SoundEvent getDeathSound() {
         return null;
+    }
+
+    @Override
+    protected Brain.Profile<CardinalEntity> createBrainProfile() {
+        return CardinalBrain.createProfile();
+    }
+
+    @Override
+    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
+        return CardinalBrain.create(this.createBrainProfile().deserialize(dynamic));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Brain<CardinalEntity> getBrain() {
+        return (Brain<CardinalEntity>) super.getBrain();
+    }
+
+    @Override
+    protected void mobTick() {
+        this.getWorld().getProfiler().push("cardinalBrain");
+        this.getBrain().tick((ServerWorld) this.getWorld(), this);
+        this.getWorld().getProfiler().pop();
+        this.getWorld().getProfiler().push("cardinalActivityUpdate");
+        CardinalBrain.reset(this);
+        this.getWorld().getProfiler().pop();
+        super.mobTick();
+    }
+
+    @Override
+    protected void sendAiDebugData() {
+        super.sendAiDebugData();
+        DebugInfoSender.sendBrainDebugData(this);
     }
 }

@@ -1,13 +1,13 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
-import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.VariantProvider;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -16,11 +16,10 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -100,17 +99,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     }
 
     @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new EscapeDangerGoal(this, 1.5));
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new PickupItemGoal(this));
-        this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
-        this.goalSelector.add(6, new LookAroundGoal(this));
-    }
-
-    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }
@@ -160,6 +148,19 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     }
 
     @Override
+    public boolean damage(DamageSource source, float amount) {
+        boolean bl = super.damage(source, amount);
+        if (this.getWorld().isClient) {
+            return false;
+        }
+        if (bl && source.getAttacker() instanceof LivingEntity entity) {
+            RobinBrain.onAttacked(this, entity);
+        }
+
+        return bl;
+    }
+
+    @Override
     protected void addFlapEffects() {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
@@ -199,6 +200,39 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     @Override
     protected SoundEvent getDeathSound() {
         return null;
+    }
+
+    @Override
+    protected Brain.Profile<RobinEntity> createBrainProfile() {
+        return RobinBrain.createProfile();
+    }
+
+    @Override
+    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
+        return RobinBrain.create(this.createBrainProfile().deserialize(dynamic));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Brain<RobinEntity> getBrain() {
+        return (Brain<RobinEntity>) super.getBrain();
+    }
+
+    @Override
+    protected void mobTick() {
+        this.getWorld().getProfiler().push("robinBrain");
+        this.getBrain().tick((ServerWorld) this.getWorld(), this);
+        this.getWorld().getProfiler().pop();
+        this.getWorld().getProfiler().push("robinActivityUpdate");
+        RobinBrain.reset(this);
+        this.getWorld().getProfiler().pop();
+        super.mobTick();
+    }
+
+    @Override
+    protected void sendAiDebugData() {
+        super.sendAiDebugData();
+        DebugInfoSender.sendBrainDebugData(this);
     }
 
     public enum Variant {

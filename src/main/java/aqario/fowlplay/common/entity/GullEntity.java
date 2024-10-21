@@ -135,13 +135,11 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         if (this.getWorld().isClient) {
             return false;
         }
-        else {
-            if (bl && source.getAttacker() instanceof LivingEntity entity) {
-                GullBrain.onAttacked(this, entity);
-            }
-
-            return bl;
+        if (bl && source.getAttacker() instanceof LivingEntity entity) {
+            GullBrain.onAttacked(this, entity);
         }
+
+        return bl;
     }
 
     @Override

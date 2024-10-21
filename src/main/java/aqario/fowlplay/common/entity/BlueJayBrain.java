@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class PigeonBrain {
-    private static final ImmutableList<SensorType<? extends Sensor<? super PigeonEntity>>> SENSORS = ImmutableList.of(
+public class BlueJayBrain {
+    private static final ImmutableList<SensorType<? extends Sensor<? super BlueJayEntity>>> SENSORS = ImmutableList.of(
         SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
@@ -37,8 +37,7 @@ public class PigeonBrain {
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
-        FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.PIGEON_TEMPTATIONS
+        FowlPlaySensorType.NEAREST_ADULTS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -47,23 +46,23 @@ public class PigeonBrain {
         MemoryModuleType.WALK_TARGET,
         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
         MemoryModuleType.PATH,
-        MemoryModuleType.BREED_TARGET,
+//        MemoryModuleType.BREED_TARGET,
         MemoryModuleType.NEAREST_VISIBLE_PLAYER,
         MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
         MemoryModuleType.AVOID_TARGET,
-        MemoryModuleType.ATTACK_COOLING_DOWN,
+//        MemoryModuleType.ATTACK_COOLING_DOWN,
         MemoryModuleType.NEAREST_VISIBLE_ADULT,
-        MemoryModuleType.ATTACK_TARGET,
-        MemoryModuleType.HAS_HUNTING_COOLDOWN,
-        MemoryModuleType.TEMPTING_PLAYER,
-        MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
+//        MemoryModuleType.ATTACK_TARGET,
+//        MemoryModuleType.HAS_HUNTING_COOLDOWN,
+//        MemoryModuleType.TEMPTING_PLAYER,
+//        MemoryModuleType.TEMPTATION_COOLDOWN_TICKS,
         MemoryModuleType.GAZE_COOLDOWN_TICKS,
-        MemoryModuleType.IS_TEMPTED,
+//        MemoryModuleType.IS_TEMPTED,
         MemoryModuleType.HURT_BY,
         MemoryModuleType.HURT_BY_ENTITY,
-        MemoryModuleType.NEAREST_ATTACKABLE,
+//        MemoryModuleType.NEAREST_ATTACKABLE,
         MemoryModuleType.IS_IN_WATER,
-        MemoryModuleType.IS_PREGNANT,
+//        MemoryModuleType.IS_PREGNANT,
         MemoryModuleType.IS_PANICKING,
         MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
         MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
@@ -71,14 +70,13 @@ public class PigeonBrain {
         FowlPlayMemoryModuleType.IS_FLYING,
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
-        FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
-        FowlPlayMemoryModuleType.TELEPORT_TARGET
+        FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(1, 3);
+    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_PLAYER_RADIUS = 5;
+    private static final int AVOID_PLAYER_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -86,11 +84,11 @@ public class PigeonBrain {
     public static void init() {
     }
 
-    public static Brain.Profile<PigeonEntity> createProfile() {
+    public static Brain.Profile<BlueJayEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
     }
 
-    public static Brain<?> create(Brain<PigeonEntity> brain) {
+    public static Brain<?> create(Brain<BlueJayEntity> brain) {
         addCoreActivities(brain);
         addIdleActivities(brain);
         addFlyActivities(brain);
@@ -102,8 +100,8 @@ public class PigeonBrain {
         return brain;
     }
 
-    public static void reset(PigeonEntity pigeon) {
-        pigeon.getBrain().resetPossibleActivities(
+    public static void reset(BlueJayEntity blueJay) {
+        blueJay.getBrain().resetPossibleActivities(
             ImmutableList.of(
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
@@ -113,16 +111,13 @@ public class PigeonBrain {
         );
     }
 
-    private static void addCoreActivities(Brain<PigeonEntity> brain) {
+    private static void addCoreActivities(Brain<BlueJayEntity> brain) {
         brain.setTaskList(
             Activity.CORE,
             0,
             ImmutableList.of(
                 new StopFallingTask(),
-                new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
-                new DelivererFollowOwnerTask(WALK_SPEED, 5, 10),
-                new DeliverBundleTask(WALK_SPEED, 4, 1024),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
                 new LookAroundTask(45, 90),
@@ -133,13 +128,13 @@ public class PigeonBrain {
         );
     }
 
-    private static void addIdleActivities(Brain<PigeonEntity> brain) {
+    private static void addIdleActivities(Brain<BlueJayEntity> brain) {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(1, new BreedTask(FowlPlayEntityType.PIGEON, WALK_SPEED, 20)),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.BLUE_JAY, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(3, FollowMobTask.create(PigeonBrain::isPlayerHoldingFood, 32.0F)),
+                Pair.of(3, FollowMobTask.create(BlueJayBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
@@ -167,7 +162,7 @@ public class PigeonBrain {
         );
     }
 
-    private static void addFlyActivities(Brain<PigeonEntity> brain) {
+    private static void addFlyActivities(Brain<BlueJayEntity> brain) {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
@@ -191,7 +186,7 @@ public class PigeonBrain {
         );
     }
 
-    private static void addAvoidActivities(Brain<PigeonEntity> brain) {
+    private static void addAvoidActivities(Brain<BlueJayEntity> brain) {
         brain.setTaskList(
             Activity.AVOID,
             10,
@@ -210,17 +205,17 @@ public class PigeonBrain {
         );
     }
 
-    private static void addPickupFoodActivities(Brain<PigeonEntity> brain) {
+    private static void addPickupFoodActivities(Brain<BlueJayEntity> brain) {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
                 Pair.of(0, BetterWalkToNearestWantedItemTask.create(
-                    PigeonBrain::doesNotHaveFoodInHand,
+                    BlueJayBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
                 )),
-                Pair.of(1, ForgetTask.run(PigeonBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(1, ForgetTask.run(BlueJayBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
@@ -231,7 +226,7 @@ public class PigeonBrain {
 
     private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
         return ImmutableList.of(
-            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.PIGEON, 8.0F), 1),
+            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.BLUE_JAY, 8.0F), 1),
             Pair.of(FollowMobTask.create(8.0F), 1)
         );
     }
@@ -245,7 +240,7 @@ public class PigeonBrain {
         );
     }
 
-    private static RandomTask<PigeonEntity> makeRandomWanderTask() {
+    private static RandomTask<BlueJayEntity> makeRandomWanderTask() {
         return new RandomTask<>(
             ImmutableList.of(
                 Pair.of(MeanderTask.create(0.6F), 2),
@@ -258,75 +253,70 @@ public class PigeonBrain {
         );
     }
 
-    private static TaskControl<PigeonEntity> makeAddPlayerToAvoidTargetTask() {
+    private static TaskControl<BlueJayEntity> makeAddPlayerToAvoidTargetTask() {
         return MemoryTransferTask.create(
-            PigeonBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
+            BlueJayBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
         );
     }
 
-    private static boolean hasAvoidTarget(PigeonEntity pigeon) {
-        if (pigeon.isTamed()) {
-            return false;
-        }
-        Brain<PigeonEntity> brain = pigeon.getBrain();
+    private static boolean hasAvoidTarget(BlueJayEntity blueJay) {
+        Brain<BlueJayEntity> brain = blueJay.getBrain();
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             return false;
         }
         PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || pigeon.isTrusted(player)) {
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player)) {
             return false;
         }
 
-        return pigeon.isInRange(player, AVOID_PLAYER_RADIUS);
+        return blueJay.isInRange(player, AVOID_PLAYER_RADIUS);
     }
 
-    public static void onAttacked(PigeonEntity pigeon, LivingEntity attacker) {
-        if (attacker instanceof PigeonEntity || attacker == pigeon.getOwner()) {
+    public static void onAttacked(BlueJayEntity blueJay, LivingEntity attacker) {
+        if (attacker instanceof BlueJayEntity) {
             return;
         }
-        Brain<PigeonEntity> brain = pigeon.getBrain();
+        Brain<BlueJayEntity> brain = blueJay.getBrain();
         brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
-        if (attacker instanceof PlayerEntity player) {
+        if (attacker instanceof PlayerEntity) {
             brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-            pigeon.stopTrusting(player);
         }
         brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 160L);
-        alertOthers(pigeon, attacker);
+        alertOthers(blueJay, attacker);
     }
 
-    protected static void alertOthers(PigeonEntity pigeon, LivingEntity attacker) {
-        getNearbyVisiblePigeons(pigeon).forEach(other -> {
-            if (attacker instanceof PlayerEntity player) {
+    protected static void alertOthers(BlueJayEntity blueJay, LivingEntity attacker) {
+        getNearbyVisibleBlueJays(blueJay).forEach(other -> {
+            if (attacker instanceof PlayerEntity) {
                 other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-                ((PigeonEntity) other).stopTrusting(player);
             }
-            runAwayFrom((PigeonEntity) other, attacker);
+            runAwayFrom((BlueJayEntity) other, attacker);
         });
     }
 
-    protected static void runAwayFrom(PigeonEntity pigeon, LivingEntity target) {
-        pigeon.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        pigeon.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
+    protected static void runAwayFrom(BlueJayEntity blueJay, LivingEntity target) {
+        blueJay.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+        blueJay.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisiblePigeons(PigeonEntity pigeon) {
-        return pigeon.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
+    protected static List<PassiveEntity> getNearbyVisibleBlueJays(BlueJayEntity blueJay) {
+        return blueJay.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 
-    private static boolean noFoodInRange(PigeonEntity pigeon) {
-        Optional<ItemEntity> item = pigeon.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(pigeon, PICK_UP_RANGE);
+    private static boolean noFoodInRange(BlueJayEntity blueJay) {
+        Optional<ItemEntity> item = blueJay.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+        return item.isEmpty() || !item.get().isInRange(blueJay, PICK_UP_RANGE);
     }
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
-    private static boolean doesNotHaveFoodInHand(PigeonEntity pigeon) {
-        return !getFood().test(pigeon.getMainHandStack());
+    private static boolean doesNotHaveFoodInHand(BlueJayEntity blueJay) {
+        return !getFood().test(blueJay.getMainHandStack());
     }
 
     public static Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.PIGEON_FOOD);
+        return Ingredient.ofTag(FowlPlayItemTags.BLUE_JAY_FOOD);
     }
 }

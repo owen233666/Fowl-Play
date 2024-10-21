@@ -128,13 +128,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         if (this.getWorld().isClient) {
             return false;
         }
-        else {
-            if (bl && source.getAttacker() instanceof LivingEntity entity) {
-                PigeonBrain.onAttacked(this, entity);
-            }
-
-            return bl;
+        if (bl && source.getAttacker() instanceof LivingEntity entity) {
+            PigeonBrain.onAttacked(this, entity);
         }
+
+        return bl;
     }
 
     @Override
