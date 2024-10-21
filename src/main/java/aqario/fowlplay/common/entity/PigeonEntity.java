@@ -52,7 +52,8 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
     public final AnimationState walkState = new AnimationState();
-    public final AnimationState flyState = new AnimationState();
+    public final AnimationState glideState = new AnimationState();
+    public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
@@ -260,11 +261,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
                 this.idleState.stop();
             }
 
-            if (!this.isOnGround()) {
-                this.flyState.start(this.age);
+            if (this.isFlying()) {
+                this.flapState.start(this.age);
             }
             else {
-                this.flyState.stop();
+                this.flapState.stop();
             }
 
             if (this.isWalking()) {
