@@ -116,8 +116,9 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.rightWing.visible = true;
         }
         this.animate(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.animate(gull.flyState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
         this.animate(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
+        this.animate(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
+        this.animate(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

@@ -43,7 +43,8 @@ import java.util.List;
 public class GullEntity extends TrustingBirdEntity implements VariantProvider<GullEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(GullEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
-    public final AnimationState flyState = new AnimationState();
+    public final AnimationState glideState = new AnimationState();
+    public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
 
     public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
@@ -174,10 +175,10 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
             }
 
             if (this.isFlying()) {
-                this.flyState.start(this.age);
+                this.flapState.start(this.age);
             }
             else {
-                this.flyState.stop();
+                this.flapState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
