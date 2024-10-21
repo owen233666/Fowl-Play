@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.goal.BirdWanderGoal;
-import aqario.fowlplay.common.entity.ai.goal.FlyAroundGoal;
 import aqario.fowlplay.common.entity.ai.goal.PickupItemGoal;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -106,7 +105,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(2, new PickupItemGoal(this));
         this.goalSelector.add(2, new FleeEntityGoal<>(this, PlayerEntity.class, 10.0f, 1.2, 1.5, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test));
-        this.goalSelector.add(3, new FlyAroundGoal(this));
         this.goalSelector.add(4, new BirdWanderGoal(this, 1.0));
         this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 20.0f));
         this.goalSelector.add(6, new LookAroundGoal(this));

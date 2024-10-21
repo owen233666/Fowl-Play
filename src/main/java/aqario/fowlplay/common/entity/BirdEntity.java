@@ -13,10 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public abstract class BirdEntity extends AnimalEntity {
@@ -168,80 +165,6 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     protected BodyControl createBodyControl() {
         return new BirdBodyControl(this);
-    }
-
-    public boolean canAccessTarget(Vec3d target) {
-        Vec3d vec3d = new Vec3d(this.getX(), this.getEyeY(), this.getZ());
-
-        return this.getWorld().raycast(new RaycastContext(vec3d, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this)).getType() == HitResult.Type.MISS;
-    }
-
-    public Vec3d getBlockInViewAway(Vec3d fleePos, float radiusAdd) {
-        final float radius = 3.15F * -3 - this.getRandom().nextInt(24) - radiusAdd;
-        final float angle = getAngle();
-        final double extraX = radius * Math.sin((float) (Math.PI + angle));
-        final double extraZ = radius * Math.cos(angle);
-        final BlockPos radialPos = new BlockPos((int) (fleePos.getX() + extraX), 0, (int) (fleePos.getZ() + extraZ));
-        final BlockPos ground = getGroundPos(radialPos);
-        final int distFromGround = (int) this.getY() - ground.getY();
-
-        final BlockPos newPos;
-        if (distFromGround > 8) {
-            final int flightHeight = 4 + this.getRandom().nextInt(10);
-            newPos = ground.up(flightHeight);
-        }
-        else {
-            newPos = ground.up(this.getRandom().nextInt(6) + 1);
-        }
-
-        if (this.canAccessTarget(Vec3d.ofCenter(newPos)) && this.squaredDistanceTo(Vec3d.ofCenter(newPos)) > 1) {
-            return Vec3d.ofCenter(newPos);
-        }
-        return null;
-    }
-
-    private BlockPos getGroundPos(BlockPos in) {
-        BlockPos pos = new BlockPos(in.getX(), (int) this.getY(), in.getZ());
-        while (pos.getY() > -64 && !getWorld().getBlockState(pos).isSolid() && getWorld().getFluidState(pos).isEmpty()) {
-            pos = pos.down();
-        }
-        return pos;
-    }
-
-    public Vec3d getBlockGrounding(Vec3d fleePos) {
-        final float radius = 3.15F * -3 - this.getRandom().nextInt(24);
-        final float angle = getAngle();
-        final double extraX = radius * Math.sin((float) (Math.PI + angle));
-        final double extraZ = radius * Math.cos(angle);
-        final BlockPos radialPos = new BlockPos((int) (fleePos.getX() + extraX), (int) getY(), (int) (fleePos.getZ() + extraZ));
-        BlockPos ground = this.getGroundPos(radialPos);
-        if (ground.getY() == -64) {
-            return this.getPos();
-        }
-        else {
-            ground = this.getBlockPos();
-            while (ground.getY() > -64 && !getWorld().getBlockState(ground).isSolid()) {
-                ground = ground.down();
-            }
-        }
-        if (this.canAccessTarget(Vec3d.ofCenter(ground.up()))) {
-            return Vec3d.ofCenter(ground);
-        }
-        return null;
-    }
-
-    private float getAngle() {
-        final float neg = this.getRandom().nextBoolean() ? 1 : -1;
-        final float renderYawOffset = this.bodyYaw;
-        return (0.0174532925F * renderYawOffset) + 3.15F + (this.getRandom().nextFloat() * neg);
-    }
-
-    public boolean isOverWater() {
-        BlockPos pos = this.getBlockPos();
-        while (pos.getY() > -64 && this.getWorld().isAir(pos)) {
-            pos = pos.down();
-        }
-        return !this.getWorld().getFluidState(pos).isEmpty();
     }
 
     @Override
