@@ -118,6 +118,7 @@ public class PigeonBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
+                new StayAboveWaterTask(0.5F),
                 FlyingTaskControl.stopFalling(),
                 new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
