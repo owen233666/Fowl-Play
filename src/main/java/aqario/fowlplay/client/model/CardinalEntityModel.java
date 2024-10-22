@@ -18,6 +18,8 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
     public final ModelPart torso;
     public final ModelPart leftWing;
     public final ModelPart rightWing;
+    public final ModelPart leftWingOpen;
+    public final ModelPart rightWingOpen;
     public final ModelPart leftLeg;
     public final ModelPart rightLeg;
     public final ModelPart tail;
@@ -32,6 +34,8 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
         this.torso = this.body.getChild("torso");
         this.leftWing = this.body.getChild("left_wing");
         this.rightWing = this.body.getChild("right_wing");
+        this.leftWingOpen = this.body.getChild("left_wing_open");
+        this.rightWingOpen = this.body.getChild("right_wing_open");
         this.leftLeg = this.root.getChild("left_leg");
         this.rightLeg = this.root.getChild("right_leg");
         this.tail = this.body.getChild("tail");
@@ -44,19 +48,27 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
 
         ModelPartData body = root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -2.75F, 0.0F));
 
-        ModelPartData neck = body.addChild("neck", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
+        ModelPartData neck = body.addChild("neck", ModelPartBuilder.create().uv(0, 13).cuboid(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, new Dilation(-0.001F)), ModelTransform.pivot(0.0F, -1.75F, -2.5F));
 
-        ModelPartData head = neck.addChild("head", ModelPartBuilder.create().uv(0, 8).cuboid(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData head = neck.addChild("head", ModelPartBuilder.create().uv(0, 8).cuboid(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, -1.0F, 0.0F));
 
-        head.addChild("crest", ModelPartBuilder.create().uv(6, 6).cuboid(0.0F, -2.0F, -1.0F, 0.0F, 2.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -3.5F, 0.0F, -0.3491F, 0.0F, 0.0F));
+        head.addChild("crest", ModelPartBuilder.create().uv(6, 6).cuboid(0.0F, -2.0F, -1.0F, 0.0F, 2.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -2.5F, 0.0F, -0.3491F, 0.0F, 0.0F));
 
-        head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -3.0F, -1.0F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, -1.0F));
+        head.addChild("beak", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -3.0F, -1.0F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 1.0F, -1.0F));
 
         body.addChild("torso", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -2.0F, -4.0F, 3.0F, 3.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, -0.6109F, 0.0F, 0.0F));
 
         body.addChild("left_wing", ModelPartBuilder.create().uv(16, 0).cuboid(-0.75F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(1.75F, -2.5F, -1.5F, -0.3927F, 0.0F, 0.0F));
 
         body.addChild("right_wing", ModelPartBuilder.create().uv(16, 0).mirrored().cuboid(-0.25F, -1.0F, -0.5F, 1.0F, 3.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.75F, -2.5F, -1.5F, -0.3927F, 0.0F, 0.0F));
+
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(8, 9).cuboid(-0.5F, 0.0F, -1.0F, 5.0F, 1.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(1.0F, -3.25F, -1.0F, -0.6109F, 0.0F, 0.0F));
+
+        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(3, 15).cuboid(0.0F, 0.0F, 0.0F, 5.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.pivot(4.5F, 0.0F, -1.0F));
+
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(8, 9).mirrored().cuboid(-4.5F, 0.0F, -1.0F, 5.0F, 1.0F, 5.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.0F, -3.25F, -1.0F, -0.6109F, 0.0F, 0.0F));
+
+        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(3, 15).mirrored().cuboid(-5.0F, 0.0F, 0.0F, 5.0F, 0.0F, 5.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-4.5F, 0.0F, -1.0F));
 
         body.addChild("tail", ModelPartBuilder.create().uv(11, 0).cuboid(-1.0F, -1.0F, 1.0F, 2.0F, 1.0F, 2.0F, new Dilation(0.0F))
             .uv(13, 3).cuboid(-1.0F, -1.0F, 3.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -0.25F, 0.0F, -0.2618F, 0.0F, 0.0F));
@@ -73,20 +85,45 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
     }
 
     @Override
-    public void setAngles(CardinalEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.getPart().traverse().forEach(ModelPart::resetTransform);
-        this.updateHeadRotation(netHeadYaw, headPitch);
-        if (entity.isOnGround() && !entity.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbSwing, limbSwingAmount, 5.0F, 2.5F);
+    public void setAngles(CardinalEntity cardinal, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
+        if (!cardinal.isFlying()) {
+            this.updateHeadRotation(headYaw, headPitch);
         }
-        this.animate(entity.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
-        this.animate(entity.flyState, CardinalEntityAnimations.CARDINAL_FLY, ageInTicks);
-        this.animate(entity.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
+    }
+
+    @Override
+    public void animateModel(CardinalEntity cardinal, float limbAngle, float limbDistance, float tickDelta) {
+        this.getPart().traverse().forEach(ModelPart::resetTransform);
+        super.animateModel(cardinal, limbAngle, limbDistance, tickDelta);
+        float ageInTicks = cardinal.age + tickDelta;
+        if (cardinal.isFlying()) {
+            this.root.pitch = cardinal.getPitch(tickDelta) * (float) (Math.PI / 180.0);
+            this.root.roll = cardinal.getRoll(tickDelta) * (float) (Math.PI / 180.0);
+        }
+        if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+        }
+        if (cardinal.isFlying()) {
+            this.leftWingOpen.visible = true;
+            this.rightWingOpen.visible = true;
+            this.leftWing.visible = false;
+            this.rightWing.visible = false;
+        }
+        else {
+            this.leftWingOpen.visible = false;
+            this.rightWingOpen.visible = false;
+            this.leftWing.visible = true;
+            this.rightWing.visible = true;
+        }
+        this.animate(cardinal.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
+        this.animate(cardinal.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
+        this.animate(cardinal.glideState, CardinalEntityAnimations.CARDINAL_GLIDE, ageInTicks);
+        this.animate(cardinal.flapState, CardinalEntityAnimations.CARDINAL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -50.0F, 50.0F);
-        headPitch = MathHelper.clamp(headPitch, -30.0F, 60.0F);
+        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
         this.neck.pitch = headPitch * (float) (Math.PI / 180.0);
     }

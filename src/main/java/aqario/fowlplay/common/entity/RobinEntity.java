@@ -30,8 +30,8 @@ import org.jetbrains.annotations.Nullable;
 public class RobinEntity extends FlyingBirdEntity implements VariantProvider<RobinEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
+    public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
-    public final AnimationState flyState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
     private int flapAnimationTimeout = 0;
 
@@ -111,17 +111,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            if (!this.isOnGround()) {
-                this.flapState.start(this.age);
-            }
-            else if (this.flapAnimationTimeout <= 0) {
-                this.flapAnimationTimeout = this.getFlapFrequency();
-                this.flapState.restart(this.age);
-            }
-            else {
-                --this.flapAnimationTimeout;
-            }
-
             if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
                 this.idleState.start(this.age);
             }
@@ -130,10 +119,10 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
             }
 
             if (this.isFlying()) {
-                this.flyState.start(this.age);
+                this.flapState.start(this.age);
             }
             else {
-                this.flyState.stop();
+                this.flapState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
