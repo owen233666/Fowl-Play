@@ -116,7 +116,8 @@ public class BlueJayBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                FlyingTaskControl.stopFalling(),
+                new StayAboveWaterTask(0.5F),
+                FlightTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -150,7 +151,7 @@ public class BlueJayBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 3),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 4),
-                            Pair.of(FlyingTaskControl.startFlying(blueJay -> blueJay.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightTaskControl.startFlying(blueJay -> blueJay.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -167,7 +168,7 @@ public class BlueJayBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlyingTaskControl.stopFlying(blueJay -> true)),
+                Pair.of(1, FlightTaskControl.stopFlying(blueJay -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -192,7 +193,7 @@ public class BlueJayBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlyingTaskControl.startFlying(blueJay -> true),
+                FlightTaskControl.startFlying(blueJay -> true),
                 BetterGoToRememberedPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     blueJay -> blueJay.isFlying() ? FLY_SPEED : RUN_SPEED,

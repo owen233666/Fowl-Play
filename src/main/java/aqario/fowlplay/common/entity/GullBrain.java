@@ -120,7 +120,7 @@ public class GullBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                FlyingTaskControl.stopFalling(),
+                FlightTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -154,7 +154,7 @@ public class GullBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlyingTaskControl.startFlying(gull -> gull.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightTaskControl.startFlying(gull -> gull.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -172,7 +172,7 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlyingTaskControl.stopFlying(gull -> true)),
+                Pair.of(1, FlightTaskControl.stopFlying(gull -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
                 Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
@@ -199,7 +199,7 @@ public class GullBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlyingTaskControl.startFlying(gull -> true),
+                FlightTaskControl.startFlying(gull -> true),
                 BetterGoToRememberedPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     gull -> gull.isFlying() ? FLY_SPEED : RUN_SPEED,
