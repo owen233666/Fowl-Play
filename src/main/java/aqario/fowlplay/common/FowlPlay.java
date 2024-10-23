@@ -11,9 +11,8 @@ import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.world.gen.FowlPlayWorldGen;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import eu.midnightdust.lib.config.MidnightConfig;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +21,8 @@ public class FowlPlay implements ModInitializer {
     public static final String ID = "fowlplay";
 
     @Override
-    public void onInitialize(ModContainer mod) {
-        LOGGER.info("Loading {} {}", mod.metadata().name(), mod.metadata().version());
+    public void onInitialize() {
+        LOGGER.info("Loading Fowl Play");
         MidnightConfig.init(ID, FowlPlayConfig.class);
         FowlPlayActivities.init();
         FowlPlayEntityType.init();

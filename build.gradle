@@ -27,17 +27,14 @@ dependencies {
     // Mappings
     mappings "org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2"
 
-    // Quilt Loader
-    modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
+    // Fabric Loader
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Quilted Fabric API
-    modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${project.quilted_fabric_api_version}-${project.minecraft_version}"
-
-    // Quilt Standard Libraries
-    modImplementation "org.quiltmc:qsl:${project.qsl_version}+${project.minecraft_version}"
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}"
 
     // Debug Utils
-    modRuntimeOnly("io.github.flemmli97:debugutils:${project.minecraft_version}-${project.debugutils_version}") {
+    modRuntimeOnly("io.github.flemmli97:debugutils:${project.debugutils_version}") {
         transitive = false
     }
 
@@ -60,6 +57,10 @@ dependencies {
 
 processResources {
     inputs.property 'version', version
+
+    filesMatching('fabric.mod.json') {
+        expand "version": version
+    }
 
     filesMatching('quilt.mod.json') {
         expand "version": version
