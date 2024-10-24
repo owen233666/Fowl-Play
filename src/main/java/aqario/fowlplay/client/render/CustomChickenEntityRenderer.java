@@ -16,7 +16,7 @@ public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity
 
     @Override
     public Identifier getTexture(ChickenEntity chicken) {
-        return Identifier.of(FowlPlay.ID, "textures/entity/chicken.png");
+        return Identifier.of(FowlPlay.ID, "textures/entity/chicken/white.png");
     }
 
     @Override

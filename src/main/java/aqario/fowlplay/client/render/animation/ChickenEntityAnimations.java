@@ -93,41 +93,6 @@ public class ChickenEntityAnimations {
             )
         )
         .addPartAnimation(
-            "left_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(-0.2f, -0.2f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "left_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-2.22f, -4.2f, -4.71f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "right_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0.2f, -0.2f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "right_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-2.22f, 4.2f, 4.71f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
-            "tail",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
-            )
-        )
-        .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,

@@ -16,7 +16,7 @@ import net.minecraft.world.poi.PointOfInterestTypes;
 import java.util.List;
 
 public class PigeonSpawner implements Spawner {
-    private static final int SPAWN_COOLDOWN = 1200;
+    private static final int SPAWN_COOLDOWN = 600;
     private int ticksUntilNextSpawn;
 
     @Override
