@@ -19,6 +19,7 @@ public class PigeonSpawner implements Spawner {
     private static final int SPAWN_COOLDOWN = 600;
     private int ticksUntilNextSpawn;
 
+    @SuppressWarnings("deprecation")
     @Override
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
         if (spawnAnimals && world.getGameRules().getBooleanValue(GameRules.DO_MOB_SPAWNING)) {

@@ -44,6 +44,7 @@ public class FlightTaskControl {
                     instance,
                     (flying, walkTarget) -> (world, bird, l) -> {
                         if ((bird.isOnGround() || (bird instanceof Aquatic aquaticBird ? aquaticBird.isFloating() : bird.isInsideWaterOrBubbleColumn())) && shouldRun.test(bird)) {
+                            bird.setFlying(false);
                             flying.forget();
                             walkTarget.forget();
                             return true;

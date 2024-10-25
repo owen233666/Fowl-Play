@@ -8,7 +8,6 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -156,19 +155,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25f);
     }
 
     @Override
-    protected EntityNavigation createNavigation(World world) {
-        if (this.isFlying()) {
-            BirdNavigation birdNavigation = new BirdNavigation(this, world);
-            birdNavigation.setCanPathThroughDoors(false);
-            birdNavigation.setCanEnterOpenDoors(true);
-            birdNavigation.setCanSwim(false);
-            return birdNavigation;
-        }
-        MobNavigation mobNavigation = new MobNavigation(this, world);
+    protected EntityNavigation getLandNavigation() {
+        MobNavigation mobNavigation = new MobNavigation(this, this.getWorld());
         mobNavigation.setCanPathThroughDoors(false);
         mobNavigation.setCanEnterOpenDoors(true);
         mobNavigation.setCanSwim(false);

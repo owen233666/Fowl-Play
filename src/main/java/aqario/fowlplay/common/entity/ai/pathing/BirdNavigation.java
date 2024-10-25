@@ -11,11 +11,13 @@ import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class BirdNavigation extends MobNavigation {
     private final MobEntity mob;
+
     public BirdNavigation(MobEntity mobEntity, World world) {
         super(mobEntity, world);
         this.mob = mobEntity;
@@ -89,6 +91,40 @@ public class BirdNavigation extends MobNavigation {
             if (!this.isIdle()) {
                 Vec3d vec3d = this.currentPath.getNodePosition(this.entity);
                 this.entity.getMoveControl().moveTo(vec3d.x, vec3d.y, vec3d.z, this.speed);
+            }
+        }
+    }
+
+    @Override
+    protected void continueFollowingPath() {
+        Vec3d pos = this.getPos();
+        this.nodeReachProximity = 4;
+        Vec3i vec3i = this.currentPath.getCurrentNodePos();
+        double x = Math.abs(this.mob.getX() - ((double) vec3i.getX() + 0.5));
+        double y = Math.abs(this.mob.getY() - (double) vec3i.getY() + 0.5);
+        double z = Math.abs(this.mob.getZ() - ((double) vec3i.getZ() + 0.5));
+        boolean bl = x < this.nodeReachProximity && z < this.nodeReachProximity && y < this.nodeReachProximity;
+        if (bl || this.canJumpToNext(this.currentPath.getCurrentNode().type) && this.shouldJumpToNextNode(pos)) {
+            this.currentPath.next();
+        }
+
+        this.checkTimeouts(pos);
+    }
+
+    private boolean shouldJumpToNextNode(Vec3d currentPos) {
+        if (this.currentPath.getCurrentNodeIndex() + 1 >= this.currentPath.getLength()) {
+            return false;
+        }
+        else {
+            Vec3d vec3d = Vec3d.ofCenter(this.currentPath.getCurrentNodePos());
+            if (!currentPos.withinRange(vec3d, 4)) {
+                return false;
+            }
+            else {
+                Vec3d vec3d1 = Vec3d.ofCenter(this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + 1));
+                Vec3d vec3d2 = vec3d1.subtract(vec3d);
+                Vec3d vec3d3 = currentPos.subtract(vec3d);
+                return vec3d2.dotProduct(vec3d3) > 0.0;
             }
         }
     }

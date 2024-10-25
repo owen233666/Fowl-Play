@@ -57,7 +57,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     protected EntityNavigation createNavigation(World world) {
-        setMoveControl(this.isFlying());
+        this.setMoveControl(this.isFlying());
         return this.navigation;
     }
 

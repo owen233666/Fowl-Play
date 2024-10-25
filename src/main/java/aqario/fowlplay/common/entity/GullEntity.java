@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
+import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -77,6 +78,15 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         GullBrain.init();
         this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
         return super.initialize(world, difficulty, spawnReason, entityData);
+    }
+
+    @Override
+    protected BirdNavigation getFlightNavigation() {
+        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
+        birdNavigation.setCanPathThroughDoors(false);
+        birdNavigation.setCanEnterOpenDoors(true);
+        birdNavigation.setCanSwim(true);
+        return birdNavigation;
     }
 
     @Override
