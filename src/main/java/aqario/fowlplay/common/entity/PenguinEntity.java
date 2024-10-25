@@ -42,16 +42,15 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PenguinEntity extends BirdEntity implements Sliding {
-    public static final TrackedData<Boolean> SLIDING = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+public class PenguinEntity extends BirdEntity {
     public static final TrackedData<Long> LAST_ANIMATION_TICK = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.LONG);
     private boolean isAquaticMoveControl;
     public final AnimationState idleState = new AnimationState();
-    public final AnimationState walkState = new AnimationState();
     public final AnimationState slideState = new AnimationState();
     public final AnimationState fallingState = new AnimationState();
     public final AnimationState standUpState = new AnimationState();
@@ -161,7 +160,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(SLIDING, false);
         builder.add(LAST_ANIMATION_TICK, 0L);
     }
 
@@ -169,7 +167,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putLong("lastPoseTick", this.dataTracker.get(LAST_ANIMATION_TICK));
-        nbt.putBoolean("sliding", this.dataTracker.get(SLIDING));
     }
 
     @Override
@@ -177,7 +174,7 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         super.readCustomDataFromNbt(nbt);
         long l = nbt.getLong("lastPoseTick");
         if (l < 0L) {
-            this.setSliding(true);
+            this.setPose(EntityPose.SLIDING);
         }
 
         this.setLastAnimationTick(l);
@@ -189,13 +186,9 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         this.calculateDimensions();
     }
 
-    private boolean isWalking() {
-        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
-    }
-
     @Override
     public void tick() {
-        if (this.getPrimaryPassenger() != null && this.getPrimaryPassenger().isSubmergedInWater()) {
+        if (this.getPrimaryPassenger() != null && this.isInsideWaterOrBubbleColumn()) {
             this.getPrimaryPassenger().stopRiding();
         }
         if (this.getWorld().isClient()) {
@@ -204,13 +197,6 @@ public class PenguinEntity extends BirdEntity implements Sliding {
             }
             else {
                 this.idleState.stop();
-            }
-
-            if (this.isWalking()) {
-                this.walkState.start(this.age);
-            }
-            else {
-                this.walkState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {
@@ -329,13 +315,13 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     @Override
     public float getStepHeight() {
-        return this.isSliding() ? 1.1F : super.getStepHeight();
+        return this.getPose() == EntityPose.SLIDING ? 1.1F : super.getStepHeight();
     }
 
     @Override
     public EntityDimensions getDefaultDimensions(EntityPose pose) {
         EntityDimensions entityDimensions = super.getDefaultDimensions(pose);
-        return this.isSliding() || this.isInsideWaterOrBubbleColumn() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
+        return pose == EntityPose.SLIDING || this.isInsideWaterOrBubbleColumn() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
     }
 
     @Override
@@ -355,6 +341,15 @@ public class PenguinEntity extends BirdEntity implements Sliding {
     @Override
     public boolean canBreedWith(AnimalEntity other) {
         return other != this && other instanceof PenguinEntity penguin && this.canBreed() && penguin.canBreed();
+    }
+
+    public boolean shouldStepDown() {
+        BlockPos pos = this.getBlockPos();
+        return !this.isOnGround()
+            && this.fallDistance > 0f
+            && this.fallDistance < 0.1f
+            && !this.getWorld().getBlockState(pos.down()).getCollisionShape(this.getWorld(), pos.down()).isEmpty()
+            /*|| !this.getWorld().getBlockState(pos.down(2)).getCollisionShape(this.getWorld(), pos.down(2)).isEmpty()*/;
     }
 
     @Nullable
@@ -396,6 +391,8 @@ public class PenguinEntity extends BirdEntity implements Sliding {
         player.setYaw((float) (player.getYaw() + (rotation * (sidewaysMovement < 0 ? 1 : -1))) % 360.0F);
         this.prevYaw = this.bodyYaw = this.headYaw = this.getYaw();
     }
+
+
 
     @Override
     protected Vec3d getControlledMovementInput(PlayerEntity player, Vec3d input) {
@@ -453,22 +450,20 @@ public class PenguinEntity extends BirdEntity implements Sliding {
 
     public void startSliding() {
         if (!this.isSliding()) {
-            this.playSound(SoundEvents.ENTITY_CAMEL_SIT, 1.0F, 1.0F);
-            this.setSliding(true);
+            this.makeSound(SoundEvents.ENTITY_CAMEL_SIT);
+            this.setPose(EntityPose.SLIDING);
+            this.emitGameEvent(GameEvent.ENTITY_ACTION);
             this.setLastAnimationTick(-this.getWorld().getTime());
         }
     }
 
     public void standUp() {
         if (this.isSliding()) {
-            this.playSound(SoundEvents.ENTITY_CAMEL_STAND, 1.0F, 1.0F);
-            this.setSliding(false);
+            this.playSound(SoundEvents.ENTITY_CAMEL_STAND);
+            this.setPose(EntityPose.STANDING);
+            this.emitGameEvent(GameEvent.ENTITY_ACTION);
             this.setLastAnimationTick(this.getWorld().getTime());
         }
-    }
-
-    public void setSliding(boolean sliding) {
-        this.dataTracker.set(SLIDING, sliding);
     }
 
     public long getAnimationTicks() {

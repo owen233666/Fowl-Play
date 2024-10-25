@@ -50,7 +50,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
-    public final AnimationState walkState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
@@ -239,14 +238,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         this.equipStack(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
     }
 
-    private boolean isWalking() {
-        return this.isOnGround() && this.getVelocity().horizontalLengthSquared() > 1.0E-6 && !this.isInsideWaterOrBubbleColumn();
-    }
-
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            if (this.isOnGround() && !this.isWalking()) {
+            if (this.isOnGround()) {
                 this.idleState.start(this.age);
             }
             else {
@@ -258,13 +253,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             }
             else {
                 this.flapState.stop();
-            }
-
-            if (this.isWalking()) {
-                this.walkState.start(this.age);
-            }
-            else {
-                this.walkState.stop();
             }
 
             if (this.isInsideWaterOrBubbleColumn()) {

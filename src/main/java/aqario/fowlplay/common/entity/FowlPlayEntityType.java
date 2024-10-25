@@ -14,13 +14,13 @@ public final class FowlPlayEntityType {
     public static final EntityType<BlueJayEntity> BLUE_JAY = register("blue_jay",
         EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
-            .setEyeHeight(0.3f)
+            .setEyeHeight(0.5f)
     );
 
     public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
         EntityType.Builder.create(CardinalEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
-            .setEyeHeight(0.3f)
+            .setEyeHeight(0.5f)
     );
 
     public static final EntityType<GullEntity> GULL = register("gull",
@@ -39,13 +39,13 @@ public final class FowlPlayEntityType {
     public static final EntityType<PigeonEntity> PIGEON = register("pigeon",
         EntityType.Builder.create(PigeonEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.5f, 0.6f)
-            .setEyeHeight(0.45f)
+            .setEyeHeight(0.5f)
     );
 
     public static final EntityType<RobinEntity> ROBIN = register("robin",
         EntityType.Builder.create(RobinEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.5f)
-            .setEyeHeight(0.3f)
+            .setEyeHeight(0.5f)
     );
 
     private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
