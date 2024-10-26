@@ -70,26 +70,10 @@ public class BlueJayEntity extends FlyingBirdEntity {
 //            else {
 //                --this.flapAnimationTimeout;
 //            }
-            if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
-                this.idleState.start(this.age);
-            }
-            else {
-                this.idleState.stop();
-            }
 
-            if (this.isFlying()) {
-                this.flapState.start(this.age);
-            }
-            else {
-                this.flapState.stop();
-            }
-
-            if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatState.start(this.age);
-            }
-            else {
-                this.floatState.stop();
-            }
+            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.animateIf(this.isFlying(), this.age);
+            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

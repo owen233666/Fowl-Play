@@ -93,7 +93,7 @@ public class CustomChickenEntityModel extends SinglePartEntityModel<ChickenEntit
         //
 
         if (chicken.isOnGround() && !chicken.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 2.85F, 2.5F);
+            this.animateWalk(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 3F, 3F);
         }
         this.animate(this.idleState, ChickenEntityAnimations.CHICKEN_IDLE, ageInTicks);
         this.animate(this.flyState, ChickenEntityAnimations.CHICKEN_FLY, ageInTicks);

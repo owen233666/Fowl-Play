@@ -41,7 +41,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.28f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
     }
 

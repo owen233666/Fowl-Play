@@ -9,8 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.VariantProvider;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -86,13 +84,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
-    }
-
     @Override
     public Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.ROBIN_FOOD);
@@ -111,26 +102,9 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
-                this.idleState.start(this.age);
-            }
-            else {
-                this.idleState.stop();
-            }
-
-            if (this.isFlying()) {
-                this.flapState.start(this.age);
-            }
-            else {
-                this.flapState.stop();
-            }
-
-            if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatState.start(this.age);
-            }
-            else {
-                this.floatState.stop();
-            }
+            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.animateIf(this.isFlying(), this.age);
+            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

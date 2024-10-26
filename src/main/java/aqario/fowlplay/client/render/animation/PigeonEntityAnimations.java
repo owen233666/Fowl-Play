@@ -74,7 +74,7 @@ public class PigeonEntityAnimations {
 
     public static final Animation PIGEON_WALK = Animation.Builder.withLength(1.0f).looping()
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
@@ -87,7 +87,7 @@ public class PigeonEntityAnimations {
             )
         )
         .addPartAnimation(
-            "head",
+            "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(5f, -1f, -0.5f), PartAnimation.Interpolations.SPLINE),

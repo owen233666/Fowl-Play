@@ -100,7 +100,7 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
             this.root.roll = pigeon.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
         if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+            this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
         }
         if (pigeon.isFlying()) {
             this.leftWingOpen.visible = true;

@@ -192,19 +192,8 @@ public class PenguinEntity extends BirdEntity {
             this.getPrimaryPassenger().stopRiding();
         }
         if (this.getWorld().isClient()) {
-            if (this.isOnGround() && !this.isInsideWaterOrBubbleColumn()) {
-                this.idleState.start(this.age);
-            }
-            else {
-                this.idleState.stop();
-            }
-
-            if (this.isInsideWaterOrBubbleColumn()) {
-                this.floatState.start(this.age);
-            }
-            else {
-                this.floatState.stop();
-            }
+            this.idleState.animateIf(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
 
             if (this.isVisuallyFallingDown()) {
                 this.idleState.stop();
@@ -223,12 +212,7 @@ public class PenguinEntity extends BirdEntity {
                 this.standUpState.animateIf(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
             }
 
-            if (this.isSongPlaying()) {
-                this.danceState.start(this.age);
-            }
-            else {
-                this.danceState.stop();
-            }
+            this.danceState.animateIf(this.isSongPlaying(), this.age);
         }
 
         if (!this.getWorld().isClient) {

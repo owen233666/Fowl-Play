@@ -101,7 +101,7 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.root.roll = gull.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
         if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
         }
         if (gull.isFlying()) {
             this.leftWingOpen.visible = true;

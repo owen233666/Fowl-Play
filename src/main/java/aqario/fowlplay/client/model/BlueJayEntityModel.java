@@ -101,7 +101,7 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
             this.root.roll = blueJay.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
         if (!blueJay.isFlying() && !blueJay.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         if (blueJay.isFlying()) {
             this.leftWingOpen.visible = true;

@@ -101,7 +101,7 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
             this.root.roll = cardinal.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
         if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         if (cardinal.isFlying()) {
             this.leftWingOpen.visible = true;

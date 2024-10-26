@@ -97,7 +97,7 @@ public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
             this.root.roll = robin.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
         if (!robin.isFlying() && !robin.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 2.85F, 2.5F);
+            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         if (robin.isFlying()) {
             this.leftWingOpen.visible = true;
