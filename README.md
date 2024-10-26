@@ -16,13 +16,15 @@ Current mobs:
 
 Planned additions:
 
-- Crow
-- Sparrow
-- Duck
-- Goose
-- Grackle
-- Falcon
-- Eagle
-- Owl
-- Woodpecker
-- Other songbirds
+- Old world Sparrows (House sparrow)
+- Finches (American goldfinch, house finch)
+- Chickadees (Black-capped chickadee)
+- Crows / Ravens
+- Ducks (Mallard duck)
+- Hawks (Red tailed hawk)
+- Woodpeckers
+- Geese (Domestic goose, Canada goose)
+- Eagles (Bald eagle, golden eagle)
+- Owls (Great horned owl, snowy owl)
+- Vultures (Black vulture, turkey vulture)
+- New world Blackbirds (Red-winged blackbird, common grackle)
