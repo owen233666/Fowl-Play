@@ -105,7 +105,7 @@ public class BlueJayEntity extends FlyingBirdEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.3F) {
+        if (this.getWorld().isDay() && this.random.nextFloat() < 0.2F) {
             return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL;
         }
 

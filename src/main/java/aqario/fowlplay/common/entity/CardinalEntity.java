@@ -88,7 +88,7 @@ public class CardinalEntity extends FlyingBirdEntity {
             this.playSound(soundEvent, 8.0F, this.getSoundPitch());
         }
         else {
-            super.playAmbientSound();
+            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
         }
     }
 
@@ -98,7 +98,7 @@ public class CardinalEntity extends FlyingBirdEntity {
             return FowlPlaySoundEvents.ENTITY_CARDINAL_SONG;
         }
 
-        return null;
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_AMBIENT;
     }
 
     @Nullable

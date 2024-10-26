@@ -3,14 +3,29 @@
     "sounds": [
       "fowlplay:mob/blue_jay/call1",
       "fowlplay:mob/blue_jay/call2",
-      "fowlplay:mob/blue_jay/call3"
+      "fowlplay:mob/blue_jay/call3",
+      "fowlplay:mob/blue_jay/call4",
+      "fowlplay:mob/blue_jay/call5",
+      "fowlplay:mob/blue_jay/call6"
     ],
     "subtitle": "subtitles.entity.blue_jay.call"
+  },
+  "entity.cardinal.ambient": {
+    "sounds": [
+      "fowlplay:mob/cardinal/ambient1",
+      "fowlplay:mob/cardinal/ambient2"
+    ],
+    "subtitle": "subtitles.entity.cardinal.ambient"
   },
   "entity.cardinal.song": {
     "sounds": [
       "fowlplay:mob/cardinal/song1",
-      "fowlplay:mob/cardinal/song2"
+      "fowlplay:mob/cardinal/song2",
+      "fowlplay:mob/cardinal/song3",
+      "fowlplay:mob/cardinal/song4",
+      "fowlplay:mob/cardinal/song5",
+      "fowlplay:mob/cardinal/song6",
+      "fowlplay:mob/cardinal/song7"
     ],
     "subtitle": "subtitles.entity.cardinal.song"
   },

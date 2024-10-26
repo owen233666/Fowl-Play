@@ -212,13 +212,14 @@ public class CardinalBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, BetterWalkToNearestWantedItemTask.create(
+                Pair.of(0, FlightTaskControl.startFlying(cardinal -> true)),
+                Pair.of(1, BetterWalkToNearestWantedItemTask.create(
                     CardinalBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
                 )),
-                Pair.of(1, ForgetTask.run(CardinalBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.run(CardinalBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
