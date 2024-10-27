@@ -133,24 +133,31 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
         return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
     }
 
+    @Nullable
     @Override
-    public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_ROBIN_SONG) {
-            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
-        }
-        else {
-            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
-        }
+    protected SoundEvent getCallSound() {
+        return FowlPlaySoundEvents.ENTITY_ROBIN_CALL;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.3F) {
-            return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
-        }
+    protected float getCallVolume() {
+        return 2.0F;
+    }
 
-        return FowlPlaySoundEvents.ENTITY_ROBIN_AMBIENT;
+    @Override
+    protected float getSongVolume() {
+        return 8.0F;
+    }
+
+    @Override
+    public int getSongDelay() {
+        return 480;
     }
 
     @Nullable

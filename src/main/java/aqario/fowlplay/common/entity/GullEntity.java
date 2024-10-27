@@ -193,19 +193,26 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
     }
 
+    @Nullable
     @Override
-    public void playAmbientSound() {
-        if (this.getWorld().isNight() ? this.random.nextFloat() < 0.01F : this.random.nextFloat() < 0.2F) {
-            this.playSound(this.getAmbientSound(), 8.0F, this.getSoundPitch());
-        }
+    protected SoundEvent getCallSound() {
+        return FowlPlaySoundEvents.ENTITY_GULL_CALL;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_GULL_LONG_CALL;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (this.random.nextFloat() < 0.03F) {
-            return FowlPlaySoundEvents.ENTITY_GULL_CALL;
-        }
-        return FowlPlaySoundEvents.ENTITY_GULL_AMBIENT;
+    protected float getCallVolume() {
+        return 6.0F;
+    }
+
+    @Override
+    protected float getSongVolume() {
+        return 8.0F;
     }
 
     @Nullable

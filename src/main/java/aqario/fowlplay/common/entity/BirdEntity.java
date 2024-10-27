@@ -13,16 +13,29 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BirdEntity extends AnimalEntity {
     private int eatingTime;
+    public int callChance;
+    public int songChance;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setCanPickUpLoot(true);
         this.lookControl = new BirdLookControl(this, 85);
+        this.callChance = this.random.nextInt(1000);
+        this.songChance = this.random.nextInt(1000);
+    }
+
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -145,6 +158,83 @@ public abstract class BirdEntity extends AnimalEntity {
         else {
             super.handleStatus(status);
         }
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        this.getWorld().getProfiler().push("birdBaseTick");
+        if (this.isAlive() && this.random.nextInt(1000) < this.callChance++) {
+            this.resetCallDelay();
+            if (this.canCall()) {
+                this.playCallSound();
+            }
+        }
+        else if (this.isAlive() && this.random.nextInt(1000) < this.songChance++) {
+            this.resetSongDelay();
+            if (this.canSing()) {
+                this.playSongSound();
+            }
+        }
+
+        this.getWorld().getProfiler().pop();
+    }
+
+    protected boolean canCall() {
+        return this.getWorld().isDay() || this.random.nextFloat() < 0.1F;
+    }
+
+    protected boolean canSing() {
+        return this.getWorld().isDay() || this.random.nextFloat() < 0.1F;
+    }
+
+    private void resetCallDelay() {
+        this.callChance = -(this.getCallDelay() - 100 + this.random.nextInt(200));
+    }
+
+    private void resetSongDelay() {
+        this.songChance = -(this.getSongDelay() - 100 + this.random.nextInt(200));
+    }
+
+    public final void playCallSound() {
+        SoundEvent call = this.getCallSound();
+        if (call != null) {
+            this.playSound(call, this.getCallVolume(), this.getSoundPitch());
+        }
+    }
+
+    public final void playSongSound() {
+        SoundEvent song = this.getSongSound();
+        if (song != null) {
+            this.playSound(song, this.getSongVolume(), this.getSoundPitch());
+        }
+    }
+
+    public int getCallDelay() {
+        return 240;
+    }
+
+    public int getSongDelay() {
+        return 720;
+    }
+
+
+    @Nullable
+    protected SoundEvent getCallSound() {
+        return null;
+    }
+
+    @Nullable
+    protected SoundEvent getSongSound() {
+        return null;
+    }
+
+    protected float getCallVolume() {
+        return 1.0F;
+    }
+
+    protected float getSongVolume() {
+        return 1.0F;
     }
 
     @Override

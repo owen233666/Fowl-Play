@@ -92,24 +92,15 @@ public class BlueJayEntity extends FlyingBirdEntity {
         return bl;
     }
 
+    @Nullable
     @Override
-    public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL) {
-            this.playSound(soundEvent, 10.0F, this.getSoundPitch());
-        }
-        else {
-            super.playAmbientSound();
-        }
+    protected SoundEvent getCallSound() {
+        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
-            return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL;
-        }
-
-        return null;
+    protected float getCallVolume() {
+        return 10.0F;
     }
 
     @Nullable

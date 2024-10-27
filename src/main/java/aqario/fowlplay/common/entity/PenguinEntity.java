@@ -377,7 +377,6 @@ public class PenguinEntity extends BirdEntity {
     }
 
 
-
     @Override
     protected Vec3d getControlledMovementInput(PlayerEntity player, Vec3d input) {
         float forwardMovement = player.forwardSpeed * 0.2F;
@@ -434,7 +433,7 @@ public class PenguinEntity extends BirdEntity {
 
     public void startSliding() {
         if (!this.isSliding()) {
-            this.makeSound(SoundEvents.ENTITY_CAMEL_SIT);
+            this.playSound(SoundEvents.ENTITY_CAMEL_SIT);
             this.setPose(EntityPose.SLIDING);
             this.emitGameEvent(GameEvent.ENTITY_ACTION);
             this.setLastAnimationTick(-this.getWorld().getTime());
@@ -467,21 +466,19 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    public void playAmbientSound() {
-        if (!this.isInsideWaterOrBubbleColumn() && this.random.nextFloat() < 0.1F) {
-            SoundEvent soundEvent = this.getAmbientSound();
-            if (soundEvent == FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT) {
-                this.playSound(soundEvent, 4.0F, this.getSoundPitch());
-            }
-            else {
-                super.playAmbientSound();
-            }
-        }
+    protected boolean canCall() {
+        return !this.isInsideWaterOrBubbleColumn() && super.canCall();
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getCallSound() {
+        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_CALL : FowlPlaySoundEvents.ENTITY_PENGUIN_CALL;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_AMBIENT : FowlPlaySoundEvents.ENTITY_PENGUIN_AMBIENT;
+    protected float getCallVolume() {
+        return 4.0F;
     }
 
     @Override

@@ -297,27 +297,33 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
-    public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_PIGEON_CALL) {
-            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
+    protected boolean canSing() {
+        if (this.getWorld().isDay()) {
+            return false;
         }
-        else {
-            super.playAmbientSound();
+        List<PlayerEntity> list = this.getWorld()
+            .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
+        if (list.isEmpty()) {
+            return false;
         }
+        return super.canSing();
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getCallSound() {
+        return FowlPlaySoundEvents.ENTITY_PIGEON_CALL;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_PIGEON_SONG;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (!this.getWorld().isDay() && this.random.nextFloat() < 0.05F) {
-            List<PlayerEntity> list = this.getWorld()
-                .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
-            if (list.isEmpty()) {
-                return FowlPlaySoundEvents.ENTITY_PIGEON_CALL;
-            }
-        }
-
-        return FowlPlaySoundEvents.ENTITY_PIGEON_AMBIENT;
+    protected float getSongVolume() {
+        return 8.0F;
     }
 
     @Override

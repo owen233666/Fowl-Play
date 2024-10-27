@@ -81,24 +81,26 @@ public class CardinalEntity extends FlyingBirdEntity {
         return bl;
     }
 
+    @Nullable
     @Override
-    public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent == FowlPlaySoundEvents.ENTITY_CARDINAL_SONG) {
-            this.playSound(soundEvent, 8.0F, this.getSoundPitch());
-        }
-        else {
-            this.playSound(soundEvent, 2.0F, this.getSoundPitch());
-        }
+    protected SoundEvent getCallSound() {
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_CALL;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_SONG;
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (this.getWorld().isDay() && this.random.nextFloat() < 0.1F) {
-            return FowlPlaySoundEvents.ENTITY_CARDINAL_SONG;
-        }
+    protected float getCallVolume() {
+        return 2.0F;
+    }
 
-        return FowlPlaySoundEvents.ENTITY_CARDINAL_AMBIENT;
+    @Override
+    protected float getSongVolume() {
+        return 8.0F;
     }
 
     @Nullable
