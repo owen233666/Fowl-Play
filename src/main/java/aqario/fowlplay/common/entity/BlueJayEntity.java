@@ -106,7 +106,7 @@ public class BlueJayEntity extends FlyingBirdEntity {
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
+        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_HURT;
     }
 
     @Nullable

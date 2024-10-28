@@ -106,7 +106,7 @@ public class CardinalEntity extends FlyingBirdEntity {
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_HURT;
     }
 
     @Nullable

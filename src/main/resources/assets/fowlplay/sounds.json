@@ -10,6 +10,17 @@
     ],
     "subtitle": "subtitles.entity.blue_jay.call"
   },
+  "entity.blue_jay.hurt": {
+    "sounds": [
+      "fowlplay:mob/blue_jay/call1",
+      "fowlplay:mob/blue_jay/call2",
+      "fowlplay:mob/blue_jay/call3",
+      "fowlplay:mob/blue_jay/call4",
+      "fowlplay:mob/blue_jay/call5",
+      "fowlplay:mob/blue_jay/call6"
+    ],
+    "subtitle": "subtitles.entity.blue_jay.hurt"
+  },
   "entity.cardinal.call": {
     "sounds": [
       "fowlplay:mob/cardinal/call1",
@@ -28,6 +39,13 @@
       "fowlplay:mob/cardinal/song7"
     ],
     "subtitle": "subtitles.entity.cardinal.song"
+  },
+  "entity.cardinal.hurt": {
+    "sounds": [
+      "fowlplay:mob/cardinal/call1",
+      "fowlplay:mob/cardinal/call2"
+    ],
+    "subtitle": "subtitles.entity.cardinal.hurt"
   },
   "entity.gull.call": {
     "sounds": [
@@ -106,7 +124,11 @@
   "entity.robin.call": {
     "sounds": [
       "fowlplay:mob/robin/call1",
-      "fowlplay:mob/robin/call2"
+      "fowlplay:mob/robin/call2",
+      "fowlplay:mob/robin/call3",
+      "fowlplay:mob/robin/call4",
+      "fowlplay:mob/robin/call5",
+      "fowlplay:mob/robin/call6"
     ],
     "subtitle": "subtitles.entity.robin.call"
   },
@@ -116,7 +138,8 @@
       "fowlplay:mob/robin/song2",
       "fowlplay:mob/robin/song3",
       "fowlplay:mob/robin/song4",
-      "fowlplay:mob/robin/song5"
+      "fowlplay:mob/robin/song5",
+      "fowlplay:mob/robin/song6"
     ],
     "subtitle": "subtitles.entity.robin.song"
   },

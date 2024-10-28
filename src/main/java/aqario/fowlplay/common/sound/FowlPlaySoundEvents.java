@@ -8,9 +8,11 @@ import net.minecraft.util.Identifier;
 
 public final class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_BLUE_JAY_CALL = register("entity.blue_jay.call");
+    public static final SoundEvent ENTITY_BLUE_JAY_HURT = register("entity.blue_jay.hurt");
 
     public static final SoundEvent ENTITY_CARDINAL_CALL = register("entity.cardinal.call");
     public static final SoundEvent ENTITY_CARDINAL_SONG = register("entity.cardinal.song");
+    public static final SoundEvent ENTITY_CARDINAL_HURT = register("entity.cardinal.hurt");
 
     public static final SoundEvent ENTITY_GULL_CALL = register("entity.gull.call");
     public static final SoundEvent ENTITY_GULL_LONG_CALL = register("entity.gull.long_call");
