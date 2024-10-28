@@ -21,7 +21,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_CARDINALS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 40, 1, 3
+            SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 35, 1, 3
         );
 
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.UNRESTRICTED,

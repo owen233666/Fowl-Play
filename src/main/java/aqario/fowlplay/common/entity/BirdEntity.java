@@ -218,7 +218,6 @@ public abstract class BirdEntity extends AnimalEntity {
         return 720;
     }
 
-
     @Nullable
     protected SoundEvent getCallSound() {
         return null;
