@@ -29,8 +29,8 @@ public abstract class BirdEntity extends AnimalEntity {
         super(entityType, world);
         this.setCanPickUpLoot(true);
         this.lookControl = new BirdLookControl(this, 85);
-        this.callChance = this.random.nextInt(1000);
-        this.songChance = this.random.nextInt(1000);
+        this.callChance = this.random.nextInt(this.getCallDelay()) - this.getCallDelay();
+        this.songChance = this.random.nextInt(this.getSongDelay()) - this.getSongDelay();
     }
 
     @Override

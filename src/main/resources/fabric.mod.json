@@ -15,7 +15,7 @@
     "issues": "https://github.com/aqariio/fowl-play/issues"
   },
   "license": "MIT",
-  "icon": "assets/fowlplay/gull_flying_icon.png",
+  "icon": "assets/fowlplay/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
