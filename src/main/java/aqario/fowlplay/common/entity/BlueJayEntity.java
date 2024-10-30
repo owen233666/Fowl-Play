@@ -103,6 +103,11 @@ public class BlueJayEntity extends FlyingBirdEntity {
         return 10.0F;
     }
 
+    @Override
+    public int getCallDelay() {
+        return 480;
+    }
+
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {

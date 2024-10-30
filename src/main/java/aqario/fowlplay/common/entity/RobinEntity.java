@@ -156,6 +156,11 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
     }
 
     @Override
+    public int getCallDelay() {
+        return 180;
+    }
+
+    @Override
     public int getSongDelay() {
         return 480;
     }

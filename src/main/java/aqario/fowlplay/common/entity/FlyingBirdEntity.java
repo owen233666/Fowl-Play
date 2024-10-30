@@ -90,7 +90,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.setNoGravity(true);
                 this.fallDistance = 0.0F;
                 if (this.isOnGround() || this.isInsideWaterOrBubbleColumn()) {
-                    this.setFlying(false);
+                    this.stopFlying();
                 }
             }
             else {
@@ -168,6 +168,18 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if (!this.isFlying()) {
             super.fall(heightDifference, onGround, landedState, landedPosition);
         }
+    }
+
+    public void startFlying() {
+        if (this.getHealth() > 2.0F) {
+            this.setFlying(true);
+            this.setMoveControl(true);
+        }
+    }
+
+    public void stopFlying() {
+        this.setFlying(false);
+        this.setMoveControl(false);
     }
 
     public boolean isFlying() {

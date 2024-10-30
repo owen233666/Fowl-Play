@@ -142,7 +142,7 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
         this.animate(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
         this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
         this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
-        this.animate(penguin.floatState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
+        this.animate(penguin.swimState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
         this.animate(penguin.danceState, PenguinEntityAnimations.PENGUIN_DANCE, ageInTicks);
     }
 

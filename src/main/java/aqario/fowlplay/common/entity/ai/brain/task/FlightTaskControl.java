@@ -24,7 +24,7 @@ public class FlightTaskControl {
                     (flying) -> (world, bird, l) -> {
                         if (!bird.isFlying() && shouldRun.test(bird)) {
                             bird.getJumpControl().setActive();
-                            bird.setFlying(true);
+                            bird.startFlying();
                             flying.remember(Unit.INSTANCE);
                             return true;
                         }
@@ -44,7 +44,7 @@ public class FlightTaskControl {
                     instance,
                     (flying, walkTarget) -> (world, bird, l) -> {
                         if ((bird.isOnGround() || (bird instanceof Aquatic aquaticBird ? aquaticBird.isFloating() : bird.isInsideWaterOrBubbleColumn())) && shouldRun.test(bird)) {
-                            bird.setFlying(false);
+                            bird.stopFlying();
                             flying.forget();
                             walkTarget.forget();
                             return true;
@@ -63,8 +63,8 @@ public class FlightTaskControl {
                 .apply(
                     instance,
                     (flying) -> (world, bird, l) -> {
-                        if (bird.fallDistance > 1 && !bird.isFlying() && bird.getHealth() > 2.0F) {
-                            bird.setFlying(true);
+                        if (bird.fallDistance > 1 && !bird.isFlying()) {
+                            bird.startFlying();
                             flying.remember(Unit.INSTANCE);
                             return true;
                         }

@@ -35,7 +35,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PenguinEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_PENGUINS),
-            SpawnGroup.CREATURE, FowlPlayEntityType.PENGUIN, 1, 1, 2
+            SpawnGroup.CREATURE, FowlPlayEntityType.PENGUIN, 1, 16, 24
         );
 
         SpawnRestriction.register(FowlPlayEntityType.PIGEON, SpawnLocationTypes.UNRESTRICTED,

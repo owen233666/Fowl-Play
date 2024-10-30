@@ -103,6 +103,11 @@ public class CardinalEntity extends FlyingBirdEntity {
         return 8.0F;
     }
 
+    @Override
+    public int getCallDelay() {
+        return 180;
+    }
+
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {

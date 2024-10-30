@@ -55,7 +55,7 @@ public class PenguinEntity extends BirdEntity {
     public final AnimationState fallingState = new AnimationState();
     public final AnimationState standUpState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
-    public final AnimationState floatState = new AnimationState();
+    public final AnimationState swimState = new AnimationState();
     public final AnimationState danceState = new AnimationState();
     private boolean songPlaying;
     @Nullable
@@ -91,11 +91,6 @@ public class PenguinEntity extends BirdEntity {
     @Override
     protected EntityNavigation createNavigation(World world) {
         return new AmphibiousNavigation(this, world);
-    }
-
-    @Override
-    public float getPathfindingFavor(BlockPos pos) {
-        return 0.0F;
     }
 
     @Nullable
@@ -144,7 +139,7 @@ public class PenguinEntity extends BirdEntity {
     @Override
     public void tickMovement() {
         if (this.songSource == null
-            || !this.songSource.isCenterWithinDistance(this.getPos(), 3.46)
+            || !this.songSource.isCenterWithinDistance(this.getPos(), 5)
             || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
             this.songPlaying = false;
             this.songSource = null;
@@ -193,7 +188,7 @@ public class PenguinEntity extends BirdEntity {
         }
         if (this.getWorld().isClient()) {
             this.idleState.animateIf(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.swimState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
 
             if (this.isVisuallyFallingDown()) {
                 this.idleState.stop();
@@ -305,7 +300,7 @@ public class PenguinEntity extends BirdEntity {
     @Override
     public EntityDimensions getDefaultDimensions(EntityPose pose) {
         EntityDimensions entityDimensions = super.getDefaultDimensions(pose);
-        return pose == EntityPose.SLIDING || this.isInsideWaterOrBubbleColumn() ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
+        return pose == EntityPose.SLIDING || pose == EntityPose.SWIMMING ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
     }
 
     @Override
@@ -352,6 +347,7 @@ public class PenguinEntity extends BirdEntity {
         boolean touchingWater = this.isTouchingWater();
         boolean bl = super.updateWaterState();
         if (touchingWater != this.isTouchingWater()) {
+            this.setPose(this.isTouchingWater() ? EntityPose.SWIMMING : EntityPose.STANDING);
             this.calculateDimensions();
         }
         return bl;
@@ -459,10 +455,10 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     protected int computeFallDamage(float fallDistance, float damageMultiplier) {
-        if (this.isSliding()) {
-            return (super.computeFallDamage(fallDistance, damageMultiplier) * 2 - 3) / 2;
+        if (this.getPose() == EntityPose.SLIDING) {
+            return (super.computeFallDamage(fallDistance, damageMultiplier) - 3) / 2;
         }
-        return super.computeFallDamage(fallDistance, damageMultiplier) * 2;
+        return super.computeFallDamage(fallDistance, damageMultiplier);
     }
 
     @Override
