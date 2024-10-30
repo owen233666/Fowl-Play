@@ -38,7 +38,7 @@ public class PenguinEntityAnimations {
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 2f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 1.5f, 1f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -118,14 +118,14 @@ public class PenguinEntityAnimations {
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 1.75f, -1.5f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, -1.25f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-90f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(-30f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -168,6 +168,20 @@ public class PenguinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(7.5f, 15f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.75f, -1.25f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-60f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .build();

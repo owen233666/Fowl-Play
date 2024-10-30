@@ -267,12 +267,6 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    public void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
-        super.updatePassengerPosition(passenger, positionUpdater);
-        this.clampPassengerYaw(passenger);
-    }
-
-    @Override
     public Vec3d updatePassengerForDismount(LivingEntity passenger) {
         Vec3d vec3d = getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO, passenger.getWidth(), passenger.getYaw());
         double d = this.getX() + vec3d.x;
@@ -311,8 +305,8 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     public EntityDimensions getDefaultDimensions(EntityPose pose) {
-        EntityDimensions entityDimensions = super.getDefaultDimensions(pose);
-        return pose == EntityPose.SLIDING || pose == EntityPose.SWIMMING ? entityDimensions.scaled(1.0F, 0.35F) : entityDimensions;
+        EntityDimensions dimensions = super.getDefaultDimensions(pose);
+        return pose == EntityPose.SLIDING || pose == EntityPose.SWIMMING ? dimensions.scaled(1.0F, 0.35F) : dimensions;
     }
 
     @Override
@@ -492,6 +486,11 @@ public class PenguinEntity extends BirdEntity {
     @Override
     protected SoundEvent getSwimSound() {
         return FowlPlaySoundEvents.ENTITY_PENGUIN_SWIM;
+    }
+
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override
