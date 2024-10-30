@@ -6,9 +6,11 @@
       "required": false
     },
     "minecraft:beetroot_seeds",
+    "minecraft:egg",
     "minecraft:melon_seeds",
     "minecraft:pumpkin_seeds",
     "minecraft:torchflower_seeds",
+    "minecraft:turtle_egg",
     "minecraft:wheat_seeds"
   ]
 }

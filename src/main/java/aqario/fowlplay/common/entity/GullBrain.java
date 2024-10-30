@@ -139,15 +139,16 @@ public class GullBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
-                Pair.of(5, new RandomLookAroundTask(
+                Pair.of(4, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
+                Pair.of(5, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
                     0.0F,
                     0.0F
                 )),
                 Pair.of(
-                    6,
+                    7,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -239,6 +240,7 @@ public class GullBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
+                FlightTaskControl.startFlying(gull -> true),
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(FLY_SPEED),
                 MeleeAttackTask.create(20),
