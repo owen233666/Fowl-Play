@@ -224,6 +224,13 @@ public class PenguinEntity extends BirdEntity {
         if (this.getWorld().isClient && this.isInsideWaterOrBubbleColumn() && this.getVelocity().lengthSquared() > 0.02) {
             this.addSwimParticles();
         }
+
+        if (this.isSwimming()) {
+            this.setPose(EntityPose.SWIMMING);
+        }
+        else if (this.getPose() != EntityPose.SLIDING) {
+            this.setPose(EntityPose.STANDING);
+        }
     }
 
     private void addSwimParticles() {
@@ -238,6 +245,11 @@ public class PenguinEntity extends BirdEntity {
                 0.0
             );
         }
+    }
+
+    @Override
+    public void updateSwimming() {
+        this.setSwimming(this.isInsideWaterOrBubbleColumn() && !this.hasVehicle());
     }
 
     protected void clampPassengerYaw(Entity entity) {

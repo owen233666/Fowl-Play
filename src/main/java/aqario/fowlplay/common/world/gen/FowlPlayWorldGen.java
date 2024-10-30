@@ -14,14 +14,14 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_BLUE_JAYS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.BLUE_JAY, 25, 1, 3
+            SpawnGroup.AMBIENT, FowlPlayEntityType.BLUE_JAY, 25, 1, 2
         );
 
         SpawnRestriction.register(FowlPlayEntityType.CARDINAL, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_CARDINALS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 35, 1, 3
+            SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 35, 1, 2
         );
 
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.UNRESTRICTED,
@@ -49,7 +49,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_ROBINS),
-            SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 50, 2, 4
+            SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 50, 3, 5
         );
     }
 }
