@@ -151,7 +151,7 @@ public class BlueJayBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 3),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 4),
-                            Pair.of(FlightTaskControl.startFlying(blueJay -> blueJay.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightTaskControl.startFlying(blueJay -> blueJay.getRandom().nextFloat() < 0.3F), 1)
                         )
                     )
                 )

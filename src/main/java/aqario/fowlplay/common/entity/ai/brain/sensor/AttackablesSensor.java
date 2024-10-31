@@ -1,24 +1,18 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.NearestVisibleLivingEntitySensor;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.registry.tag.TagKey;
+
+import java.util.function.Predicate;
 
 public class AttackablesSensor extends NearestVisibleLivingEntitySensor {
     public static final float TARGET_DETECTION_DISTANCE = 32.0F;
-    private final TagKey<EntityType<?>> targets;
-    private final TagKey<EntityType<?>> babyTargets;
+    private final Predicate<LivingEntity> canHunt;
 
-    public AttackablesSensor(TagKey<EntityType<?>> targets) {
-        this(targets, null);
-    }
-
-    public AttackablesSensor(TagKey<EntityType<?>> targets, TagKey<EntityType<?>> babyTargets) {
-        this.targets = targets;
-        this.babyTargets = babyTargets;
+    public AttackablesSensor(Predicate<LivingEntity> canHunt) {
+        this.canHunt = canHunt;
     }
 
     @Override
@@ -29,13 +23,7 @@ public class AttackablesSensor extends NearestVisibleLivingEntitySensor {
     }
 
     private boolean canHunt(LivingEntity entity, LivingEntity target) {
-        if (entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)) {
-            return false;
-        }
-        if (this.babyTargets != null && target.getType().isIn(this.babyTargets) && target.isBaby()) {
-            return true;
-        }
-        return target.getType().isIn(this.targets);
+        return !entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN) && canHunt.test(target);
     }
 
     private boolean isInRange(LivingEntity entity, LivingEntity target) {

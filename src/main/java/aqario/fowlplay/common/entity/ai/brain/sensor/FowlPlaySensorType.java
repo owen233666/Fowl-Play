@@ -28,10 +28,13 @@ public final class FowlPlaySensorType {
         NearestVisibleAdultsSensor::new
     );
     public static final SensorType<AttackablesSensor> PENGUIN_ATTACKABLES = register("penguin_attackables",
-        () -> new AttackablesSensor(FowlPlayEntityTypeTags.PENGUIN_HUNT_TARGETS)
+        () -> new AttackablesSensor(target -> target.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_HUNT_TARGETS))
     );
     public static final SensorType<AttackablesSensor> GULL_ATTACKABLES = register("gull_attackables",
-        () -> new AttackablesSensor(FowlPlayEntityTypeTags.GULL_HUNT_TARGETS, FowlPlayEntityTypeTags.GULL_BABY_HUNT_TARGETS)
+        () -> new AttackablesSensor(target ->
+            target.getType().isIn(FowlPlayEntityTypeTags.GULL_HUNT_TARGETS) ||
+                (target.getType().isIn(FowlPlayEntityTypeTags.GULL_BABY_HUNT_TARGETS) && target.isBaby())
+        )
     );
     public static final SensorType<FlyingBirdSensor> IS_FLYING = register("is_flying",
         FlyingBirdSensor::new
