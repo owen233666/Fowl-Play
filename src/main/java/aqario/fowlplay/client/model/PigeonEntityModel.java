@@ -4,6 +4,7 @@ import aqario.fowlplay.client.render.animation.PigeonEntityAnimations;
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -85,9 +86,6 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
 
     @Override
     public void setAngles(PigeonEntity pigeon, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-        if (!pigeon.isFlying()) {
-            this.updateHeadRotation(headYaw, headPitch);
-        }
     }
 
     @Override
@@ -95,11 +93,23 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(pigeon, limbAngle, limbDistance, tickDelta);
         float ageInTicks = pigeon.age + tickDelta;
+        float bodyYaw = MathHelper.lerpDegrees(tickDelta, pigeon.prevBodyYaw, pigeon.bodyYaw);
+        float headYaw = MathHelper.lerpDegrees(tickDelta, pigeon.prevHeadYaw, pigeon.headYaw);
+        float relativeHeadYaw = headYaw - bodyYaw;
+
+        float headPitch = MathHelper.lerp(tickDelta, pigeon.prevPitch, pigeon.getPitch());
+        if (LivingEntityRenderer.renderFlipped(pigeon)) {
+            headPitch *= -1.0F;
+            relativeHeadYaw *= -1.0F;
+        }
+        if (!pigeon.isFlying()) {
+            this.updateHeadRotation(relativeHeadYaw, headPitch);
+        }
         if (pigeon.isFlying()) {
             this.root.pitch = pigeon.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = pigeon.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn()) {
+        if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn() && !pigeon.isInSittingPose()) {
             this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
         }
         if (pigeon.isFlying()) {
@@ -118,6 +128,7 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         this.animate(pigeon.floatState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);
         this.animate(pigeon.glideState, PigeonEntityAnimations.PIGEON_GLIDE, ageInTicks);
         this.animate(pigeon.flapState, PigeonEntityAnimations.PIGEON_FLAP, ageInTicks);
+        this.animate(pigeon.sitState, PigeonEntityAnimations.PIGEON_SIT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

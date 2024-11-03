@@ -4,6 +4,7 @@ import aqario.fowlplay.client.render.animation.CardinalEntityAnimations;
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.CardinalEntity;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -86,9 +87,6 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
 
     @Override
     public void setAngles(CardinalEntity cardinal, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-        if (!cardinal.isFlying()) {
-            this.updateHeadRotation(headYaw, headPitch);
-        }
     }
 
     @Override
@@ -96,6 +94,18 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(cardinal, limbAngle, limbDistance, tickDelta);
         float ageInTicks = cardinal.age + tickDelta;
+        float bodyYaw = MathHelper.lerpDegrees(tickDelta, cardinal.prevBodyYaw, cardinal.bodyYaw);
+        float headYaw = MathHelper.lerpDegrees(tickDelta, cardinal.prevHeadYaw, cardinal.headYaw);
+        float relativeHeadYaw = headYaw - bodyYaw;
+
+        float headPitch = MathHelper.lerp(tickDelta, cardinal.prevPitch, cardinal.getPitch());
+        if (LivingEntityRenderer.renderFlipped(cardinal)) {
+            headPitch *= -1.0F;
+            relativeHeadYaw *= -1.0F;
+        }
+        if (!cardinal.isFlying()) {
+            this.updateHeadRotation(relativeHeadYaw, headPitch);
+        }
         if (cardinal.isFlying()) {
             this.root.pitch = cardinal.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = cardinal.getRoll(tickDelta) * (float) (Math.PI / 180.0);

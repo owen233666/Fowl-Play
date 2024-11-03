@@ -53,6 +53,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    public final AnimationState sitState = new AnimationState();
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
@@ -187,11 +188,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return ActionResult.success(this.getWorld().isClient);
         }
 
-        if (!this.isBreedingItem(playerStack)) {
-            return super.interactMob(player, hand);
-        }
-
-        if (!this.isTamed()) {
+        if (this.isBreedingItem(playerStack) && !this.isTamed()) {
             if (!this.getWorld().isClient) {
                 this.eat(player, hand, playerStack);
                 if (this.random.nextInt(4) == 0) {
@@ -203,6 +200,17 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
                     this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
                 }
             }
+            return ActionResult.success(this.getWorld().isClient);
+        }
+
+        if (this.isOnGround() && this.isTamed() && this.isOwner(player)) {
+            if (!this.getWorld().isClient) {
+                this.setSitting(!this.isSitting());
+                this.jumping = false;
+                this.navigation.stop();
+                this.setTarget(null);
+            }
+
             return ActionResult.success(this.getWorld().isClient);
         }
 
@@ -241,9 +249,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
             this.flapState.animateIf(this.isFlying(), this.age);
             this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.sitState.animateIf(this.isInSittingPose(), this.age);
         }
 
         super.tick();

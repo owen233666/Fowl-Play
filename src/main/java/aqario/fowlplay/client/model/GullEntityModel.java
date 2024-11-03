@@ -4,6 +4,7 @@ import aqario.fowlplay.client.render.animation.GullEntityAnimations;
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.GullEntity;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -86,9 +87,6 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
 
     @Override
     public void setAngles(GullEntity gull, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-        if (!gull.isFlying()) {
-            this.updateHeadRotation(headYaw, headPitch);
-        }
     }
 
     @Override
@@ -96,6 +94,18 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(gull, limbAngle, limbDistance, tickDelta);
         float ageInTicks = gull.age + tickDelta;
+        float bodyYaw = MathHelper.lerpDegrees(tickDelta, gull.prevBodyYaw, gull.bodyYaw);
+        float headYaw = MathHelper.lerpDegrees(tickDelta, gull.prevHeadYaw, gull.headYaw);
+        float relativeHeadYaw = headYaw - bodyYaw;
+
+        float headPitch = MathHelper.lerp(tickDelta, gull.prevPitch, gull.getPitch());
+        if (LivingEntityRenderer.renderFlipped(gull)) {
+            headPitch *= -1.0F;
+            relativeHeadYaw *= -1.0F;
+        }
+        if (!gull.isFlying()) {
+            this.updateHeadRotation(relativeHeadYaw, headPitch);
+        }
         if (gull.isFlying()) {
             this.root.pitch = gull.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = gull.getRoll(tickDelta) * (float) (Math.PI / 180.0);
