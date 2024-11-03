@@ -172,6 +172,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         ItemStack playerStack = player.getStackInHand(hand);
         ItemStack bundleStack = this.getStackInHand(Hand.OFF_HAND);
 
+        // Equip bundle
         if (bundleStack.isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
             if (!this.getWorld().isClient) {
                 this.setStackInHand(Hand.OFF_HAND, playerStack);
@@ -180,6 +181,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return ActionResult.success(this.getWorld().isClient);
         }
 
+        // Unequip bundle
         if (playerStack.isEmpty() && bundleStack.getItem() instanceof BundleItem) {
             if (!this.getWorld().isClient) {
                 player.setStackInHand(hand, bundleStack);
@@ -188,6 +190,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return ActionResult.success(this.getWorld().isClient);
         }
 
+        // Taming
         if (this.isBreedingItem(playerStack) && !this.isTamed()) {
             if (!this.getWorld().isClient) {
                 this.eat(player, hand, playerStack);
@@ -203,6 +206,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return ActionResult.success(this.getWorld().isClient);
         }
 
+        // Sitting
         if (this.isOnGround() && this.isTamed() && this.isOwner(player)) {
             if (!this.getWorld().isClient) {
                 this.setSitting(!this.isSitting());

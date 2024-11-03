@@ -110,9 +110,6 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.root.pitch = gull.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = gull.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
-        }
         if (gull.isFlying()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
@@ -124,6 +121,9 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
             this.rightWing.visible = true;
+        }
+        if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
         }
         this.animate(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
         this.animate(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);

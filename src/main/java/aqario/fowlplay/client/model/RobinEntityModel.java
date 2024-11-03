@@ -106,9 +106,6 @@ public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
             this.root.pitch = robin.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = robin.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!robin.isFlying() && !robin.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 6F, 6F);
-        }
         if (robin.isFlying()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
@@ -120,6 +117,9 @@ public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
             this.rightWing.visible = true;
+        }
+        if (!robin.isFlying() && !robin.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(robin.idleState, RobinEntityAnimations.ROBIN_IDLE, ageInTicks);
         this.animate(robin.floatState, RobinEntityAnimations.ROBIN_FLOAT, ageInTicks);

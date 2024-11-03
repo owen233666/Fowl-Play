@@ -110,9 +110,6 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
             this.root.pitch = blueJay.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = blueJay.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!blueJay.isFlying() && !blueJay.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 6F, 6F);
-        }
         if (blueJay.isFlying()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
@@ -124,6 +121,9 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
             this.rightWing.visible = true;
+        }
+        if (!blueJay.isFlying() && !blueJay.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(blueJay.idleState, BlueJayEntityAnimations.BLUE_JAY_IDLE, ageInTicks);
         this.animate(blueJay.floatState, BlueJayEntityAnimations.BLUE_JAY_FLOAT, ageInTicks);

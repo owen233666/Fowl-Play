@@ -109,9 +109,6 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
             this.root.pitch = pigeon.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = pigeon.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn() && !pigeon.isInSittingPose()) {
-            this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
-        }
         if (pigeon.isFlying()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
@@ -123,6 +120,9 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
             this.rightWing.visible = true;
+        }
+        if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn() && !pigeon.isInSittingPose()) {
+            this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
         }
         this.animate(pigeon.idleState, PigeonEntityAnimations.PIGEON_IDLE, ageInTicks);
         this.animate(pigeon.floatState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);

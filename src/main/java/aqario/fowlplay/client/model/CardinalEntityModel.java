@@ -110,9 +110,6 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
             this.root.pitch = cardinal.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = cardinal.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
-        }
         if (cardinal.isFlying()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
@@ -124,6 +121,9 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
             this.rightWing.visible = true;
+        }
+        if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(cardinal.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
         this.animate(cardinal.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
