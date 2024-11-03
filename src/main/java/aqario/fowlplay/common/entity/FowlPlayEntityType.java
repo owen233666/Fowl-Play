@@ -48,6 +48,12 @@ public final class FowlPlayEntityType {
             .setEyeHeight(0.475f)
     );
 
+    public static final EntityType<SparrowEntity> SPARROW = register("sparrow",
+        EntityType.Builder.create(SparrowEntity::new, SpawnGroup.AMBIENT)
+            .setDimensions(0.4f, 0.55f)
+            .setEyeHeight(0.475f)
+    );
+
     private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
         return Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), builder.build());
     }
@@ -59,5 +65,6 @@ public final class FowlPlayEntityType {
         FabricDefaultAttributeRegistry.register(PENGUIN, PenguinEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PIGEON, PigeonEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ROBIN, RobinEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SPARROW, SparrowEntity.createAttributes());
     }
 }

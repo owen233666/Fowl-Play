@@ -149,5 +149,32 @@
       "fowlplay:mob/robin/hurt2"
     ],
     "subtitle": "subtitles.entity.robin.hurt"
+  },
+  "entity.sparrow.call": {
+    "sounds": [
+      "fowlplay:mob/sparrow/call1",
+      "fowlplay:mob/sparrow/call2",
+      "fowlplay:mob/sparrow/call3",
+      "fowlplay:mob/sparrow/call4",
+      "fowlplay:mob/sparrow/call5"
+    ],
+    "subtitle": "subtitles.entity.sparrow.call"
+  },
+  "entity.sparrow.song": {
+    "sounds": [
+      "fowlplay:mob/sparrow/song1",
+      "fowlplay:mob/sparrow/song2",
+      "fowlplay:mob/sparrow/song3",
+      "fowlplay:mob/sparrow/song4"
+    ],
+    "subtitle": "subtitles.entity.sparrow.song"
+  },
+  "entity.sparrow.hurt": {
+    "sounds": [
+      "fowlplay:mob/sparrow/call3",
+      "fowlplay:mob/sparrow/call4",
+      "fowlplay:mob/sparrow/call5"
+    ],
+    "subtitle": "subtitles.entity.sparrow.hurt"
   }
 }

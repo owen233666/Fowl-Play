@@ -31,6 +31,10 @@ public final class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_ROBIN_SONG = register("entity.robin.song");
     public static final SoundEvent ENTITY_ROBIN_HURT = register("entity.robin.hurt");
 
+    public static final SoundEvent ENTITY_SPARROW_CALL = register("entity.sparrow.call");
+    public static final SoundEvent ENTITY_SPARROW_SONG = register("entity.sparrow.song");
+    public static final SoundEvent ENTITY_SPARROW_HURT = register("entity.sparrow.hurt");
+
     private static SoundEvent register(String id) {
         Identifier identifier = Identifier.of(FowlPlay.ID, id);
         return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));

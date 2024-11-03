@@ -51,5 +51,12 @@ public final class FowlPlayWorldGen {
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_ROBINS),
             SpawnGroup.AMBIENT, FowlPlayEntityType.ROBIN, 50, 3, 5
         );
+
+        SpawnRestriction.register(FowlPlayEntityType.SPARROW, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
+        );
+        BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_SPARROWS),
+            SpawnGroup.AMBIENT, FowlPlayEntityType.SPARROW, 75, 6, 10
+        );
     }
 }

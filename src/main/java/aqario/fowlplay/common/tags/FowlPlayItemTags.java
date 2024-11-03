@@ -13,6 +13,7 @@ public final class FowlPlayItemTags {
     public static final TagKey<Item> PENGUIN_FOOD = create("penguin_food");
     public static final TagKey<Item> PIGEON_FOOD = create("pigeon_food");
     public static final TagKey<Item> ROBIN_FOOD = create("robin_food");
+    public static final TagKey<Item> SPARROW_FOOD = create("robin_food");
 
     private static TagKey<Item> create(String id) {
         return TagKey.of(RegistryKeys.ITEM, Identifier.of(FowlPlay.ID, id));
