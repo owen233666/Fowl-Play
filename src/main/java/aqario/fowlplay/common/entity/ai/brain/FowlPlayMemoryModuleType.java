@@ -23,7 +23,7 @@ public final class FowlPlayMemoryModuleType {
     public static final MemoryModuleType<UUID> RECIPIENT = register("recipient", UuidUtil.INT_STREAM_CODEC);
 
     private static <U> MemoryModuleType<U> register(String id, Codec<U> codec) {
-        return Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.ofDefault(id), new MemoryModuleType<>(Optional.of(codec)));
+        return Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), new MemoryModuleType<>(Optional.of(codec)));
     }
 
     private static <U> MemoryModuleType<U> register(String id) {

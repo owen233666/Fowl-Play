@@ -191,7 +191,7 @@ public class ChickadeeBrain {
             10,
             ImmutableList.of(
                 FlightTaskControl.startFlying(chickadee -> true),
-                BetterGoToRememberedPositionTask.toEntity(
+                GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     chickadee -> chickadee.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
@@ -210,7 +210,7 @@ public class ChickadeeBrain {
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
                 Pair.of(0, FlightTaskControl.startFlying(chickadee -> true)),
-                Pair.of(1, BetterWalkToNearestWantedItemTask.create(
+                Pair.of(1, GoToNearestWantedItemTask.create(
                     ChickadeeBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,

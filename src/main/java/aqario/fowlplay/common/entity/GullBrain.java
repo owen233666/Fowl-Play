@@ -203,7 +203,7 @@ public class GullBrain {
             10,
             ImmutableList.of(
                 FlightTaskControl.startFlying(gull -> true),
-                BetterGoToRememberedPositionTask.toEntity(
+                GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     gull -> gull.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
@@ -222,7 +222,7 @@ public class GullBrain {
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
                 Pair.of(0, FlightTaskControl.startFlying(gull -> true)),
-                Pair.of(1, BetterWalkToNearestWantedItemTask.create(
+                Pair.of(1, GoToNearestWantedItemTask.create(
                     GullBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,

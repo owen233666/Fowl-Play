@@ -13,7 +13,10 @@ import net.minecraft.entity.ai.brain.task.TaskControl;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class BetterWalkToNearestWantedItemTask {
+/**
+ * Improved {@link net.minecraft.entity.ai.brain.task.WalkToNearestVisibleWantedItemTask WalkToNearestVisibleWantedItemTask} with a speedGetter
+ */
+public class GoToNearestWantedItemTask {
     public static <E extends LivingEntity> TaskControl<E> create(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
         return TaskBuilder.task(
             instance -> {
@@ -39,9 +42,7 @@ public class BetterWalkToNearestWantedItemTask {
                                 memoryAccessor2.remember(walkTarget);
                                 return true;
                             }
-                            else {
-                                return false;
-                            }
+                            return false;
                         }
                     );
             }

@@ -3,8 +3,8 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.BetterWalkToNearestWantedItemTask;
 import aqario.fowlplay.common.entity.ai.brain.task.BreatheAirTask;
+import aqario.fowlplay.common.entity.ai.brain.task.GoToNearestWantedItemTask;
 import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -184,7 +184,7 @@ public class PenguinBrain {
             FowlPlayActivities.PICKUP_FOOD,
             10,
             ImmutableList.of(
-                BetterWalkToNearestWantedItemTask.create(
+                GoToNearestWantedItemTask.create(
                     PenguinBrain::doesNotHaveFoodInHand,
                     entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
                     true,
