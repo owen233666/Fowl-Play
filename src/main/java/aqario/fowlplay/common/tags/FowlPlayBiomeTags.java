@@ -9,6 +9,7 @@ import net.minecraft.world.biome.Biome;
 public final class FowlPlayBiomeTags {
     public static final TagKey<Biome> SPAWNS_BLUE_JAYS = create("spawns_blue_jays");
     public static final TagKey<Biome> SPAWNS_CARDINALS = create("spawns_cardinals");
+    public static final TagKey<Biome> SPAWNS_CHICKADEES = create("spawns_chickadees");
     public static final TagKey<Biome> SPAWNS_GULLS = create("spawns_gulls");
     public static final TagKey<Biome> SPAWNS_PENGUINS = create("spawns_penguins");
     public static final TagKey<Biome> SPAWNS_PIGEONS = create("spawns_pigeons");

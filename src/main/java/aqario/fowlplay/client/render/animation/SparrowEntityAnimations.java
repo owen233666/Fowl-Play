@@ -110,20 +110,6 @@ public class SparrowEntityAnimations {
             )
         )
         .addPartAnimation(
-            "left_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0.69f, -9.39f, -4.68f), PartAnimation.Interpolations.SPLINE)
-            )
-        )
-        .addPartAnimation(
-            "right_wing",
-            new PartAnimation(
-                PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(0.69f, 9.39f, 4.68f), PartAnimation.Interpolations.SPLINE)
-            )
-        )
-        .addPartAnimation(
             "tail",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,

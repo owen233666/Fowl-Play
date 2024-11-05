@@ -24,6 +24,13 @@ public final class FowlPlayWorldGen {
             SpawnGroup.AMBIENT, FowlPlayEntityType.CARDINAL, 35, 1, 2
         );
 
+        SpawnRestriction.register(FowlPlayEntityType.CHICKADEE, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
+        );
+        BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_CHICKADEES),
+            SpawnGroup.AMBIENT, FowlPlayEntityType.CHICKADEE, 50, 3, 5
+        );
+
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
         );
