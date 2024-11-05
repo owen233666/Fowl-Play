@@ -76,9 +76,6 @@ public class PenguinBrain {
     private static final float WALK_SPEED = 1.0F;
     private static final float SWIM_SPEED = 4.0F;
 
-    public static void init() {
-    }
-
     public static Brain.Profile<PenguinEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
     }

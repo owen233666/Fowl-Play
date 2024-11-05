@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.world.gen;
 
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.entity.PigeonEntity;
+import aqario.fowlplay.common.entity.SparrowEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -15,9 +15,9 @@ import net.minecraft.world.poi.PointOfInterestTypes;
 
 import java.util.List;
 
-public class PigeonSpawner implements Spawner {
-    private static final int SPAWN_COOLDOWN = 1200;
-    private static final int MAX_PIGEONS = 6;
+public class SparrowSpawner implements Spawner {
+    private static final int SPAWN_COOLDOWN = 600;
+    private static final int MAX_SPARROWS = 12;
     private int ticksUntilNextSpawn;
 
     @SuppressWarnings("deprecation")
@@ -52,8 +52,8 @@ public class PigeonSpawner implements Spawner {
         if (world.getPointOfInterestStorage()
             .count(holder -> holder.isRegistryKey(PointOfInterestTypes.HOME), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
             > 4L) {
-            List<PigeonEntity> nearbyPigeons = world.getNonSpectatingEntities(PigeonEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
-            if (nearbyPigeons.size() < MAX_PIGEONS) {
+            List<SparrowEntity> nearbySparrows = world.getNonSpectatingEntities(SparrowEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
+            if (nearbySparrows.size() < MAX_SPARROWS) {
                 return this.spawn(pos, world);
             }
         }
@@ -62,13 +62,13 @@ public class PigeonSpawner implements Spawner {
     }
 
     private int spawn(BlockPos pos, ServerWorld world) {
-        PigeonEntity pigeon = FowlPlayEntityType.PIGEON.create(world);
-        if (pigeon == null) {
+        SparrowEntity sparrow = FowlPlayEntityType.SPARROW.create(world);
+        if (sparrow == null) {
             return 0;
         }
-        pigeon.initialize(world, world.getLocalDifficulty(pos), SpawnReason.NATURAL, null);
-        pigeon.refreshPositionAndAngles(pos, 0.0F, 0.0F);
-        world.spawnEntityAndPassengers(pigeon);
+        sparrow.initialize(world, world.getLocalDifficulty(pos), SpawnReason.NATURAL, null);
+        sparrow.refreshPositionAndAngles(pos, 0.0F, 0.0F);
+        world.spawnEntityAndPassengers(sparrow);
         return 1;
     }
 }

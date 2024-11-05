@@ -81,9 +81,6 @@ public class CardinalBrain {
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
 
-    public static void init() {
-    }
-
     public static Brain.Profile<CardinalEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
     }

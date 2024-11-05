@@ -72,7 +72,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        PigeonBrain.init();
         this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
         return super.initialize(world, difficulty, spawnReason, entityData);
     }

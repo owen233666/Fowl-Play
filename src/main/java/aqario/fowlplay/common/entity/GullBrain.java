@@ -83,9 +83,6 @@ public class GullBrain {
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
 
-    public static void init() {
-    }
-
     public static Brain.Profile<GullEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
     }
@@ -104,7 +101,9 @@ public class GullBrain {
     }
 
     public static void reset(GullEntity gull) {
-        gull.getBrain().resetPossibleActivities(
+        Brain<GullEntity> brain = gull.getBrain();
+        Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
+        brain.resetPossibleActivities(
             ImmutableList.of(
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
@@ -113,6 +112,9 @@ public class GullBrain {
                 Activity.FIGHT
             )
         );
+        if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
+            brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
+        }
     }
 
     private static void addCoreActivities(Brain<GullEntity> brain) {
@@ -139,7 +141,7 @@ public class GullBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
+                Pair.of(4, UpdateAttackTargetTask.create(gull -> !gull.isInsideWaterOrBubbleColumn(), GullBrain::getAttackTarget)),
                 Pair.of(5, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),

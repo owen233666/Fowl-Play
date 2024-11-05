@@ -8,8 +8,14 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.TaskBuilder;
 import net.minecraft.entity.ai.brain.task.TaskControl;
 
+import java.util.function.Predicate;
+
 public class LocateFoodTask {
-    public static TaskControl<BirdEntity> run() {
+    public static <E extends BirdEntity> TaskControl<E> run() {
+        return run(bird -> true);
+    }
+
+    public static <E extends BirdEntity> TaskControl<E> run(Predicate<E> predicate) {
         return TaskBuilder.task(
             builder -> builder.group(
                     builder.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
@@ -21,10 +27,11 @@ public class LocateFoodTask {
                     if (!GullBrain.getFood().test(item.getStack())) {
                         return false;
                     }
-                    else {
-                        seesFood.remember(true);
-                        return true;
+                    if (!predicate.test(entity)) {
+                        return false;
                     }
+                    seesFood.remember(true);
+                    return true;
                 })
         );
     }
