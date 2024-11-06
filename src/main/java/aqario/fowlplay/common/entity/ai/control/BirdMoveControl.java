@@ -3,9 +3,6 @@ package aqario.fowlplay.common.entity.ai.control;
 import aqario.fowlplay.common.entity.BirdEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeMaker;
-import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
@@ -66,18 +63,5 @@ public class BirdMoveControl extends MoveControl {
         else {
             this.bird.setForwardSpeed(0.0F);
         }
-    }
-
-    private boolean isWalkable(float x, float z) {
-        EntityNavigation entityNavigation = this.bird.getNavigation();
-        if (entityNavigation != null) {
-            PathNodeMaker pathNodeMaker = entityNavigation.getNodeMaker();
-            return pathNodeMaker == null
-                || pathNodeMaker.getDefaultNodeType(
-                this.bird, BlockPos.create(this.bird.getX() + (double) x, this.bird.getBlockY(), this.bird.getZ() + (double) z)
-            ) == PathNodeType.WALKABLE;
-        }
-
-        return true;
     }
 }

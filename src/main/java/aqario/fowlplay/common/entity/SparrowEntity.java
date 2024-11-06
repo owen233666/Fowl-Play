@@ -29,7 +29,7 @@ public class SparrowEntity extends FlyingBirdEntity {
     public SparrowEntity(EntityType<? extends SparrowEntity> entityType, World world) {
         super(entityType, world);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.addPathfindingPenalty(PathNodeType.WATER, -10.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
