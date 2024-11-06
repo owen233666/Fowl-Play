@@ -165,11 +165,17 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(0, new FlockTask(0.05f, 0.25f, 0.1f, 2.0f)),
-                Pair.of(1, FlightTaskControl.stopFlying(sparrow -> true)),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(0, FlightTaskControl.stopFlying(sparrow -> true)),
+                Pair.of(1, new FlockTask(
+                    FLY_SPEED,
+                    0.02f,
+                    0.1f,
+                    0.1f,
+                    2.0f,
+                    0.1f
+                )),
                 Pair.of(
-                    3,
+                    2,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(

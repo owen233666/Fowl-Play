@@ -12,18 +12,21 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class FlockTask extends Task<FlyingBirdEntity> {
-    public final float coherence;
-    public final float alignment;
-    public final float separation;
+    public final float coherenceSpeed;
+    public final float alignmentSpeed;
+    public final float separationSpeed;
     public final float separationRange;
+    public final float velocityChangeRate;
     private List<PassiveEntity> nearbyBirds;
+    private Vec3d prevVelocity;
 
-    public FlockTask(float coherence, float alignment, float separation, float separationRange) {
+    public FlockTask(float speed, float coherenceSpeed, float alignmentSpeed, float separationSpeed, float separationRange, float velocityChangeRate) {
         super(ImmutableMap.of());
-        this.coherence = coherence;
-        this.alignment = alignment;
-        this.separation = separation;
+        this.coherenceSpeed = coherenceSpeed;
+        this.alignmentSpeed = alignmentSpeed;
+        this.separationSpeed = separationSpeed;
         this.separationRange = separationRange;
+        this.velocityChangeRate = velocityChangeRate;
     }
 
     @Override
@@ -53,9 +56,13 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 //        bird.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.alignment(bird)));
 //        bird.getBrain().remember(MemoryModuleType.WALK_TARGET, walkTarget);
         bird.addVelocity(this.random(bird));
-        bird.addVelocity(this.cohesion(bird));
-        bird.addVelocity(this.alignment(bird));
-        bird.addVelocity(this.separation(bird));
+        this.prevVelocity = bird.getVelocity();
+        bird.addVelocity(this.getHeading(bird));
+//        bird.addVelocity(this.cohesion(bird));
+//        this.prevVelocity = bird.getVelocity();
+//        bird.addVelocity(this.alignment(bird));
+//        this.prevVelocity = bird.getVelocity();
+//        bird.addVelocity(this.separation(bird));
     }
 
     public Vec3d random(FlyingBirdEntity bird) {
@@ -72,6 +79,34 @@ public class FlockTask extends Task<FlyingBirdEntity> {
         return bird.getRandom().nextBoolean() ? 1 : -1;
     }
 
+    private Vec3d getHeading(FlyingBirdEntity bird) {
+        Vec3d separation = Vec3d.ZERO;
+        Vec3d alignment = Vec3d.ZERO;
+        Vec3d cohesion = Vec3d.ZERO;
+
+        for (PassiveEntity entity : this.nearbyBirds) {
+            if ((entity.getPos().subtract(bird.getPos()).length()) < this.separationRange) {
+                separation = separation.subtract(entity.getPos().subtract(bird.getPos()));
+            }
+            alignment = alignment.add(entity.getVelocity());
+            cohesion = cohesion.add(entity.getPos());
+        }
+
+        alignment = alignment.multiply(1f / this.nearbyBirds.size());
+        alignment = alignment.subtract(bird.getVelocity());
+        cohesion = cohesion.multiply(1f / this.nearbyBirds.size());
+        cohesion = cohesion.subtract(bird.getPos());
+
+        separation.multiply(this.separationSpeed);
+        alignment.multiply(this.alignmentSpeed);
+        cohesion.multiply(this.coherenceSpeed);
+
+        return this.prevVelocity.lerp(
+            separation.add(alignment).add(cohesion),
+            this.velocityChangeRate
+        );
+    }
+
     public Vec3d separation(FlyingBirdEntity bird) {
         Vec3d velocity = Vec3d.ZERO;
 
@@ -81,7 +116,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
             }
         }
 
-        return velocity.multiply(this.separation);
+        return this.prevVelocity.lerp(velocity.multiply(this.separationSpeed), this.velocityChangeRate);
     }
 
     public Vec3d alignment(FlyingBirdEntity bird) {
@@ -93,7 +128,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
         velocity = velocity.multiply(1f / this.nearbyBirds.size());
         velocity = velocity.subtract(bird.getVelocity());
-        return velocity.multiply(this.alignment);
+        return this.prevVelocity.lerp(velocity.multiply(this.alignmentSpeed), this.velocityChangeRate);
     }
 
     public Vec3d cohesion(FlyingBirdEntity bird) {
@@ -105,6 +140,6 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
         velocity = velocity.multiply(1f / this.nearbyBirds.size());
         velocity = velocity.subtract(bird.getPos());
-        return velocity.multiply(this.coherence);
+        return this.prevVelocity.lerp(velocity.multiply(this.coherenceSpeed), this.velocityChangeRate);
     }
 }
