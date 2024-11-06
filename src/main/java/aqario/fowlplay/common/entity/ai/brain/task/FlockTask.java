@@ -1,8 +1,8 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -12,21 +12,21 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class FlockTask extends Task<FlyingBirdEntity> {
-    public final float coherenceSpeed;
-    public final float alignmentSpeed;
-    public final float separationSpeed;
+    public final float coherenceChangeRate;
+    public final float alignmentChangeRate;
+    public final float separationChangeRate;
     public final float separationRange;
-    public final float velocityChangeRate;
-    private List<PassiveEntity> nearbyBirds;
+    private List<? extends FlyingBirdEntity> nearbyBirds;
     private Vec3d prevVelocity;
+    private float speed;
 
-    public FlockTask(float speed, float coherenceSpeed, float alignmentSpeed, float separationSpeed, float separationRange, float velocityChangeRate) {
+    public FlockTask(float speed, float coherenceChangeRate, float alignmentChangeRate, float separationChangeRate, float separationRange) {
         super(ImmutableMap.of());
-        this.coherenceSpeed = coherenceSpeed;
-        this.alignmentSpeed = alignmentSpeed;
-        this.separationSpeed = separationSpeed;
+        this.speed = speed;
+        this.coherenceChangeRate = coherenceChangeRate;
+        this.alignmentChangeRate = alignmentChangeRate;
+        this.separationChangeRate = separationChangeRate;
         this.separationRange = separationRange;
-        this.velocityChangeRate = velocityChangeRate;
     }
 
     @Override
@@ -34,10 +34,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
         if (!bird.isFlying()) {
             return false;
         }
-        if (!bird.getBrain().hasMemoryModule(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)) {
-            return false;
-        }
-        this.nearbyBirds = bird.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
+        this.nearbyBirds = bird.getWorld().getEntitiesByClass(bird.getClass(), bird.getBounds().expand(5), LivingEntity::isAlive);
 
         return !this.nearbyBirds.isEmpty();
     }
@@ -55,9 +52,13 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 //        );
 //        bird.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.alignment(bird)));
 //        bird.getBrain().remember(MemoryModuleType.WALK_TARGET, walkTarget);
-        bird.addVelocity(this.random(bird));
+//        bird.addVelocity(this.getRandomMovement(bird));
         this.prevVelocity = bird.getVelocity();
-        bird.addVelocity(this.getHeading(bird));
+        Vec3d heading = this.getHeading(bird).normalize().multiply(bird.getMovementSpeed()).add(bird.getPos());
+        bird.getLookControl().lookAt(heading.x, heading.y + 0.5, heading.z, 5, 5);
+        bird.getMoveControl().moveTo(heading.x, heading.y, heading.z, 2);
+//        bird.addVelocity(this.getHeading(bird).normalize().multiply(bird.getMovementSpeed()));
+//        bird.getLookControl().lookAt(bird.getPos().add(bird.getVelocity().multiply(1.1)));
 //        bird.addVelocity(this.cohesion(bird));
 //        this.prevVelocity = bird.getVelocity();
 //        bird.addVelocity(this.alignment(bird));
@@ -65,7 +66,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 //        bird.addVelocity(this.separation(bird));
     }
 
-    public Vec3d random(FlyingBirdEntity bird) {
+    public Vec3d getRandomMovement(FlyingBirdEntity bird) {
         Vec3d velocity = bird.getVelocity();
 
         if (MathHelper.abs((float) velocity.x) < 0.1 && MathHelper.abs((float) velocity.z) < 0.1) {
@@ -97,14 +98,15 @@ public class FlockTask extends Task<FlyingBirdEntity> {
         cohesion = cohesion.multiply(1f / this.nearbyBirds.size());
         cohesion = cohesion.subtract(bird.getPos());
 
-        separation.multiply(this.separationSpeed);
-        alignment.multiply(this.alignmentSpeed);
-        cohesion.multiply(this.coherenceSpeed);
+        separation.multiply(this.speed);
+        alignment.multiply(this.speed);
+        cohesion.multiply(this.speed);
 
-        return this.prevVelocity.lerp(
-            separation.add(alignment).add(cohesion),
-            this.velocityChangeRate
-        );
+        separation = this.prevVelocity.lerp(separation, this.separationChangeRate).add(this.prevVelocity.negate());
+        alignment = this.prevVelocity.lerp(alignment, this.alignmentChangeRate).add(this.prevVelocity.negate());
+        cohesion = this.prevVelocity.lerp(cohesion, this.coherenceChangeRate).add(this.prevVelocity.negate());
+
+        return separation.add(alignment).add(cohesion);
     }
 
     public Vec3d separation(FlyingBirdEntity bird) {
@@ -116,7 +118,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
             }
         }
 
-        return this.prevVelocity.lerp(velocity.multiply(this.separationSpeed), this.velocityChangeRate);
+        return this.prevVelocity.lerp(velocity.multiply(this.speed), this.separationChangeRate);
     }
 
     public Vec3d alignment(FlyingBirdEntity bird) {
@@ -128,7 +130,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
         velocity = velocity.multiply(1f / this.nearbyBirds.size());
         velocity = velocity.subtract(bird.getVelocity());
-        return this.prevVelocity.lerp(velocity.multiply(this.alignmentSpeed), this.velocityChangeRate);
+        return this.prevVelocity.lerp(velocity.multiply(this.speed), this.alignmentChangeRate);
     }
 
     public Vec3d cohesion(FlyingBirdEntity bird) {
@@ -140,6 +142,6 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
         velocity = velocity.multiply(1f / this.nearbyBirds.size());
         velocity = velocity.subtract(bird.getPos());
-        return this.prevVelocity.lerp(velocity.multiply(this.coherenceSpeed), this.velocityChangeRate);
+        return this.prevVelocity.lerp(velocity.multiply(this.speed), this.coherenceChangeRate);
     }
 }
