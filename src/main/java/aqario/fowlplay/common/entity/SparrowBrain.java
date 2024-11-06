@@ -165,6 +165,7 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
+                Pair.of(0, new FlockTask(0.05f, 0.25f, 0.1f, 2.0f)),
                 Pair.of(1, FlightTaskControl.stopFlying(sparrow -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
