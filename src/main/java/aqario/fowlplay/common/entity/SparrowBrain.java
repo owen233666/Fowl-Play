@@ -170,7 +170,7 @@ public class SparrowBrain {
                     0.001f,
                     0.001f,
                     0.001f,
-                    4f
+                    2f
                 )),
                 Pair.of(
                     2,

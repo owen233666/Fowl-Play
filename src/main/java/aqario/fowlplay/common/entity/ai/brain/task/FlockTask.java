@@ -56,7 +56,8 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
     @Override
     protected void keepRunning(ServerWorld world, FlyingBirdEntity bird, long time) {
-        Vec3d heading = this.getHeading(bird).normalize().multiply(bird.getMovementSpeed() * 2).add(bird.getPos());
+        Vec3d heading = this.getHeading(bird).add(bird.getPos());
+        System.out.println(heading.x + " " + heading.y + " " + heading.z);
         bird.getMoveControl().moveTo(heading.x, heading.y, heading.z, (bird.getRandom().nextFloat() - bird.getRandom().nextFloat()) * 1.5 + 2);
 //        bird.addVelocity(this.getAlignment(bird).normalize().multiply(bird.getMovementSpeed() * 2));
 //        bird.addVelocity(this.getCohesion(bird).normalize().multiply(bird.getMovementSpeed() * 2));
@@ -77,15 +78,14 @@ public class FlockTask extends Task<FlyingBirdEntity> {
         }
 
         alignment = alignment.multiply(1f / this.nearbyBirds.size());
-        alignment = alignment.subtract(bird.getVelocity());
         cohesion = cohesion.multiply(1f / this.nearbyBirds.size());
         cohesion = cohesion.subtract(bird.getPos());
 
-        separation.multiply(0.05);
-        alignment.multiply(0.5);
-        cohesion.multiply(0.005);
+        alignment = alignment.multiply(0.5);
+        separation = separation.multiply(0.05);
+        cohesion = cohesion.multiply(0.05);
 
-        return separation.add(cohesion).add(alignment);
+        return cohesion.add(separation).add(alignment);
     }
 
     private Vec3d getAlignment(FlyingBirdEntity bird) {
