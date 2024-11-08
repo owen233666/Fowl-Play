@@ -130,7 +130,7 @@ public class ChickadeeBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(1, new BreedTask(FowlPlayEntityType.ROBIN, WALK_SPEED, 20)),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.CHICKADEE, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(ChickadeeBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
@@ -227,7 +227,7 @@ public class ChickadeeBrain {
 
     private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
         return ImmutableList.of(
-            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.ROBIN, 8.0F), 1),
+            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.CHICKADEE, 8.0F), 1),
             Pair.of(FollowMobTask.create(8.0F), 1)
         );
     }
@@ -287,7 +287,7 @@ public class ChickadeeBrain {
     }
 
     protected static void alertOthers(ChickadeeEntity chickadee, LivingEntity attacker) {
-        getNearbyVisibleRobins(chickadee).forEach(other -> {
+        getNearbyVisibleChickadees(chickadee).forEach(other -> {
             if (attacker instanceof PlayerEntity) {
                 other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
             }
@@ -300,7 +300,7 @@ public class ChickadeeBrain {
         chickadee.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleRobins(ChickadeeEntity chickadee) {
+    protected static List<PassiveEntity> getNearbyVisibleChickadees(ChickadeeEntity chickadee) {
         return chickadee.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

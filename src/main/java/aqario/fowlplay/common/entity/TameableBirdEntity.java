@@ -75,11 +75,6 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
         this.setInSittingPose(this.sitting);
     }
 
-    @Override
-    public boolean canAiMove() {
-        return super.canAiMove();
-    }
-
     protected void showEmoteParticle(boolean positive) {
         ParticleEffect particleEffect = ParticleTypes.HEART;
         if (!positive) {
