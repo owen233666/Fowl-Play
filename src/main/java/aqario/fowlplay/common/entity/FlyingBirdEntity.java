@@ -37,7 +37,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-        this.flockTickOffset = this.random.nextInt(4);
+        this.flockTickOffset = this.random.nextInt(2);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

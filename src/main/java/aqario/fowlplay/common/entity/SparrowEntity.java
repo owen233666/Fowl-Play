@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
@@ -34,6 +35,11 @@ public class SparrowEntity extends FlyingBirdEntity {
         this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+    }
+
+    @Override
+    protected BirdFlightMoveControl getFlightMoveControl() {
+        return new BirdFlightMoveControl(this, 40, 15);
     }
 
     @Nullable
