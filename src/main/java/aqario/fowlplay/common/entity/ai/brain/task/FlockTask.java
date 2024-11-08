@@ -41,27 +41,13 @@ public class FlockTask extends Task<FlyingBirdEntity> {
 
     @Override
     protected boolean shouldKeepRunning(ServerWorld world, FlyingBirdEntity bird, long time) {
-        if (!bird.isFlying()) {
-            return false;
-        }
-        if (!bird.getBrain().hasMemoryModule(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)) {
-            return false;
-        }
-//        if (time % 2 == bird.flockTickOffset) {
-            this.nearbyBirds = bird.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
-//        }
-
-        return this.nearbyBirds.size() > 5;
+        return this.shouldRun(world, bird);
     }
 
     @Override
     protected void keepRunning(ServerWorld world, FlyingBirdEntity bird, long time) {
         Vec3d heading = this.getHeading(bird).add(bird.getPos());
-        System.out.println(heading.x + " " + heading.y + " " + heading.z);
         bird.getMoveControl().moveTo(heading.x, heading.y, heading.z, (bird.getRandom().nextFloat() - bird.getRandom().nextFloat()) * 1.5 + 2);
-//        bird.addVelocity(this.getAlignment(bird).normalize().multiply(bird.getMovementSpeed() * 2));
-//        bird.addVelocity(this.getCohesion(bird).normalize().multiply(bird.getMovementSpeed() * 2));
-//        bird.addVelocity(this.getSeparation(bird).normalize().multiply(bird.getMovementSpeed() * 2));
     }
 
     private Vec3d getHeading(FlyingBirdEntity bird) {
@@ -81,52 +67,10 @@ public class FlockTask extends Task<FlyingBirdEntity> {
         cohesion = cohesion.multiply(1f / this.nearbyBirds.size());
         cohesion = cohesion.subtract(bird.getPos());
 
-        alignment = alignment.multiply(0.5);
-        separation = separation.multiply(0.05);
-        cohesion = cohesion.multiply(0.05);
+        cohesion = cohesion.multiply(this.coherence);
+        alignment = alignment.multiply(this.alignment);
+        separation = separation.multiply(this.separation);
 
         return cohesion.add(separation).add(alignment);
-    }
-
-    private Vec3d getAlignment(FlyingBirdEntity bird) {
-        Vec3d alignment = Vec3d.ZERO;
-
-        for (PassiveEntity entity : this.nearbyBirds) {
-            alignment = alignment.add(entity.getVelocity());
-        }
-
-        alignment = alignment.multiply(1f / this.nearbyBirds.size());
-        alignment = alignment.subtract(bird.getVelocity());
-        alignment.multiply(0.05);
-
-        return alignment;
-    }
-
-    private Vec3d getCohesion(FlyingBirdEntity bird) {
-        Vec3d cohesion = Vec3d.ZERO;
-
-        for (PassiveEntity entity : this.nearbyBirds) {
-            cohesion = cohesion.add(entity.getPos());
-        }
-        cohesion = cohesion.multiply(1f / this.nearbyBirds.size());
-        cohesion = cohesion.subtract(bird.getPos());
-
-        cohesion.multiply(0.005);
-
-        return cohesion;
-    }
-
-    private Vec3d getSeparation(FlyingBirdEntity bird) {
-        Vec3d separation = Vec3d.ZERO;
-
-        for (PassiveEntity entity : this.nearbyBirds) {
-            if (entity.getPos().subtract(bird.getPos()).length() < this.separationRange) {
-                separation = separation.subtract(entity.getPos().subtract(bird.getPos()));
-            }
-        }
-
-        separation.multiply(0.005);
-
-        return separation;
     }
 }

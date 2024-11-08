@@ -167,10 +167,10 @@ public class SparrowBrain {
             ImmutableList.of(
                 Pair.of(0, FlightTaskControl.stopFlying(sparrow -> true)),
                 Pair.of(1, new FlockTask(
-                    0.001f,
-                    0.001f,
-                    0.001f,
-                    2f
+                    0.05f,
+                    0.5f,
+                    0.05f,
+                    3f
                 )),
                 Pair.of(
                     2,
