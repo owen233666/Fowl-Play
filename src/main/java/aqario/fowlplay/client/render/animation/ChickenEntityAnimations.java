@@ -170,7 +170,7 @@ public class ChickenEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKEN_FLAP = Animation.Builder.withLength(0f)
+    public static final Animation CHICKEN_FLAP = Animation.Builder.withLength(0.25f).looping()
         .addPartAnimation(
             "head",
             new PartAnimation(
@@ -225,6 +225,97 @@ public class ChickenEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-8.11f, 11.58f, 10.05f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "root",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.041676664f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.08343333f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.20834334f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "root",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.08343333f, Animator.rotate(2.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.20834334f, Animator.rotate(5f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0.75f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, -35f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.08343333f, Animator.rotate(-6.43f, 11.07f, 19.56f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.rotate(4.82f, 14.94f, 38.66f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(0f, 0f, -35f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(-0.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.translate(-0.25f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.translate(-0.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 5f, -5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.rotate(0f, 0f, 15f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.14583434f, Animator.rotate(0f, -5.29f, 11.54f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(0f, 5f, -5f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(-0.75f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 35f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.08343333f, Animator.rotate(-6.43f, -11.07f, -19.56f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.rotate(4.82f, -14.94f, -38.66f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(0f, 0f, 35f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.translate(0.25f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.translate(0.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, -5f, 5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.rotate(0f, 0f, -15f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.14583434f, Animator.rotate(0f, 5.29f, -13.52f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(0f, -5f, 5f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .build();
