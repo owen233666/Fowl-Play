@@ -48,6 +48,12 @@ public final class FowlPlayEntityType {
             .setEyeHeight(0.5f)
     );
 
+    public static final EntityType<RavenEntity> RAVEN = register("raven",
+        EntityType.Builder.create(RavenEntity::new, SpawnGroup.CREATURE)
+            .setDimensions(0.6f, 0.8f)
+            .setEyeHeight(0.7f)
+    );
+
     public static final EntityType<RobinEntity> ROBIN = register("robin",
         EntityType.Builder.create(RobinEntity::new, SpawnGroup.AMBIENT)
             .setDimensions(0.4f, 0.55f)
@@ -71,6 +77,7 @@ public final class FowlPlayEntityType {
         FabricDefaultAttributeRegistry.register(GULL, GullEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PENGUIN, PenguinEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PIGEON, PigeonEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(RAVEN, RavenEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ROBIN, RobinEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(SPARROW, SparrowEntity.createAttributes());
     }

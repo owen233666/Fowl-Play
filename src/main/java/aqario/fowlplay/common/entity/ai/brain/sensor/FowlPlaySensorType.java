@@ -4,6 +4,7 @@ import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.GullBrain;
 import aqario.fowlplay.common.entity.PenguinBrain;
 import aqario.fowlplay.common.entity.PigeonBrain;
+import aqario.fowlplay.common.entity.RavenBrain;
 import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
@@ -15,25 +16,34 @@ import net.minecraft.util.Identifier;
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
+    public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations",
+        () -> new TemptationsSensor(GullBrain.getFood())
+    );
     public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register("penguin_temptations",
         () -> new TemptationsSensor(PenguinBrain.getFood())
     );
     public static final SensorType<TemptationsSensor> PIGEON_TEMPTATIONS = register("pigeon_temptations",
         () -> new TemptationsSensor(PigeonBrain.getFood())
     );
-    public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations",
-        () -> new TemptationsSensor(GullBrain.getFood())
+    public static final SensorType<TemptationsSensor> RAVEN_TEMPTATIONS = register("raven_temptations",
+        () -> new TemptationsSensor(RavenBrain.getFood())
     );
     public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register("nearest_adults",
         NearestVisibleAdultsSensor::new
-    );
-    public static final SensorType<AttackTargetSensor> PENGUIN_ATTACKABLES = register("penguin_attackables",
-        () -> new AttackTargetSensor(target -> target.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_HUNT_TARGETS))
     );
     public static final SensorType<AttackTargetSensor> GULL_ATTACKABLES = register("gull_attackables",
         () -> new AttackTargetSensor(target ->
             target.getType().isIn(FowlPlayEntityTypeTags.GULL_HUNT_TARGETS) ||
                 (target.getType().isIn(FowlPlayEntityTypeTags.GULL_BABY_HUNT_TARGETS) && target.isBaby())
+        )
+    );
+    public static final SensorType<AttackTargetSensor> PENGUIN_ATTACKABLES = register("penguin_attackables",
+        () -> new AttackTargetSensor(target -> target.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_HUNT_TARGETS))
+    );
+    public static final SensorType<AttackTargetSensor> RAVEN_ATTACKABLES = register("raven_attackables",
+        () -> new AttackTargetSensor(target ->
+            target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_HUNT_TARGETS) ||
+                (target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_BABY_HUNT_TARGETS) && target.isBaby())
         )
     );
     public static final SensorType<FlyingStateSensor> IS_FLYING = register("is_flying",

@@ -44,6 +44,11 @@ public final class FowlPlayItems {
         new SpawnEggItem(FowlPlayEntityType.PIGEON, 0xBBBDBF, 0x467A58, new Item.Settings()),
         ItemGroups.SPAWN_EGGS
     );
+    public static final Item RAVEN_SPAWN_EGG = register(
+        "raven_spawn_egg",
+        new SpawnEggItem(FowlPlayEntityType.RAVEN, 0x3B3B3D, 0x1C1C1E, new Item.Settings()),
+        ItemGroups.SPAWN_EGGS
+    );
     public static final Item ROBIN_SPAWN_EGG = register(
         "robin_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.ROBIN, 0x66696A, 0xFF823F, new Item.Settings()),

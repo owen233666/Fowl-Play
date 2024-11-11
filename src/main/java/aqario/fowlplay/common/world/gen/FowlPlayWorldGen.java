@@ -52,6 +52,13 @@ public final class FowlPlayWorldGen {
             SpawnGroup.CREATURE, FowlPlayEntityType.PIGEON, 20, 4, 8
         );
 
+        SpawnRestriction.register(FowlPlayEntityType.RAVEN, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
+        );
+        BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_RAVENS),
+            SpawnGroup.CREATURE, FowlPlayEntityType.RAVEN, 20, 1, 3
+        );
+
         SpawnRestriction.register(FowlPlayEntityType.ROBIN, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );

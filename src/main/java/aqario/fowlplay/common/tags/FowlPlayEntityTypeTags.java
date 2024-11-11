@@ -12,6 +12,8 @@ public final class FowlPlayEntityTypeTags {
     public static final TagKey<EntityType<?>> GULL_HUNT_TARGETS = create("gull_hunt_targets");
     public static final TagKey<EntityType<?>> PASSERINES = create("passerines");
     public static final TagKey<EntityType<?>> PENGUIN_HUNT_TARGETS = create("penguin_hunt_targets");
+    public static final TagKey<EntityType<?>> RAVEN_BABY_HUNT_TARGETS = create("raven_baby_hunt_targets");
+    public static final TagKey<EntityType<?>> RAVEN_HUNT_TARGETS = create("raven_hunt_targets");
 
     private static TagKey<EntityType<?>> create(String id) {
         return TagKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id));
