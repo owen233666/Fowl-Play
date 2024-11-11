@@ -58,5 +58,18 @@
   "tag.item.fowlplay.robin_food": "Robin food",
   "tag.item.fowlplay.sparrow_food": "Sparrow food",
   "fowlplay.midnightconfig.title": "Fowl Play Config",
-  "fowlplay.midnightconfig.customChickenModel": "Use Custom Chicken Model (requires a restart)"
+  "fowlplay.midnightconfig.category.visual": "Visual",
+  "fowlplay.midnightconfig.customChickenModel": "Use Custom Chicken Model (requires a restart)",
+  "fowlplay.midnightconfig.category.audio": "Audio",
+  "fowlplay.midnightconfig.category.spawning": "Spawning",
+  "fowlplay.midnightconfig.info": "The following options require a restart to be effective.",
+  "fowlplay.midnightconfig.blueJay": "Blue Jay",
+  "fowlplay.midnightconfig.cardinal": "Cardinal",
+  "fowlplay.midnightconfig.chickadee": "Chickadee",
+  "fowlplay.midnightconfig.gull": "Gull",
+  "fowlplay.midnightconfig.penguin": "Penguin",
+  "fowlplay.midnightconfig.pigeon": "Pigeon",
+  "fowlplay.midnightconfig.raven": "Raven",
+  "fowlplay.midnightconfig.robin": "Robin",
+  "fowlplay.midnightconfig.sparrow": "Sparrow"
 }

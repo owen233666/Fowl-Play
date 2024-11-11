@@ -46,7 +46,7 @@ public class RavenEntityAnimations {
             "tail",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-10f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
