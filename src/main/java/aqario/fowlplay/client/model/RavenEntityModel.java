@@ -75,13 +75,13 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(16, 0).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 1.0F, 3.0F, new Dilation(0.0F))
             .uv(21, 0).cuboid(-1.0F, -1.003F, 3.5F, 2.0F, 0.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.75F, 3.5F, -0.2618F, 0.0F, 0.0F));
 
-        tail.addChild("cube_r2", ModelPartBuilder.create().uv(22, 0).cuboid(-1.0F, -0.001F, 1.0F, 2.0F, 0.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, -1.0F, 1.0F, 0.0F, -0.5236F, 0.0F));
+        tail.addChild("cube_r2", ModelPartBuilder.create().uv(22, 0).cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, -1.0F, 2.0F, 0.0F, -0.6109F, 0.0F));
 
         tail.addChild("cube_r3", ModelPartBuilder.create().uv(21, 0).cuboid(-1.0F, -0.002F, 0.0F, 2.0F, 0.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, -1.0F, 2.5F, 0.0F, -0.2618F, 0.0F));
 
         tail.addChild("cube_r4", ModelPartBuilder.create().uv(21, 0).mirrored().cuboid(-1.0F, -0.002F, 0.0F, 2.0F, 0.0F, 7.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 2.5F, 0.0F, 0.2618F, 0.0F));
 
-        tail.addChild("cube_r5", ModelPartBuilder.create().uv(22, 0).mirrored().cuboid(-1.0F, -0.001F, 1.0F, 2.0F, 0.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 1.0F, 0.0F, 0.5236F, 0.0F));
+        tail.addChild("cube_r5", ModelPartBuilder.create().uv(22, 0).mirrored().cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 6.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 2.0F, 0.0F, 0.6109F, 0.0F));
 
         ModelPartData left_leg = root.addChild("left_leg", ModelPartBuilder.create().uv(16, 4).cuboid(-0.5F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, new Dilation(0.0F)), ModelTransform.of(1.25F, 1.0F, 2.5F, -0.1745F, 0.0F, 0.0F));
 
@@ -119,7 +119,7 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
             this.root.pitch = raven.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = raven.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (raven.isFlying()) {
+        if (raven.isFlying() || raven.isInsideWaterOrBubbleColumn()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
             this.leftWing.visible = false;

@@ -6,7 +6,7 @@ import net.minecraft.client.render.animation.Animator;
 import net.minecraft.client.render.animation.PartAnimation;
 
 public class RavenEntityAnimations {
-    public static final Animation RAVEN_IDLE = Animation.Builder.withLength(1f).looping()
+    public static final Animation RAVEN_IDLE = Animation.Builder.withLength(0f).looping()
         .addPartAnimation(
             "neck",
             new PartAnimation(
@@ -196,19 +196,19 @@ public class RavenEntityAnimations {
         )
         .build();
 
-    public static final Animation RAVEN_FLOAT = Animation.Builder.withLength(1f).looping()
+    public static final Animation RAVEN_FLOAT = Animation.Builder.withLength(0f).looping()
         .addPartAnimation(
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0.5f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 0.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-21.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(35f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -243,7 +243,7 @@ public class RavenEntityAnimations {
             "tail",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(-2.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(-15f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -285,7 +285,56 @@ public class RavenEntityAnimations {
             "throat",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.6f, 0.75f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "throat",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(20f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, -1f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-55f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 20f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-6f, -30f, 10f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_open",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, -20f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_wing_outer",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-6f, 30f, -10f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .build();

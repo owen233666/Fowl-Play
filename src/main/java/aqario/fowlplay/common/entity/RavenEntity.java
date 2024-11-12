@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -39,12 +38,6 @@ public class RavenEntity extends TrustingBirdEntity {
 
     public RavenEntity(EntityType<? extends RavenEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @SuppressWarnings("unused")
