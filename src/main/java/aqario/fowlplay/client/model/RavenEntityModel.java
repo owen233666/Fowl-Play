@@ -132,7 +132,7 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
             this.rightWing.visible = true;
         }
         if (!raven.isFlying() && !raven.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 4F, 4F);
+            this.animateWalk(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
         }
         this.animate(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
         this.animate(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);

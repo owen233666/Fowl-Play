@@ -143,29 +143,23 @@ public class RavenEntity extends TrustingBirdEntity {
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_GULL_CALL;
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_GULL_LONG_CALL;
+        return FowlPlaySoundEvents.ENTITY_RAVEN_CALL;
     }
 
     @Override
     protected float getCallVolume() {
-        return 6.0F;
+        return 12.0F;
     }
 
     @Override
-    protected float getSongVolume() {
-        return 8.0F;
+    public int getCallDelay() {
+        return 600;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_GULL_HURT;
+        return FowlPlaySoundEvents.ENTITY_RAVEN_HURT;
     }
 
     @Nullable

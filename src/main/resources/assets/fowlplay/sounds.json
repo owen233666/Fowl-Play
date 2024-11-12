@@ -153,6 +153,22 @@
     ],
     "subtitle": "subtitles.entity.pigeon.song"
   },
+  "entity.raven.call": {
+    "sounds": [
+      "fowlplay:mob/raven/call1",
+      "fowlplay:mob/raven/call2",
+      "fowlplay:mob/raven/call3",
+      "fowlplay:mob/raven/call4"
+    ],
+    "subtitle": "subtitles.entity.raven.call"
+  },
+  "entity.raven.hurt": {
+    "sounds": [
+      "fowlplay:mob/raven/hurt1",
+      "fowlplay:mob/raven/hurt2"
+    ],
+    "subtitle": "subtitles.entity.raven.hurt"
+  },
   "entity.robin.call": {
     "sounds": [
       "fowlplay:mob/robin/call1",
