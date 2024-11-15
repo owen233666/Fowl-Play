@@ -2,15 +2,18 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:foods",
+      "id": "angling:worm",
       "required": false
     },
     "minecraft:beetroot_seeds",
-    "minecraft:egg",
+    "minecraft:bread",
+    "minecraft:cod",
     "minecraft:melon_seeds",
     "minecraft:pumpkin_seeds",
+    "minecraft:salmon",
+    "minecraft:seagrass",
     "minecraft:torchflower_seeds",
-    "minecraft:turtle_egg",
+    "minecraft:tropical_fish",
     "minecraft:wheat_seeds"
   ]
 }

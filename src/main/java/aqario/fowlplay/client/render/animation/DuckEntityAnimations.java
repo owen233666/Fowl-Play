@@ -260,7 +260,7 @@ public class DuckEntityAnimations {
             "root",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(20f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(15f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -274,14 +274,14 @@ public class DuckEntityAnimations {
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(60f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(65f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -295,7 +295,7 @@ public class DuckEntityAnimations {
             "right_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -309,8 +309,8 @@ public class DuckEntityAnimations {
             "left_wing_open",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(2f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(2f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .addPartAnimation(
@@ -335,8 +335,8 @@ public class DuckEntityAnimations {
             "right_wing_open",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(2f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(2f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .addPartAnimation(
@@ -382,7 +382,7 @@ public class DuckEntityAnimations {
             "head",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 1f, -1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 1.5f, -1.1f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -412,7 +412,7 @@ public class DuckEntityAnimations {
             "root",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(20f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+                new AnimationKeyframe(0f, Animator.rotate(15f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .addPartAnimation(
@@ -426,14 +426,14 @@ public class DuckEntityAnimations {
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(60f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(65f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -447,7 +447,7 @@ public class DuckEntityAnimations {
             "right_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.5f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -462,9 +462,9 @@ public class DuckEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.1388888888888889f, Animator.translate(0.5f, 0.5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.1388888888888889f, Animator.translate(0.5f, -0.5f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(0.3433333f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.4722222222222222f, Animator.translate(0.5f, 0.5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.4722222222222222f, Animator.translate(0.5f, -0.5f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(0.6766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
@@ -505,9 +505,9 @@ public class DuckEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
                 new AnimationKeyframe(0f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.1388888888888889f, Animator.translate(-0.5f, 0.5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.1388888888888889f, Animator.translate(-0.5f, -0.5f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(0.3433333f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE),
-                new AnimationKeyframe(0.4722222222222222f, Animator.translate(-0.5f, 0.5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.4722222222222222f, Animator.translate(-0.5f, -0.5f, 0f), PartAnimation.Interpolations.SPLINE),
                 new AnimationKeyframe(0.6766666f, Animator.translate(0f, 0.25f, 0f), PartAnimation.Interpolations.SPLINE)
             )
         )
@@ -565,7 +565,7 @@ public class DuckEntityAnimations {
             "head",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 1f, -1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 1.5f, -1.1f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
