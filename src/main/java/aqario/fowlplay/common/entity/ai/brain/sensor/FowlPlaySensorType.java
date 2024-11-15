@@ -1,10 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
 import aqario.fowlplay.common.FowlPlay;
-import aqario.fowlplay.common.entity.GullBrain;
-import aqario.fowlplay.common.entity.PenguinBrain;
-import aqario.fowlplay.common.entity.PigeonBrain;
-import aqario.fowlplay.common.entity.RavenBrain;
+import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
@@ -16,6 +13,9 @@ import net.minecraft.util.Identifier;
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
+    public static final SensorType<TemptationsSensor> DUCK_TEMPTATIONS = register("duck_temptations",
+        () -> new TemptationsSensor(DuckBrain.getFood())
+    );
     public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations",
         () -> new TemptationsSensor(GullBrain.getFood())
     );
@@ -30,6 +30,12 @@ public final class FowlPlaySensorType {
     );
     public static final SensorType<NearestVisibleAdultsSensor> NEAREST_ADULTS = register("nearest_adults",
         NearestVisibleAdultsSensor::new
+    );
+    public static final SensorType<AttackTargetSensor> DUCK_ATTACKABLES = register("duck_attackables",
+        () -> new AttackTargetSensor(target ->
+            target.getType().isIn(FowlPlayEntityTypeTags.DUCK_HUNT_TARGETS) ||
+                (target.getType().isIn(FowlPlayEntityTypeTags.DUCK_BABY_HUNT_TARGETS) && target.isBaby())
+        )
     );
     public static final SensorType<AttackTargetSensor> GULL_ATTACKABLES = register("gull_attackables",
         () -> new AttackTargetSensor(target ->

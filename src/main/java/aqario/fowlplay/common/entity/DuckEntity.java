@@ -41,14 +41,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class GullEntity extends TrustingBirdEntity implements VariantProvider<GullEntity.Variant>, Aquatic {
-    private static final TrackedData<String> VARIANT = DataTracker.registerData(GullEntity.class, TrackedDataHandlerRegistry.STRING);
+public class DuckEntity extends TrustingBirdEntity implements VariantProvider<DuckEntity.Variant>, Aquatic {
+    private static final TrackedData<String> VARIANT = DataTracker.registerData(DuckEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
 
-    public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
+    public DuckEntity(EntityType<? extends DuckEntity> entityType, World world) {
         super(entityType, world);
         this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
@@ -70,7 +70,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_GULLS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_DUCKS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
     @Override
@@ -111,16 +111,16 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(VARIANT, Variant.HERRING.toString());
+        builder.add(VARIANT, Variant.MALLARD.toString());
     }
 
     @Override
-    public GullEntity.Variant getVariant() {
-        return GullEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
+    public DuckEntity.Variant getVariant() {
+        return DuckEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
     }
 
     @Override
-    public void setVariant(GullEntity.Variant variant) {
+    public void setVariant(DuckEntity.Variant variant) {
         this.dataTracker.set(VARIANT, variant.toString());
     }
 
@@ -134,7 +134,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         if (nbt.contains("variant")) {
-            this.setVariant(GullEntity.Variant.valueOf(nbt.getString("variant")));
+            this.setVariant(DuckEntity.Variant.valueOf(nbt.getString("variant")));
         }
     }
 
@@ -145,7 +145,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
             return false;
         }
         if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            GullBrain.onAttacked(this, entity);
+            DuckBrain.onAttacked(this, entity);
         }
 
         return bl;
@@ -163,7 +163,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.GULL_FOOD);
+        return Ingredient.ofTag(FowlPlayItemTags.DUCK_FOOD);
     }
 
     @Override
@@ -195,13 +195,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_GULL_CALL;
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_GULL_LONG_CALL;
+        return FowlPlaySoundEvents.ENTITY_DUCK_CALL;
     }
 
     @Override
@@ -209,15 +203,10 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
         return 6.0F;
     }
 
-    @Override
-    protected float getSongVolume() {
-        return 8.0F;
-    }
-
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_GULL_HURT;
+        return FowlPlaySoundEvents.ENTITY_DUCK_HURT;
     }
 
     @Nullable
@@ -227,28 +216,28 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     @Override
-    protected Brain.Profile<GullEntity> createBrainProfile() {
-        return GullBrain.createProfile();
+    protected Brain.Profile<DuckEntity> createBrainProfile() {
+        return DuckBrain.createProfile();
     }
 
     @Override
     protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
-        return GullBrain.create(this.createBrainProfile().deserialize(dynamic));
+        return DuckBrain.create(this.createBrainProfile().deserialize(dynamic));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Brain<GullEntity> getBrain() {
-        return (Brain<GullEntity>) super.getBrain();
+    public Brain<DuckEntity> getBrain() {
+        return (Brain<DuckEntity>) super.getBrain();
     }
 
     @Override
     protected void mobTick() {
-        this.getWorld().getProfiler().push("gullBrain");
+        this.getWorld().getProfiler().push("duckBrain");
         this.getBrain().tick((ServerWorld) this.getWorld(), this);
         this.getWorld().getProfiler().pop();
-        this.getWorld().getProfiler().push("gullActivityUpdate");
-        GullBrain.reset(this);
+        this.getWorld().getProfiler().push("duckActivityUpdate");
+        DuckBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
     }
@@ -268,11 +257,10 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     public enum Variant {
-        HERRING("herring"),
-        RING_BILLED("ring_billed");
+        MALLARD("mallard");
 
-        public static final List<GullEntity.Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(GullEntity.Variant[]::new));
+        public static final List<DuckEntity.Variant> VARIANTS = List.of(Arrays.stream(values())
+            .toArray(DuckEntity.Variant[]::new));
 
         private final String id;
 
