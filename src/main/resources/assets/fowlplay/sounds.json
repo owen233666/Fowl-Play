@@ -79,6 +79,20 @@
     ],
     "subtitle": "subtitles.entity.chickadee.hurt"
   },
+  "entity.duck.call": {
+    "sounds": [
+      "fowlplay:mob/duck/call1",
+      "fowlplay:mob/duck/call2"
+    ],
+    "subtitle": "subtitles.entity.duck.call"
+  },
+  "entity.duck.hurt": {
+    "sounds": [
+      "fowlplay:mob/duck/call1",
+      "fowlplay:mob/duck/call1"
+    ],
+    "subtitle": "subtitles.entity.duck.hurt"
+  },
   "entity.gull.call": {
     "sounds": [
       "fowlplay:mob/gull/call1",
