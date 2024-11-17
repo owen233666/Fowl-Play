@@ -16,7 +16,7 @@ public class DuckEntityRenderer extends MobEntityRenderer<DuckEntity, DuckEntity
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
             @Override
             public Vec3d getItemOffset() {
-                return new Vec3d(0.0F, -0.085F, -0.25F);
+                return new Vec3d(0.0, -0.05375, -0.1475);
             }
         });
     }

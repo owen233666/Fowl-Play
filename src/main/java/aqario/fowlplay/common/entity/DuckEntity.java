@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
@@ -70,7 +69,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
 
     @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_DUCKS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_DUCKS);
     }
 
     @Override

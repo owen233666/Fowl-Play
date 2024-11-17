@@ -62,7 +62,7 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
         matrices.rotate(Axis.X_POSITIVE.rotation(this.getContextModel().head.getTransform().pitch));
 
         matrices.translate(this.getItemOffset().x, this.getItemOffset().y, this.getItemOffset().z);
-        matrices.rotate(Axis.X_POSITIVE.rotationDegrees(90.0F));
+        matrices.rotate(Axis.X_NEGATIVE.rotationDegrees(90.0F));
         matrices.scale(0.5F, 0.5F, 0.5F);
 
         ItemStack stack = bird.getEquippedStack(EquipmentSlot.MAINHAND);
@@ -70,6 +70,6 @@ public abstract class BirdHeldItemFeatureRenderer<E extends BirdEntity, M extend
         matrices.pop();
     }
 
-    // Should be ((number of pixels offset from head pivot point) / 16 + 0.0225) * -1
+    // Z should be ((number of pixels offset from head pivot point) / 16 + 0.0225) * -1
     public abstract Vec3d getItemOffset();
 }

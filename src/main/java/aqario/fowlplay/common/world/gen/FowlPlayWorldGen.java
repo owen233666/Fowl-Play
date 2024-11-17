@@ -32,6 +32,13 @@ public final class FowlPlayWorldGen {
             SpawnGroup.AMBIENT, FowlPlayEntityType.CHICKADEE, FowlPlayConfig.chickadeeSpawnWeight, FowlPlayConfig.chickadeeMinGroupSize, FowlPlayConfig.chickadeeMaxGroupSize
         );
 
+        SpawnRestriction.register(FowlPlayEntityType.DUCK, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DuckEntity::canSpawn
+        );
+        BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_DUCKS),
+            SpawnGroup.CREATURE, FowlPlayEntityType.DUCK, FowlPlayConfig.duckSpawnWeight, FowlPlayConfig.duckMinGroupSize, FowlPlayConfig.duckMaxGroupSize
+        );
+
         SpawnRestriction.register(FowlPlayEntityType.GULL, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
         );

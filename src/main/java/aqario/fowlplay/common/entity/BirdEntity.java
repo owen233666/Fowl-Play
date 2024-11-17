@@ -1,9 +1,12 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -90,6 +93,12 @@ public abstract class BirdEntity extends AnimalEntity {
             this.sendPickup(item, stack.getCount());
             item.discard();
             this.eatingTime = 0;
+            if (this.getBrain().isMemoryInState(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)) {
+                this.getBrain().forget(FowlPlayMemoryModuleType.SEES_FOOD);
+            }
+            if (this.getBrain().isMemoryInState(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, MemoryModuleState.VALUE_PRESENT)) {
+                this.getBrain().forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+            }
         }
     }
 

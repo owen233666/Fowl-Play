@@ -334,6 +334,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
+    public int getCallDelay() {
+        return 120;
+    }
+
+    @Override
     protected float getSongVolume() {
         return 8.0F;
     }

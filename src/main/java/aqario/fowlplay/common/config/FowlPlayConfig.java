@@ -60,6 +60,18 @@ public class FowlPlayConfig extends MidnightConfig {
     public static int chickadeeMaxGroupSize = 5;
 
     @Comment(category = SPAWNING, centered = true)
+    public static Comment duck;
+
+    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
+    public static int duckSpawnWeight = 30;
+
+    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
+    public static int duckMinGroupSize = 6;
+
+    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
+    public static int duckMaxGroupSize = 12;
+
+    @Comment(category = SPAWNING, centered = true)
     public static Comment gull;
 
     @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
