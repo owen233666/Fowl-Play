@@ -178,7 +178,7 @@ public class RavenBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.stopFlying(raven -> true)),
+                Pair.of(1, FlightTaskControl.tryStopFlying(raven -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(RavenBrain::getAttackTarget)),
                 Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(

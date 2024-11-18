@@ -165,7 +165,7 @@ public class ChickadeeBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.stopFlying(chickadee -> true)),
+                Pair.of(1, FlightTaskControl.tryStopFlying(chickadee -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,

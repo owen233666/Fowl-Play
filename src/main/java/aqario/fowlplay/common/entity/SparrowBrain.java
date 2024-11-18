@@ -165,7 +165,7 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.stopFlying(sparrow -> true)),
+                Pair.of(0, FlightTaskControl.tryStopFlying(sparrow -> true)),
                 Pair.of(1, new FlockTask(
                     0.05f,
                     0.5f,

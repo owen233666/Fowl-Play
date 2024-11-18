@@ -52,6 +52,9 @@ public final class FowlPlaySensorType {
                 (target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_BABY_HUNT_TARGETS) && target.isBaby())
         )
     );
+    public static final SensorType<PigeonSpecificSensor> PIGEON_SPECIFIC_SENSOR = register("pigeon_specific_sensor",
+        PigeonSpecificSensor::new
+    );
     public static final SensorType<FlyingStateSensor> IS_FLYING = register("is_flying",
         FlyingStateSensor::new
     );
