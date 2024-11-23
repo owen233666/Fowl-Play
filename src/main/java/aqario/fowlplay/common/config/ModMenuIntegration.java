@@ -5,19 +5,44 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.CommonTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+
+import java.net.URI;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> YetAnotherConfigLib.createBuilder()
+        return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3") ? ModMenuIntegration::createConfigScreen : parent ->
+            new ConfirmScreen(result -> {
+                if (result) {
+                    Util.getOperatingSystem().open(URI.create("https://modrinth.com/mod/yacl/versions"));
+                }
+                MinecraftClient.getInstance().setScreen(parent);
+            },
+                Text.literal("Yet Another Config Lib Required"),
+                Text.literal("Yet Another Config Lib v3 is required to configure Fowl Play. Click YES to download it."),
+                CommonTexts.YES,
+                CommonTexts.NO
+            );
+    }
+
+    private static Screen createConfigScreen(Screen parent) {
+        return YetAnotherConfigLib.createBuilder()
             .title(Text.translatable("config.title"))
             .category(ConfigCategory.createBuilder()
                 .name(Text.translatable("config.visual"))
                 .option(Option.<Boolean>createBuilder()
                     .name(Text.translatable("config.visual.customChickenModel"))
                     .description(OptionDescription.of(Text.translatable("config.visual.customChickenModel.desc")))
-                    .binding(true, () -> FowlPlayConfig.customChickenModel, newVal -> FowlPlayConfig.customChickenModel = newVal)
+                    .binding(true, () -> FowlPlayConfig.customChickenModel, val -> FowlPlayConfig.customChickenModel = val)
                     .controller(BooleanControllerBuilder::create)
                     .build()
                 )
@@ -25,594 +50,319 @@ public class ModMenuIntegration implements ModMenuApi {
             )
             .category(ConfigCategory.createBuilder()
                 .name(Text.translatable("config.audio"))
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.blue_jay"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.blueJayCall, newVal -> FowlPlayConfig.blueJayCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.blueJaySong, newVal -> FowlPlayConfig.blueJaySong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.cardinal"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.cardinalCall, newVal -> FowlPlayConfig.cardinalCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.cardinalSong, newVal -> FowlPlayConfig.cardinalSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.chickadee"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.chickadeeCall, newVal -> FowlPlayConfig.chickadeeCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.chickadeeSong, newVal -> FowlPlayConfig.chickadeeSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.duck"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.duckCall, newVal -> FowlPlayConfig.duckCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.duckSong, newVal -> FowlPlayConfig.duckSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.gull"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.gullCall, newVal -> FowlPlayConfig.gullCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.gullSong, newVal -> FowlPlayConfig.gullSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.penguin"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.penguinCall, newVal -> FowlPlayConfig.penguinCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.penguinSong, newVal -> FowlPlayConfig.penguinSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.pigeon"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.pigeonCall, newVal -> FowlPlayConfig.pigeonCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.pigeonSong, newVal -> FowlPlayConfig.pigeonSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.raven"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.ravenCall, newVal -> FowlPlayConfig.ravenCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.ravenSong, newVal -> FowlPlayConfig.ravenSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.robin"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.robinCall, newVal -> FowlPlayConfig.robinCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.robinSong, newVal -> FowlPlayConfig.robinSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.sparrow"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.call"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.sparrowCall, newVal -> FowlPlayConfig.sparrowCall = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.audio.generic.song"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.sparrowSong, newVal -> FowlPlayConfig.sparrowSong = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 20)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
+                .group(createSoundGroup(
+                    "entity.fowlplay.blue_jay",
+                    10,
+                    () -> FowlPlayConfig.blueJayCall,
+                    val -> FowlPlayConfig.blueJayCall = val,
+                    2,
+                    () -> FowlPlayConfig.blueJaySong,
+                    val -> FowlPlayConfig.blueJaySong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.cardinal",
+                    10,
+                    () -> FowlPlayConfig.cardinalCall,
+                    val -> FowlPlayConfig.cardinalCall = val,
+                    2,
+                    () -> FowlPlayConfig.cardinalSong,
+                    val -> FowlPlayConfig.cardinalSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.chickadee",
+                    10,
+                    () -> FowlPlayConfig.chickadeeCall,
+                    val -> FowlPlayConfig.chickadeeCall = val,
+                    2,
+                    () -> FowlPlayConfig.chickadeeSong,
+                    val -> FowlPlayConfig.chickadeeSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.duck",
+                    10,
+                    () -> FowlPlayConfig.duckCall,
+                    val -> FowlPlayConfig.duckCall = val,
+                    2,
+                    () -> FowlPlayConfig.duckSong,
+                    val -> FowlPlayConfig.duckSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.gull",
+                    10,
+                    () -> FowlPlayConfig.gullCall,
+                    val -> FowlPlayConfig.gullCall = val,
+                    2,
+                    () -> FowlPlayConfig.gullSong,
+                    val -> FowlPlayConfig.gullSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.penguin",
+                    10,
+                    () -> FowlPlayConfig.penguinCall,
+                    val -> FowlPlayConfig.penguinCall = val,
+                    2,
+                    () -> FowlPlayConfig.penguinSong,
+                    val -> FowlPlayConfig.penguinSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.pigeon",
+                    10,
+                    () -> FowlPlayConfig.pigeonCall,
+                    val -> FowlPlayConfig.pigeonCall = val,
+                    2,
+                    () -> FowlPlayConfig.pigeonSong,
+                    val -> FowlPlayConfig.pigeonSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.raven",
+                    10,
+                    () -> FowlPlayConfig.ravenCall,
+                    val -> FowlPlayConfig.ravenCall = val,
+                    2,
+                    () -> FowlPlayConfig.ravenSong,
+                    val -> FowlPlayConfig.ravenSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.robin",
+                    10,
+                    () -> FowlPlayConfig.robinCall,
+                    val -> FowlPlayConfig.robinCall = val,
+                    2,
+                    () -> FowlPlayConfig.robinSong,
+                    val -> FowlPlayConfig.robinSong = val
+                ))
+                .group(createSoundGroup(
+                    "entity.fowlplay.sparrow",
+                    10,
+                    () -> FowlPlayConfig.sparrowCall,
+                    val -> FowlPlayConfig.sparrowCall = val,
+                    2,
+                    () -> FowlPlayConfig.sparrowSong,
+                    val -> FowlPlayConfig.sparrowSong = val
+                ))
                 .build()
             )
             .category(ConfigCategory.createBuilder()
                 .name(Text.translatable("config.spawning"))
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.blue_jay"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(25, () -> FowlPlayConfig.blueJaySpawnWeight, newVal -> FowlPlayConfig.blueJaySpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(1, () -> FowlPlayConfig.blueJayMinGroupSize, newVal -> FowlPlayConfig.blueJayMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(2, () -> FowlPlayConfig.blueJayMaxGroupSize, newVal -> FowlPlayConfig.blueJayMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.cardinal"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(35, () -> FowlPlayConfig.cardinalSpawnWeight, newVal -> FowlPlayConfig.cardinalSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(1, () -> FowlPlayConfig.cardinalMinGroupSize, newVal -> FowlPlayConfig.cardinalMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(2, () -> FowlPlayConfig.cardinalMaxGroupSize, newVal -> FowlPlayConfig.cardinalMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.chickadee"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(50, () -> FowlPlayConfig.chickadeeSpawnWeight, newVal -> FowlPlayConfig.chickadeeSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(3, () -> FowlPlayConfig.chickadeeMinGroupSize, newVal -> FowlPlayConfig.chickadeeMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(5, () -> FowlPlayConfig.chickadeeMaxGroupSize, newVal -> FowlPlayConfig.chickadeeMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.duck"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(30, () -> FowlPlayConfig.duckSpawnWeight, newVal -> FowlPlayConfig.duckSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(6, () -> FowlPlayConfig.duckMinGroupSize, newVal -> FowlPlayConfig.duckMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(12, () -> FowlPlayConfig.duckMaxGroupSize, newVal -> FowlPlayConfig.duckMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.gull"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(30, () -> FowlPlayConfig.gullSpawnWeight, newVal -> FowlPlayConfig.gullSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(8, () -> FowlPlayConfig.gullMinGroupSize, newVal -> FowlPlayConfig.gullMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(12, () -> FowlPlayConfig.gullMaxGroupSize, newVal -> FowlPlayConfig.gullMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.penguin"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(1, () -> FowlPlayConfig.penguinSpawnWeight, newVal -> FowlPlayConfig.penguinSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(16, () -> FowlPlayConfig.penguinMinGroupSize, newVal -> FowlPlayConfig.penguinMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(24, () -> FowlPlayConfig.penguinMaxGroupSize, newVal -> FowlPlayConfig.penguinMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.pigeon"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(20, () -> FowlPlayConfig.pigeonSpawnWeight, newVal -> FowlPlayConfig.pigeonSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(4, () -> FowlPlayConfig.pigeonMinGroupSize, newVal -> FowlPlayConfig.pigeonMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(8, () -> FowlPlayConfig.pigeonMaxGroupSize, newVal -> FowlPlayConfig.pigeonMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.raven"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(20, () -> FowlPlayConfig.ravenSpawnWeight, newVal -> FowlPlayConfig.ravenSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(1, () -> FowlPlayConfig.ravenMinGroupSize, newVal -> FowlPlayConfig.ravenMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(3, () -> FowlPlayConfig.ravenMaxGroupSize, newVal -> FowlPlayConfig.ravenMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.robin"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(50, () -> FowlPlayConfig.robinSpawnWeight, newVal -> FowlPlayConfig.robinSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(3, () -> FowlPlayConfig.robinMinGroupSize, newVal -> FowlPlayConfig.robinMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(5, () -> FowlPlayConfig.robinMaxGroupSize, newVal -> FowlPlayConfig.robinMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
-                .group(OptionGroup.createBuilder()
-                    .name(Text.translatable("entity.fowlplay.sparrow"))
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.spawnWeight"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(75, () -> FowlPlayConfig.sparrowSpawnWeight, newVal -> FowlPlayConfig.sparrowSpawnWeight = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.minGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(6, () -> FowlPlayConfig.sparrowMinGroupSize, newVal -> FowlPlayConfig.sparrowMinGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .option(Option.<Integer>createBuilder()
-                        .name(Text.translatable("config.spawning.generic.maxGroupSize"))
-                        .description(OptionDescription.of(Text.translatable("config.audio.generic.desc")))
-                        .binding(10, () -> FowlPlayConfig.sparrowMaxGroupSize, newVal -> FowlPlayConfig.sparrowMaxGroupSize = newVal)
-                        .controller(option -> IntegerSliderControllerBuilder.create(option)
-                            .range(0, 100)
-                            .step(1)
-                        )
-                        .build()
-                    )
-                    .build()
-                )
+                .group(createSpawningGroup(
+                    "entity.fowlplay.blue_jay",
+                    25,
+                    () -> FowlPlayConfig.blueJaySpawnWeight,
+                    val -> FowlPlayConfig.blueJaySpawnWeight = val,
+                    1,
+                    () -> FowlPlayConfig.blueJayMinGroupSize,
+                    val -> FowlPlayConfig.blueJayMinGroupSize = val,
+                    2,
+                    () -> FowlPlayConfig.blueJayMaxGroupSize,
+                    val -> FowlPlayConfig.blueJayMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.cardinal",
+                    35,
+                    () -> FowlPlayConfig.cardinalSpawnWeight,
+                    val -> FowlPlayConfig.cardinalSpawnWeight = val,
+                    1,
+                    () -> FowlPlayConfig.cardinalMinGroupSize,
+                    val -> FowlPlayConfig.cardinalMinGroupSize = val,
+                    2,
+                    () -> FowlPlayConfig.cardinalMaxGroupSize,
+                    val -> FowlPlayConfig.cardinalMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.chickadee",
+                    50,
+                    () -> FowlPlayConfig.chickadeeSpawnWeight,
+                    val -> FowlPlayConfig.chickadeeSpawnWeight = val,
+                    3,
+                    () -> FowlPlayConfig.chickadeeMinGroupSize,
+                    val -> FowlPlayConfig.chickadeeMinGroupSize = val,
+                    5,
+                    () -> FowlPlayConfig.chickadeeMaxGroupSize,
+                    val -> FowlPlayConfig.chickadeeMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.duck",
+                    30,
+                    () -> FowlPlayConfig.duckSpawnWeight,
+                    val -> FowlPlayConfig.duckSpawnWeight = val,
+                    6,
+                    () -> FowlPlayConfig.duckMinGroupSize,
+                    val -> FowlPlayConfig.duckMinGroupSize = val,
+                    12,
+                    () -> FowlPlayConfig.duckMaxGroupSize,
+                    val -> FowlPlayConfig.duckMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.gull",
+                    30,
+                    () -> FowlPlayConfig.gullSpawnWeight,
+                    val -> FowlPlayConfig.gullSpawnWeight = val,
+                    8,
+                    () -> FowlPlayConfig.gullMinGroupSize,
+                    val -> FowlPlayConfig.gullMinGroupSize = val,
+                    12,
+                    () -> FowlPlayConfig.gullMaxGroupSize,
+                    val -> FowlPlayConfig.gullMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.penguin",
+                    1,
+                    () -> FowlPlayConfig.penguinSpawnWeight,
+                    val -> FowlPlayConfig.penguinSpawnWeight = val,
+                    16,
+                    () -> FowlPlayConfig.penguinMinGroupSize,
+                    val -> FowlPlayConfig.penguinMinGroupSize = val,
+                    24,
+                    () -> FowlPlayConfig.penguinMaxGroupSize,
+                    val -> FowlPlayConfig.penguinMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.pigeon",
+                    20,
+                    () -> FowlPlayConfig.pigeonSpawnWeight,
+                    val -> FowlPlayConfig.pigeonSpawnWeight = val,
+                    4,
+                    () -> FowlPlayConfig.pigeonMinGroupSize,
+                    val -> FowlPlayConfig.pigeonMinGroupSize = val,
+                    8,
+                    () -> FowlPlayConfig.pigeonMaxGroupSize,
+                    val -> FowlPlayConfig.pigeonMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.raven",
+                    20,
+                    () -> FowlPlayConfig.ravenSpawnWeight,
+                    val -> FowlPlayConfig.ravenSpawnWeight = val,
+                    1,
+                    () -> FowlPlayConfig.ravenMinGroupSize,
+                    val -> FowlPlayConfig.ravenMinGroupSize = val,
+                    3,
+                    () -> FowlPlayConfig.ravenMaxGroupSize,
+                    val -> FowlPlayConfig.ravenMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.robin",
+                    50,
+                    () -> FowlPlayConfig.robinSpawnWeight,
+                    val -> FowlPlayConfig.robinSpawnWeight = val,
+                    3,
+                    () -> FowlPlayConfig.robinMinGroupSize,
+                    val -> FowlPlayConfig.robinMinGroupSize = val,
+                    5,
+                    () -> FowlPlayConfig.robinMaxGroupSize,
+                    val -> FowlPlayConfig.robinMaxGroupSize = val
+                ))
+                .group(createSpawningGroup(
+                    "entity.fowlplay.sparrow",
+                    75,
+                    () -> FowlPlayConfig.sparrowSpawnWeight,
+                    val -> FowlPlayConfig.sparrowSpawnWeight = val,
+                    6,
+                    () -> FowlPlayConfig.sparrowMinGroupSize,
+                    val -> FowlPlayConfig.sparrowMinGroupSize = val,
+                    10,
+                    () -> FowlPlayConfig.sparrowMaxGroupSize,
+                    val -> FowlPlayConfig.sparrowMaxGroupSize = val
+                ))
                 .build()
             )
             .save(FowlPlayConfig.HANDLER::save)
             .build()
             .generateScreen(parent);
+    }
+
+    private static OptionGroup createSoundGroup(
+        String entity,
+        int callRange,
+        Supplier<Integer> getCall,
+        Consumer<Integer> setCall,
+        int songRange,
+        Supplier<Integer> getSong,
+        Consumer<Integer> setSong
+    ) {
+        return OptionGroup.createBuilder()
+            .name(Text.translatable(entity))
+            .option(createSoundOption(
+                entity,
+                "config.audio.generic.call",
+                "config.audio.generic.call.desc",
+                callRange,
+                getCall,
+                setCall
+            ))
+            .option(createSoundOption(
+                entity,
+                "config.audio.generic.song",
+                "config.audio.generic.song.desc",
+                songRange,
+                getSong,
+                setSong
+            ))
+            .build();
+    }
+
+    private static Option<Integer> createSoundOption(String entity, String name, String description, int defaultValue, Supplier<Integer> get, Consumer<Integer> set) {
+        return Option.<Integer>createBuilder()
+            .name(Text.translatable(name))
+            .description(OptionDescription.of(Text.translatable(description, Text.translatable(entity))))
+            .binding(defaultValue, get, set)
+            .controller(option -> IntegerSliderControllerBuilder.create(option)
+                .range(0, 20)
+                .step(1)
+            )
+            .build();
+    }
+
+    private static OptionGroup createSpawningGroup(
+        String entity,
+        int spawnWeight,
+        Supplier<Integer> getSpawnWeight,
+        Consumer<Integer> setSpawnWeight,
+        int minGroupSize,
+        Supplier<Integer> getMinGroupSize,
+        Consumer<Integer> setMinGroupSize,
+        int maxGroupSize,
+        Supplier<Integer> getMaxGroupSize,
+        Consumer<Integer> setMaxGroupSize
+    ) {
+        return OptionGroup.createBuilder()
+            .name(Text.translatable(entity))
+            .option(createSpawningOption(
+                entity,
+                "config.spawning.generic.spawnWeight",
+                "config.spawning.generic.spawnWeight.desc",
+                spawnWeight,
+                getSpawnWeight,
+                setSpawnWeight
+            ))
+            .option(createSpawningOption(
+                entity,
+                "config.spawning.generic.minGroupSize",
+                "config.spawning.generic.minGroupSize.desc",
+                minGroupSize,
+                getMinGroupSize,
+                setMinGroupSize
+            ))
+            .option(createSpawningOption(
+                entity,
+                "config.spawning.generic.maxGroupSize",
+                "config.spawning.generic.maxGroupSize.desc",
+                maxGroupSize,
+                getMaxGroupSize,
+                setMaxGroupSize
+            ))
+            .build();
+    }
+
+    private static Option<Integer> createSpawningOption(String entity, String name, String description, int defaultValue, Supplier<Integer> get, Consumer<Integer> set) {
+        return Option.<Integer>createBuilder()
+            .name(Text.translatable(name))
+            .description(OptionDescription.of(Text.translatable(description, Text.translatable(entity))))
+            .binding(defaultValue, get, set)
+            .controller(option -> IntegerSliderControllerBuilder.create(option)
+                .range(0, 100)
+                .step(1)
+            )
+            .build();
     }
 }
