@@ -41,7 +41,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 .name(Text.translatable("config.visual"))
                 .option(Option.<Boolean>createBuilder()
                     .name(Text.translatable("config.visual.customChickenModel"))
-                    .description(OptionDescription.of(Text.translatable("config.visual.customChickenModel.desc")))
+                    .description(OptionDescription.of(Text.translatable("config.info.restart").append("\n\n").append(Text.translatable("config.visual.customChickenModel.desc"))))
                     .binding(true, () -> FowlPlayConfig.customChickenModel, val -> FowlPlayConfig.customChickenModel = val)
                     .controller(BooleanControllerBuilder::create)
                     .build()
@@ -357,7 +357,7 @@ public class ModMenuIntegration implements ModMenuApi {
     private static Option<Integer> createSpawningOption(String entity, String name, String description, int defaultValue, Supplier<Integer> get, Consumer<Integer> set) {
         return Option.<Integer>createBuilder()
             .name(Text.translatable(name))
-            .description(OptionDescription.of(Text.translatable(description, Text.translatable(entity))))
+            .description(OptionDescription.of(Text.translatable("config.info.restart").append("\n\n").append(Text.translatable(description, Text.translatable(entity)))))
             .binding(defaultValue, get, set)
             .controller(option -> IntegerSliderControllerBuilder.create(option)
                 .range(0, 100)
