@@ -47,4 +47,8 @@ This mod currently does not have a Forge version. To use Sinytra connector, you 
 
 Forge support is planned for the future, but it is not a priority at the moment, as I want to focus on adding new features and fixing bugs. If you would like to port the mod, you are completely free to do so! Just make sure to credit me and link back to this page, of course. 
 
+**Here is the explanation for why you need to download a special release for Sinytra connector:**
+
+The two mixins fowlplay\$modifySlipperiness and fowlplay\$increaseAirSpeed in LivingEntityMixin cause a crash when loaded with Sinytra connector. This is because they modify code that does not exist when loaded with Forge. Both getAirSpeed() and getSlipperiness() are written differently in Forge compared to Fabric, which is what causes this crash. The special jars in the GitHub releases simply remove these two mixins. As for the fix for the 1.21 version, the solution was given in [this](https://github.com/aqariio/Fowl-Play/issues/15) thread.
+
 </details>
