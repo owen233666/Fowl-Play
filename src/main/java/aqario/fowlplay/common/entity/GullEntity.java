@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
@@ -206,12 +207,12 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
 
     @Override
     protected float getCallVolume() {
-        return 6.0F;
+        return FowlPlayConfig.gullCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return 8.0F;
+        return FowlPlayConfig.gullSongVolume;
     }
 
     @Nullable

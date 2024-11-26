@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -479,7 +480,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return 4.0F;
+        return FowlPlayConfig.penguinCallVolume;
     }
 
     @Override

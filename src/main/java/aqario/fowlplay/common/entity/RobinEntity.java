@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
@@ -147,12 +148,12 @@ public class RobinEntity extends FlyingBirdEntity implements VariantProvider<Rob
 
     @Override
     protected float getCallVolume() {
-        return 2.0F;
+        return FowlPlayConfig.robinCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return 8.0F;
+        return FowlPlayConfig.robinSongVolume;
     }
 
     @Override

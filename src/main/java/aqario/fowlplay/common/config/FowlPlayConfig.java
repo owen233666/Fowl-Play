@@ -23,55 +23,55 @@ public class FowlPlayConfig {
 
     // Audio
 
-    @SerialEntry
-    public static int blueJayCall = 10;
-    @SerialEntry
-    public static int blueJaySong = 2;
+    // Blue Jay
 
     @SerialEntry
-    public static int cardinalCall = 3;
-    @SerialEntry
-    public static int cardinalSong = 1;
+    public static int blueJayCallVolume = 10;
+
+    // Cardinal
 
     @SerialEntry
-    public static int chickadeeCall = 5;
+    public static int cardinalCallVolume = 2;
     @SerialEntry
-    public static int chickadeeSong = 1;
+    public static int cardinalSongVolume = 8;
+
+    // Chickadee
 
     @SerialEntry
-    public static int duckCall = 5;
+    public static int chickadeeCallVolume = 6;
     @SerialEntry
-    public static int duckSong = 1;
+    public static int chickadeeSongVolume = 8;
+
+    // Duck
 
     @SerialEntry
-    public static int gullCall = 5;
-    @SerialEntry
-    public static int gullSong = 1;
+    public static int duckCallVolume = 5;
 
     @SerialEntry
-    public static int penguinCall = 5;
+    public static int gullCallVolume = 6;
     @SerialEntry
-    public static int penguinSong = 1;
+    public static int gullSongVolume = 8;
 
     @SerialEntry
-    public static int pigeonCall = 5;
-    @SerialEntry
-    public static int pigeonSong = 1;
+    public static int penguinCallVolume = 4;
 
     @SerialEntry
-    public static int ravenCall = 5;
+    public static int pigeonCallVolume = 1;
     @SerialEntry
-    public static int ravenSong = 1;
+    public static int pigeonSongVolume = 8;
 
     @SerialEntry
-    public static int robinCall = 5;
-    @SerialEntry
-    public static int robinSong = 1;
+    public static int ravenCallVolume = 12;
 
     @SerialEntry
-    public static int sparrowCall = 5;
+    public static int robinCallVolume = 2;
     @SerialEntry
-    public static int sparrowSong = 1;
+    public static int robinSongVolume = 8;
+
+    @SerialEntry
+    public static int sparrowCallVolume = 2;
+    @SerialEntry
+    public static int sparrowSongVolume = 8;
 
     // Spawning
 

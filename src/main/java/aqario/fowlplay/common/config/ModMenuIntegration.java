@@ -53,92 +53,92 @@ public class ModMenuIntegration implements ModMenuApi {
                 .group(createSoundGroup(
                     "entity.fowlplay.blue_jay",
                     10,
-                    () -> FowlPlayConfig.blueJayCall,
-                    val -> FowlPlayConfig.blueJayCall = val,
-                    2,
-                    () -> FowlPlayConfig.blueJaySong,
-                    val -> FowlPlayConfig.blueJaySong = val
+                    () -> FowlPlayConfig.blueJayCallVolume,
+                    val -> FowlPlayConfig.blueJayCallVolume = val,
+                    0,
+                    null,
+                    null
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.cardinal",
-                    10,
-                    () -> FowlPlayConfig.cardinalCall,
-                    val -> FowlPlayConfig.cardinalCall = val,
                     2,
-                    () -> FowlPlayConfig.cardinalSong,
-                    val -> FowlPlayConfig.cardinalSong = val
+                    () -> FowlPlayConfig.cardinalCallVolume,
+                    val -> FowlPlayConfig.cardinalCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.cardinalSongVolume,
+                    val -> FowlPlayConfig.cardinalSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.chickadee",
-                    10,
-                    () -> FowlPlayConfig.chickadeeCall,
-                    val -> FowlPlayConfig.chickadeeCall = val,
-                    2,
-                    () -> FowlPlayConfig.chickadeeSong,
-                    val -> FowlPlayConfig.chickadeeSong = val
+                    6,
+                    () -> FowlPlayConfig.chickadeeCallVolume,
+                    val -> FowlPlayConfig.chickadeeCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.chickadeeSongVolume,
+                    val -> FowlPlayConfig.chickadeeSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.duck",
-                    10,
-                    () -> FowlPlayConfig.duckCall,
-                    val -> FowlPlayConfig.duckCall = val,
-                    2,
-                    () -> FowlPlayConfig.duckSong,
-                    val -> FowlPlayConfig.duckSong = val
+                    5,
+                    () -> FowlPlayConfig.duckCallVolume,
+                    val -> FowlPlayConfig.duckCallVolume = val,
+                    0,
+                    null,
+                    null
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.gull",
-                    10,
-                    () -> FowlPlayConfig.gullCall,
-                    val -> FowlPlayConfig.gullCall = val,
-                    2,
-                    () -> FowlPlayConfig.gullSong,
-                    val -> FowlPlayConfig.gullSong = val
+                    6,
+                    () -> FowlPlayConfig.gullCallVolume,
+                    val -> FowlPlayConfig.gullCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.gullSongVolume,
+                    val -> FowlPlayConfig.gullSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.penguin",
-                    10,
-                    () -> FowlPlayConfig.penguinCall,
-                    val -> FowlPlayConfig.penguinCall = val,
-                    2,
-                    () -> FowlPlayConfig.penguinSong,
-                    val -> FowlPlayConfig.penguinSong = val
+                    4,
+                    () -> FowlPlayConfig.penguinCallVolume,
+                    val -> FowlPlayConfig.penguinCallVolume = val,
+                    0,
+                    null,
+                    null
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.pigeon",
-                    10,
-                    () -> FowlPlayConfig.pigeonCall,
-                    val -> FowlPlayConfig.pigeonCall = val,
-                    2,
-                    () -> FowlPlayConfig.pigeonSong,
-                    val -> FowlPlayConfig.pigeonSong = val
+                    1,
+                    () -> FowlPlayConfig.pigeonCallVolume,
+                    val -> FowlPlayConfig.pigeonCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.pigeonSongVolume,
+                    val -> FowlPlayConfig.pigeonSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.raven",
-                    10,
-                    () -> FowlPlayConfig.ravenCall,
-                    val -> FowlPlayConfig.ravenCall = val,
-                    2,
-                    () -> FowlPlayConfig.ravenSong,
-                    val -> FowlPlayConfig.ravenSong = val
+                    12,
+                    () -> FowlPlayConfig.ravenCallVolume,
+                    val -> FowlPlayConfig.ravenCallVolume = val,
+                    0,
+                    null,
+                    null
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.robin",
-                    10,
-                    () -> FowlPlayConfig.robinCall,
-                    val -> FowlPlayConfig.robinCall = val,
                     2,
-                    () -> FowlPlayConfig.robinSong,
-                    val -> FowlPlayConfig.robinSong = val
+                    () -> FowlPlayConfig.robinCallVolume,
+                    val -> FowlPlayConfig.robinCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.robinSongVolume,
+                    val -> FowlPlayConfig.robinSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.sparrow",
-                    10,
-                    () -> FowlPlayConfig.sparrowCall,
-                    val -> FowlPlayConfig.sparrowCall = val,
                     2,
-                    () -> FowlPlayConfig.sparrowSong,
-                    val -> FowlPlayConfig.sparrowSong = val
+                    () -> FowlPlayConfig.sparrowCallVolume,
+                    val -> FowlPlayConfig.sparrowCallVolume = val,
+                    8,
+                    () -> FowlPlayConfig.sparrowSongVolume,
+                    val -> FowlPlayConfig.sparrowSongVolume = val
                 ))
                 .build()
             )
@@ -274,31 +274,38 @@ public class ModMenuIntegration implements ModMenuApi {
     private static OptionGroup createSoundGroup(
         String entity,
         int callRange,
-        Supplier<Integer> getCall,
-        Consumer<Integer> setCall,
+        Supplier<Integer> getCallVolume,
+        Consumer<Integer> setCallVolume,
         int songRange,
-        Supplier<Integer> getSong,
-        Consumer<Integer> setSong
+        Supplier<Integer> getSongVolume,
+        Consumer<Integer> setSongVolume
     ) {
-        return OptionGroup.createBuilder()
-            .name(Text.translatable(entity))
-            .option(createSoundOption(
+        OptionGroup.Builder builder = OptionGroup.createBuilder()
+            .name(Text.translatable(entity));
+
+        if (getCallVolume != null && setCallVolume != null) {
+            builder.option(createSoundOption(
                 entity,
                 "config.audio.generic.call",
                 "config.audio.generic.call.desc",
                 callRange,
-                getCall,
-                setCall
-            ))
-            .option(createSoundOption(
+                getCallVolume,
+                setCallVolume
+            ));
+        }
+
+        if (getSongVolume != null && setSongVolume != null) {
+            builder.option(createSoundOption(
                 entity,
                 "config.audio.generic.song",
                 "config.audio.generic.song.desc",
                 songRange,
-                getSong,
-                setSong
-            ))
-            .build();
+                getSongVolume,
+                setSongVolume
+            ));
+        }
+
+        return builder.build();
     }
 
     private static Option<Integer> createSoundOption(String entity, String name, String description, int defaultValue, Supplier<Integer> get, Consumer<Integer> set) {
