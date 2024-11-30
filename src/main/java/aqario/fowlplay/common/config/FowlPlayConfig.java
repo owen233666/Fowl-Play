@@ -8,13 +8,27 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
 public class FowlPlayConfig {
-    public static ConfigClassHandler<FowlPlayConfig> HANDLER = ConfigClassHandler.createBuilder(FowlPlayConfig.class)
-        .id(Identifier.of(FowlPlay.ID, "config"))
-        .serializer(config -> GsonConfigSerializerBuilder.create(config)
-            .setPath(FabricLoader.getInstance().getConfigDir().resolve(FowlPlay.ID + ".json5"))
-            .setJson5(true)
-            .build())
-        .build();
+    public static void loadConfig() {
+        ConfigClassHandler.createBuilder(FowlPlayConfig.class)
+            .id(Identifier.of(FowlPlay.ID, "config"))
+            .serializer(config -> GsonConfigSerializerBuilder.create(config)
+                .setPath(FabricLoader.getInstance().getConfigDir().resolve(FowlPlay.ID + ".json5"))
+                .setJson5(true)
+                .build())
+            .build()
+            .load();
+    }
+
+    public static void saveConfig() {
+        ConfigClassHandler.createBuilder(FowlPlayConfig.class)
+            .id(Identifier.of(FowlPlay.ID, "config"))
+            .serializer(config -> GsonConfigSerializerBuilder.create(config)
+                .setPath(FabricLoader.getInstance().getConfigDir().resolve(FowlPlay.ID + ".json5"))
+                .setJson5(true)
+                .build())
+            .build()
+            .save();
+    }
 
     // Visual
 
@@ -45,28 +59,40 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public static int duckCallVolume = 5;
+    public static int duckCallVolume = 3;
+
+    // Gull
 
     @SerialEntry
     public static int gullCallVolume = 6;
     @SerialEntry
     public static int gullSongVolume = 8;
 
+    // Penguin
+
     @SerialEntry
     public static int penguinCallVolume = 4;
+
+    // Pigeon
 
     @SerialEntry
     public static int pigeonCallVolume = 1;
     @SerialEntry
     public static int pigeonSongVolume = 8;
 
+    // Raven
+
     @SerialEntry
     public static int ravenCallVolume = 12;
+
+    // Robin
 
     @SerialEntry
     public static int robinCallVolume = 2;
     @SerialEntry
     public static int robinSongVolume = 8;
+
+    // Sparrow
 
     @SerialEntry
     public static int sparrowCallVolume = 2;
