@@ -40,7 +40,7 @@ public class YACLIntegration {
                     2,
                     () -> FowlPlayConfig.cardinalCallVolume,
                     val -> FowlPlayConfig.cardinalCallVolume = val,
-                    8,
+                    6,
                     () -> FowlPlayConfig.cardinalSongVolume,
                     val -> FowlPlayConfig.cardinalSongVolume = val
                 ))
@@ -49,13 +49,13 @@ public class YACLIntegration {
                     6,
                     () -> FowlPlayConfig.chickadeeCallVolume,
                     val -> FowlPlayConfig.chickadeeCallVolume = val,
-                    8,
+                    6,
                     () -> FowlPlayConfig.chickadeeSongVolume,
                     val -> FowlPlayConfig.chickadeeSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.duck",
-                    3,
+                    2,
                     () -> FowlPlayConfig.duckCallVolume,
                     val -> FowlPlayConfig.duckCallVolume = val,
                     0,
@@ -67,7 +67,7 @@ public class YACLIntegration {
                     6,
                     () -> FowlPlayConfig.gullCallVolume,
                     val -> FowlPlayConfig.gullCallVolume = val,
-                    8,
+                    7,
                     () -> FowlPlayConfig.gullSongVolume,
                     val -> FowlPlayConfig.gullSongVolume = val
                 ))
@@ -85,13 +85,13 @@ public class YACLIntegration {
                     1,
                     () -> FowlPlayConfig.pigeonCallVolume,
                     val -> FowlPlayConfig.pigeonCallVolume = val,
-                    8,
+                    6,
                     () -> FowlPlayConfig.pigeonSongVolume,
                     val -> FowlPlayConfig.pigeonSongVolume = val
                 ))
                 .group(createSoundGroup(
                     "entity.fowlplay.raven",
-                    12,
+                    10,
                     () -> FowlPlayConfig.ravenCallVolume,
                     val -> FowlPlayConfig.ravenCallVolume = val,
                     0,
@@ -103,7 +103,7 @@ public class YACLIntegration {
                     2,
                     () -> FowlPlayConfig.robinCallVolume,
                     val -> FowlPlayConfig.robinCallVolume = val,
-                    8,
+                    6,
                     () -> FowlPlayConfig.robinSongVolume,
                     val -> FowlPlayConfig.robinSongVolume = val
                 ))
@@ -112,7 +112,7 @@ public class YACLIntegration {
                     2,
                     () -> FowlPlayConfig.sparrowCallVolume,
                     val -> FowlPlayConfig.sparrowCallVolume = val,
-                    8,
+                    6,
                     () -> FowlPlayConfig.sparrowSongVolume,
                     val -> FowlPlayConfig.sparrowSongVolume = val
                 ))
@@ -158,7 +158,7 @@ public class YACLIntegration {
                 ))
                 .group(createSpawningGroup(
                     "entity.fowlplay.duck",
-                    30,
+                    20,
                     () -> FowlPlayConfig.duckSpawnWeight,
                     val -> FowlPlayConfig.duckSpawnWeight = val,
                     6,

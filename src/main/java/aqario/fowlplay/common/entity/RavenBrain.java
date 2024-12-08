@@ -129,7 +129,7 @@ public class RavenBrain {
                 new StayAboveWaterTask(0.5F),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
-                LocateFoodTask.run(),
+                LocateFoodTask.run(RavenBrain::shouldPickUpFood),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),

@@ -125,7 +125,7 @@ public class DuckBrain {
                 FlightTaskControl.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
-                LocateFoodTask.run(),
+                LocateFoodTask.run(DuckBrain::shouldPickUpFood),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),

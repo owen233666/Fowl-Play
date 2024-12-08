@@ -47,26 +47,26 @@ public class FowlPlayConfig {
     @SerialEntry
     public static int cardinalCallVolume = 2;
     @SerialEntry
-    public static int cardinalSongVolume = 8;
+    public static int cardinalSongVolume = 6;
 
     // Chickadee
 
     @SerialEntry
     public static int chickadeeCallVolume = 6;
     @SerialEntry
-    public static int chickadeeSongVolume = 8;
+    public static int chickadeeSongVolume = 6;
 
     // Duck
 
     @SerialEntry
-    public static int duckCallVolume = 3;
+    public static int duckCallVolume = 2;
 
     // Gull
 
     @SerialEntry
     public static int gullCallVolume = 6;
     @SerialEntry
-    public static int gullSongVolume = 8;
+    public static int gullSongVolume = 7;
 
     // Penguin
 
@@ -78,26 +78,26 @@ public class FowlPlayConfig {
     @SerialEntry
     public static int pigeonCallVolume = 1;
     @SerialEntry
-    public static int pigeonSongVolume = 8;
+    public static int pigeonSongVolume = 6;
 
     // Raven
 
     @SerialEntry
-    public static int ravenCallVolume = 12;
+    public static int ravenCallVolume = 10;
 
     // Robin
 
     @SerialEntry
     public static int robinCallVolume = 2;
     @SerialEntry
-    public static int robinSongVolume = 8;
+    public static int robinSongVolume = 6;
 
     // Sparrow
 
     @SerialEntry
     public static int sparrowCallVolume = 2;
     @SerialEntry
-    public static int sparrowSongVolume = 8;
+    public static int sparrowSongVolume = 6;
 
     // Spawning
 
@@ -131,7 +131,7 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public static int duckSpawnWeight = 30;
+    public static int duckSpawnWeight = 20;
     @SerialEntry
     public static int duckMinGroupSize = 6;
     @SerialEntry

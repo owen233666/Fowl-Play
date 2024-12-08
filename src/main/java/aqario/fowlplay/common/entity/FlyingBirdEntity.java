@@ -191,6 +191,18 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
+    protected void playStepSound(BlockState state) {
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+    }
+
+    @Override
+    protected void playCombinationStepSounds(BlockState primaryState, BlockState secondaryState) {
+    }
+
+    @Override
     public void travel(Vec3d movementInput) {
         if (!this.isFlying()) {
             super.travel(movementInput);
