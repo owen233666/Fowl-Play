@@ -355,9 +355,9 @@ public class RavenBrain {
             return false;
         }
         boolean playerNear = false;
-        if (brain.hasMemoryModule(MemoryModuleType.AVOID_TARGET)) {
+        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
-            LivingEntity player = brain.getMemoryValue(MemoryModuleType.AVOID_TARGET).get();
+            PlayerEntity player = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
             playerNear = player.isInRange(wantedItem, AVOID_PLAYER_RADIUS);
         }
 

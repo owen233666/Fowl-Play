@@ -223,7 +223,7 @@ public class DuckBrain {
             ImmutableList.of(
                 Pair.of(0, FlightTaskControl.startFlying(duck -> true)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    DuckBrain::doesNotHaveFoodInHand,
+                    DuckBrain::shouldPickUpFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -346,8 +346,19 @@ public class DuckBrain {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
-    private static boolean doesNotHaveFoodInHand(DuckEntity duck) {
-        return !getFood().test(duck.getMainHandStack());
+    private static boolean shouldPickUpFood(DuckEntity duck) {
+        Brain<DuckEntity> brain = duck.getBrain();
+        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
+            return false;
+        }
+        boolean playerNear = false;
+        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
+            ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
+            PlayerEntity player = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
+            playerNear = player.isInRange(wantedItem, AVOID_PLAYER_RADIUS);
+        }
+
+        return !getFood().test(duck.getMainHandStack()) && !playerNear;
     }
 
     public static Ingredient getFood() {
