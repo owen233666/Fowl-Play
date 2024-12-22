@@ -6,11 +6,59 @@ import net.minecraft.client.render.animation.Animator;
 import net.minecraft.client.render.animation.PartAnimation;
 
 public class PenguinEntityAnimations {
-    public static final Animation PENGUIN_IDLE = Animation.Builder.withLength(1f).looping()
+    public static final Animation PENGUIN_IDLE = Animation.Builder.withLength(0f).looping()
+        .addPartAnimation(
+            "body",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(1.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "neck",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.5f, -0.75f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "neck",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-1.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_wing",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "left_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, -2.5f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "right_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 2.5f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
         .build();
 
-    public static final Animation PENGUIN_WALK = Animation.Builder.withLength(1f).looping()
-        .build();
+    public static final Animation PENGUIN_WALK = Animation.Builder.withLength(1f).looping().build();
 
     public static final Animation PENGUIN_SLIDE = Animation.Builder.withLength(0f)
         .addPartAnimation(
@@ -38,7 +86,7 @@ public class PenguinEntityAnimations {
             "neck",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0f, 1.5f, 1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, 1f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -66,7 +114,7 @@ public class PenguinEntityAnimations {
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0.5f, 0f, -1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0.5f, 0f, -0.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -80,7 +128,7 @@ public class PenguinEntityAnimations {
             "right_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(-0.5f, 0f, -1f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(-0.5f, 0f, -0.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -90,9 +138,23 @@ public class PenguinEntityAnimations {
                 new AnimationKeyframe(0f, Animator.rotate(-15f, 15f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.5f, -0.15f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "head",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-12.5f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
         .build();
 
-    public static final Animation PENGUIN_SWIM = Animation.Builder.withLength(0f).looping()
+    public static final Animation PENGUIN_SWIM = Animation.Builder.withLength(0.5f).looping()
         .addPartAnimation(
             "root",
             new PartAnimation(
@@ -105,6 +167,13 @@ public class PenguinEntityAnimations {
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(90f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
+            )
+        )
+        .addPartAnimation(
+            "tail",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, -1.25f, 0f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -132,42 +201,46 @@ public class PenguinEntityAnimations {
             "left_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(71.16f, -64.72f, -135.88f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(69.15f, -57.84f, -142.13f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(-21.62f, -46.83f, -36.59f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(69.15f, -57.84f, -142.13f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .addPartAnimation(
             "right_wing",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(71.16f, 64.72f, 135.88f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(69.15f, 57.84f, 142.13f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(-21.62f, 46.83f, 36.59f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(69.15f, 57.84f, 142.13f), PartAnimation.Interpolations.SPLINE)
             )
         )
         .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(0.5f, -0.75f, -0.5f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.75f, -0.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "left_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(7.5f, -15f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(6.14f, -15.59f, 5.15f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "right_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.TRANSLATE,
-                new AnimationKeyframe(0f, Animator.translate(-0.5f, -0.75f, -0.5f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.75f, -0.5f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
             "right_leg",
             new PartAnimation(
                 PartAnimation.AnimationTargets.ROTATE,
-                new AnimationKeyframe(0f, Animator.rotate(7.5f, 15f, 0f), PartAnimation.Interpolations.LINEAR)
+                new AnimationKeyframe(0f, Animator.rotate(6.14f, 15.59f, -5.15f), PartAnimation.Interpolations.LINEAR)
             )
         )
         .addPartAnimation(
@@ -183,8 +256,7 @@ public class PenguinEntityAnimations {
                 PartAnimation.AnimationTargets.ROTATE,
                 new AnimationKeyframe(0f, Animator.rotate(-60f, 0f, 0f), PartAnimation.Interpolations.LINEAR)
             )
-        )
-        .build();
+        ).build();
 
     public static final Animation PENGUIN_DANCE = Animation.Builder.withLength(7.708343f).looping()
         .addPartAnimation(
