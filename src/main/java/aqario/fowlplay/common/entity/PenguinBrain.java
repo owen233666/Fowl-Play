@@ -293,7 +293,7 @@ public class PenguinBrain {
         @Override
         protected void run(ServerWorld serverWorld, PenguinEntity penguin, long l) {
             if (penguin.isSliding()) {
-                penguin.standUp();
+                penguin.stopSliding();
             }
             else {
                 penguin.startSliding();

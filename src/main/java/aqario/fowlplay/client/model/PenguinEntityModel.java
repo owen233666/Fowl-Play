@@ -132,13 +132,15 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
             this.leftLeg.visible = true;
             this.rightLeg.visible = true;
         }
-        if (penguin.isBaby()) {
-            this.updateBabyHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
+        if (!penguin.isSliding()) {
+            if (penguin.isBaby()) {
+                this.updateBabyHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
+            }
+            else {
+                this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
+            }
+            this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbAngle, limbDistance, 7F, 7F);
         }
-        else {
-            this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
-        }
-        this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbAngle, limbDistance, 2.0F, 2.5F);
         this.animate(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
         this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
         this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);

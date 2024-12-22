@@ -58,7 +58,89 @@ public class PenguinEntityAnimations {
         )
         .build();
 
-    public static final Animation PENGUIN_WALK = Animation.Builder.withLength(1f).looping().build();
+    public static final Animation PENGUIN_WALK = Animation.Builder.withLength(1f).looping()
+        .addPartAnimation(
+            "body",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(2.72f, -5f, -2.51f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0.31f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.rotate(2.72f, 5f, 2.51f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, 0.31f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "neck",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.translate(-0.25f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.translate(-0.22f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.625f, Animator.translate(0.25f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.translate(0.23f, 0f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "neck",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.125f, Animator.rotate(0f, 3.12f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(0f, 5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.625f, Animator.rotate(0f, -3.12f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.rotate(0f, -5f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(0f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, -0.34f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.translate(0f, 0f, 1.75f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, 0.75f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.translate(0f, -0.25f, -2.75f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, -0.34f, -0.5f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "left_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(3.13f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(10f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(-2.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(3.13f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.TRANSLATE,
+                new AnimationKeyframe(0f, Animator.translate(0f, 0.75f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.translate(0f, -0.25f, -2.75f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.translate(0f, -0.34f, -0.5f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.translate(0f, 0f, 1.75f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.translate(0f, 0.75f, -0.5f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .addPartAnimation(
+            "right_leg",
+            new PartAnimation(
+                PartAnimation.AnimationTargets.ROTATE,
+                new AnimationKeyframe(0f, Animator.rotate(-2.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.25f, Animator.rotate(-5f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.5f, Animator.rotate(3.13f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(0.75f, Animator.rotate(10f, 0f, 0f), PartAnimation.Interpolations.SPLINE),
+                new AnimationKeyframe(1f, Animator.rotate(-2.5f, 0f, 0f), PartAnimation.Interpolations.SPLINE)
+            )
+        )
+        .build();
 
     public static final Animation PENGUIN_SLIDE = Animation.Builder.withLength(0f)
         .addPartAnimation(

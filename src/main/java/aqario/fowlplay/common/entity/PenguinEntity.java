@@ -78,6 +78,11 @@ public class PenguinEntity extends BirdEntity {
         return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() : super.getAirSpeed();
     }
 
+    @Override
+    public float getMovementSpeed() {
+        return this.getPose() == EntityPose.SLIDING ? super.getMovementSpeed() * 2 : super.getMovementSpeed();
+    }
+
     protected void setMoveControl(boolean isSwimming) {
         if (isSwimming) {
             this.moveControl = new AquaticMoveControl(this, 85, 15, 1.0F, 1.0F, true);
@@ -212,7 +217,7 @@ public class PenguinEntity extends BirdEntity {
 
         if (!this.getWorld().isClient) {
             if (this.isSliding() && this.isInsideWaterOrBubbleColumn()) {
-                this.standUp();
+                this.stopSliding();
             }
             if (this.isInsideWaterOrBubbleColumn() != this.isAquaticMoveControl) {
                 this.setMoveControl(this.isInsideWaterOrBubbleColumn());
@@ -435,16 +440,16 @@ public class PenguinEntity extends BirdEntity {
 
     public void startSliding() {
         if (!this.isSliding()) {
-            this.playSound(SoundEvents.ENTITY_CAMEL_SIT);
+//            this.playSound(FowlPlaySoundEvents.ENTITY_PENGUIN_CALL, this.getCallVolume(), this.getSoundPitch());
             this.setPose(EntityPose.SLIDING);
             this.emitGameEvent(GameEvent.ENTITY_ACTION);
             this.setLastAnimationTick(-this.getWorld().getTime());
         }
     }
 
-    public void standUp() {
+    public void stopSliding() {
         if (this.isSliding()) {
-            this.playSound(SoundEvents.ENTITY_CAMEL_STAND);
+//            this.playSound(FowlPlaySoundEvents.ENTITY_PENGUIN_CALL, this.getCallVolume(), this.getSoundPitch());
             this.setPose(EntityPose.STANDING);
             this.emitGameEvent(GameEvent.ENTITY_ACTION);
             this.setLastAnimationTick(this.getWorld().getTime());

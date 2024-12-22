@@ -44,7 +44,7 @@ public final class FowlPlayEntityType {
     public static final EntityType<PenguinEntity> PENGUIN = register("penguin",
         EntityType.Builder.create(PenguinEntity::new, SpawnGroup.CREATURE)
             .setDimensions(0.5f, 1.4f)
-            .setEyeHeight(1.2f)
+            .setEyeHeight(1.35f)
             .passengerAttachments(new Vec3d(0, 0.75, -0.1))
     );
 
