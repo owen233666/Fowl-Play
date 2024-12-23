@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.TaskBuilder;
 import net.minecraft.entity.ai.brain.task.TaskControl;
@@ -18,9 +17,8 @@ public class SlideControlTask {
                 .apply(
                     instance,
                     (walkTarget) -> (world, penguin, l) -> {
-                        if (!penguin.isSliding()) {
+                        if (!penguin.isSliding() && penguin.canStartSliding()) {
                             penguin.startSliding();
-                            walkTarget.forget();
                             return true;
                         }
                         return false;
@@ -39,7 +37,6 @@ public class SlideControlTask {
                     (walkTarget) -> (world, penguin, l) -> {
                         if (penguin.isSliding()) {
                             penguin.stopSliding();
-                            walkTarget.forget();
                             return true;
                         }
                         return false;
@@ -56,12 +53,7 @@ public class SlideControlTask {
                 .apply(
                     instance,
                     (walkTarget) -> (world, penguin, l) -> {
-                        if (penguin.isInsideWaterOrBubbleColumn()
-                            || penguin.getAnimationTicks() < (long) seconds * 20
-                            || penguin.hasPassengers()
-                            || !penguin.isOnGround()
-                            || (!penguin.isSliding() && !world.getBlockState(penguin.getBlockPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON))
-                        ) {
+                        if ((!penguin.canStartSliding() && !penguin.isSliding()) || penguin.getAnimationTicks() < (long) seconds * 20) {
                             return false;
                         }
                         if (penguin.isSliding()) {
@@ -70,7 +62,6 @@ public class SlideControlTask {
                         else {
                             penguin.startSliding();
                         }
-                        walkTarget.forget();
                         return true;
                     }
                 )

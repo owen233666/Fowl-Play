@@ -65,11 +65,7 @@ public class PenguinEntity extends BirdEntity {
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-//        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
-//        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-//        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-//        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
         this.lookControl = new AquaticLookControl(this, 85);
     }
 
@@ -80,7 +76,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     public float getMovementSpeed() {
-        return this.getPose() == EntityPose.SLIDING ? super.getMovementSpeed() * 2 : super.getMovementSpeed();
+        return this.getPose() == EntityPose.SLIDING ? super.getMovementSpeed() * 1.5F : super.getMovementSpeed();
     }
 
     protected void setMoveControl(boolean isSwimming) {
@@ -429,6 +425,14 @@ public class PenguinEntity extends BirdEntity {
             return ActionResult.success(this.getWorld().isClient);
         }
         return super.interactMob(player, hand);
+    }
+
+    public boolean canStartSliding() {
+        return !this.isInsideWaterOrBubbleColumn()
+            && !this.hasPassengers()
+            && this.isOnGround()
+            && (this.getWorld().getBlockState(this.getBlockPos().down()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
+            || this.getWorld().getBlockState(this.getBlockPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON));
     }
 
     public boolean isSliding() {

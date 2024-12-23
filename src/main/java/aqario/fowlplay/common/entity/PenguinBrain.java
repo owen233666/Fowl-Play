@@ -139,7 +139,8 @@ public class PenguinBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 2),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 10), 3),
                             Pair.of(SlideControlTask.toggleSliding(20), 5),
-                            Pair.of(new WaitTask(400, 800), 5)
+                            Pair.of(new WaitTask(400, 800), 5),
+                            Pair.of(makeGoToWaterTask(), 6)
                         )
                     )
                 )
@@ -182,6 +183,7 @@ public class PenguinBrain {
             FowlPlayActivities.PICKUP_FOOD,
             10,
             ImmutableList.of(
+                SlideControlTask.startSliding(),
                 GoToNearestWantedItemTask.create(
                     PenguinBrain::doesNotHaveFoodInHand,
                     entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
@@ -199,12 +201,26 @@ public class PenguinBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
+                SlideControlTask.startSliding(),
                 ForgetAttackTargetTask.create(),
-                RangedApproachTask.create(SWIM_SPEED),
+                RangedApproachTask.create(entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED),
                 MeleeAttackTask.create(20),
                 ForgetTask.run(LookTargetUtil::isValidBreedingTarget, MemoryModuleType.ATTACK_TARGET)
             ),
             MemoryModuleType.ATTACK_TARGET
+        );
+    }
+
+    private static CompositeTask<PenguinEntity> makeGoToWaterTask() {
+        return new CompositeTask<>(
+            ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+            ImmutableSet.of(),
+            CompositeTask.Order.ORDERED,
+            CompositeTask.RunMode.TRY_ALL,
+            ImmutableList.of(
+                Pair.of(SlideControlTask.startSliding(), 1),
+                Pair.of(SeekWaterTask.create(6, WALK_SPEED), 2)
+            )
         );
     }
 
