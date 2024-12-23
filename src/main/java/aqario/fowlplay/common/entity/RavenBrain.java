@@ -125,7 +125,7 @@ public class RavenBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new StayAboveWaterTask(0.5F),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
@@ -160,7 +160,7 @@ public class RavenBrain {
                         ImmutableList.of(
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(raven -> raven.isInsideWaterOrBubbleColumn() || raven.getRandom().nextFloat() < 0.3F), 1)
+                            Pair.of(FlightControlTask.startFlying(raven -> raven.isInsideWaterOrBubbleColumn() || raven.getRandom().nextFloat() < 0.3F), 1)
                         )
                     )
                 )
@@ -178,7 +178,7 @@ public class RavenBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.tryStopFlying(raven -> true)),
+                Pair.of(1, FlightControlTask.tryStopFlying(raven -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(RavenBrain::getAttackTarget)),
                 Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
@@ -205,7 +205,7 @@ public class RavenBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(raven -> true),
+                FlightControlTask.startFlying(raven -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     raven -> raven.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -224,7 +224,7 @@ public class RavenBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(RavenBrain::shouldPickUpFood)),
+                Pair.of(0, FlightControlTask.startFlying(RavenBrain::shouldPickUpFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     RavenBrain::shouldPickUpFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -245,7 +245,7 @@ public class RavenBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
-                FlightTaskControl.startFlying(raven -> true),
+                FlightControlTask.startFlying(raven -> true),
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(FLY_SPEED),
                 MeleeAttackTask.create(20),

@@ -95,6 +95,16 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
+    public int getLookPitchSpeed() {
+        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getLookPitchSpeed();
+    }
+
+    @Override
+    public int getBodyYawSpeed() {
+        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getBodyYawSpeed();
+    }
+
+    @Override
     protected EntityNavigation createNavigation(World world) {
         return new AmphibiousNavigation(this, world);
     }
@@ -131,7 +141,7 @@ public class PenguinEntity extends BirdEntity {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.135f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.145f)
             .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0f);
     }
 

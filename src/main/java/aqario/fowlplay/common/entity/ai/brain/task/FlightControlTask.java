@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 /**
  * A collection of tasks that control the flying behavior of birds.
  */
-public class FlightTaskControl {
+public class FlightControlTask {
     public static <E extends FlyingBirdEntity> TaskControl<E> startFlying(Predicate<E> shouldRun) {
         return TaskBuilder.task(
             instance -> instance.group(

@@ -114,7 +114,7 @@ public class SparrowBrain {
             0,
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -148,7 +148,7 @@ public class SparrowBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(sparrow -> sparrow.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightControlTask.startFlying(sparrow -> sparrow.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -165,7 +165,7 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.tryStopFlying(sparrow -> true)),
+                Pair.of(0, FlightControlTask.tryStopFlying(sparrow -> true)),
                 Pair.of(1, new FlockTask(
                     0.05f,
                     0.5f,
@@ -195,7 +195,7 @@ public class SparrowBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(sparrow -> true),
+                FlightControlTask.startFlying(sparrow -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     sparrow -> sparrow.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -214,7 +214,7 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(sparrow -> true)),
+                Pair.of(0, FlightControlTask.startFlying(sparrow -> true)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     SparrowBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

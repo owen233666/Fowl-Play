@@ -121,7 +121,7 @@ public class PigeonBrain {
             0,
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
                 new DelivererFollowOwnerTask(WALK_SPEED, 5, 10),
@@ -157,7 +157,7 @@ public class PigeonBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(pigeon -> !pigeon.isSitting() && pigeon.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightControlTask.startFlying(pigeon -> !pigeon.isSitting() && pigeon.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -175,7 +175,7 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.tryStopFlying(pigeon -> true)),
+                Pair.of(1, FlightControlTask.tryStopFlying(pigeon -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -201,8 +201,8 @@ public class PigeonBrain {
             FowlPlayActivities.DELIVER,
             0,
             ImmutableList.of(
-                FlightTaskControl.stopFlying(PigeonBrain::shouldStopFlyingToRecipient),
-                FlightTaskControl.startFlying(PigeonBrain::shouldFlyToRecipient),
+                FlightControlTask.stopFlying(PigeonBrain::shouldStopFlyingToRecipient),
+                FlightControlTask.startFlying(PigeonBrain::shouldFlyToRecipient),
                 DeliverBundleTask.run(pigeon -> true, pigeon -> pigeon.isFlying() ? FLY_SPEED : WALK_SPEED)
             ),
             FowlPlayMemoryModuleType.RECIPIENT
@@ -214,7 +214,7 @@ public class PigeonBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(pigeon -> true),
+                FlightControlTask.startFlying(pigeon -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -233,7 +233,7 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(pigeon -> !pigeon.isTamed())),
+                Pair.of(0, FlightControlTask.startFlying(pigeon -> !pigeon.isTamed())),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     PigeonBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

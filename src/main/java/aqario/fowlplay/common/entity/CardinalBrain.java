@@ -114,7 +114,7 @@ public class CardinalBrain {
             0,
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -148,7 +148,7 @@ public class CardinalBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(cardinal -> cardinal.getRandom().nextFloat() < 0.3F), 1)
+                            Pair.of(FlightControlTask.startFlying(cardinal -> cardinal.getRandom().nextFloat() < 0.3F), 1)
                         )
                     )
                 )
@@ -165,7 +165,7 @@ public class CardinalBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.tryStopFlying(cardinal -> true)),
+                Pair.of(1, FlightControlTask.tryStopFlying(cardinal -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -190,7 +190,7 @@ public class CardinalBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(cardinal -> true),
+                FlightControlTask.startFlying(cardinal -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     cardinal -> cardinal.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -209,7 +209,7 @@ public class CardinalBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(cardinal -> true)),
+                Pair.of(0, FlightControlTask.startFlying(cardinal -> true)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     CardinalBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

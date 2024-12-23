@@ -3,10 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.ai.brain.task.BreatheAirTask;
-import aqario.fowlplay.common.entity.ai.brain.task.GoToNearestWantedItemTask;
-import aqario.fowlplay.common.entity.ai.brain.task.LocateFoodTask;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -19,7 +16,6 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
@@ -128,20 +124,21 @@ public class PenguinBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(0, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 10)),
-                Pair.of(1, FollowMobTask.createMatchingType(EntityType.PLAYER, 32.0F)),
-                Pair.of(2, new TemptTask(penguin -> TEMPTED_SPEED)),
-                Pair.of(3, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(4, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
-                Pair.of(5, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
+                Pair.of(0, SwimControlTask.startSwimming()),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, WALK_SPEED, 10)),
+                Pair.of(2, FollowMobTask.createMatchingType(EntityType.PLAYER, 32.0F)),
+                Pair.of(3, new TemptTask(penguin -> TEMPTED_SPEED)),
+                Pair.of(4, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
+                Pair.of(6, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
-                    6,
+                    7,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(MeanderTask.create(WALK_SPEED), 2),
                             Pair.of(GoTowardsLookTarget.create(WALK_SPEED, 10), 3),
-                            Pair.of(new RandomSlideTask(20), 5),
+                            Pair.of(SlideControlTask.toggleSliding(20), 5),
                             Pair.of(new WaitTask(400, 800), 5)
                         )
                     )
@@ -159,10 +156,11 @@ public class PenguinBrain {
         brain.setTaskList(
             Activity.SWIM,
             ImmutableList.of(
-                Pair.of(0, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, SWIM_SPEED)),
-                Pair.of(1, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
+                Pair.of(0, SwimControlTask.stopSwimming()),
+                Pair.of(1, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, SWIM_SPEED)),
+                Pair.of(2, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
-                    2,
+                    3,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -228,7 +226,7 @@ public class PenguinBrain {
     }
 
     public static class PenguinSwimTask {
-        private static final int[][] SWIM_DISTANCES = new int[][]{/*{15, 7}, */{31, 15}};
+        private static final int[][] SWIM_DISTANCES = new int[][]{{31, 15}};
 
         public static TaskControl<PathAwareEntity> create(float speed) {
             return create(speed, PenguinSwimTask::findSwimTargetPos, Entity::isInsideWaterOrBubbleColumn);
@@ -270,34 +268,6 @@ public class PenguinBrain {
             }
 
             return vec3d2;
-        }
-    }
-
-    public static class RandomSlideTask extends Task<PenguinEntity> {
-        private final int minimalSlideTicks;
-
-        public RandomSlideTask(int seconds) {
-            super(ImmutableMap.of());
-            this.minimalSlideTicks = seconds * 20;
-        }
-
-        @Override
-        protected boolean shouldRun(ServerWorld world, PenguinEntity penguin) {
-            return !penguin.isTouchingWater()
-                && penguin.getAnimationTicks() >= (long) this.minimalSlideTicks
-                && !penguin.hasPassengers()
-                && penguin.isOnGround()
-                && (penguin.isSliding() || world.getBlockState(penguin.getBlockPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON));
-        }
-
-        @Override
-        protected void run(ServerWorld serverWorld, PenguinEntity penguin, long l) {
-            if (penguin.isSliding()) {
-                penguin.stopSliding();
-            }
-            else {
-                penguin.startSliding();
-            }
         }
     }
 }

@@ -114,7 +114,7 @@ public class RobinBrain {
             0,
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(),
@@ -148,7 +148,7 @@ public class RobinBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(robin -> robin.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightControlTask.startFlying(robin -> robin.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -165,7 +165,7 @@ public class RobinBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.tryStopFlying(robin -> true)),
+                Pair.of(1, FlightControlTask.tryStopFlying(robin -> true)),
                 Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
@@ -190,7 +190,7 @@ public class RobinBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(robin -> true),
+                FlightControlTask.startFlying(robin -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     robin -> robin.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -209,7 +209,7 @@ public class RobinBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(robin -> true)),
+                Pair.of(0, FlightControlTask.startFlying(robin -> true)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     RobinBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

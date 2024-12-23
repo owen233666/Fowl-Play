@@ -31,13 +31,13 @@ public class GoToNearestWantedItemTask {
                     )
                     .apply(
                         instance,
-                        (lookTarget, walkTarget, nearestWantedItem, pickupCooldownTicks) -> (world, livingEntity, l) -> {
+                        (lookTarget, walkTarget, nearestWantedItem, pickupCooldownTicks) -> (world, entity, l) -> {
                             ItemEntity itemEntity = instance.getValue(nearestWantedItem);
                             if (instance.getValueOptional(pickupCooldownTicks).isEmpty()
-                                && startPredicate.test(livingEntity)
-                                && itemEntity.isInRange(livingEntity, radius)
-                                && livingEntity.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
-                                WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(livingEntity), 0);
+                                && startPredicate.test(entity)
+                                && itemEntity.isInRange(entity, radius)
+                                && entity.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
+                                WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(entity), 0);
                                 lookTarget.remember(new EntityLookTarget(itemEntity, true));
                                 walkTarget.remember(newWalkTarget);
                                 return true;

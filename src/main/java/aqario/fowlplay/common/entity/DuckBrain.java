@@ -122,7 +122,7 @@ public class DuckBrain {
             Activity.CORE,
             0,
             ImmutableList.of(
-                FlightTaskControl.stopFalling(),
+                FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(DuckBrain::shouldPickUpFood),
@@ -157,7 +157,7 @@ public class DuckBrain {
                             Pair.of(MeanderTask.create(WALK_SPEED), 4),
                             Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
-                            Pair.of(FlightTaskControl.startFlying(duck -> duck.getRandom().nextFloat() < 0.1F), 1)
+                            Pair.of(FlightControlTask.startFlying(duck -> duck.getRandom().nextFloat() < 0.1F), 1)
                         )
                     )
                 )
@@ -175,7 +175,7 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightTaskControl.tryStopFlying(duck -> true)),
+                Pair.of(1, FlightControlTask.tryStopFlying(duck -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(DuckBrain::getAttackTarget)),
                 Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
@@ -202,7 +202,7 @@ public class DuckBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightTaskControl.startFlying(duck -> true),
+                FlightControlTask.startFlying(duck -> true),
                 GoToWalkTargetTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -221,7 +221,7 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightTaskControl.startFlying(duck -> true)),
+                Pair.of(0, FlightControlTask.startFlying(duck -> true)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     DuckBrain::shouldPickUpFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
@@ -242,7 +242,7 @@ public class DuckBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
-                FlightTaskControl.startFlying(duck -> true),
+                FlightControlTask.startFlying(duck -> true),
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(FLY_SPEED),
                 MeleeAttackTask.create(20),
