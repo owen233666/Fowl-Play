@@ -100,7 +100,7 @@ public class PenguinBrain {
             )
         );
         if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
-            brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
+            brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 20000L);
         }
     }
 
@@ -165,6 +165,7 @@ public class PenguinBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
+                            Pair.of(SeekLandTask.create(32, SWIM_SPEED), 5),
                             Pair.of(PenguinSwimTask.create(SWIM_SPEED), 2)
                         )
                     )
@@ -213,13 +214,13 @@ public class PenguinBrain {
 
     private static CompositeTask<PenguinEntity> makeGoToWaterTask() {
         return new CompositeTask<>(
-            ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+            ImmutableMap.of(MemoryModuleType.HAS_HUNTING_COOLDOWN, MemoryModuleState.VALUE_ABSENT),
             ImmutableSet.of(),
             CompositeTask.Order.ORDERED,
             CompositeTask.RunMode.TRY_ALL,
             ImmutableList.of(
                 Pair.of(SlideControlTask.startSliding(), 1),
-                Pair.of(SeekWaterTask.create(6, WALK_SPEED), 2)
+                Pair.of(SeekWaterTask.create(32, WALK_SPEED), 2)
             )
         );
     }
