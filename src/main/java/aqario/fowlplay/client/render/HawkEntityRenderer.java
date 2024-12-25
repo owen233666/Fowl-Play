@@ -3,13 +3,13 @@ package aqario.fowlplay.client.render;
 import aqario.fowlplay.client.model.HawkEntityModel;
 import aqario.fowlplay.client.render.feature.BirdHeldItemFeatureRenderer;
 import aqario.fowlplay.common.FowlPlay;
-import aqario.fowlplay.common.entity.RavenEntity;
+import aqario.fowlplay.common.entity.HawkEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-public class HawkEntityRenderer extends MobEntityRenderer<RavenEntity, HawkEntityModel> {
+public class HawkEntityRenderer extends MobEntityRenderer<HawkEntity, HawkEntityModel> {
     public HawkEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new HawkEntityModel(context.getPart(HawkEntityModel.MODEL_LAYER)), 0.3f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
@@ -21,7 +21,7 @@ public class HawkEntityRenderer extends MobEntityRenderer<RavenEntity, HawkEntit
     }
 
     @Override
-    public Identifier getTexture(RavenEntity hawk) {
+    public Identifier getTexture(HawkEntity hawk) {
         return Identifier.of(FowlPlay.ID, "textures/entity/hawk/red_tailed_hawk.png");
     }
 }

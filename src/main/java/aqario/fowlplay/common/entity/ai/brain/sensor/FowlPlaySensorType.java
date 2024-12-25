@@ -19,6 +19,9 @@ public final class FowlPlaySensorType {
     public static final SensorType<TemptationsSensor> GULL_TEMPTATIONS = register("gull_temptations",
         () -> new TemptationsSensor(GullBrain.getFood())
     );
+    public static final SensorType<TemptationsSensor> HAWK_TEMPTATIONS = register("hawk_temptations",
+        () -> new TemptationsSensor(HawkBrain.getFood())
+    );
     public static final SensorType<TemptationsSensor> PENGUIN_TEMPTATIONS = register("penguin_temptations",
         () -> new TemptationsSensor(PenguinBrain.getFood())
     );
@@ -41,6 +44,12 @@ public final class FowlPlaySensorType {
         () -> new AttackTargetSensor(target ->
             target.getType().isIn(FowlPlayEntityTypeTags.GULL_HUNT_TARGETS) ||
                 (target.getType().isIn(FowlPlayEntityTypeTags.GULL_BABY_HUNT_TARGETS) && target.isBaby())
+        )
+    );
+    public static final SensorType<AttackTargetSensor> HAWK_ATTACKABLES = register("hawk_attackables",
+        () -> new AttackTargetSensor(target ->
+            target.getType().isIn(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
+                (target.getType().isIn(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby())
         )
     );
     public static final SensorType<AttackTargetSensor> PENGUIN_ATTACKABLES = register("penguin_attackables",

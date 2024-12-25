@@ -1,15 +1,15 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.RavenEntityAnimations;
+import aqario.fowlplay.client.render.animation.HawkEntityAnimations;
 import aqario.fowlplay.common.FowlPlay;
-import aqario.fowlplay.common.entity.RavenEntity;
+import aqario.fowlplay.common.entity.HawkEntity;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class HawkEntityModel extends BirdEntityModel<RavenEntity> {
+public class HawkEntityModel extends BirdEntityModel<HawkEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "hawk"), "main");
     public final ModelPart root;
     public final ModelPart body;
@@ -96,31 +96,31 @@ public class HawkEntityModel extends BirdEntityModel<RavenEntity> {
     }
 
     @Override
-    public void setAngles(RavenEntity raven, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
+    public void setAngles(HawkEntity hawk, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
     }
 
     @Override
-    public void animateModel(RavenEntity raven, float limbAngle, float limbDistance, float tickDelta) {
+    public void animateModel(HawkEntity hawk, float limbAngle, float limbDistance, float tickDelta) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
-        super.animateModel(raven, limbAngle, limbDistance, tickDelta);
-        float ageInTicks = raven.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, raven.prevBodyYaw, raven.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, raven.prevHeadYaw, raven.headYaw);
+        super.animateModel(hawk, limbAngle, limbDistance, tickDelta);
+        float ageInTicks = hawk.age + tickDelta;
+        float bodyYaw = MathHelper.lerpDegrees(tickDelta, hawk.prevBodyYaw, hawk.bodyYaw);
+        float headYaw = MathHelper.lerpDegrees(tickDelta, hawk.prevHeadYaw, hawk.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
-        float headPitch = MathHelper.lerp(tickDelta, raven.prevPitch, raven.getPitch());
-        if (LivingEntityRenderer.renderFlipped(raven)) {
+        float headPitch = MathHelper.lerp(tickDelta, hawk.prevPitch, hawk.getPitch());
+        if (LivingEntityRenderer.renderFlipped(hawk)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
-        if (!raven.isFlying()) {
+        if (!hawk.isFlying()) {
             this.updateHeadRotation(relativeHeadYaw, headPitch);
         }
-        if (raven.isFlying()) {
-            this.root.pitch = raven.getPitch(tickDelta) * (float) (Math.PI / 180.0);
-            this.root.roll = raven.getRoll(tickDelta) * (float) (Math.PI / 180.0);
+        if (hawk.isFlying()) {
+            this.root.pitch = hawk.getPitch(tickDelta) * (float) (Math.PI / 180.0);
+            this.root.roll = hawk.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (raven.isFlying() || raven.isInsideWaterOrBubbleColumn()) {
+        if (hawk.isFlying() || hawk.isInsideWaterOrBubbleColumn()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
             this.leftWing.visible = false;
@@ -132,13 +132,13 @@ public class HawkEntityModel extends BirdEntityModel<RavenEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        if (!raven.isFlying() && !raven.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
+        if (!hawk.isFlying() && !hawk.isInsideWaterOrBubbleColumn()) {
+            this.animateWalk(HawkEntityAnimations.HAWK_WALK, limbAngle, limbDistance, 2.5F, 4F);
         }
-        this.animate(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
-        this.animate(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);
-        this.animate(raven.glideState, RavenEntityAnimations.RAVEN_GLIDE, ageInTicks);
-        this.animate(raven.flapState, RavenEntityAnimations.RAVEN_FLAP, ageInTicks);
+        this.animate(hawk.idleState, HawkEntityAnimations.HAWK_IDLE, ageInTicks);
+        this.animate(hawk.floatState, HawkEntityAnimations.HAWK_FLOAT, ageInTicks);
+        this.animate(hawk.glideState, HawkEntityAnimations.HAWK_GLIDE, ageInTicks);
+        this.animate(hawk.flapState, HawkEntityAnimations.HAWK_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

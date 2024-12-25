@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -31,32 +32,39 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class RavenEntity extends TrustingBirdEntity {
+public class HawkEntity extends TrustingBirdEntity {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    private int timeSinceLastFlap;
+    private int flapTime;
 
-    public RavenEntity(EntityType<? extends RavenEntity> entityType, World world) {
+    public HawkEntity(EntityType<? extends HawkEntity> entityType, World world) {
         super(entityType, world);
     }
 
     @SuppressWarnings("unused")
     public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_RAVENS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
+        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_HAWKS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @Override
     public int getFlapFrequency() {
-        return 0;
+        return 200;
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0f)
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 14.0f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.225f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.235f);
+    }
+
+    @Override
+    protected BirdFlightMoveControl getFlightMoveControl() {
+        return new BirdFlightMoveControl(this, 40, 5);
     }
 
     @Nullable
@@ -87,7 +95,7 @@ public class RavenEntity extends TrustingBirdEntity {
             return false;
         }
         if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            RavenBrain.onAttacked(this, entity);
+            HawkBrain.onAttacked(this, entity);
         }
 
         return bl;
@@ -105,7 +113,7 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.RAVEN_FOOD);
+        return Ingredient.ofTag(FowlPlayItemTags.HAWK_FOOD);
     }
 
     @Override
@@ -117,7 +125,27 @@ public class RavenEntity extends TrustingBirdEntity {
     public void tick() {
         if (this.getWorld().isClient()) {
             this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
+            if (this.isFlying()) {
+                if (this.timeSinceLastFlap > this.getFlapFrequency()) {
+                    this.timeSinceLastFlap = 0;
+                    this.flapTime++;
+                }
+                else if (this.flapTime > 0 && this.flapTime < 60) {
+                    this.flapTime++;
+                    this.glideState.stop();
+                    this.flapState.start(this.age);
+                }
+                else {
+                    this.timeSinceLastFlap++;
+                    this.flapTime = 0;
+                    this.flapState.stop();
+                    this.glideState.start(this.age);
+                }
+            }
+            else {
+                this.flapState.stop();
+                this.glideState.stop();
+            }
             this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
@@ -137,23 +165,23 @@ public class RavenEntity extends TrustingBirdEntity {
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_RAVEN_CALL;
+        return FowlPlaySoundEvents.ENTITY_HAWK_CALL;
     }
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.ravenCallVolume;
+        return FowlPlayConfig.hawkCallVolume;
     }
 
     @Override
     public int getCallDelay() {
-        return 600;
+        return 800;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_RAVEN_HURT;
+        return FowlPlaySoundEvents.ENTITY_HAWK_HURT;
     }
 
     @Nullable
@@ -163,28 +191,28 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @Override
-    protected Brain.Profile<RavenEntity> createBrainProfile() {
-        return RavenBrain.createProfile();
+    protected Brain.Profile<HawkEntity> createBrainProfile() {
+        return HawkBrain.createProfile();
     }
 
     @Override
     protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
-        return RavenBrain.create(this.createBrainProfile().deserialize(dynamic));
+        return HawkBrain.create(this.createBrainProfile().deserialize(dynamic));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Brain<RavenEntity> getBrain() {
-        return (Brain<RavenEntity>) super.getBrain();
+    public Brain<HawkEntity> getBrain() {
+        return (Brain<HawkEntity>) super.getBrain();
     }
 
     @Override
     protected void mobTick() {
-        this.getWorld().getProfiler().push("ravenBrain");
+        this.getWorld().getProfiler().push("hawkBrain");
         this.getBrain().tick((ServerWorld) this.getWorld(), this);
         this.getWorld().getProfiler().pop();
-        this.getWorld().getProfiler().push("ravenActivityUpdate");
-        RavenBrain.reset(this);
+        this.getWorld().getProfiler().push("hawkActivityUpdate");
+        HawkBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
     }
