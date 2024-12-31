@@ -165,7 +165,7 @@ public class PenguinBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(SeekLandTask.create(32, SWIM_SPEED), 5),
+                            Pair.of(GoToLandTask.create(32, SWIM_SPEED), 5),
                             Pair.of(PenguinSwimTask.create(SWIM_SPEED), 2)
                         )
                     )

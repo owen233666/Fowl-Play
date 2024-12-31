@@ -133,7 +133,7 @@ public class SparrowBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.SPARROW, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(SparrowBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(4, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -196,7 +196,7 @@ public class SparrowBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(sparrow -> true),
-                GoToWalkTargetTask.toEntity(
+                GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     sparrow -> sparrow.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,

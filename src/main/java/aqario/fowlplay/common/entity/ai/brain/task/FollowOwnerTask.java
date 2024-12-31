@@ -11,14 +11,14 @@ import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.server.world.ServerWorld;
 
-public class DelivererFollowOwnerTask extends Task<PigeonEntity> {
+public class FollowOwnerTask extends Task<PigeonEntity> {
     private LivingEntity owner;
     private final float speed;
     private int updateCountdownTicks;
     private final float maxDistance;
     private final float minDistance;
 
-    public DelivererFollowOwnerTask(float speed, float minDistance, float maxDistance) {
+    public FollowOwnerTask(float speed, float minDistance, float maxDistance) {
         super(ImmutableMap.of());
         this.speed = speed;
         this.minDistance = minDistance;

@@ -124,7 +124,7 @@ public class PigeonBrain {
                 FlightControlTask.stopFalling(),
                 new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
-                new DelivererFollowOwnerTask(WALK_SPEED, 5, 10),
+                new FollowOwnerTask(WALK_SPEED, 5, 10),
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAroundTask(45, 90),
@@ -142,7 +142,7 @@ public class PigeonBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.PIGEON, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(PigeonBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(4, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -176,7 +176,7 @@ public class PigeonBrain {
             FowlPlayActivities.FLY,
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(pigeon -> true)),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
                     new RandomTask<>(
@@ -215,7 +215,7 @@ public class PigeonBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(pigeon -> true),
-                GoToWalkTargetTask.toEntity(
+                GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
@@ -294,7 +294,7 @@ public class PigeonBrain {
             return false;
         }
         PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || pigeon.isTrusted(player)) {
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || pigeon.trusts(player)) {
             return false;
         }
 

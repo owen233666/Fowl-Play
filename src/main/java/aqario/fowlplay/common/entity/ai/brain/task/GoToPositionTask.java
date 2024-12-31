@@ -17,7 +17,7 @@ import java.util.function.Function;
 /**
  * Improved {@link net.minecraft.entity.ai.brain.task.GoToRememberedPositionTask GoToRememberedPositionTask} with a speedGetter
  */
-public class GoToWalkTargetTask {
+public class GoToPositionTask {
     public static <E extends PathAwareEntity> TaskControl<E> toBlock(MemoryModuleType<BlockPos> memoryType, Function<E, Float> entitySpeedGetter, int range, boolean requiresWalkTarget) {
         return create(memoryType, entitySpeedGetter, range, requiresWalkTarget, Vec3d::ofBottomCenter);
     }

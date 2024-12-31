@@ -133,7 +133,7 @@ public class RobinBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.ROBIN, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(RobinBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(4, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -166,7 +166,7 @@ public class RobinBrain {
             FowlPlayActivities.FLY,
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(robin -> true)),
-                Pair.of(2, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     3,
                     new RandomTask<>(
@@ -191,7 +191,7 @@ public class RobinBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(robin -> true),
-                GoToWalkTargetTask.toEntity(
+                GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     robin -> robin.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,

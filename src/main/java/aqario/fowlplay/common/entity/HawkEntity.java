@@ -16,7 +16,6 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -37,8 +36,8 @@ public class HawkEntity extends TrustingBirdEntity {
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    private int timeSinceLastFlap;
-    private int flapTime;
+    private int timeSinceLastFlap = this.getFlapFrequency();
+    private int flapTime = 0;
 
     public HawkEntity(EntityType<? extends HawkEntity> entityType, World world) {
         super(entityType, world);
@@ -51,11 +50,11 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public int getFlapFrequency() {
-        return 200;
+        return 100;
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes()
+        return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 14.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)

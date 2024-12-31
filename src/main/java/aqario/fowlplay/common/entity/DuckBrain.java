@@ -127,7 +127,7 @@ public class DuckBrain {
                 makeAddPlayerToAvoidTargetTask(),
                 LocateFoodTask.run(DuckBrain::shouldPickUpFood),
                 new LookAroundTask(45, 90),
-                new WanderAroundTask(),
+                new WalkToTargetTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
@@ -142,12 +142,12 @@ public class DuckBrain {
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(DuckBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(duck -> !duck.isInsideWaterOrBubbleColumn(), DuckBrain::getAttackTarget)),
-                Pair.of(5, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
-                    30.0F,
-                    0.0F,
-                    0.0F
+                    60.0F,
+                    -40.0F,
+                    40.0F
                 )),
                 Pair.of(
                     7,
@@ -177,7 +177,7 @@ public class DuckBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(duck -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(DuckBrain::getAttackTarget)),
-                Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     4,
                     new RandomTask<>(
@@ -203,7 +203,7 @@ public class DuckBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(duck -> true),
-                GoToWalkTargetTask.toEntity(
+                GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
@@ -297,7 +297,7 @@ public class DuckBrain {
             return false;
         }
         PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || duck.isTrusted(player)) {
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || duck.trusts(player)) {
             return false;
         }
 

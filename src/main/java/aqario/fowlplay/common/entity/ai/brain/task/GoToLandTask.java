@@ -11,7 +11,7 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 
-public class SeekLandTask {
+public class GoToLandTask {
     public static TaskControl<PathAwareEntity> create(int range, float speed) {
         return TaskBuilder.task(
             instance -> instance.group(

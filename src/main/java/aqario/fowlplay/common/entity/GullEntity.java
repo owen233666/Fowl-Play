@@ -20,7 +20,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -95,7 +94,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes()
+        return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)

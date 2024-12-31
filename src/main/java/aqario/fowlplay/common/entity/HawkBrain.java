@@ -146,7 +146,7 @@ public class HawkBrain {
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
                 Pair.of(3, FollowMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(hawk -> !hawk.isInsideWaterOrBubbleColumn(), HawkBrain::getAttackTarget)),
-                Pair.of(5, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -180,7 +180,7 @@ public class HawkBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(hawk -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(HawkBrain::getAttackTarget)),
-                Pair.of(3, StayNearClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
                 Pair.of(
                     4,
                     new RandomTask<>(
@@ -206,7 +206,7 @@ public class HawkBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(hawk -> true),
-                GoToWalkTargetTask.toEntity(
+                GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     hawk -> hawk.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_PLAYER_RADIUS,
@@ -300,7 +300,7 @@ public class HawkBrain {
             return false;
         }
         PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || hawk.isTrusted(player)) {
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || hawk.trusts(player)) {
             return false;
         }
 
