@@ -106,6 +106,14 @@ public abstract class BirdEntity extends AnimalEntity {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;
     }
 
+    public boolean canHunt(LivingEntity target) {
+        return false;
+    }
+
+    public boolean canAttack(LivingEntity target) {
+        return false;
+    }
+
     @Override
     public void tickMovement() {
         super.tickMovement();

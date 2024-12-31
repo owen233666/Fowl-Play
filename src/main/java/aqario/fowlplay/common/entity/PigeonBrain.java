@@ -39,7 +39,7 @@ public class PigeonBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.PIGEON_TEMPTATIONS,
+        FowlPlaySensorType.TEMPTING_PLAYER,
         FowlPlaySensorType.PIGEON_SPECIFIC_SENSOR
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
@@ -233,7 +233,7 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(pigeon -> !pigeon.isTamed())),
+                Pair.of(0, FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && doesNotHaveFoodInHand(pigeon))),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     PigeonBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

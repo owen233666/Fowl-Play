@@ -41,8 +41,8 @@ public class RavenBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.RAVEN_TEMPTATIONS,
-        FowlPlaySensorType.RAVEN_ATTACKABLES
+        FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.HUNT_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -129,7 +129,7 @@ public class RavenBrain {
                 new StayAboveWaterTask(0.5F),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
-                LocateFoodTask.run(RavenBrain::shouldPickUpFood),
+                LocateFoodTask.run(RavenBrain::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -224,9 +224,9 @@ public class RavenBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(RavenBrain::shouldPickUpFood)),
+                Pair.of(0, FlightControlTask.startFlying(RavenBrain::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    RavenBrain::shouldPickUpFood,
+                    RavenBrain::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -349,7 +349,7 @@ public class RavenBrain {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
-    private static boolean shouldPickUpFood(RavenEntity raven) {
+    private static boolean canPickupFood(RavenEntity raven) {
         Brain<RavenEntity> brain = raven.getBrain();
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
             return false;

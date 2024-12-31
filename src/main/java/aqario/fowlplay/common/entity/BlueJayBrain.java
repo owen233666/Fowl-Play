@@ -209,7 +209,7 @@ public class BlueJayBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(blueJay -> true)),
+                Pair.of(0, FlightControlTask.startFlying(BlueJayBrain::doesNotHaveFoodInHand)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     BlueJayBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

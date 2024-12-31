@@ -38,8 +38,8 @@ public class GullBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.GULL_TEMPTATIONS,
-        FowlPlaySensorType.GULL_ATTACKABLES
+        FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.HUNT_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -221,9 +221,9 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(gull -> true)),
+                Pair.of(0, FlightControlTask.startFlying(GullBrain::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    GullBrain::doesNotHaveFoodInHand,
+                    GullBrain::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -346,8 +346,19 @@ public class GullBrain {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
-    private static boolean doesNotHaveFoodInHand(GullEntity gull) {
-        return !getFood().test(gull.getMainHandStack());
+    private static boolean canPickupFood(GullEntity gull) {
+        Brain<GullEntity> brain = gull.getBrain();
+        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
+            return false;
+        }
+        boolean playerNear = false;
+        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
+            ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
+            PlayerEntity player = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
+            playerNear = player.isInRange(wantedItem, AVOID_PLAYER_RADIUS);
+        }
+
+        return !getFood().test(gull.getMainHandStack()) && !playerNear;
     }
 
     public static Ingredient getFood() {

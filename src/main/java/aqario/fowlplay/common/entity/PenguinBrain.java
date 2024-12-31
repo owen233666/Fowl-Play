@@ -32,8 +32,8 @@ public class PenguinBrain {
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
-        FowlPlaySensorType.PENGUIN_TEMPTATIONS,
-        FowlPlaySensorType.PENGUIN_ATTACKABLES
+        FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.HUNT_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,

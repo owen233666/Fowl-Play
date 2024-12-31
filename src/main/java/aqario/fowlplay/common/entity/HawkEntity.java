@@ -5,6 +5,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
@@ -56,7 +57,7 @@ public class HawkEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return FlyingBirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 14.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.235f);
     }
@@ -116,6 +117,12 @@ public class HawkEntity extends TrustingBirdEntity {
     }
 
     @Override
+    public boolean canHunt(LivingEntity target) {
+        return target.getType().isIn(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
+            (target.getType().isIn(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
+    }
+
+    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }
@@ -142,6 +149,8 @@ public class HawkEntity extends TrustingBirdEntity {
                 }
             }
             else {
+                this.timeSinceLastFlap = this.getFlapFrequency();
+                this.flapTime = 0;
                 this.flapState.stop();
                 this.glideState.stop();
             }

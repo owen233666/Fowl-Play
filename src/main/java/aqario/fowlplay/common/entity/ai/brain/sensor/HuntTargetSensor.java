@@ -6,14 +6,18 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.NearestVisibleLivingEntitySensor;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 
-public class AttackTargetSensor extends NearestVisibleLivingEntitySensor {
-    public static final float TARGET_DETECTION_DISTANCE = 24.0F;
+public class HuntTargetSensor extends NearestVisibleLivingEntitySensor {
+    public static final float TARGET_DETECTION_DISTANCE = 32.0F;
 
     @Override
     protected boolean matches(LivingEntity entity, LivingEntity target) {
         return this.isInRange(entity, target)
-            && ((BirdEntity) entity).canAttack(target)
+            && this.canHunt(entity, target)
             && Sensor.testAttackableTargetPredicate(entity, target);
+    }
+
+    private boolean canHunt(LivingEntity entity, LivingEntity target) {
+        return !entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN) && ((BirdEntity) entity).canHunt(target);
     }
 
     private boolean isInRange(LivingEntity entity, LivingEntity target) {

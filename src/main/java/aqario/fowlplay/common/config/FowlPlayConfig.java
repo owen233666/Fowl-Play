@@ -136,7 +136,7 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public static int duckSpawnWeight = 20;
+    public static int duckSpawnWeight = 10;
     @SerialEntry
     public static int duckMinGroupSize = 6;
     @SerialEntry

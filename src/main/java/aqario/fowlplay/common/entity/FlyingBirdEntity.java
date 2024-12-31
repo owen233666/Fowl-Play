@@ -158,6 +158,14 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
+    public boolean damage(DamageSource source, float amount) {
+        if (!this.getWorld().isClient && this.isFlying()) {
+            this.stopFlying();
+        }
+        return super.damage(source, amount);
+    }
+
+    @Override
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return !this.isFlying() && super.handleFallDamage(fallDistance, damageMultiplier, damageSource);
     }
@@ -169,11 +177,13 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         }
     }
 
+    public boolean canStartFlying() {
+        return !this.isFlying() && this.getHealth() > 2.0F;
+    }
+
     public void startFlying() {
-        if (this.getHealth() > 2.0F) {
-            this.setFlying(true);
-            this.setMoveControl(true);
-        }
+        this.setFlying(true);
+        this.setMoveControl(true);
     }
 
     public void stopFlying() {

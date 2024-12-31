@@ -38,8 +38,8 @@ public class DuckBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.DUCK_TEMPTATIONS,
-        FowlPlaySensorType.DUCK_ATTACKABLES
+        FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.HUNT_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -125,7 +125,7 @@ public class DuckBrain {
                 FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
                 makeAddPlayerToAvoidTargetTask(),
-                LocateFoodTask.run(DuckBrain::shouldPickUpFood),
+                LocateFoodTask.run(DuckBrain::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WalkToTargetTask(),
                 new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -221,9 +221,9 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(duck -> true)),
+                Pair.of(0, FlightControlTask.startFlying(DuckBrain::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    DuckBrain::shouldPickUpFood,
+                    DuckBrain::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -346,7 +346,7 @@ public class DuckBrain {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
     }
 
-    private static boolean shouldPickUpFood(DuckEntity duck) {
+    private static boolean canPickupFood(DuckEntity duck) {
         Brain<DuckEntity> brain = duck.getBrain();
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
             return false;

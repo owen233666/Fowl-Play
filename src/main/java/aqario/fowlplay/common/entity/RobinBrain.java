@@ -209,7 +209,7 @@ public class RobinBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(robin -> true)),
+                Pair.of(0, FlightControlTask.startFlying(RobinBrain::doesNotHaveFoodInHand)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     RobinBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

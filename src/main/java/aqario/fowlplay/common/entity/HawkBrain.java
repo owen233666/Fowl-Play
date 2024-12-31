@@ -41,8 +41,8 @@ public class HawkBrain {
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEAREST_ADULTS,
-        FowlPlaySensorType.HAWK_TEMPTATIONS,
-        FowlPlaySensorType.HAWK_ATTACKABLES
+        FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.HUNT_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,

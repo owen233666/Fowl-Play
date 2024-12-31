@@ -209,7 +209,7 @@ public class ChickadeeBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(chickadee -> true)),
+                Pair.of(0, FlightControlTask.startFlying(ChickadeeBrain::doesNotHaveFoodInHand)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     ChickadeeBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

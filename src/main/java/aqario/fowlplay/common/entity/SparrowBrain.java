@@ -214,7 +214,7 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(sparrow -> true)),
+                Pair.of(0, FlightControlTask.startFlying(SparrowBrain::doesNotHaveFoodInHand)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     SparrowBrain::doesNotHaveFoodInHand,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,

@@ -22,7 +22,7 @@ public class FlightControlTask {
                 .apply(
                     instance,
                     (flying) -> (world, bird, l) -> {
-                        if (!bird.isFlying() && shouldRun.test(bird)) {
+                        if (bird.canStartFlying() && shouldRun.test(bird)) {
                             bird.getJumpControl().setActive();
                             bird.startFlying();
                             flying.remember(Unit.INSTANCE);
@@ -84,7 +84,7 @@ public class FlightControlTask {
                 .apply(
                     instance,
                     (flying) -> (world, bird, l) -> {
-                        if (bird.fallDistance > 1 && !bird.isFlying()) {
+                        if (bird.fallDistance > 1 && bird.canStartFlying()) {
                             bird.startFlying();
                             flying.remember(Unit.INSTANCE);
                             return true;
