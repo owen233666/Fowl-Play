@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
@@ -57,6 +58,11 @@ public class SparrowEntity extends FlyingBirdEntity {
     @Override
     public Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.SPARROW_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.SPARROW_AVOIDS);
     }
 
     @Override

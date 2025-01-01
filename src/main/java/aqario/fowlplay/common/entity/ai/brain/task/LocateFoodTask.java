@@ -16,13 +16,13 @@ public class LocateFoodTask {
 
     public static <E extends BirdEntity> TaskControl<E> run(Predicate<E> predicate) {
         return TaskBuilder.task(
-            builder -> builder.group(
-                    builder.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
-                    builder.absentMemory(FowlPlayMemoryModuleType.SEES_FOOD),
-                    builder.absentMemory(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD)
+            instance -> instance.group(
+                    instance.presentMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
+                    instance.absentMemory(FowlPlayMemoryModuleType.SEES_FOOD),
+                    instance.absentMemory(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD)
                 )
-                .apply(builder, (nearestVisibleWantedItem, seesFood, cannotEatFood) -> (world, entity, time) -> {
-                    ItemEntity item = builder.getValue(nearestVisibleWantedItem);
+                .apply(instance, (nearestVisibleWantedItem, seesFood, cannotEatFood) -> (world, entity, time) -> {
+                    ItemEntity item = instance.getValue(nearestVisibleWantedItem);
                     if (!entity.getFood().test(item.getStack())) {
                         return false;
                     }

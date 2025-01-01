@@ -174,6 +174,11 @@ public class GullEntity extends TrustingBirdEntity implements VariantProvider<Gu
     }
 
     @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.GULL_AVOIDS);
+    }
+
+    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }

@@ -61,8 +61,6 @@ public abstract class BirdEntity extends AnimalEntity {
         return false;
     }
 
-    public abstract Ingredient getFood();
-
     @Override
     public boolean canPickupItem(ItemStack stack) {
         ItemStack heldStack = this.getEquippedStack(EquipmentSlot.MAINHAND);
@@ -102,8 +100,14 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
+    public abstract Ingredient getFood();
+
     private boolean canEat(ItemStack stack) {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;
+    }
+
+    public boolean shouldAvoid(LivingEntity entity) {
+        return false;
     }
 
     public boolean canHunt(LivingEntity target) {

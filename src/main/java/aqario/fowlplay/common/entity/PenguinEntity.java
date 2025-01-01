@@ -139,6 +139,11 @@ public class PenguinEntity extends BirdEntity {
         return target.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_HUNT_TARGETS);
     }
 
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_AVOIDS);
+    }
+
     public static DefaultAttributeContainer.Builder createAttributes() {
         return BirdEntity.createAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)

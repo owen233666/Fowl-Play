@@ -173,6 +173,11 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     }
 
     @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.DUCK_AVOIDS);
+    }
+
+    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }

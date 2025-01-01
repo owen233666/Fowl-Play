@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
@@ -40,6 +41,11 @@ public class CardinalEntity extends FlyingBirdEntity {
     @Override
     public Ingredient getFood() {
         return Ingredient.ofTag(FowlPlayItemTags.CARDINAL_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.CARDINAL_AVOIDS);
     }
 
     @Nullable

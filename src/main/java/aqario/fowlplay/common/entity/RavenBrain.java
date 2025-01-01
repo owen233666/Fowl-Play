@@ -81,7 +81,7 @@ public class RavenBrain {
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_PLAYER_RADIUS = 10;
+    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -128,7 +128,7 @@ public class RavenBrain {
                 FlightControlTask.stopFalling(),
                 new StayAboveWaterTask(0.5F),
                 new WalkTask<>(RUN_SPEED),
-                makeAddPlayerToAvoidTargetTask(),
+                AvoidTargetTask.locate(AVOID_RADIUS),
                 LocateFoodTask.run(RavenBrain::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
@@ -209,12 +209,12 @@ public class RavenBrain {
                 GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     raven -> raven.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_PLAYER_RADIUS,
+                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
+                AvoidTargetTask.forget(AVOID_RADIUS)
             ),
             MemoryModuleType.AVOID_TARGET
         );
@@ -304,7 +304,7 @@ public class RavenBrain {
             return false;
         }
 
-        return raven.isInRange(player, AVOID_PLAYER_RADIUS);
+        return raven.isInRange(player, AVOID_RADIUS);
     }
 
     public static void onAttacked(RavenEntity raven, LivingEntity attacker) {
@@ -358,7 +358,7 @@ public class RavenBrain {
         if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
             ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
             PlayerEntity player = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-            playerNear = player.isInRange(wantedItem, AVOID_PLAYER_RADIUS);
+            playerNear = player.isInRange(wantedItem, AVOID_RADIUS);
         }
 
         return !getFood().test(raven.getMainHandStack()) && !playerNear;

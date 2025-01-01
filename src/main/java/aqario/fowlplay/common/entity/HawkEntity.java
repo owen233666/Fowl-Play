@@ -64,7 +64,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 5);
+        return new BirdFlightMoveControl(this, 40, 6);
     }
 
     @Nullable
@@ -120,6 +120,11 @@ public class HawkEntity extends TrustingBirdEntity {
     public boolean canHunt(LivingEntity target) {
         return target.getType().isIn(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
             (target.getType().isIn(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
     @Override

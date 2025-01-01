@@ -120,6 +120,11 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.RAVEN_AVOIDS);
+    }
+
+    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }

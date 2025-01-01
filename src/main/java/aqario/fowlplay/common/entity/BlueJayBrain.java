@@ -76,7 +76,7 @@ public class BlueJayBrain {
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_PLAYER_RADIUS = 10;
+    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -116,7 +116,7 @@ public class BlueJayBrain {
                 new StayAboveWaterTask(0.5F),
                 FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
-                makeAddPlayerToAvoidTargetTask(),
+                AvoidTargetTask.locate(AVOID_RADIUS),
                 LocateFoodTask.run(),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
@@ -194,12 +194,12 @@ public class BlueJayBrain {
                 GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     blueJay -> blueJay.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_PLAYER_RADIUS,
+                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
+                AvoidTargetTask.forget(AVOID_RADIUS)
             ),
             MemoryModuleType.AVOID_TARGET
         );
@@ -270,7 +270,7 @@ public class BlueJayBrain {
             return false;
         }
 
-        return blueJay.isInRange(player, AVOID_PLAYER_RADIUS);
+        return blueJay.isInRange(player, AVOID_RADIUS);
     }
 
     public static void onAttacked(BlueJayEntity blueJay, LivingEntity attacker) {

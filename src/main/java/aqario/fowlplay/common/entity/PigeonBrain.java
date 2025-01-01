@@ -81,7 +81,7 @@ public class PigeonBrain {
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_PLAYER_RADIUS = 5;
+    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -125,7 +125,7 @@ public class PigeonBrain {
                 new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
                 new FollowOwnerTask(WALK_SPEED, 5, 10),
-                makeAddPlayerToAvoidTargetTask(),
+                AvoidTargetTask.locate(AVOID_RADIUS),
                 LocateFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
@@ -218,12 +218,12 @@ public class PigeonBrain {
                 GoToPositionTask.toEntity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_PLAYER_RADIUS,
+                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                ForgetTask.run(entity -> true, MemoryModuleType.AVOID_TARGET)
+                AvoidTargetTask.forget(AVOID_RADIUS)
             ),
             MemoryModuleType.AVOID_TARGET
         );
@@ -298,7 +298,7 @@ public class PigeonBrain {
             return false;
         }
 
-        return pigeon.isInRange(player, AVOID_PLAYER_RADIUS);
+        return pigeon.isInRange(player, AVOID_RADIUS);
     }
 
     public static void onAttacked(PigeonEntity pigeon, LivingEntity attacker) {

@@ -2,19 +2,14 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:raw_meats",
+      "id": "#c:foods/raw_meats",
       "required": false
     },
     {
-      "id": "#c:raw_meat",
+      "id": "#c:foods/raw_meat",
       "required": false
     },
-    "minecraft:beetroot_seeds",
     "minecraft:egg",
-    "minecraft:melon_seeds",
-    "minecraft:pumpkin_seeds",
-    "minecraft:torchflower_seeds",
-    "minecraft:turtle_egg",
-    "minecraft:wheat_seeds"
+    "minecraft:turtle_egg"
   ]
 }
