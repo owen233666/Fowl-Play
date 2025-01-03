@@ -24,17 +24,17 @@ _This mod adds a custom chicken model in the style of its other birds. The model
 - Chickadee (Black-capped chickadee)
 - Raven (Common raven)
 - Duck (Mallard duck)
+- Hawk (Red tailed hawk)
 
 **Planned additions (in order of priority):**
 
-- Hawks (Red tailed hawk)
+- Hawk (Cooper's hawk)
 - Woodpeckers (Downy woodpecker, pileated woodpecker, yellow-bellied sapsucker)
 - Geese (Domestic goose, Canada goose)
 - Eagles (Bald eagle, golden eagle)
 - Owls (Great horned owl, snowy owl)
-- New world Vultures (Black vulture, turkey vulture)
+- Old world Vultures (Griffon vulture, lappet-faced vulture)
 - Falcons (Peregrine falcon, gyrfalcon)
-- Ospreys
 
 ## Frequently Asked Questions
 

@@ -27,13 +27,13 @@ import java.util.function.Predicate;
 
 public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
-        SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
         FowlPlaySensorType.TEMPTING_PLAYER,
-        FowlPlaySensorType.HUNT_TARGETS
+        FowlPlaySensorType.ATTACK_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,

@@ -13,11 +13,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
@@ -31,6 +35,8 @@ import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class HawkEntity extends TrustingBirdEntity {
     public final AnimationState idleState = new AnimationState();
@@ -117,19 +123,30 @@ public class HawkEntity extends TrustingBirdEntity {
     }
 
     @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS) && !(entity instanceof PlayerEntity player && this.trusts(player));
+    }
+
+    @Override
     public boolean canHunt(LivingEntity target) {
         return target.getType().isIn(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
             (target.getType().isIn(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
     }
 
     @Override
-    public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS);
+    public boolean canAttack(LivingEntity target) {
+        Optional<LivingEntity> hurtBy = this.getBrain().getOptionalMemory(MemoryModuleType.HURT_BY_ENTITY);
+        return hurtBy.isPresent() && hurtBy.get().equals(target);
     }
 
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
+    }
+
+    @Override
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        return !effect.isOfType(StatusEffects.HUNGER) && super.canHaveStatusEffect(effect);
     }
 
     @Override

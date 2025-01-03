@@ -31,15 +31,16 @@ import java.util.UUID;
 
 public class PigeonBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PigeonEntity>>> SENSORS = ImmutableList.of(
-        SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
         FowlPlaySensorType.IS_FLYING,
-        FowlPlaySensorType.NEAREST_ADULTS,
+        FowlPlaySensorType.NEARBY_ADULTS,
         FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.AVOID_TARGETS,
         FowlPlaySensorType.PIGEON_SPECIFIC_SENSOR
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
@@ -70,6 +71,7 @@ public class PigeonBrain {
         MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
         MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
         MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS,
+        FowlPlayMemoryModuleType.IS_AVOIDING,
         FowlPlayMemoryModuleType.IS_FLYING,
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
@@ -125,7 +127,7 @@ public class PigeonBrain {
                 new TeleportToTargetTask(),
                 new WalkTask<>(RUN_SPEED),
                 new FollowOwnerTask(WALK_SPEED, 5, 10),
-                AvoidTargetTask.locate(AVOID_RADIUS),
+                AvoidTask.run(AVOID_RADIUS),
                 LocateFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
@@ -164,7 +166,7 @@ public class PigeonBrain {
             ),
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT)
             )
@@ -189,7 +191,7 @@ public class PigeonBrain {
             ),
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT)
             )
@@ -223,9 +225,9 @@ public class PigeonBrain {
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTargetTask.forget(AVOID_RADIUS)
+                AvoidTask.forget(AVOID_RADIUS)
             ),
-            MemoryModuleType.AVOID_TARGET
+            FowlPlayMemoryModuleType.IS_AVOIDING
         );
     }
 
@@ -244,7 +246,7 @@ public class PigeonBrain {
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT)
             )
         );

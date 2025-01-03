@@ -30,14 +30,15 @@ import java.util.Set;
 
 public class BlueJayBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super BlueJayEntity>>> SENSORS = ImmutableList.of(
-        SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
         SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.IS_FLYING,
-        FowlPlaySensorType.NEAREST_ADULTS
+        FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
+        FowlPlaySensorType.AVOID_TARGETS,
+        FowlPlaySensorType.NEARBY_ADULTS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
@@ -67,6 +68,7 @@ public class BlueJayBrain {
         MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
         MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM,
         MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS,
+        FowlPlayMemoryModuleType.IS_AVOIDING,
         FowlPlayMemoryModuleType.IS_FLYING,
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
@@ -116,7 +118,7 @@ public class BlueJayBrain {
                 new StayAboveWaterTask(0.5F),
                 FlightControlTask.stopFalling(),
                 new WalkTask<>(RUN_SPEED),
-                AvoidTargetTask.locate(AVOID_RADIUS),
+                AvoidTask.run(AVOID_RADIUS),
                 LocateFoodTask.run(),
                 new LookAroundTask(45, 90),
                 new WanderAroundTask(),
@@ -155,7 +157,7 @@ public class BlueJayBrain {
             ),
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
             )
         );
@@ -179,7 +181,7 @@ public class BlueJayBrain {
             ),
             ImmutableSet.of(
                 Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
             )
         );
@@ -199,9 +201,9 @@ public class BlueJayBrain {
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTargetTask.forget(AVOID_RADIUS)
+                AvoidTask.forget(AVOID_RADIUS)
             ),
-            MemoryModuleType.AVOID_TARGET
+            FowlPlayMemoryModuleType.IS_AVOIDING
         );
     }
 
@@ -220,7 +222,7 @@ public class BlueJayBrain {
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
-                Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }

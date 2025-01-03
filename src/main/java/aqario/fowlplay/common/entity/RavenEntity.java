@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -30,6 +31,9 @@ import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class RavenEntity extends TrustingBirdEntity {
     public final AnimationState idleState = new AnimationState();
@@ -116,7 +120,12 @@ public class RavenEntity extends TrustingBirdEntity {
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        return target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS);
+        if (!target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS)) {
+            return false;
+        }
+        Brain<RavenEntity> brain = this.getBrain();
+        Optional<List<PassiveEntity>> nearbyAdults = brain.getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
+        return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
     }
 
     @Override
