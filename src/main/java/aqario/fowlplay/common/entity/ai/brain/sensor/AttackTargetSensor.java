@@ -1,10 +1,11 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.VisibleLivingEntitiesCache;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
@@ -16,7 +17,7 @@ public class AttackTargetSensor extends Sensor<BirdEntity> {
     @Override
     protected void sense(ServerWorld world, BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
-        Optional<VisibleLivingEntitiesCache> visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
+        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
         if (visibleMobs.isEmpty()) {
             brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);
             return;

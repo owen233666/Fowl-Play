@@ -21,7 +21,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
@@ -124,7 +123,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS) && !(entity instanceof PlayerEntity player && this.trusts(player));
+        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
     @Override

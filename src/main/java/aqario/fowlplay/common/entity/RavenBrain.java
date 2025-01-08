@@ -42,12 +42,13 @@ public class RavenBrain {
         FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEARBY_ADULTS,
         FowlPlaySensorType.TEMPTING_PLAYER,
+        FowlPlaySensorType.AVOID_TARGETS,
         FowlPlaySensorType.ATTACK_TARGETS
     );
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
         MemoryModuleType.MOBS,
-        MemoryModuleType.VISIBLE_MOBS,
+        FowlPlayMemoryModuleType.VISIBLE_MOBS,
         MemoryModuleType.WALK_TARGET,
         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
         MemoryModuleType.PATH,

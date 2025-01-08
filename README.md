@@ -40,7 +40,11 @@ _This mod adds a custom chicken model in the style of its other birds. The model
 
 ### Is this mod available on Forge? / Can I use Sinytra connector?
 
-This mod currently does not have a Forge version. To use Sinytra connector, you must use a version under my [GitHub releases](https://github.com/aqariio/Fowl-Play/releases). This is because the normal release will crash when using Sinytra. Additionally, if you are using the 1.21 version of the mod with Sinytra connector, mobs will no longer be able to move in water. To fix this, you will need https://github.com/unilock/sinytra1343. ([Link to releases page](https://github.com/unilock/sinytra1343/releases))
+This mod currently **does not have a dedicated Forge version**. 
+
+**To use Sinytra connector, you must download the mod from my [GitHub](https://github.com/aqariio/Fowl-Play/releases)**. This is because the normal release will crash when loaded using Sinytra. 
+
+**If you are using the 1.21 version of the mod with Sinytra connector**, mobs will no longer be able to move in water. **To fix this, you will need https://github.com/unilock/sinytra1343**. ([Link to releases page](https://github.com/unilock/sinytra1343/releases))
 
 Forge support is planned for the future, but it is not a priority at the moment, as I want to focus on adding new features and fixing bugs. If you would like to port the mod, you are completely free to do so! Just make sure to credit me and link back to this page, of course. 
 

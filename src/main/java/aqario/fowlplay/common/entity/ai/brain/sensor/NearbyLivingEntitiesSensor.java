@@ -1,10 +1,11 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.VisibleLivingEntitiesCache;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
@@ -21,7 +22,7 @@ public class NearbyLivingEntitiesSensor<T extends LivingEntity> extends Sensor<T
         list.sort(Comparator.comparingDouble(entity::squaredDistanceTo));
         Brain<?> brain = entity.getBrain();
         brain.remember(MemoryModuleType.MOBS, list);
-        brain.remember(MemoryModuleType.VISIBLE_MOBS, new VisibleLivingEntitiesCache(entity, list));
+        brain.remember(FowlPlayMemoryModuleType.VISIBLE_MOBS, new VisibleMobsCache(entity, list));
     }
 
     protected int horizontalRadius() {
@@ -34,6 +35,6 @@ public class NearbyLivingEntitiesSensor<T extends LivingEntity> extends Sensor<T
 
     @Override
     public Set<MemoryModuleType<?>> getOutputMemoryModules() {
-        return ImmutableSet.of(MemoryModuleType.MOBS, MemoryModuleType.VISIBLE_MOBS);
+        return ImmutableSet.of(MemoryModuleType.MOBS, FowlPlayMemoryModuleType.VISIBLE_MOBS);
     }
 }

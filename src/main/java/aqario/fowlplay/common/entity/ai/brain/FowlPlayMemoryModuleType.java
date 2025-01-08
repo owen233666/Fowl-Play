@@ -22,6 +22,7 @@ public final class FowlPlayMemoryModuleType {
     public static final MemoryModuleType<Unit> IS_AVOIDING = register("is_avoiding", Unit.CODEC);
     public static final MemoryModuleType<TeleportTarget> TELEPORT_TARGET = register("teleport_target");
     public static final MemoryModuleType<UUID> RECIPIENT = register("recipient", UuidUtil.INT_STREAM_CODEC);
+    public static final MemoryModuleType<VisibleMobsCache> VISIBLE_MOBS = register("visible_mobs");
 
     private static <U> MemoryModuleType<U> register(String id, Codec<U> codec) {
         return Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), new MemoryModuleType<>(Optional.of(codec)));

@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
+import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
@@ -13,7 +14,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ReportingTaskControl;
-import net.minecraft.entity.ai.brain.*;
+import net.minecraft.entity.ai.brain.Activity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
@@ -43,7 +47,7 @@ public class HawkBrain {
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
         MemoryModuleType.MOBS,
-        MemoryModuleType.VISIBLE_MOBS,
+        FowlPlayMemoryModuleType.VISIBLE_MOBS,
         MemoryModuleType.WALK_TARGET,
         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
         MemoryModuleType.PATH,
@@ -293,8 +297,10 @@ public class HawkBrain {
         brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
         if (attacker instanceof PlayerEntity player) {
             brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-            hawk.stopTrusting(player);
-            brain.remember(MemoryModuleType.AVOID_TARGET, player, 600L);
+            if (hawk.trusts(player)) {
+                hawk.stopTrusting(player);
+                brain.remember(MemoryModuleType.AVOID_TARGET, player, 600L);
+            }
         }
         brain.remember(MemoryModuleType.ATTACK_TARGET, attacker, 600L);
     }
@@ -313,7 +319,7 @@ public class HawkBrain {
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
             return false;
         }
-        Optional<VisibleLivingEntitiesCache> visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
+        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
         if (visibleMobs.isEmpty()) {
             return false;
         }
