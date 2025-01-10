@@ -99,6 +99,14 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
         }
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.isPersistent() && !this.getTrustedUuids().isEmpty()) {
+            this.setPersistent();
+        }
+    }
+
     public List<UUID> getTrustedUuids() {
         return this.dataTracker.get(TRUSTED);
     }

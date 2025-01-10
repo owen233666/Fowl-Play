@@ -12,12 +12,11 @@ import net.minecraft.util.math.Vec3d;
 public class HawkEntityRenderer extends MobEntityRenderer<HawkEntity, HawkEntityModel> {
     public HawkEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new HawkEntityModel(context.getPart(HawkEntityModel.MODEL_LAYER)), 0.3f);
-        this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
-            @Override
-            public Vec3d getItemOffset() {
-                return new Vec3d(0.0, -0.05375, -0.1475);
-            }
-        });
+        this.addFeature(new BirdHeldItemFeatureRenderer<>(
+            this,
+            context.getHeldItemRenderer(),
+            new Vec3d(0.0, -0.05375, -0.1475)
+        ));
     }
 
     @Override
