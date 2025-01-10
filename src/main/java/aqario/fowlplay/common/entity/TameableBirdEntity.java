@@ -15,7 +15,6 @@ import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.world.EntityView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -233,8 +232,8 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBooleanValue(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
-            this.getOwner().sendSystemMessage(this.getDamageTracker().getDeathMessage());
+        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
+            this.getOwner().sendMessage(this.getDamageTracker().getDeathMessage());
         }
 
         super.onDeath(source);
@@ -246,10 +245,5 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     public void setSitting(boolean sitting) {
         this.sitting = sitting;
-    }
-
-    @Override
-    public EntityView getEntityView() {
-        return null;
     }
 }

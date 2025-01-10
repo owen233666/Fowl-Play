@@ -8,7 +8,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
-import net.minecraft.util.UuidUtil;
+import net.minecraft.util.Uuids;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public final class FowlPlayMemoryModuleType {
     public static final MemoryModuleType<Unit> IS_FLYING = register("is_flying", Unit.CODEC);
     public static final MemoryModuleType<Unit> IS_AVOIDING = register("is_avoiding", Unit.CODEC);
     public static final MemoryModuleType<TeleportTarget> TELEPORT_TARGET = register("teleport_target");
-    public static final MemoryModuleType<UUID> RECIPIENT = register("recipient", UuidUtil.INT_STREAM_CODEC);
+    public static final MemoryModuleType<UUID> RECIPIENT = register("recipient", Uuids.INT_STREAM_CODEC);
     public static final MemoryModuleType<VisibleMobsCache> VISIBLE_MOBS = register("visible_mobs");
 
     private static <U> MemoryModuleType<U> register(String id, Codec<U> codec) {

@@ -27,7 +27,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_RAVENS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
@@ -55,8 +55,8 @@ public class RavenEntity extends TrustingBirdEntity {
         return 0;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createRavenAttributes() {
+        return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
@@ -66,7 +66,7 @@ public class RavenEntity extends TrustingBirdEntity {
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return this.getAttackTarget();
+        return this.getTargetInBrain();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.RAVEN_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.RAVEN_FOOD);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class RavenEntity extends TrustingBirdEntity {
             return false;
         }
         Brain<RavenEntity> brain = this.getBrain();
-        Optional<List<PassiveEntity>> nearbyAdults = brain.getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
+        Optional<List<PassiveEntity>> nearbyAdults = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
         return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
     }
 
@@ -141,9 +141,9 @@ public class RavenEntity extends TrustingBirdEntity {
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.setRunning(this.isFlying(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

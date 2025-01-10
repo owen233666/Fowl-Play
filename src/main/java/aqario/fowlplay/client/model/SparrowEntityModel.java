@@ -90,12 +90,12 @@ public class SparrowEntityModel extends BirdEntityModel<SparrowEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(sparrow, limbAngle, limbDistance, tickDelta);
         float ageInTicks = sparrow.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, sparrow.prevBodyYaw, sparrow.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, sparrow.prevHeadYaw, sparrow.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, sparrow.prevBodyYaw, sparrow.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, sparrow.prevHeadYaw, sparrow.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, sparrow.prevPitch, sparrow.getPitch());
-        if (LivingEntityRenderer.renderFlipped(sparrow)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(sparrow)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -119,12 +119,12 @@ public class SparrowEntityModel extends BirdEntityModel<SparrowEntity> {
             this.rightWing.visible = true;
         }
         if (!sparrow.isFlying() && !sparrow.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(SparrowEntityAnimations.SPARROW_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(SparrowEntityAnimations.SPARROW_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(sparrow.idleState, SparrowEntityAnimations.SPARROW_IDLE, ageInTicks);
-        this.animate(sparrow.floatState, SparrowEntityAnimations.SPARROW_FLOAT, ageInTicks);
-        this.animate(sparrow.glideState, SparrowEntityAnimations.SPARROW_GLIDE, ageInTicks);
-        this.animate(sparrow.flapState, SparrowEntityAnimations.SPARROW_FLAP, ageInTicks);
+        this.updateAnimation(sparrow.idleState, SparrowEntityAnimations.SPARROW_IDLE, ageInTicks);
+        this.updateAnimation(sparrow.floatState, SparrowEntityAnimations.SPARROW_FLOAT, ageInTicks);
+        this.updateAnimation(sparrow.glideState, SparrowEntityAnimations.SPARROW_GLIDE, ageInTicks);
+        this.updateAnimation(sparrow.flapState, SparrowEntityAnimations.SPARROW_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

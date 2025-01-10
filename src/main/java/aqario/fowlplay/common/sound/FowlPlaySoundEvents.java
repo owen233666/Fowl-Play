@@ -50,7 +50,7 @@ public final class FowlPlaySoundEvents {
 
     private static SoundEvent register(String id) {
         Identifier identifier = Identifier.of(FowlPlay.ID, id);
-        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
+        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
     }
 
     public static void init() {

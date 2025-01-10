@@ -5,13 +5,13 @@ import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
-public class TeleportToTargetTask extends Task<BirdEntity> {
+public class TeleportToTargetTask extends MultiTickTask<BirdEntity> {
     public TeleportToTargetTask() {
         super(ImmutableMap.of(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleState.VALUE_PRESENT));
     }
@@ -32,14 +32,14 @@ public class TeleportToTargetTask extends Task<BirdEntity> {
         if (!entity.getBrain().hasMemoryModule(FowlPlayMemoryModuleType.TELEPORT_TARGET)) {
             return false;
         }
-        Entity target = entity.getBrain().getMemoryValue(FowlPlayMemoryModuleType.TELEPORT_TARGET).get().entity();
+        Entity target = entity.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET).get().entity();
         BlockPos pos = target.getBlockPos();
 
         for (int i = 0; i < 10; i++) {
-            int j = entity.getRandom().rangeInclusive(-3, 3);
-            int k = entity.getRandom().rangeInclusive(-3, 3);
+            int j = entity.getRandom().nextBetween(-3, 3);
+            int k = entity.getRandom().nextBetween(-3, 3);
             if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
-                int l = entity.getRandom().rangeInclusive(-1, 1);
+                int l = entity.getRandom().nextBetween(-1, 1);
                 if (this.tryTeleportTo(entity, pos.getX() + j, pos.getY() + l, pos.getZ() + k)) {
                     return true;
                 }
@@ -65,6 +65,6 @@ public class TeleportToTargetTask extends Task<BirdEntity> {
             return false;
         }
         BlockPos distance = pos.subtract(entity.getBlockPos());
-        return entity.getWorld().isSpaceEmpty(entity, entity.getBounds().offset(distance));
+        return entity.getWorld().isSpaceEmpty(entity, entity.getBoundingBox().offset(distance));
     }
 }

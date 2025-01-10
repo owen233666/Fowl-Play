@@ -21,7 +21,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -37,20 +37,20 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.setMoveControl(false);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return BirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createFlyingBirdAttributes() {
+        return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.28f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
@@ -153,8 +153,8 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
-    protected float getAirSpeed() {
-        return this.isFlying() ? this.getMovementSpeed() : super.getAirSpeed();
+    protected float getOffGroundSpeed() {
+        return this.isFlying() ? this.getMovementSpeed() : super.getOffGroundSpeed();
     }
 
     @Override
@@ -200,7 +200,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
-    protected void playStepSound(BlockState state) {
+    protected void playSecondaryStepSound(BlockState state) {
     }
 
     @Override

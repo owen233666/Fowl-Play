@@ -90,12 +90,12 @@ public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(robin, limbAngle, limbDistance, tickDelta);
         float ageInTicks = robin.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, robin.prevBodyYaw, robin.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, robin.prevHeadYaw, robin.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, robin.prevBodyYaw, robin.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, robin.prevHeadYaw, robin.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, robin.prevPitch, robin.getPitch());
-        if (LivingEntityRenderer.renderFlipped(robin)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(robin)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -119,12 +119,12 @@ public class RobinEntityModel extends BirdEntityModel<RobinEntity> {
             this.rightWing.visible = true;
         }
         if (!robin.isFlying() && !robin.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(RobinEntityAnimations.ROBIN_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(robin.idleState, RobinEntityAnimations.ROBIN_IDLE, ageInTicks);
-        this.animate(robin.floatState, RobinEntityAnimations.ROBIN_FLOAT, ageInTicks);
-        this.animate(robin.glideState, RobinEntityAnimations.ROBIN_GLIDE, ageInTicks);
-        this.animate(robin.flapState, RobinEntityAnimations.ROBIN_FLAP, ageInTicks);
+        this.updateAnimation(robin.idleState, RobinEntityAnimations.ROBIN_IDLE, ageInTicks);
+        this.updateAnimation(robin.floatState, RobinEntityAnimations.ROBIN_FLOAT, ageInTicks);
+        this.updateAnimation(robin.glideState, RobinEntityAnimations.ROBIN_GLIDE, ageInTicks);
+        this.updateAnimation(robin.flapState, RobinEntityAnimations.ROBIN_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

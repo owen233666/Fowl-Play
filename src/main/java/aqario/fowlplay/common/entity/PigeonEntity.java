@@ -36,7 +36,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PigeonEntity extends TameableBirdEntity implements VariantProvider<PigeonEntity.Variant> {
+public class PigeonEntity extends TameableBirdEntity implements VariantHolder<PigeonEntity.Variant> {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
@@ -59,16 +59,16 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -3.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, -3.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
@@ -79,9 +79,9 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
-    protected void initEquipment(RandomGenerator random, LocalDifficulty difficulty) {
-        this.setDropChance(EquipmentSlot.MAINHAND, 1.0f);
-        this.setDropChance(EquipmentSlot.OFFHAND, 1.0f);
+    protected void initEquipment(Random random, LocalDifficulty difficulty) {
+        this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 1.0f);
+        this.setEquipmentDropChance(EquipmentSlot.OFFHAND, 1.0f);
     }
 
     @Override
@@ -92,12 +92,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
-    public PigeonEntity.Variant getVariant() {
-        return PigeonEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
+    public Variant getVariant() {
+        return Variant.valueOf(this.dataTracker.get(VARIANT));
     }
 
     @Override
-    public void setVariant(PigeonEntity.Variant variant) {
+    public void setVariant(Variant variant) {
         this.dataTracker.set(VARIANT, variant.toString());
     }
 
@@ -119,7 +119,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         }
         this.setRecipientUuid(nbt.getUuid("recipient"));
         if (nbt.contains("variant")) {
-            this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
+            this.setVariant(Variant.valueOf(nbt.getString("variant")));
         }
     }
 
@@ -152,8 +152,8 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createPigeonAttributes() {
+        return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.225f);
@@ -238,7 +238,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.PIGEON_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.PIGEON_FOOD);
     }
 
     @Override
@@ -259,10 +259,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
-            this.sitState.animateIf(this.isInSittingPose(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
+            this.flapState.setRunning(this.isFlying(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.sitState.setRunning(this.isInSittingPose(), this.age);
         }
 
         super.tick();
@@ -321,7 +321,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return false;
         }
         List<PlayerEntity> list = this.getWorld()
-            .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
+            .getEntitiesByClass(PlayerEntity.class, this.getAttackBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
         if (list.isEmpty()) {
             return false;
         }

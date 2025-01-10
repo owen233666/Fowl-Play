@@ -1,11 +1,14 @@
 plugins {
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
-    id 'org.quiltmc.loom' version '1.+'
 }
 
-archivesBaseName = project.archives_base_name
-version = "${project.version}+${project.minecraft_version}"
+version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
 
 repositories {
     maven {
@@ -29,7 +32,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
     // Mappings
-    mappings "org.quiltmc:quilt-mappings:${project.quilt_mappings}:intermediary-v2"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
     // Fabric Loader
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -64,46 +67,39 @@ fabricApi {
 }
 
 processResources {
-    inputs.property 'version', version
+    inputs.property "version", project.version
 
-    filesMatching('fabric.mod.json') {
-        expand "version": version
-    }
-
-    filesMatching('quilt.mod.json') {
-        expand "version": version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = 'UTF-8'
     it.options.release = 21
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
 
-    // If this mod is going to be a library, then it should also generate Javadocs in order to aid with development.
-    // Uncomment this line to generate them.
-    // withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 // If you plan to use a different file for the license, don't forget to change the file name here!
 jar {
-    from('LICENSE.md') {
-        rename { "${it}_${archivesBaseName}" }
+    from("LICENSE.md") {
+        rename { "${it}_${project.base.archivesName.get()}" }
     }
 }
 
 // Configure the maven publication
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archives_base_name
             from components.java
         }
     }

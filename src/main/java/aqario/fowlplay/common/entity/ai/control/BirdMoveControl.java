@@ -41,7 +41,7 @@ public class BirdMoveControl extends MoveControl {
                 && !blockState.isIn(BlockTags.DOORS)
                 && !blockState.isIn(BlockTags.FENCES)) {
                 this.bird.getJumpControl().setActive();
-                this.state = MoveControl.State.JUMPING;
+                this.state = State.JUMPING;
             }
             if (distance.y < (double) this.bird.getStepHeight() && distance.x * distance.x + distance.z * distance.z < (double) Math.max(1.0F, this.bird.getWidth())
                 || !voxelShape.isEmpty()
@@ -51,13 +51,13 @@ public class BirdMoveControl extends MoveControl {
                 this.bird.setSneaking(true);
             }
         }
-        else if (this.state == MoveControl.State.JUMPING) {
+        else if (this.state == State.JUMPING) {
             this.bird.setMovementSpeed((float) (this.speed * this.bird.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
             if (this.bird.isOnGround()) {
-                this.state = MoveControl.State.WAIT;
+                this.state = State.WAIT;
             }
         }
-        else if (this.state == MoveControl.State.STRAFE) {
+        else if (this.state == State.STRAFE) {
             this.state = State.WAIT;
         }
         else {

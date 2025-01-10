@@ -3,12 +3,12 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.ReportingTaskControl;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.TaskBuilder;
-import net.minecraft.entity.ai.brain.task.TaskControl;
+import net.minecraft.entity.ai.brain.task.SingleTickTask;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class FlyTask {
-    public static TaskControl<FlyingBirdEntity> create(float speed, int horizontalRange, int verticalRange) {
+    public static Task<FlyingBirdEntity> create(float speed, int horizontalRange, int verticalRange) {
         return create(speed, (entity) -> findTargetPos(entity, horizontalRange, verticalRange), (entity) -> true);
     }
 
@@ -33,8 +33,8 @@ public class FlyTask {
         return FuzzyTargeting.find(entity, horizontalRange, verticalRange);
     }
 
-    private static ReportingTaskControl<FlyingBirdEntity> create(float speed, Function<FlyingBirdEntity, Vec3d> targetGetter, Predicate<FlyingBirdEntity> predicate) {
-        return TaskBuilder.task((instance) -> instance.group(instance.absentMemory(MemoryModuleType.WALK_TARGET)).apply(instance, (walkTarget) -> (world, entity, time) -> {
+    private static SingleTickTask<FlyingBirdEntity> create(float speed, Function<FlyingBirdEntity, Vec3d> targetGetter, Predicate<FlyingBirdEntity> predicate) {
+        return TaskTriggerer.task((instance) -> instance.group(instance.queryMemoryAbsent(MemoryModuleType.WALK_TARGET)).apply(instance, (walkTarget) -> (world, entity, time) -> {
             if (!predicate.test(entity)) {
                 return false;
             }
@@ -63,7 +63,7 @@ public class FlyTask {
                 boolean validBlock = state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS);
                 if (
                     validBlock && entity.getWorld().isAir(targetPos)
-                        && (entity.getBounds().getYLength() <= 1 || entity.getWorld().isAir(mutable.set(targetPos, Direction.UP)))
+                        && (entity.getBoundingBox().getLengthY() <= 1 || entity.getWorld().isAir(mutable.set(targetPos, Direction.UP)))
                 ) {
                     return Vec3d.ofBottomCenter(targetPos);
                 }

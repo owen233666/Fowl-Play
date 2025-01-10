@@ -23,7 +23,7 @@ public class NearestVisibleAdultsSensor extends Sensor<PassiveEntity> {
     protected void sense(ServerWorld world, PassiveEntity entity) {
         Brain<?> brain = entity.getBrain();
         List<PassiveEntity> nearbyVisibleAdults = Lists.newArrayList();
-        VisibleMobsCache visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS)
+        VisibleMobsCache visibleMobs = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS)
             .orElse(VisibleMobsCache.getEmpty());
 
         visibleMobs.stream(living -> living.getType() == entity.getType() && !entity.isBaby())

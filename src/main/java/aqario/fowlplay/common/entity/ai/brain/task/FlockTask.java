@@ -3,14 +3,14 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
-public class FlockTask extends Task<FlyingBirdEntity> {
+public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
     public final float coherence;
     public final float alignment;
     public final float separation;
@@ -34,7 +34,7 @@ public class FlockTask extends Task<FlyingBirdEntity> {
             return false;
         }
 
-        this.nearbyBirds = bird.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
+        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
 
         return this.nearbyBirds.size() > 5;
     }

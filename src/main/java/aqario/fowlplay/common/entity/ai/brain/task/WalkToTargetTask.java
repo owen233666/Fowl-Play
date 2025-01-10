@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.ai.brain.*;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class WalkToTargetTask extends Task<MobEntity> {
+public class WalkToTargetTask extends MultiTickTask<MobEntity> {
     private static final int MAX_UPDATE_COUNTDOWN = 40;
     private int pathUpdateCountdownTicks;
     @Nullable
@@ -51,7 +51,7 @@ public class WalkToTargetTask extends Task<MobEntity> {
             return false;
         }
         Brain<?> brain = entity.getBrain();
-        WalkTarget walkTarget = brain.getOptionalMemory(MemoryModuleType.WALK_TARGET).get();
+        WalkTarget walkTarget = brain.getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get();
         boolean reachedTarget = this.hasReached(entity, walkTarget);
         if (!reachedTarget && this.hasFinishedPath(entity, walkTarget, world.getTime())) {
             this.lookTargetPos = walkTarget.getLookTarget().getBlockPos();
@@ -67,7 +67,7 @@ public class WalkToTargetTask extends Task<MobEntity> {
 
     protected boolean shouldKeepRunning(ServerWorld world, MobEntity entity, long l) {
         if (this.path != null && this.lookTargetPos != null) {
-            Optional<WalkTarget> walkTarget = entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
+            Optional<WalkTarget> walkTarget = entity.getBrain().getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET);
             boolean bl = walkTarget.map(WalkToTargetTask::isTargetSpectator).orElse(false);
             EntityNavigation entityNavigation = entity.getNavigation();
             return !entityNavigation.isIdle() && walkTarget.isPresent() && !this.hasReached(entity, walkTarget.get()) && !bl;
@@ -77,7 +77,7 @@ public class WalkToTargetTask extends Task<MobEntity> {
 
     protected void finishRunning(ServerWorld world, MobEntity entity, long l) {
         if (entity.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET)
-            && !this.hasReached(entity, entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET).get())
+            && !this.hasReached(entity, entity.getBrain().getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get())
             && entity.getNavigation().isNearPathStartPos()) {
             this.pathUpdateCountdownTicks = world.getRandom().nextInt(MAX_UPDATE_COUNTDOWN);
         }
@@ -102,7 +102,7 @@ public class WalkToTargetTask extends Task<MobEntity> {
         }
 
         if (path != null && this.lookTargetPos != null) {
-            WalkTarget walkTarget = brain.getOptionalMemory(MemoryModuleType.WALK_TARGET).get();
+            WalkTarget walkTarget = brain.getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get();
             if (walkTarget.getLookTarget().getBlockPos().getSquaredDistance(this.lookTargetPos) > 4.0 && this.hasFinishedPath(entity, walkTarget, world.getTime())) {
                 this.lookTargetPos = walkTarget.getLookTarget().getBlockPos();
                 this.run(world, entity, l);
@@ -136,7 +136,7 @@ public class WalkToTargetTask extends Task<MobEntity> {
                 target = FuzzyTargeting.find(bird, 64, 32);
             }
             else {
-                target = NoPenaltyTargeting.find((PathAwareEntity) entity, 10, 7, Vec3d.ofBottomCenter(blockPos), (float) (Math.PI / 2));
+                target = NoPenaltyTargeting.findTo((PathAwareEntity) entity, 10, 7, Vec3d.ofBottomCenter(blockPos), (float) (Math.PI / 2));
             }
 
             if (target != null) {

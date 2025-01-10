@@ -6,21 +6,21 @@ import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.TaskBuilder;
-import net.minecraft.entity.ai.brain.task.TaskControl;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class DeliverBundleTask {
-    public static <E extends PigeonEntity> TaskControl<E> run(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter) {
-        return TaskBuilder.task(
+    public static <E extends PigeonEntity> Task<E> run(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter) {
+        return TaskTriggerer.task(
             instance -> instance.group(
-                    instance.presentMemory(FowlPlayMemoryModuleType.RECIPIENT),
-                    instance.registeredMemory(MemoryModuleType.LOOK_TARGET),
-                    instance.registeredMemory(MemoryModuleType.WALK_TARGET),
-                    instance.registeredMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET)
+                    instance.queryMemoryValue(FowlPlayMemoryModuleType.RECIPIENT),
+                    instance.queryMemoryOptional(MemoryModuleType.LOOK_TARGET),
+                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET),
+                    instance.queryMemoryOptional(FowlPlayMemoryModuleType.TELEPORT_TARGET)
                 )
                 .apply(
                     instance,

@@ -30,7 +30,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ public class HawkEntity extends TrustingBirdEntity {
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_HAWKS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
@@ -59,8 +59,8 @@ public class HawkEntity extends TrustingBirdEntity {
         return 100;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createHawkAttributes() {
+        return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 14.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
@@ -75,7 +75,7 @@ public class HawkEntity extends TrustingBirdEntity {
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return this.getAttackTarget();
+        return this.getTargetInBrain();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class HawkEntity extends TrustingBirdEntity {
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.HAWK_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.HAWK_FOOD);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        Optional<LivingEntity> hurtBy = this.getBrain().getOptionalMemory(MemoryModuleType.HURT_BY_ENTITY);
+        Optional<LivingEntity> hurtBy = this.getBrain().getOptionalRegisteredMemory(MemoryModuleType.HURT_BY_ENTITY);
         return hurtBy.isPresent() && hurtBy.get().equals(target);
     }
 
@@ -145,13 +145,13 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return !effect.isOfType(StatusEffects.HUNGER) && super.canHaveStatusEffect(effect);
+        return !effect.equals(StatusEffects.HUNGER) && super.canHaveStatusEffect(effect);
     }
 
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
             if (this.isFlying()) {
                 if (this.timeSinceLastFlap > this.getFlapFrequency()) {
                     this.timeSinceLastFlap = 0;
@@ -160,13 +160,13 @@ public class HawkEntity extends TrustingBirdEntity {
                 else if (this.flapTime > 0 && this.flapTime < 60) {
                     this.flapTime++;
                     this.glideState.stop();
-                    this.flapState.start(this.age);
+                    this.flapState.startIfNotRunning(this.age);
                 }
                 else {
                     this.timeSinceLastFlap++;
                     this.flapTime = 0;
                     this.flapState.stop();
-                    this.glideState.start(this.age);
+                    this.glideState.startIfNotRunning(this.age);
                 }
             }
             else {
@@ -175,7 +175,7 @@ public class HawkEntity extends TrustingBirdEntity {
                 this.flapState.stop();
                 this.glideState.stop();
             }
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

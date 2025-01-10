@@ -17,7 +17,7 @@ public class AttackTargetSensor extends Sensor<BirdEntity> {
     @Override
     protected void sense(ServerWorld world, BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
-        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
+        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
         if (visibleMobs.isEmpty()) {
             brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);
             return;

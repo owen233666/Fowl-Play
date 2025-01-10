@@ -94,12 +94,12 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(gull, limbAngle, limbDistance, tickDelta);
         float ageInTicks = gull.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, gull.prevBodyYaw, gull.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, gull.prevHeadYaw, gull.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, gull.prevBodyYaw, gull.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, gull.prevHeadYaw, gull.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, gull.prevPitch, gull.getPitch());
-        if (LivingEntityRenderer.renderFlipped(gull)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(gull)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -123,12 +123,12 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.rightWing.visible = true;
         }
         if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
+            this.animateMovement(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
         }
-        this.animate(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.animate(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
-        this.animate(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
-        this.animate(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
+        this.updateAnimation(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
+        this.updateAnimation(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
+        this.updateAnimation(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
+        this.updateAnimation(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

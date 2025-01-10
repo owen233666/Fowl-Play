@@ -19,7 +19,7 @@ public class AvoidTargetSensor extends Sensor<BirdEntity> {
     @Override
     protected void sense(ServerWorld world, BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
-        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
+        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
         if (visibleMobs.isEmpty()) {
             brain.forget(MemoryModuleType.AVOID_TARGET);
             return;
@@ -43,7 +43,7 @@ public class AvoidTargetSensor extends Sensor<BirdEntity> {
         if (target instanceof PlayerEntity player) {
             return !(bird instanceof TrustingBirdEntity trusting) || !trusting.trusts(player);
         }
-        Optional<LivingEntity> attackTarget = bird.getBrain().getOptionalMemory(MemoryModuleType.ATTACK_TARGET);
+        Optional<LivingEntity> attackTarget = bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.ATTACK_TARGET);
         if (attackTarget.isPresent() && attackTarget.get().equals(target)) {
             return false;
         }

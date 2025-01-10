@@ -2,17 +2,17 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.TaskBuilder;
-import net.minecraft.entity.ai.brain.task.TaskControl;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 
 /**
  * A collection of tasks that control the sliding behavior of penguins.
  */
 public class SlideControlTask {
-    public static <E extends PenguinEntity> TaskControl<E> startSliding() {
-        return TaskBuilder.task(
+    public static <E extends PenguinEntity> Task<E> startSliding() {
+        return TaskTriggerer.task(
             instance -> instance.group(
-                    instance.registeredMemory(MemoryModuleType.WALK_TARGET)
+                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
                 )
                 .apply(
                     instance,
@@ -27,10 +27,10 @@ public class SlideControlTask {
         );
     }
 
-    public static <E extends PenguinEntity> TaskControl<E> stopSliding() {
-        return TaskBuilder.task(
+    public static <E extends PenguinEntity> Task<E> stopSliding() {
+        return TaskTriggerer.task(
             instance -> instance.group(
-                    instance.registeredMemory(MemoryModuleType.WALK_TARGET)
+                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
                 )
                 .apply(
                     instance,
@@ -45,10 +45,10 @@ public class SlideControlTask {
         );
     }
 
-    public static <E extends PenguinEntity> TaskControl<E> toggleSliding(int seconds) {
-        return TaskBuilder.task(
+    public static <E extends PenguinEntity> Task<E> toggleSliding(int seconds) {
+        return TaskTriggerer.task(
             instance -> instance.group(
-                    instance.registeredMemory(MemoryModuleType.WALK_TARGET)
+                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
                 )
                 .apply(
                     instance,

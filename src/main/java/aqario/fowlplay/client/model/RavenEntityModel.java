@@ -103,12 +103,12 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(raven, limbAngle, limbDistance, tickDelta);
         float ageInTicks = raven.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, raven.prevBodyYaw, raven.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, raven.prevHeadYaw, raven.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, raven.prevBodyYaw, raven.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, raven.prevHeadYaw, raven.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, raven.prevPitch, raven.getPitch());
-        if (LivingEntityRenderer.renderFlipped(raven)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(raven)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -132,12 +132,12 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
             this.rightWing.visible = true;
         }
         if (!raven.isFlying() && !raven.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
+            this.animateMovement(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
         }
-        this.animate(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
-        this.animate(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);
-        this.animate(raven.glideState, RavenEntityAnimations.RAVEN_GLIDE, ageInTicks);
-        this.animate(raven.flapState, RavenEntityAnimations.RAVEN_FLAP, ageInTicks);
+        this.updateAnimation(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
+        this.updateAnimation(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);
+        this.updateAnimation(raven.glideState, RavenEntityAnimations.RAVEN_GLIDE, ageInTicks);
+        this.updateAnimation(raven.flapState, RavenEntityAnimations.RAVEN_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

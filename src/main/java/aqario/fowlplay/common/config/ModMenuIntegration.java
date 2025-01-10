@@ -5,7 +5,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.text.CommonTexts;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
@@ -28,7 +28,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 Text.translatable("config.info.require_yacl"),
                 Text.literal(link),
                 link,
-                CommonTexts.CANCEL,
+                ScreenTexts.CANCEL,
                 true
             );
     }

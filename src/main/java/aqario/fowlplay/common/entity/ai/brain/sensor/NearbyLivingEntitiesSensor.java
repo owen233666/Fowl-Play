@@ -17,7 +17,7 @@ import java.util.Set;
 public class NearbyLivingEntitiesSensor<T extends LivingEntity> extends Sensor<T> {
     @Override
     protected void sense(ServerWorld world, T entity) {
-        Box box = entity.getBounds().expand(this.horizontalRadius(), this.verticalRadius(), this.horizontalRadius());
+        Box box = entity.getBoundingBox().expand(this.horizontalRadius(), this.verticalRadius(), this.horizontalRadius());
         List<LivingEntity> list = world.getEntitiesByClass(LivingEntity.class, box, living -> living != entity && living.isAlive());
         list.sort(Comparator.comparingDouble(entity::squaredDistanceTo));
         Brain<?> brain = entity.getBrain();

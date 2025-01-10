@@ -11,7 +11,7 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.pathing.AmphibiousNavigation;
+import net.minecraft.entity.ai.pathing.AmphibiousSwimNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -31,7 +31,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class DuckEntity extends TrustingBirdEntity implements VariantProvider<DuckEntity.Variant>, Aquatic {
+public class DuckEntity extends TrustingBirdEntity implements VariantHolder<DuckEntity.Variant>, Aquatic {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(DuckEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
@@ -50,12 +50,12 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
 
     public DuckEntity(EntityType<? extends DuckEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
@@ -65,11 +65,11 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
 
     @Override
     protected EntityNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.getWorld());
+        return new AmphibiousSwimNavigation(this, this.getWorld());
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_DUCKS);
     }
 
@@ -93,8 +93,8 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
         return 0;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createDuckAttributes() {
+        return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
@@ -105,7 +105,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return this.getAttackTarget();
+        return this.getTargetInBrain();
     }
 
     @Override
@@ -115,12 +115,12 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     }
 
     @Override
-    public DuckEntity.Variant getVariant() {
-        return DuckEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
+    public Variant getVariant() {
+        return Variant.valueOf(this.dataTracker.get(VARIANT));
     }
 
     @Override
-    public void setVariant(DuckEntity.Variant variant) {
+    public void setVariant(Variant variant) {
         this.dataTracker.set(VARIANT, variant.toString());
     }
 
@@ -134,7 +134,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         if (nbt.contains("variant")) {
-            this.setVariant(DuckEntity.Variant.valueOf(nbt.getString("variant")));
+            this.setVariant(Variant.valueOf(nbt.getString("variant")));
         }
     }
 
@@ -163,7 +163,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     }
 
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.DUCK_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.DUCK_FOOD);
     }
 
     @Override
@@ -185,9 +185,9 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.setRunning(this.isFlying(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();
@@ -262,7 +262,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     @Override
     public boolean isFloating() {
         double maxWaterHeight = 0.35; // how much of the hitbox the water should cover
-        BlockPos blockPos = BlockPos.create(this.getX(), this.getY() + maxWaterHeight, this.getZ());
+        BlockPos blockPos = BlockPos.ofFloored(this.getX(), this.getY() + maxWaterHeight, this.getZ());
         double waterHeight = this.getBlockPos().getY() + this.getWorld().getFluidState(blockPos).getHeight(this.getWorld(), blockPos);
         return this.isSubmergedInWater() || waterHeight > this.getY() + maxWaterHeight;
     }
@@ -270,8 +270,8 @@ public class DuckEntity extends TrustingBirdEntity implements VariantProvider<Du
     public enum Variant {
         MALLARD("mallard");
 
-        public static final List<DuckEntity.Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(DuckEntity.Variant[]::new));
+        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
+            .toArray(Variant[]::new));
 
         private final String id;
 

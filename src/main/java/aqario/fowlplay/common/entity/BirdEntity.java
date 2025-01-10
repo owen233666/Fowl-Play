@@ -41,8 +41,8 @@ public abstract class BirdEntity extends AnimalEntity {
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createBirdAttributes() {
+        return MobEntity.createMobAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
     }
@@ -258,17 +258,17 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     @Override
-    public int getLookYawSpeed() {
+    public int getMaxLookYawChange() {
         return 100;
     }
 
     @Override
-    public int getLookPitchSpeed() {
+    public int getMaxLookPitchChange() {
         return 100;
     }
 
     @Override
-    public int getBodyYawSpeed() {
+    public int getMaxHeadRotation() {
         return 270;
     }
 

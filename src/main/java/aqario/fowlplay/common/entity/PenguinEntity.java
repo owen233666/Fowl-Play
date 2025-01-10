@@ -11,10 +11,10 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.control.AquaticLookControl;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.pathing.AmphibiousNavigation;
+import net.minecraft.entity.ai.control.YawAdjustingLookControl;
+import net.minecraft.entity.ai.pathing.AmphibiousSwimNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -39,7 +39,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -66,13 +66,13 @@ public class PenguinEntity extends BirdEntity {
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
-        this.addPathfindingPenalty(PathNodeType.WATER, 0.0f);
-        this.lookControl = new AquaticLookControl(this, 85);
+        this.setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+        this.lookControl = new YawAdjustingLookControl(this, 85);
     }
 
     @Override
-    protected float getAirSpeed() {
-        return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() : super.getAirSpeed();
+    protected float getOffGroundSpeed() {
+        return this.isInsideWaterOrBubbleColumn() ? this.getMovementSpeed() : super.getOffGroundSpeed();
     }
 
     @Override
@@ -92,24 +92,24 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    public int getLookPitchSpeed() {
-        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getLookPitchSpeed();
+    public int getMaxLookPitchChange() {
+        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getMaxLookPitchChange();
     }
 
     @Override
-    public int getBodyYawSpeed() {
-        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getBodyYawSpeed();
+    public int getMaxHeadRotation() {
+        return this.isInsideWaterOrBubbleColumn() ? 1 : super.getMaxHeadRotation();
     }
 
     @Override
     protected EntityNavigation createNavigation(World world) {
-        return new AmphibiousNavigation(this, world);
+        return new AmphibiousSwimNavigation(this, world);
     }
 
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return this.getAttackTarget();
+        return this.getTargetInBrain();
     }
 
     @Override
@@ -131,7 +131,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.PENGUIN_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.PENGUIN_FOOD);
     }
 
     @Override
@@ -144,8 +144,8 @@ public class PenguinEntity extends BirdEntity {
         return entity.getType().isIn(FowlPlayEntityTypeTags.PENGUIN_AVOIDS);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return BirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createPenguinAttributes() {
+        return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 16.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.145f)
@@ -161,7 +161,7 @@ public class PenguinEntity extends BirdEntity {
     @Override
     public void tickMovement() {
         if (this.songSource == null
-            || !this.songSource.isCenterWithinDistance(this.getPos(), 5)
+            || !this.songSource.isWithinDistance(this.getPos(), 5)
             || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
             this.songPlaying = false;
             this.songSource = null;
@@ -198,38 +198,38 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    public void onTrackedDataUpdate(List<DataTracker.SerializedEntry<?>> entries) {
-        super.onTrackedDataUpdate(entries);
+    public void onDataTrackerUpdate(List<DataTracker.SerializedEntry<?>> entries) {
+        super.onDataTrackerUpdate(entries);
         this.calculateDimensions();
     }
 
     @Override
     public void tick() {
-        if (this.getPrimaryPassenger() != null && this.isInsideWaterOrBubbleColumn()) {
-            this.getPrimaryPassenger().stopRiding();
+        if (this.getControllingPassenger() != null && this.isInsideWaterOrBubbleColumn()) {
+            this.getControllingPassenger().stopRiding();
         }
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.swimState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.swimState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
 
             if (this.isVisuallyFallingDown()) {
                 this.idleState.stop();
                 if (this.isVisuallySliding()) {
-                    this.slideState.start(this.age);
+                    this.slideState.startIfNotRunning(this.age);
                     this.fallingState.stop();
                 }
                 else {
                     this.slideState.stop();
-                    this.fallingState.start(this.age);
+                    this.fallingState.startIfNotRunning(this.age);
                 }
             }
             else {
                 this.slideState.stop();
                 this.fallingState.stop();
-                this.standUpState.animateIf(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
+                this.standUpState.setRunning(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
             }
 
-            this.danceState.animateIf(this.isSongPlaying(), this.age);
+            this.danceState.setRunning(this.isSongPlaying(), this.age);
         }
 
         if (!this.getWorld().isClient) {
@@ -260,7 +260,7 @@ public class PenguinEntity extends BirdEntity {
             this.getWorld().addParticle(
                 ParticleTypes.DOLPHIN,
                 (this.getX() + (this.random.nextFloat() * 0.5F - 0.25F)),
-                (this.getY() + this.getBounds().getYLength() / 2) + (this.random.nextFloat() * 0.5F - 0.25F),
+                (this.getY() + this.getBoundingBox().getLengthY() / 2) + (this.random.nextFloat() * 0.5F - 0.25F),
                 (this.getZ() + (this.random.nextFloat() * 0.5F - 0.25F)),
                 0.0,
                 0.0,
@@ -293,7 +293,7 @@ public class PenguinEntity extends BirdEntity {
         Vec3d vec3d = getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO, passenger.getWidth(), passenger.getYaw());
         double d = this.getX() + vec3d.x;
         double e = this.getZ() + vec3d.z;
-        BlockPos blockPos = new BlockPos((int) d, (int) this.getBoundingBox().maxY, (int) e);
+        BlockPos blockPos = new BlockPos((int) d, (int) this.getAttackBox().maxY, (int) e);
         BlockPos blockPos2 = blockPos.down();
         if (!this.getWorld().isWater(blockPos2)) {
             List<Vec3d> list = Lists.newArrayList();
@@ -326,8 +326,8 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    public EntityDimensions getDefaultDimensions(EntityPose pose) {
-        EntityDimensions dimensions = super.getDefaultDimensions(pose);
+    public EntityDimensions getBaseDimensions(EntityPose pose) {
+        EntityDimensions dimensions = super.getBaseDimensions(pose);
         return pose == EntityPose.SLIDING || pose == EntityPose.SWIMMING ? dimensions.scaled(1.0F, 0.35F) : dimensions;
     }
 
@@ -361,7 +361,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Nullable
     @Override
-    public LivingEntity getPrimaryPassenger() {
+    public LivingEntity getControllingPassenger() {
         return (LivingEntity) this.getFirstPassenger();
     }
 
@@ -382,7 +382,7 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_PENGUINS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PENGUINS_SPAWNABLE_ON);
     }
 
@@ -412,7 +412,7 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
-    protected float getRiddenSpeed(PlayerEntity player) {
+    protected float getSaddledSpeed(PlayerEntity player) {
         return (float) this.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED);
     }
 

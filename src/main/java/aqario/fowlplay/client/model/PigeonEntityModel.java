@@ -93,12 +93,12 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(pigeon, limbAngle, limbDistance, tickDelta);
         float ageInTicks = pigeon.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, pigeon.prevBodyYaw, pigeon.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, pigeon.prevHeadYaw, pigeon.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, pigeon.prevBodyYaw, pigeon.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, pigeon.prevHeadYaw, pigeon.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, pigeon.prevPitch, pigeon.getPitch());
-        if (LivingEntityRenderer.renderFlipped(pigeon)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(pigeon)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -122,13 +122,13 @@ public class PigeonEntityModel extends BirdEntityModel<PigeonEntity> {
             this.rightWing.visible = true;
         }
         if (!pigeon.isFlying() && !pigeon.isInsideWaterOrBubbleColumn() && !pigeon.isInSittingPose()) {
-            this.animateWalk(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
+            this.animateMovement(PigeonEntityAnimations.PIGEON_WALK, limbAngle, limbDistance, 5F, 5F);
         }
-        this.animate(pigeon.idleState, PigeonEntityAnimations.PIGEON_IDLE, ageInTicks);
-        this.animate(pigeon.floatState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);
-        this.animate(pigeon.glideState, PigeonEntityAnimations.PIGEON_GLIDE, ageInTicks);
-        this.animate(pigeon.flapState, PigeonEntityAnimations.PIGEON_FLAP, ageInTicks);
-        this.animate(pigeon.sitState, PigeonEntityAnimations.PIGEON_SIT, ageInTicks);
+        this.updateAnimation(pigeon.idleState, PigeonEntityAnimations.PIGEON_IDLE, ageInTicks);
+        this.updateAnimation(pigeon.floatState, PigeonEntityAnimations.PIGEON_FLOAT, ageInTicks);
+        this.updateAnimation(pigeon.glideState, PigeonEntityAnimations.PIGEON_GLIDE, ageInTicks);
+        this.updateAnimation(pigeon.flapState, PigeonEntityAnimations.PIGEON_FLAP, ageInTicks);
+        this.updateAnimation(pigeon.sitState, PigeonEntityAnimations.PIGEON_SIT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

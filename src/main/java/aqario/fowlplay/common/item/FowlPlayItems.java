@@ -71,7 +71,7 @@ public final class FowlPlayItems {
     );
 
     private static Item register(String id, Item item, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addItem(item));
+        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.add(item));
         return Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item);
     }
 

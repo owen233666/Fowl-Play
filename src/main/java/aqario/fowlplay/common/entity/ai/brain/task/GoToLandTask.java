@@ -5,20 +5,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.TaskBuilder;
-import net.minecraft.entity.ai.brain.task.TaskControl;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 
 public class GoToLandTask {
-    public static TaskControl<PathAwareEntity> create(int range, float speed) {
-        return TaskBuilder.task(
+    public static Task<PathAwareEntity> create(int range, float speed) {
+        return TaskTriggerer.task(
             instance -> instance.group(
-                    instance.presentMemory(MemoryModuleType.HAS_HUNTING_COOLDOWN),
-                    instance.absentMemory(MemoryModuleType.ATTACK_TARGET),
-                    instance.absentMemory(MemoryModuleType.WALK_TARGET),
-                    instance.registeredMemory(MemoryModuleType.LOOK_TARGET)
+                    instance.queryMemoryValue(MemoryModuleType.HAS_HUNTING_COOLDOWN),
+                    instance.queryMemoryAbsent(MemoryModuleType.ATTACK_TARGET),
+                    instance.queryMemoryAbsent(MemoryModuleType.WALK_TARGET),
+                    instance.queryMemoryOptional(MemoryModuleType.LOOK_TARGET)
                 )
                 .apply(instance, (huntingCooldown, attackTarget, walkTarget, lookTarget) -> (world, entity, time) -> {
                     if (!world.getFluidState(entity.getBlockPos()).isIn(FluidTags.WATER)) {

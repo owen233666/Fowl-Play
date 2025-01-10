@@ -90,12 +90,12 @@ public class ChickadeeEntityModel extends BirdEntityModel<ChickadeeEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(chickadee, limbAngle, limbDistance, tickDelta);
         float ageInTicks = chickadee.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, chickadee.prevBodyYaw, chickadee.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, chickadee.prevHeadYaw, chickadee.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, chickadee.prevBodyYaw, chickadee.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, chickadee.prevHeadYaw, chickadee.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, chickadee.prevPitch, chickadee.getPitch());
-        if (LivingEntityRenderer.renderFlipped(chickadee)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(chickadee)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -119,12 +119,12 @@ public class ChickadeeEntityModel extends BirdEntityModel<ChickadeeEntity> {
             this.rightWing.visible = true;
         }
         if (!chickadee.isFlying() && !chickadee.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(ChickadeeEntityAnimations.CHICKADEE_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(ChickadeeEntityAnimations.CHICKADEE_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(chickadee.idleState, ChickadeeEntityAnimations.CHICKADEE_IDLE, ageInTicks);
-        this.animate(chickadee.floatState, ChickadeeEntityAnimations.CHICKADEE_FLOAT, ageInTicks);
-        this.animate(chickadee.glideState, ChickadeeEntityAnimations.CHICKADEE_GLIDE, ageInTicks);
-        this.animate(chickadee.flapState, ChickadeeEntityAnimations.CHICKADEE_FLAP, ageInTicks);
+        this.updateAnimation(chickadee.idleState, ChickadeeEntityAnimations.CHICKADEE_IDLE, ageInTicks);
+        this.updateAnimation(chickadee.floatState, ChickadeeEntityAnimations.CHICKADEE_FLOAT, ageInTicks);
+        this.updateAnimation(chickadee.glideState, ChickadeeEntityAnimations.CHICKADEE_GLIDE, ageInTicks);
+        this.updateAnimation(chickadee.flapState, ChickadeeEntityAnimations.CHICKADEE_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

@@ -9,7 +9,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -21,7 +24,7 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.int_provider.UniformIntProvider;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -124,13 +127,13 @@ public class DuckBrain {
             0,
             ImmutableList.of(
                 FlightControlTask.stopFalling(),
-                new WalkTask<>(RUN_SPEED),
+                new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(AVOID_RADIUS),
                 LocateFoodTask.run(DuckBrain::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WalkToTargetTask(),
-                new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
-                new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
+                new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
+                new TemptationCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
         );
     }
@@ -141,7 +144,7 @@ public class DuckBrain {
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.DUCK, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(3, FollowMobTask.create(DuckBrain::isPlayerHoldingFood, 32.0F)),
+                Pair.of(3, LookAtMobTask.create(DuckBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(duck -> !duck.isInsideWaterOrBubbleColumn(), DuckBrain::getAttackTarget)),
                 Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
@@ -155,8 +158,8 @@ public class DuckBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.create(WALK_SPEED), 4),
-                            Pair.of(TaskBuilder.triggerIf(Entity::isInsideWaterOrBubbleColumn), 3),
+                            Pair.of(StrollTask.create(WALK_SPEED), 4),
+                            Pair.of(TaskTriggerer.predicate(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
                             Pair.of(FlightControlTask.startFlying(duck -> duck.getRandom().nextFloat() < 0.1F), 1)
                         )
@@ -229,7 +232,7 @@ public class DuckBrain {
                     true,
                     PICK_UP_RANGE
                 )),
-                Pair.of(2, ForgetTask.run(DuckBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.create(DuckBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
@@ -247,26 +250,26 @@ public class DuckBrain {
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(FLY_SPEED),
                 MeleeAttackTask.create(20),
-                ForgetTask.run(LookTargetUtil::isValidBreedingTarget, MemoryModuleType.ATTACK_TARGET)
+                ForgetTask.create(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
             ),
             MemoryModuleType.ATTACK_TARGET
         );
     }
 
     private static Optional<? extends LivingEntity> getAttackTarget(DuckEntity duck) {
-        return LookTargetUtil.isValidBreedingTarget(duck) ? Optional.empty() : duck.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+        return LookTargetUtil.hasBreedTarget(duck) ? Optional.empty() : duck.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
     }
 
-    private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
+    private static ImmutableList<Pair<SingleTickTask<LivingEntity>, Integer>> createLookTasks() {
         return ImmutableList.of(
-            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.DUCK, 8.0F), 1),
-            Pair.of(FollowMobTask.create(8.0F), 1)
+            Pair.of(LookAtMobTask.create(FowlPlayEntityType.DUCK, 8.0F), 1),
+            Pair.of(LookAtMobTask.create(8.0F), 1)
         );
     }
 
     private static RandomTask<LivingEntity> makeRandomFollowTask() {
         return new RandomTask<>(
-            ImmutableList.<Pair<? extends TaskControl<? super LivingEntity>, Integer>>builder()
+            ImmutableList.<Pair<? extends Task<? super LivingEntity>, Integer>>builder()
                 .addAll(createLookTasks())
                 .add(Pair.of(new WaitTask(30, 60), 1))
                 .build()
@@ -276,10 +279,10 @@ public class DuckBrain {
     private static RandomTask<DuckEntity> makeRandomWanderTask() {
         return new RandomTask<>(
             ImmutableList.of(
-                Pair.of(MeanderTask.create(0.6F), 2),
-                Pair.of(TaskBuilder.sequence(
+                Pair.of(StrollTask.create(0.6F), 2),
+                Pair.of(TaskTriggerer.runIf(
                     livingEntity -> true,
-                    GoTowardsLookTarget.create(0.6F, 3)
+                    GoTowardsLookTargetTask.create(0.6F, 3)
                 ), 2),
                 Pair.of(new WaitTask(30, 60), 1)
             )
@@ -316,11 +319,11 @@ public class DuckBrain {
     }
 
     protected static List<PassiveEntity> getNearbyVisibleDucks(DuckEntity duck) {
-        return duck.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
+        return duck.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 
     private static boolean noFoodInRange(DuckEntity duck) {
-        Optional<ItemEntity> item = duck.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+        Optional<ItemEntity> item = duck.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
         return item.isEmpty() || !item.get().isInRange(duck, PICK_UP_RANGE);
     }
 
@@ -335,8 +338,8 @@ public class DuckBrain {
         }
         boolean playerNear = false;
         if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
-            PlayerEntity player = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
+            ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
+            PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
             playerNear = player.isInRange(wantedItem, AVOID_RADIUS);
         }
 
@@ -344,6 +347,6 @@ public class DuckBrain {
     }
 
     public static Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.DUCK_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.DUCK_FOOD);
     }
 }

@@ -94,12 +94,12 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(blueJay, limbAngle, limbDistance, tickDelta);
         float ageInTicks = blueJay.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, blueJay.prevBodyYaw, blueJay.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, blueJay.prevHeadYaw, blueJay.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, blueJay.prevBodyYaw, blueJay.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, blueJay.prevHeadYaw, blueJay.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, blueJay.prevPitch, blueJay.getPitch());
-        if (LivingEntityRenderer.renderFlipped(blueJay)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(blueJay)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -123,12 +123,12 @@ public class BlueJayEntityModel extends BirdEntityModel<BlueJayEntity> {
             this.rightWing.visible = true;
         }
         if (!blueJay.isFlying() && !blueJay.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(BlueJayEntityAnimations.BLUE_JAY_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(blueJay.idleState, BlueJayEntityAnimations.BLUE_JAY_IDLE, ageInTicks);
-        this.animate(blueJay.floatState, BlueJayEntityAnimations.BLUE_JAY_FLOAT, ageInTicks);
-        this.animate(blueJay.glideState, BlueJayEntityAnimations.BLUE_JAY_GLIDE, ageInTicks);
-        this.animate(blueJay.flapState, BlueJayEntityAnimations.BLUE_JAY_FLAP, ageInTicks);
+        this.updateAnimation(blueJay.idleState, BlueJayEntityAnimations.BLUE_JAY_IDLE, ageInTicks);
+        this.updateAnimation(blueJay.floatState, BlueJayEntityAnimations.BLUE_JAY_FLOAT, ageInTicks);
+        this.updateAnimation(blueJay.glideState, BlueJayEntityAnimations.BLUE_JAY_GLIDE, ageInTicks);
+        this.updateAnimation(blueJay.flapState, BlueJayEntityAnimations.BLUE_JAY_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

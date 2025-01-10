@@ -94,12 +94,12 @@ public class DuckEntityModel extends BirdEntityModel<DuckEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(duck, limbAngle, limbDistance, tickDelta);
         float ageInTicks = duck.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, duck.prevBodyYaw, duck.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, duck.prevHeadYaw, duck.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, duck.prevBodyYaw, duck.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, duck.prevHeadYaw, duck.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, duck.prevPitch, duck.getPitch());
-        if (LivingEntityRenderer.renderFlipped(duck)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(duck)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -123,12 +123,12 @@ public class DuckEntityModel extends BirdEntityModel<DuckEntity> {
             this.rightWing.visible = true;
         }
         if (!duck.isFlying() && !duck.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(DuckEntityAnimations.DUCK_WALK, limbAngle, limbDistance, 4F, 4F);
+            this.animateMovement(DuckEntityAnimations.DUCK_WALK, limbAngle, limbDistance, 4F, 4F);
         }
-        this.animate(duck.idleState, DuckEntityAnimations.DUCK_IDLE, ageInTicks);
-        this.animate(duck.floatState, DuckEntityAnimations.DUCK_FLOAT, ageInTicks);
-        this.animate(duck.glideState, DuckEntityAnimations.DUCK_GLIDE, ageInTicks);
-        this.animate(duck.flapState, DuckEntityAnimations.DUCK_FLAP, ageInTicks);
+        this.updateAnimation(duck.idleState, DuckEntityAnimations.DUCK_IDLE, ageInTicks);
+        this.updateAnimation(duck.floatState, DuckEntityAnimations.DUCK_FLOAT, ageInTicks);
+        this.updateAnimation(duck.glideState, DuckEntityAnimations.DUCK_GLIDE, ageInTicks);
+        this.updateAnimation(duck.flapState, DuckEntityAnimations.DUCK_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

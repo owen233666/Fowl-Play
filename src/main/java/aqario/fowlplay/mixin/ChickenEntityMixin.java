@@ -25,9 +25,9 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Chicken
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(!this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.setRunning(!this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
         super.tick();
     }

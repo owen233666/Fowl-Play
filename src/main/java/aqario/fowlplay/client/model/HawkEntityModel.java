@@ -104,12 +104,12 @@ public class HawkEntityModel extends BirdEntityModel<HawkEntity> {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(hawk, limbAngle, limbDistance, tickDelta);
         float ageInTicks = hawk.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, hawk.prevBodyYaw, hawk.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, hawk.prevHeadYaw, hawk.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, hawk.prevBodyYaw, hawk.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, hawk.prevHeadYaw, hawk.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, hawk.prevPitch, hawk.getPitch());
-        if (LivingEntityRenderer.renderFlipped(hawk)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(hawk)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -133,12 +133,12 @@ public class HawkEntityModel extends BirdEntityModel<HawkEntity> {
             this.rightWing.visible = true;
         }
         if (!hawk.isFlying() && !hawk.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(HawkEntityAnimations.HAWK_WALK, limbAngle, limbDistance, 2.5F, 4F);
+            this.animateMovement(HawkEntityAnimations.HAWK_WALK, limbAngle, limbDistance, 2.5F, 4F);
         }
-        this.animate(hawk.idleState, HawkEntityAnimations.HAWK_IDLE, ageInTicks);
-        this.animate(hawk.floatState, HawkEntityAnimations.HAWK_FLOAT, ageInTicks);
-        this.animate(hawk.glideState, HawkEntityAnimations.HAWK_GLIDE, ageInTicks);
-        this.animate(hawk.flapState, HawkEntityAnimations.HAWK_FLAP, ageInTicks);
+        this.updateAnimation(hawk.idleState, HawkEntityAnimations.HAWK_IDLE, ageInTicks);
+        this.updateAnimation(hawk.floatState, HawkEntityAnimations.HAWK_FLOAT, ageInTicks);
+        this.updateAnimation(hawk.glideState, HawkEntityAnimations.HAWK_GLIDE, ageInTicks);
+        this.updateAnimation(hawk.flapState, HawkEntityAnimations.HAWK_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

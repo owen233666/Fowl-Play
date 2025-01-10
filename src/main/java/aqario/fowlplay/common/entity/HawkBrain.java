@@ -13,7 +13,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ReportingTaskControl;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -25,7 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.int_provider.UniformIntProvider;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.Optional;
 import java.util.Set;
@@ -128,13 +127,13 @@ public class HawkBrain {
             ImmutableList.of(
                 FlightControlTask.stopFalling(),
                 new StayAboveWaterTask(0.5F),
-                new WalkTask<>(RUN_SPEED),
+                new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(AVOID_RADIUS),
                 LocateFoodTask.run(HawkBrain::canPickupFood),
                 new LookAroundTask(45, 90),
-                new WanderAroundTask(),
-                new ReduceCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
-                new ReduceCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
+                new MoveToTargetTask(),
+                new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
+                new TemptationCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
         );
     }
@@ -145,7 +144,7 @@ public class HawkBrain {
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.HAWK, WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
-                Pair.of(3, FollowMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
+                Pair.of(3, LookAtMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(hawk -> !hawk.isInsideWaterOrBubbleColumn(), HawkBrain::getAttackTarget)),
                 Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
@@ -159,7 +158,7 @@ public class HawkBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(MeanderTask.create(WALK_SPEED), 4),
+                            Pair.of(StrollTask.create(WALK_SPEED), 4),
                             Pair.of(new WaitTask(100, 300), 3),
                             Pair.of(FlightControlTask.startFlying(hawk -> hawk.isInsideWaterOrBubbleColumn() || hawk.getRandom().nextFloat() < 0.3F), 1)
                         )
@@ -232,7 +231,7 @@ public class HawkBrain {
                     true,
                     PICK_UP_RANGE
                 )),
-                Pair.of(2, ForgetTask.run(HawkBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.create(HawkBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
@@ -250,26 +249,26 @@ public class HawkBrain {
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(FLY_SPEED),
                 MeleeAttackTask.create(20),
-                ForgetTask.run(LookTargetUtil::isValidBreedingTarget, MemoryModuleType.ATTACK_TARGET)
+                ForgetTask.create(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
             ),
             MemoryModuleType.ATTACK_TARGET
         );
     }
 
     private static Optional<? extends LivingEntity> getAttackTarget(HawkEntity hawk) {
-        return LookTargetUtil.isValidBreedingTarget(hawk) ? Optional.empty() : hawk.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+        return LookTargetUtil.hasBreedTarget(hawk) ? Optional.empty() : hawk.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
     }
 
-    private static ImmutableList<Pair<ReportingTaskControl<LivingEntity>, Integer>> createLookTasks() {
+    private static ImmutableList<Pair<SingleTickTask<LivingEntity>, Integer>> createLookTasks() {
         return ImmutableList.of(
-            Pair.of(FollowMobTask.createMatchingType(FowlPlayEntityType.HAWK, 8.0F), 1),
-            Pair.of(FollowMobTask.create(8.0F), 1)
+            Pair.of(LookAtMobTask.create(FowlPlayEntityType.HAWK, 8.0F), 1),
+            Pair.of(LookAtMobTask.create(8.0F), 1)
         );
     }
 
     private static RandomTask<LivingEntity> makeRandomFollowTask() {
         return new RandomTask<>(
-            ImmutableList.<Pair<? extends TaskControl<? super LivingEntity>, Integer>>builder()
+            ImmutableList.<Pair<? extends Task<? super LivingEntity>, Integer>>builder()
                 .addAll(createLookTasks())
                 .add(Pair.of(new WaitTask(30, 60), 1))
                 .build()
@@ -279,10 +278,10 @@ public class HawkBrain {
     private static RandomTask<HawkEntity> makeRandomWanderTask() {
         return new RandomTask<>(
             ImmutableList.of(
-                Pair.of(MeanderTask.create(0.6F), 2),
-                Pair.of(TaskBuilder.sequence(
+                Pair.of(StrollTask.create(0.6F), 2),
+                Pair.of(TaskTriggerer.runIf(
                     livingEntity -> true,
-                    GoTowardsLookTarget.create(0.6F, 3)
+                    GoTowardsLookTargetTask.create(0.6F, 3)
                 ), 2),
                 Pair.of(new WaitTask(30, 60), 1)
             )
@@ -306,7 +305,7 @@ public class HawkBrain {
     }
 
     private static boolean noFoodInRange(HawkEntity hawk) {
-        Optional<ItemEntity> item = hawk.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+        Optional<ItemEntity> item = hawk.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
         return item.isEmpty() || !item.get().isInRange(hawk, PICK_UP_RANGE);
     }
 
@@ -319,11 +318,11 @@ public class HawkBrain {
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
             return false;
         }
-        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
+        Optional<VisibleMobsCache> visibleMobs = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS);
         if (visibleMobs.isEmpty()) {
             return false;
         }
-        ItemEntity wantedItem = brain.getMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
+        ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
         Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> true)
             .filter(hawk::shouldAvoid)
             .filter(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR)
@@ -334,6 +333,6 @@ public class HawkBrain {
     }
 
     public static Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.HAWK_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.HAWK_FOOD);
     }
 }

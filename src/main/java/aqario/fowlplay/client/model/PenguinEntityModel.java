@@ -140,15 +140,15 @@ public class PenguinEntityModel extends BirdEntityModel<PenguinEntity> {
                 this.updateHeadRotation(penguin.isInsideWaterOrBubbleColumn(), headYaw, headPitch);
             }
             if (!penguin.isInsideWaterOrBubbleColumn()) {
-                this.animateWalk(PenguinEntityAnimations.PENGUIN_WALK, limbAngle, limbDistance, 7F, 7F);
+                this.animateMovement(PenguinEntityAnimations.PENGUIN_WALK, limbAngle, limbDistance, 7F, 7F);
             }
         }
 
-        this.animate(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
-        this.animate(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
-        this.animate(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
-        this.animate(penguin.swimState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
-        this.animate(penguin.danceState, PenguinEntityAnimations.PENGUIN_DANCE, ageInTicks);
+        this.updateAnimation(penguin.idleState, PenguinEntityAnimations.PENGUIN_IDLE, ageInTicks);
+        this.updateAnimation(penguin.slideState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.updateAnimation(penguin.fallingState, PenguinEntityAnimations.PENGUIN_SLIDE, ageInTicks);
+        this.updateAnimation(penguin.swimState, PenguinEntityAnimations.PENGUIN_SWIM, ageInTicks);
+        this.updateAnimation(penguin.danceState, PenguinEntityAnimations.PENGUIN_DANCE, ageInTicks);
     }
 
     private void updateBabyHeadRotation(boolean swimming, float headYaw, float headPitch) {

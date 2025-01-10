@@ -98,11 +98,11 @@ public class CustomChickenEntityModel extends SinglePartEntityModel<ChickenEntit
         }
 
         if (chicken.isOnGround() && !chicken.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 3F, 3F);
+            this.animateMovement(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 3F, 3F);
         }
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getIdleState(), ChickenEntityAnimations.CHICKEN_IDLE, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFlapState(), ChickenEntityAnimations.CHICKEN_FLAP, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFloatState(), ChickenEntityAnimations.CHICKEN_FLOAT, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getIdleState(), ChickenEntityAnimations.CHICKEN_IDLE, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getFlapState(), ChickenEntityAnimations.CHICKEN_FLAP, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getFloatState(), ChickenEntityAnimations.CHICKEN_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
