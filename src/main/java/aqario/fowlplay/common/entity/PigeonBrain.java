@@ -220,7 +220,7 @@ public class PigeonBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(pigeon -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,

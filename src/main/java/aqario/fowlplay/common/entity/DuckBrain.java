@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.MeleeAttackTask;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
@@ -207,7 +208,7 @@ public class DuckBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(duck -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,

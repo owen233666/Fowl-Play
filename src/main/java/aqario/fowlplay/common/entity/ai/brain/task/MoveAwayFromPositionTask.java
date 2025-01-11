@@ -17,12 +17,12 @@ import java.util.function.Function;
 /**
  * Improved {@link net.minecraft.entity.ai.brain.task.GoToRememberedPositionTask GoToRememberedPositionTask} with a speedGetter
  */
-public class GoToPositionTask {
-    public static <E extends PathAwareEntity> Task<E> toBlock(MemoryModuleType<BlockPos> memoryType, Function<E, Float> entitySpeedGetter, int range, boolean requiresWalkTarget) {
+public class MoveAwayFromPositionTask {
+    public static <E extends PathAwareEntity> Task<E> block(MemoryModuleType<BlockPos> memoryType, Function<E, Float> entitySpeedGetter, int range, boolean requiresWalkTarget) {
         return create(memoryType, entitySpeedGetter, range, requiresWalkTarget, Vec3d::ofBottomCenter);
     }
 
-    public static <E extends PathAwareEntity> SingleTickTask<E> toEntity(MemoryModuleType<? extends Entity> memoryType, Function<E, Float> entitySpeedGetter, int range, boolean requiresWalkTarget) {
+    public static <E extends PathAwareEntity> SingleTickTask<E> entity(MemoryModuleType<? extends Entity> memoryType, Function<E, Float> entitySpeedGetter, int range, boolean requiresWalkTarget) {
         return create(memoryType, entitySpeedGetter, range, requiresWalkTarget, Entity::getPos);
     }
 

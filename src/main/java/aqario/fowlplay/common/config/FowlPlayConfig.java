@@ -154,7 +154,7 @@ public class FowlPlayConfig {
     // Hawk
 
     @SerialEntry
-    public static int hawkSpawnWeight = 30;
+    public static int hawkSpawnWeight = 15;
     @SerialEntry
     public static int hawkMinGroupSize = 1;
     @SerialEntry

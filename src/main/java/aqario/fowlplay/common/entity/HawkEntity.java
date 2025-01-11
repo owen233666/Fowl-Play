@@ -62,14 +62,14 @@ public class HawkEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createHawkAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 14.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.235f);
     }
 
     @Override
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 6);
+        return new BirdFlightMoveControl(this, 40, 8);
     }
 
     @Nullable

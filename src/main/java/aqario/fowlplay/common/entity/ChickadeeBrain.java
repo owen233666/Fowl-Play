@@ -196,7 +196,7 @@ public class ChickadeeBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(chickadee -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     chickadee -> chickadee.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,

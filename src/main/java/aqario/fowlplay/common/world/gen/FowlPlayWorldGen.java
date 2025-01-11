@@ -46,6 +46,13 @@ public final class FowlPlayWorldGen {
             SpawnGroup.CREATURE, FowlPlayEntityType.GULL, FowlPlayConfig.gullSpawnWeight, FowlPlayConfig.gullMinGroupSize, FowlPlayConfig.gullMaxGroupSize
         );
 
+        SpawnRestriction.register(FowlPlayEntityType.HAWK, SpawnLocationTypes.UNRESTRICTED,
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
+        );
+        BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_HAWKS),
+            SpawnGroup.CREATURE, FowlPlayEntityType.HAWK, FowlPlayConfig.hawkSpawnWeight, FowlPlayConfig.hawkMinGroupSize, FowlPlayConfig.hawkMaxGroupSize
+        );
+
         SpawnRestriction.register(FowlPlayEntityType.PENGUIN, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PenguinEntity::canSpawn
         );

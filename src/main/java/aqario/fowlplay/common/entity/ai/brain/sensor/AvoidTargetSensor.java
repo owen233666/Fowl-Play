@@ -24,7 +24,7 @@ public class AvoidTargetSensor extends Sensor<BirdEntity> {
             brain.forget(MemoryModuleType.AVOID_TARGET);
             return;
         }
-        Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> shouldAvoid(bird, entity)).findFirst();
+        Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> shouldAvoid(brain, bird, entity)).findFirst();
 
         if (avoidTarget.isEmpty()) {
             brain.forget(MemoryModuleType.AVOID_TARGET);
@@ -33,18 +33,18 @@ public class AvoidTargetSensor extends Sensor<BirdEntity> {
         brain.remember(MemoryModuleType.AVOID_TARGET, avoidTarget.get());
     }
 
-    private static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
+    private static boolean shouldAvoid(Brain<?> brain, BirdEntity bird, LivingEntity target) {
         if (!bird.shouldAvoid(target)) {
             return false;
         }
         if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
             return false;
         }
-        if (target instanceof PlayerEntity player) {
-            return !(bird instanceof TrustingBirdEntity trusting) || !trusting.trusts(player);
+        if (target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {
+            return false;
         }
-        Optional<LivingEntity> attackTarget = bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.ATTACK_TARGET);
-        if (attackTarget.isPresent() && attackTarget.get().equals(target)) {
+        Optional<LivingEntity> attackTarget = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET);
+        if (attackTarget != null && attackTarget.isPresent() && attackTarget.get().equals(target)) {
             return false;
         }
         return true;

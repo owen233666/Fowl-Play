@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
+import aqario.fowlplay.common.entity.ai.brain.task.MeleeAttackTask;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
@@ -206,7 +207,7 @@ public class HawkBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(hawk -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     hawk -> hawk.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,
@@ -235,7 +236,8 @@ public class HawkBrain {
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
-                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT)
             )
         );
     }
@@ -247,7 +249,7 @@ public class HawkBrain {
             ImmutableList.of(
                 FlightControlTask.startFlying(hawk -> true),
                 ForgetAttackTargetTask.create(),
-                RangedApproachTask.create(FLY_SPEED),
+                GoToAttackTargetTask.create(hawk -> hawk.isFlying() ? FLY_SPEED : RUN_SPEED),
                 MeleeAttackTask.create(20),
                 ForgetTask.create(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
             ),

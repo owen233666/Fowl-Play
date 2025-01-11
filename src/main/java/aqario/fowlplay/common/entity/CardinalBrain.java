@@ -196,7 +196,7 @@ public class CardinalBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(cardinal -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     cardinal -> cardinal.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,

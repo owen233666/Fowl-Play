@@ -196,7 +196,7 @@ public class RobinBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(robin -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     robin -> robin.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,

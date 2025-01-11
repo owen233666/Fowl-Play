@@ -191,7 +191,7 @@ public class YACLIntegration {
                 ))
                 .group(createSpawningGroup(
                     "entity.fowlplay.hawk",
-                    30,
+                    15,
                     () -> FowlPlayConfig.hawkSpawnWeight,
                     val -> FowlPlayConfig.hawkSpawnWeight = val,
                     1,

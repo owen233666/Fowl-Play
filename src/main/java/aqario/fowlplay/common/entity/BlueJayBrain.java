@@ -196,7 +196,7 @@ public class BlueJayBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(blueJay -> true),
-                GoToPositionTask.toEntity(
+                MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     blueJay -> blueJay.isFlying() ? FLY_SPEED : RUN_SPEED,
                     AVOID_RADIUS,
