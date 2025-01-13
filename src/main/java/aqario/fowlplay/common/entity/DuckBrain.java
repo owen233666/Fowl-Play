@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -80,7 +81,6 @@ public class DuckBrain {
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -126,8 +126,8 @@ public class DuckBrain {
             ImmutableList.of(
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
-                AvoidTask.run(AVOID_RADIUS),
-                LocateFoodTask.run(DuckBrain::canPickupFood),
+                AvoidTask.run(),
+                LocateFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WalkToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -208,12 +208,11 @@ public class DuckBrain {
                 MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTask.forget(AVOID_RADIUS)
+                AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
         );
@@ -223,9 +222,9 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(DuckBrain::canPickupFood)),
+                Pair.of(0, FlightControlTask.startFlying(Bird::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    DuckBrain::canPickupFood,
+                    Bird::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -327,21 +326,6 @@ public class DuckBrain {
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    private static boolean canPickupFood(DuckEntity duck) {
-        Brain<DuckEntity> brain = duck.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
-            return false;
-        }
-        boolean playerNear = false;
-        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
-            PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-            playerNear = player.isInRange(wantedItem, AVOID_RADIUS);
-        }
-
-        return !getFood().test(duck.getMainHandStack()) && !playerNear;
     }
 
     public static Ingredient getFood() {

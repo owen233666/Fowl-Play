@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -22,9 +23,7 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
@@ -79,11 +78,9 @@ public class GullBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -129,8 +126,8 @@ public class GullBrain {
             ImmutableList.of(
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
-                AvoidTask.run(AVOID_RADIUS),
-                LocateFoodTask.run(),
+                AvoidTask.run(),
+                LocateFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -211,12 +208,11 @@ public class GullBrain {
                 MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     gull -> gull.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTask.forget(AVOID_RADIUS)
+                AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
         );
@@ -226,9 +222,9 @@ public class GullBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(GullBrain::canPickupFood)),
+                Pair.of(0, FlightControlTask.startFlying(Bird::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    GullBrain::canPickupFood,
+                    Bird::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -290,25 +286,6 @@ public class GullBrain {
         );
     }
 
-    private static Task<GullEntity> makeAddPlayerToAvoidTargetTask() {
-        return MemoryTransferTask.create(
-            GullBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
-        );
-    }
-
-    private static boolean hasAvoidTarget(GullEntity gull) {
-        Brain<GullEntity> brain = gull.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            return false;
-        }
-        PlayerEntity player = brain.getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || gull.trusts(player)) {
-            return false;
-        }
-
-        return gull.isInRange(player, AVOID_RADIUS);
-    }
-
     public static void onAttacked(GullEntity gull, LivingEntity attacker) {
         if (attacker instanceof GullEntity) {
             return;
@@ -349,21 +326,6 @@ public class GullBrain {
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    private static boolean canPickupFood(GullEntity gull) {
-        Brain<GullEntity> brain = gull.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
-            return false;
-        }
-        boolean playerNear = false;
-        if (brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
-            PlayerEntity player = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-            playerNear = player.isInRange(wantedItem, AVOID_RADIUS);
-        }
-
-        return !getFood().test(gull.getMainHandStack()) && !playerNear;
     }
 
     public static Ingredient getFood() {

@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -12,12 +13,14 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.*;
+import net.minecraft.entity.ai.brain.Activity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
@@ -75,7 +78,6 @@ public class HawkBrain {
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -122,8 +124,8 @@ public class HawkBrain {
                 FlightControlTask.stopFalling(),
                 new StayAboveWaterTask(0.5F),
                 new FleeTask<>(RUN_SPEED),
-                AvoidTask.run(AVOID_RADIUS),
-                LocateFoodTask.run(HawkBrain::canPickupFood),
+                AvoidTask.run(),
+                LocateFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -203,12 +205,11 @@ public class HawkBrain {
                 MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     hawk -> hawk.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTask.forget(AVOID_RADIUS)
+                AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
         );
@@ -218,9 +219,9 @@ public class HawkBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(HawkBrain::canPickupFood)),
+                Pair.of(0, FlightControlTask.startFlying(Bird::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    HawkBrain::canPickupFood,
+                    Bird::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -306,25 +307,6 @@ public class HawkBrain {
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    private static boolean canPickupFood(HawkEntity hawk) {
-        Brain<HawkEntity> brain = hawk.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
-            return false;
-        }
-        Optional<LivingTargetCache> visibleMobs = brain.getOptionalRegisteredMemory(MemoryModuleType.VISIBLE_MOBS);
-        if (visibleMobs.isEmpty()) {
-            return false;
-        }
-        ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
-        Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> true)
-            .filter(hawk::shouldAvoid)
-            .filter(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR)
-            .filter(entity -> entity.isInRange(wantedItem, AVOID_RADIUS))
-            .findFirst();
-
-        return !hawk.getFood().test(hawk.getMainHandStack()) && avoidTarget.isEmpty();
     }
 
     public static Ingredient getFood() {

@@ -247,6 +247,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Pi
     }
 
     @Override
+    public int fleeRange() {
+        return this.getTrustedUuids().isEmpty() ? super.fleeRange() : 6;
+    }
+
+    @Override
     protected void dropInventory() {
         super.dropInventory();
 

@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -22,9 +23,7 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
@@ -77,11 +76,9 @@ public class SparrowBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_RADIUS = 7;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -121,8 +118,8 @@ public class SparrowBrain {
                 new StayAboveWaterTask(0.5F),
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
-                AvoidTask.run(AVOID_RADIUS),
-                LocateFoodTask.run(),
+                AvoidTask.run(),
+                LocateFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -204,12 +201,11 @@ public class SparrowBrain {
                 MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     sparrow -> sparrow.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTask.forget(AVOID_RADIUS)
+                AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
         );
@@ -219,9 +215,9 @@ public class SparrowBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(SparrowBrain::doesNotHaveFoodInHand)),
+                Pair.of(0, FlightControlTask.startFlying(Bird::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    SparrowBrain::doesNotHaveFoodInHand,
+                    Bird::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -264,25 +260,6 @@ public class SparrowBrain {
         );
     }
 
-    private static Task<SparrowEntity> makeAddPlayerToAvoidTargetTask() {
-        return MemoryTransferTask.create(
-            SparrowBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
-        );
-    }
-
-    private static boolean hasAvoidTarget(SparrowEntity sparrow) {
-        Brain<SparrowEntity> brain = sparrow.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            return false;
-        }
-        PlayerEntity player = brain.getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player)) {
-            return false;
-        }
-
-        return sparrow.isInRange(player, AVOID_RADIUS);
-    }
-
     public static void onAttacked(SparrowEntity sparrow, LivingEntity attacker) {
         if (attacker instanceof SparrowEntity) {
             return;
@@ -321,10 +298,6 @@ public class SparrowBrain {
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    private static boolean doesNotHaveFoodInHand(SparrowEntity sparrow) {
-        return !getFood().test(sparrow.getMainHandStack());
     }
 
     public static Ingredient getFood() {

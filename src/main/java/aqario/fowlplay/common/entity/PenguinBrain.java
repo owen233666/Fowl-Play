@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -114,7 +115,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 new BreatheAirTask(SWIM_SPEED),
                 new FleeTask<>(RUN_SPEED),
-                LocateFoodTask.run(),
+                LocateFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -189,7 +190,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 SlideControlTask.startSliding(),
                 GoToNearestWantedItemTask.create(
-                    PenguinBrain::doesNotHaveFoodInHand,
+                    Bird::canPickupFood,
                     entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -235,10 +236,6 @@ public class PenguinBrain {
     private static boolean noFoodInRange(PenguinEntity penguin) {
         Optional<ItemEntity> item = penguin.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
         return item.isEmpty() || !item.get().isInRange(penguin, PICK_UP_RANGE);
-    }
-
-    private static boolean doesNotHaveFoodInHand(PenguinEntity penguin) {
-        return !getFood().test(penguin.getMainHandStack());
     }
 
     public static Ingredient getFood() {

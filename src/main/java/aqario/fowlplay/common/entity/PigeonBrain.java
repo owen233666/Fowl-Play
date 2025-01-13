@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.Bird;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -22,9 +23,7 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
@@ -82,11 +81,9 @@ public class PigeonBrain {
         FowlPlayMemoryModuleType.TELEPORT_TARGET,
         FowlPlayMemoryModuleType.RECIPIENT
     );
-    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(1, 3);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;
-    private static final int AVOID_RADIUS = 10;
     private static final float RUN_SPEED = 1.4F;
     private static final float WALK_SPEED = 1.0F;
     private static final float FLY_SPEED = 2.0F;
@@ -130,7 +127,7 @@ public class PigeonBrain {
                 new TeleportToTargetTask(),
                 new FleeTask<>(RUN_SPEED),
                 new FollowOwnerTask(WALK_SPEED, 5, 10),
-                AvoidTask.run(AVOID_RADIUS),
+                AvoidTask.run(),
                 LocateFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
@@ -223,12 +220,11 @@ public class PigeonBrain {
                 MoveAwayFromPositionTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
-                    AVOID_RADIUS,
                     true
                 ),
                 makeRandomFollowTask(),
                 makeRandomWanderTask(),
-                AvoidTask.forget(AVOID_RADIUS)
+                AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
         );
@@ -238,9 +234,9 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && doesNotHaveFoodInHand(pigeon))),
+                Pair.of(0, FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && Bird.canPickupFood(pigeon))),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    PigeonBrain::doesNotHaveFoodInHand,
+                    Bird::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -284,28 +280,6 @@ public class PigeonBrain {
         );
     }
 
-    private static Task<PigeonEntity> makeAddPlayerToAvoidTargetTask() {
-        return MemoryTransferTask.create(
-            PigeonBrain::hasAvoidTarget, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.AVOID_TARGET, RUN_FROM_PLAYER_MEMORY_DURATION
-        );
-    }
-
-    private static boolean hasAvoidTarget(PigeonEntity pigeon) {
-        if (pigeon.isTamed()) {
-            return false;
-        }
-        Brain<PigeonEntity> brain = pigeon.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_PLAYER)) {
-            return false;
-        }
-        PlayerEntity player = brain.getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).get();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player) || pigeon.trusts(player)) {
-            return false;
-        }
-
-        return pigeon.isInRange(player, AVOID_RADIUS);
-    }
-
     public static void onAttacked(PigeonEntity pigeon, LivingEntity attacker) {
         if (attacker instanceof PigeonEntity || attacker == pigeon.getOwner()) {
             return;
@@ -346,10 +320,6 @@ public class PigeonBrain {
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
         return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    private static boolean doesNotHaveFoodInHand(PigeonEntity pigeon) {
-        return !getFood().test(pigeon.getMainHandStack());
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {

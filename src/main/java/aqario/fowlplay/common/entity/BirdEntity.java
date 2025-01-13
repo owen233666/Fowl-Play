@@ -118,6 +118,10 @@ public abstract class BirdEntity extends AnimalEntity {
         return false;
     }
 
+    public int fleeRange() {
+        return 10;
+    }
+
     @Override
     public void tickMovement() {
         super.tickMovement();

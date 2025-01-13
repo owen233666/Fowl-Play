@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class AvoidTask {
-    public static <E extends BirdEntity> Task<E> run(int radius) {
-        return run(bird -> true, radius);
+    public static <E extends BirdEntity> Task<E> run() {
+        return run(bird -> true);
     }
 
-    public static <E extends BirdEntity> Task<E> run(Predicate<E> predicate, int radius) {
+    public static <E extends BirdEntity> Task<E> run(Predicate<E> predicate) {
         return TaskTriggerer.task(
             instance -> instance.group(
                     instance.queryMemoryValue(MemoryModuleType.AVOID_TARGET),
@@ -26,7 +26,7 @@ public class AvoidTask {
                     if (!predicate.test(entity)) {
                         return false;
                     }
-                    if (entity.isInRange(instance.getValue(avoidTarget), radius)) {
+                    if (entity.isInRange(instance.getValue(avoidTarget), entity.fleeRange())) {
                         isAvoiding.remember(Unit.INSTANCE);
                         return true;
                     }
@@ -35,11 +35,11 @@ public class AvoidTask {
         );
     }
 
-    public static <E extends BirdEntity> Task<E> forget(int radius) {
-        return forget(bird -> true, radius);
+    public static <E extends BirdEntity> Task<E> forget() {
+        return forget(bird -> true);
     }
 
-    public static <E extends BirdEntity> Task<E> forget(Predicate<E> predicate, int radius) {
+    public static <E extends BirdEntity> Task<E> forget(Predicate<E> predicate) {
         return TaskTriggerer.task(
             instance -> instance.group(
                     instance.queryMemoryOptional(MemoryModuleType.AVOID_TARGET),
@@ -50,7 +50,7 @@ public class AvoidTask {
                         return false;
                     }
                     Optional<LivingEntity> target = instance.getOptionalValue(avoidTarget);
-                    if (target.isPresent() && entity.isInRange(target.get(), radius)) {
+                    if (target.isPresent() && entity.isInRange(target.get(), entity.fleeRange())) {
                         return false;
                     }
                     isAvoiding.forget();

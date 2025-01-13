@@ -66,6 +66,11 @@ public class SparrowEntity extends FlyingBirdEntity {
     }
 
     @Override
+    public int fleeRange() {
+        return 7;
+    }
+
+    @Override
     public SoundEvent getEatSound(ItemStack stack) {
         return SoundEvents.ENTITY_PARROT_EAT;
     }
