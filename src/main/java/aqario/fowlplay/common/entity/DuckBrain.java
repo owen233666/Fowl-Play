@@ -24,7 +24,6 @@ import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
@@ -48,7 +47,7 @@ public class DuckBrain {
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
         MemoryModuleType.MOBS,
-        FowlPlayMemoryModuleType.VISIBLE_MOBS,
+        MemoryModuleType.VISIBLE_MOBS,
         MemoryModuleType.WALK_TARGET,
         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
         MemoryModuleType.PATH,
@@ -79,7 +78,6 @@ public class DuckBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider RUN_FROM_PLAYER_MEMORY_DURATION = TimeHelper.betweenSeconds(5, 7);
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
     private static final int PICK_UP_RANGE = 32;

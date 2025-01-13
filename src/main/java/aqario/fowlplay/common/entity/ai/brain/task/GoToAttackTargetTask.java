@@ -1,10 +1,9 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
-import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
+import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
@@ -27,13 +26,13 @@ public class GoToAttackTargetTask {
                     context.queryMemoryOptional(MemoryModuleType.WALK_TARGET),
                     context.queryMemoryOptional(MemoryModuleType.LOOK_TARGET),
                     context.queryMemoryValue(MemoryModuleType.ATTACK_TARGET),
-                    context.queryMemoryOptional(FowlPlayMemoryModuleType.VISIBLE_MOBS)
+                    context.queryMemoryOptional(MemoryModuleType.VISIBLE_MOBS)
                 )
                 .apply(
                     context,
                     (walkTarget, lookTarget, attackTarget, visibleMobs) -> (world, entity, time) -> {
                         LivingEntity target = context.getValue(attackTarget);
-                        Optional<VisibleMobsCache> nearbyMobs = context.getOptionalValue(visibleMobs);
+                        Optional<LivingTargetCache> nearbyMobs = context.getOptionalValue(visibleMobs);
                         if (nearbyMobs.isPresent()
                             && nearbyMobs.get().contains(target)
                             && LookTargetUtil.isTargetWithinAttackRange(entity, target, WEAPON_REACH_REDUCTION)) {

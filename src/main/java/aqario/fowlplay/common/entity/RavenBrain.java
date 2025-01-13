@@ -48,7 +48,7 @@ public class RavenBrain {
     private static final ImmutableList<MemoryModuleType<?>> MEMORIES = ImmutableList.of(
         MemoryModuleType.LOOK_TARGET,
         MemoryModuleType.MOBS,
-        FowlPlayMemoryModuleType.VISIBLE_MOBS,
+        MemoryModuleType.VISIBLE_MOBS,
         MemoryModuleType.WALK_TARGET,
         MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
         MemoryModuleType.PATH,

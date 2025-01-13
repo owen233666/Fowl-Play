@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -18,7 +17,7 @@ public class MeleeAttackTask {
                     context.queryMemoryOptional(MemoryModuleType.LOOK_TARGET),
                     context.queryMemoryValue(MemoryModuleType.ATTACK_TARGET),
                     context.queryMemoryAbsent(MemoryModuleType.ATTACK_COOLING_DOWN),
-                    context.queryMemoryValue(FowlPlayMemoryModuleType.VISIBLE_MOBS)
+                    context.queryMemoryValue(MemoryModuleType.VISIBLE_MOBS)
                 )
                 .apply(
                     context,

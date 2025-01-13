@@ -1,10 +1,10 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
-import aqario.fowlplay.common.entity.ai.brain.VisibleMobsCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -23,8 +23,8 @@ public class NearestVisibleAdultsSensor extends Sensor<PassiveEntity> {
     protected void sense(ServerWorld world, PassiveEntity entity) {
         Brain<?> brain = entity.getBrain();
         List<PassiveEntity> nearbyVisibleAdults = Lists.newArrayList();
-        VisibleMobsCache visibleMobs = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.VISIBLE_MOBS)
-            .orElse(VisibleMobsCache.getEmpty());
+        LivingTargetCache visibleMobs = brain.getOptionalRegisteredMemory(MemoryModuleType.VISIBLE_MOBS)
+            .orElse(LivingTargetCache.empty());
 
         visibleMobs.stream(living -> living.getType() == entity.getType() && !entity.isBaby())
             .forEach(living -> nearbyVisibleAdults.add((PassiveEntity) living));
