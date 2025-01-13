@@ -33,7 +33,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantHolder<Robin
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    private int flapAnimationTimeout = 0;
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, World world) {
         super(entityType, world);

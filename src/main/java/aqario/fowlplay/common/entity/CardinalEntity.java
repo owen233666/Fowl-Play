@@ -26,7 +26,6 @@ public class CardinalEntity extends FlyingBirdEntity {
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    private int flapAnimationTimeout = 0;
 
     protected CardinalEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);

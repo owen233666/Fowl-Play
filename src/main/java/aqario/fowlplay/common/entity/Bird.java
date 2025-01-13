@@ -1,6 +1,5 @@
-package aqario.fowlplay.common.entity.ai.brain;
+package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.BirdEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -13,7 +12,7 @@ import java.util.Optional;
 /**
  * A utility class for bird entities.
  */
-public class Bird {
+public final class Bird {
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {

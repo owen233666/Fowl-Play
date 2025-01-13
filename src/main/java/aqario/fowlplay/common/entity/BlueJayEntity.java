@@ -26,7 +26,6 @@ public class BlueJayEntity extends FlyingBirdEntity {
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    private int flapAnimationTimeout = 0;
 
     protected BlueJayEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
@@ -67,17 +66,6 @@ public class BlueJayEntity extends FlyingBirdEntity {
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-//            if (!this.isOnGround()) {
-//                this.flapState.start(this.age);
-//            }
-//            else if (this.flapAnimationTimeout <= 0) {
-//                this.flapAnimationTimeout = this.getFlapFrequency();
-//                this.flapState.restart(this.age);
-//            }
-//            else {
-//                --this.flapAnimationTimeout;
-//            }
-
             this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
             this.flapState.setRunning(this.isFlying(), this.age);
             this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
