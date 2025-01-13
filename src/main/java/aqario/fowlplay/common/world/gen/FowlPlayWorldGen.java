@@ -47,7 +47,7 @@ public final class FowlPlayWorldGen {
         );
 
         SpawnRestriction.register(FowlPlayEntityType.HAWK, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HawkEntity::canSpawn
         );
         BiomeModifications.addSpawn(biome -> biome.getBiomeRegistryEntry().isIn(FowlPlayBiomeTags.SPAWNS_HAWKS),
             SpawnGroup.CREATURE, FowlPlayEntityType.HAWK, FowlPlayConfig.hawkSpawnWeight, FowlPlayConfig.hawkMinGroupSize, FowlPlayConfig.hawkMaxGroupSize
