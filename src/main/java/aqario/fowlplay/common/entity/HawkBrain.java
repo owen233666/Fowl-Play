@@ -124,7 +124,7 @@ public class HawkBrain {
                 new StayAboveWaterTask(0.5F),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -201,7 +201,7 @@ public class HawkBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(hawk -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     hawk -> hawk.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

@@ -118,7 +118,7 @@ public class SparrowBrain {
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -197,7 +197,7 @@ public class SparrowBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(sparrow -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     sparrow -> sparrow.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

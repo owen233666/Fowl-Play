@@ -126,7 +126,7 @@ public class RavenBrain {
                 new StayAboveWaterTask(0.5F),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -203,7 +203,7 @@ public class RavenBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(raven -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     raven -> raven.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

@@ -118,7 +118,7 @@ public class RobinBrain {
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -192,7 +192,7 @@ public class RobinBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(robin -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     robin -> robin.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

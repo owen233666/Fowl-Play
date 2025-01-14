@@ -127,9 +127,9 @@ public class PigeonBrain {
                 new FleeTask<>(RUN_SPEED),
                 new FollowOwnerTask(WALK_SPEED, 5, 10),
                 AvoidTask.run(),
-                LocateFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
+                PickupFoodTask.run(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAroundTask(45, 90),
-                new MoveToTargetTask(),
+                new WalkToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new TemptationCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
@@ -216,7 +216,7 @@ public class PigeonBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(pigeon -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

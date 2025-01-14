@@ -118,7 +118,7 @@ public class CardinalBrain {
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -192,7 +192,7 @@ public class CardinalBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(cardinal -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     cardinal -> cardinal.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true

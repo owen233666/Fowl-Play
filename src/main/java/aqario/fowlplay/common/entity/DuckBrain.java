@@ -126,7 +126,7 @@ public class DuckBrain {
                 FlightControlTask.stopFalling(),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                LocateFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
                 new WalkToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -204,7 +204,7 @@ public class DuckBrain {
             10,
             ImmutableList.of(
                 FlightControlTask.startFlying(duck -> true),
-                MoveAwayFromPositionTask.entity(
+                MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true
