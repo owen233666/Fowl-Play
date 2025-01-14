@@ -38,7 +38,7 @@ public class MoveAwayFromPositionTask {
                     }
                     Vec3d entityPos = entity.getPos();
                     Vec3d targetPos = targetPositionGetter.apply(instance.getValue(targetType));
-                    if (!entityPos.isInRange(targetPos, entity.fleeRange())) {
+                    if (!entityPos.isInRange(targetPos, entity.getFleeRange())) {
                         return false;
                     }
                     if (optional.isPresent() && optional.get().getSpeed() == entitySpeedGetter.apply(entity)) {

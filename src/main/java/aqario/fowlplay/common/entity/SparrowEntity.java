@@ -66,7 +66,7 @@ public class SparrowEntity extends FlyingBirdEntity {
     }
 
     @Override
-    public int fleeRange() {
+    public int getFleeRange() {
         return 7;
     }
 

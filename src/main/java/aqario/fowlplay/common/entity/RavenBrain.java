@@ -183,7 +183,7 @@ public class RavenBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(FlyTask.create(FLY_SPEED, 64, 32), 1)
+                            Pair.of(FlyTask.create(FLY_SPEED, 24, 16), 1)
                         )
                     )
                 )

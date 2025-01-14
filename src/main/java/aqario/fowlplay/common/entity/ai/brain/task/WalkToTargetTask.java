@@ -133,7 +133,7 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
 
             Vec3d target;
             if (entity instanceof FlyingBirdEntity bird && bird.isFlying()) {
-                target = FuzzyTargeting.find(bird, 64, 32);
+                target = FuzzyTargeting.find(bird, 24, 16);
             }
             else {
                 target = NoPenaltyTargeting.findTo((PathAwareEntity) entity, 10, 7, Vec3d.ofBottomCenter(blockPos), (float) (Math.PI / 2));

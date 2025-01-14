@@ -51,19 +51,19 @@ public class FlyTask {
         BlockPos.Mutable mutable2 = new BlockPos.Mutable();
 
         for (BlockPos targetPos : BlockPos.iterate(
-            MathHelper.floor(entity.getX() - 12.0),
-            MathHelper.floor(entity.getY() - 18.0),
-            MathHelper.floor(entity.getZ() - 12.0),
             MathHelper.floor(entity.getX() + 12.0),
-            MathHelper.floor(entity.getY() + 18.0),
-            MathHelper.floor(entity.getZ() + 12.0)
+            MathHelper.floor(entity.getY() + 20.0),
+            MathHelper.floor(entity.getZ() + 12.0),
+            MathHelper.floor(entity.getX() - 12.0),
+            MathHelper.floor(entity.getY() + 4.0),
+            MathHelper.floor(entity.getZ() - 12.0)
         )) {
             if (!entityPos.equals(targetPos)) {
                 BlockState state = entity.getWorld().getBlockState(mutable2.set(targetPos, Direction.DOWN));
                 boolean validBlock = state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS);
-                if (
-                    validBlock && entity.getWorld().isAir(targetPos)
-                        && (entity.getBoundingBox().getLengthY() <= 1 || entity.getWorld().isAir(mutable.set(targetPos, Direction.UP)))
+                if (validBlock && entity.getWorld().isAir(targetPos)
+                    && (entity.getBoundingBox().getLengthY() <= 1
+                    || entity.getWorld().isAir(mutable.set(targetPos, Direction.UP)))
                 ) {
                     return Vec3d.ofBottomCenter(targetPos);
                 }

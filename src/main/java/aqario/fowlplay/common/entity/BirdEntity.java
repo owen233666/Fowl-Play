@@ -18,8 +18,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,11 +32,6 @@ public abstract class BirdEntity extends AnimalEntity {
         this.lookControl = new BirdLookControl(this, 85);
         this.callChance = this.random.nextInt(this.getCallDelay()) - this.getCallDelay();
         this.songChance = this.random.nextInt(this.getSongDelay()) - this.getSongDelay();
-    }
-
-    @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     public static DefaultAttributeContainer.Builder createBirdAttributes() {
@@ -100,15 +93,11 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
-    public abstract Ingredient getFood();
-
     private boolean canEat(ItemStack stack) {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;
     }
 
-    public boolean shouldAvoid(LivingEntity entity) {
-        return false;
-    }
+    public abstract Ingredient getFood();
 
     public boolean canHunt(LivingEntity target) {
         return false;
@@ -118,8 +107,24 @@ public abstract class BirdEntity extends AnimalEntity {
         return false;
     }
 
-    public int fleeRange() {
+    public boolean shouldAvoid(LivingEntity entity) {
+        return false;
+    }
+
+    public int getFleeRange() {
         return 10;
+    }
+
+    public float getWalkSpeedMultiplier() {
+        return 1.0F;
+    }
+
+    public float getRunSpeedMultiplier() {
+        return 1.4F;
+    }
+
+    public float getSwimSpeedMultiplier() {
+        return 1.0F;
     }
 
     @Override
@@ -210,7 +215,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     protected boolean canSing() {
-        return this.getWorld().isDay();
+        return this.getWorld().isDay() && !this.isBaby();
     }
 
     private void resetCallDelay() {

@@ -179,8 +179,8 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Gull
     }
 
     @Override
-    public int fleeRange() {
-        return this.getTrustedUuids().isEmpty() ? super.fleeRange() : 6;
+    public int getFleeRange() {
+        return this.getTrustedUuids().isEmpty() ? super.getFleeRange() : 6;
     }
 
     @Override

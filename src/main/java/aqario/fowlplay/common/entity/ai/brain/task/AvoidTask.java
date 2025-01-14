@@ -26,7 +26,7 @@ public class AvoidTask {
                     if (!predicate.test(entity)) {
                         return false;
                     }
-                    if (entity.isInRange(instance.getValue(avoidTarget), entity.fleeRange())) {
+                    if (entity.isInRange(instance.getValue(avoidTarget), entity.getFleeRange())) {
                         isAvoiding.remember(Unit.INSTANCE);
                         return true;
                     }
@@ -50,7 +50,7 @@ public class AvoidTask {
                         return false;
                     }
                     Optional<LivingEntity> target = instance.getOptionalValue(avoidTarget);
-                    if (target.isPresent() && entity.isInRange(target.get(), entity.fleeRange())) {
+                    if (target.isPresent() && entity.isInRange(target.get(), entity.getFleeRange())) {
                         return false;
                     }
                     isAvoiding.forget();
