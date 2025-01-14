@@ -51,12 +51,12 @@ public class FlyTask {
         BlockPos.Mutable mutable2 = new BlockPos.Mutable();
 
         for (BlockPos targetPos : BlockPos.iterate(
-            MathHelper.floor(entity.getX() + 12.0),
-            MathHelper.floor(entity.getY() + 20.0),
-            MathHelper.floor(entity.getZ() + 12.0),
             MathHelper.floor(entity.getX() - 12.0),
             MathHelper.floor(entity.getY() + 4.0),
-            MathHelper.floor(entity.getZ() - 12.0)
+            MathHelper.floor(entity.getZ() - 12.0),
+            MathHelper.floor(entity.getX() + 12.0),
+            MathHelper.floor(entity.getY() + 20.0),
+            MathHelper.floor(entity.getZ() + 12.0)
         )) {
             if (!entityPos.equals(targetPos)) {
                 BlockState state = entity.getWorld().getBlockState(mutable2.set(targetPos, Direction.DOWN));
