@@ -352,12 +352,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Pi
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.pigeonCallVolume;
+        return FowlPlayConfig.getInstance().pigeonCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return FowlPlayConfig.pigeonSongVolume;
+        return FowlPlayConfig.getInstance().pigeonSongVolume;
     }
 
     @Override

@@ -223,12 +223,12 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Gull
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.gullCallVolume;
+        return FowlPlayConfig.getInstance().gullCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return FowlPlayConfig.gullSongVolume;
+        return FowlPlayConfig.getInstance().gullSongVolume;
     }
 
     @Nullable

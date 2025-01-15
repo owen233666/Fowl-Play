@@ -167,7 +167,7 @@ public class RavenEntity extends TrustingBirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.ravenCallVolume;
+        return FowlPlayConfig.getInstance().ravenCallVolume;
     }
 
     @Override

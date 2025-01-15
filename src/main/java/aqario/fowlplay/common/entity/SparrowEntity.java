@@ -128,12 +128,12 @@ public class SparrowEntity extends FlyingBirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.sparrowCallVolume;
+        return FowlPlayConfig.getInstance().sparrowCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return FowlPlayConfig.sparrowSongVolume;
+        return FowlPlayConfig.getInstance().sparrowSongVolume;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.world.gen;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.SparrowEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -54,7 +55,8 @@ public class SparrowSpawner implements SpecialSpawner {
             .count(holder -> holder.matchesKey(PointOfInterestTypes.HOME), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
             > 4L) {
             List<SparrowEntity> nearbySparrows = world.getNonSpectatingEntities(SparrowEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
-            if (nearbySparrows.size() < MAX_SPARROWS
+            if (FowlPlayConfig.getInstance().sparrowSpawnWeight > 0
+                && nearbySparrows.size() < MAX_SPARROWS
                 && world.isSkyVisible(pos)
                 && world.getBlockState(pos).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON)
             ) {

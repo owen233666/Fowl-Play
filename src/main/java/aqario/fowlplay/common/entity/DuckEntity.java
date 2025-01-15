@@ -211,7 +211,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Duck
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.duckCallVolume;
+        return FowlPlayConfig.getInstance().duckCallVolume;
     }
 
     @Nullable

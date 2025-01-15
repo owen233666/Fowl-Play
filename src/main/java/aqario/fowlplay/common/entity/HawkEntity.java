@@ -199,7 +199,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.hawkCallVolume;
+        return FowlPlayConfig.getInstance().hawkCallVolume;
     }
 
     @Override

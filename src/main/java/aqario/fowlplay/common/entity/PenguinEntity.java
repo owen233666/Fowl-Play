@@ -510,7 +510,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.penguinCallVolume;
+        return FowlPlayConfig.getInstance().penguinCallVolume;
     }
 
     @Override
