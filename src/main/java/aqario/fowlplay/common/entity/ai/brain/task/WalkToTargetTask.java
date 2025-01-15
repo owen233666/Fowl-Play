@@ -1,10 +1,8 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.ai.FuzzyTargeting;
-import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -135,12 +133,12 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
             }
 
             Vec3d target;
-            if (entity instanceof FlyingBirdEntity bird && bird.isFlying()) {
-                target = FuzzyTargeting.find(bird, 24, 16);
-            }
-            else {
-                target = NoPenaltyTargeting.findTo((PathAwareEntity) entity, 16, 7, Vec3d.ofBottomCenter(blockPos), (float) (Math.PI / 2));
-            }
+//            if (entity instanceof FlyingBirdEntity bird && bird.isFlying()) {
+                target = FuzzyTargeting.findTo((PathAwareEntity) entity, 24, 16, Vec3d.ofBottomCenter(blockPos));
+//            }
+//            else {
+//                target = NoPenaltyTargeting.findTo((PathAwareEntity) entity, 16, 7, Vec3d.ofBottomCenter(blockPos), (float) (Math.PI / 2));
+//            }
 
             if (target != null) {
                 this.path = entity.getNavigation().findPathTo(target.x, target.y, target.z, 0);

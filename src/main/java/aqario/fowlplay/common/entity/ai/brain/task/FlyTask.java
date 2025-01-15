@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 
 public class FlyTask {
     public static Task<FlyingBirdEntity> create(float speed, int horizontalRange, int verticalRange) {
-        return create(speed, (entity) -> findTargetPos(entity, horizontalRange, verticalRange), (entity) -> true);
+        return create(speed, (entity) -> FuzzyTargeting.find(entity, horizontalRange, verticalRange), (entity) -> true);
     }
 
     public static Task<FlyingBirdEntity> perch(float speed) {
@@ -70,6 +70,6 @@ public class FlyTask {
             }
         }
 
-        return null;
+        return FuzzyTargeting.find(entity, 16, 16);
     }
 }

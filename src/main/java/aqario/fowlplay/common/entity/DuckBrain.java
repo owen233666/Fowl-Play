@@ -128,7 +128,7 @@ public class DuckBrain {
                 AvoidTask.run(),
                 PickupFoodTask.run(Bird::canPickupFood),
                 new LookAroundTask(45, 90),
-                new WalkToTargetTask(),
+                new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new TemptationCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )
