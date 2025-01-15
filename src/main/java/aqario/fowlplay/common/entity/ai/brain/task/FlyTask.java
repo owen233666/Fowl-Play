@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -25,11 +24,12 @@ public class FlyTask {
         return create(speed, (entity) -> findTargetPos(entity, horizontalRange, verticalRange), (entity) -> true);
     }
 
+    public static Task<FlyingBirdEntity> perch(float speed) {
+        return create(speed, FlyTask::findTreePos, (entity) -> true);
+    }
+
     @Nullable
     private static Vec3d findTargetPos(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
-        if (entity.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && entity.getRandom().nextFloat() < 0.8F) {
-            return findTreePos(entity);
-        }
         return FuzzyTargeting.find(entity, horizontalRange, verticalRange);
     }
 
