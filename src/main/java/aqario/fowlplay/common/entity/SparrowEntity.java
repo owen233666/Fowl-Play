@@ -41,7 +41,7 @@ public class SparrowEntity extends FlyingBirdEntity {
 
     @Override
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 15);
+        return new BirdFlightMoveControl(this, 15, 15);
     }
 
     @Nullable
