@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -18,7 +19,14 @@ public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
     private List<? extends PassiveEntity> nearbyBirds;
 
     public FlockTask(float coherence, float alignment, float separation, float separationRange) {
-        super(ImmutableMap.of());
+        super(ImmutableMap.of(
+            FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
+            MemoryModuleState.VALUE_PRESENT,
+            FowlPlayMemoryModuleType.IS_AVOIDING,
+            MemoryModuleState.VALUE_ABSENT,
+            FowlPlayMemoryModuleType.SEES_FOOD,
+            MemoryModuleState.VALUE_ABSENT
+        ));
         this.coherence = coherence;
         this.alignment = alignment;
         this.separation = separation;
@@ -28,9 +36,6 @@ public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
     @Override
     protected boolean shouldRun(ServerWorld world, FlyingBirdEntity bird) {
         if (!bird.isFlying()) {
-            return false;
-        }
-        if (!bird.getBrain().hasMemoryModule(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)) {
             return false;
         }
 
@@ -70,7 +75,12 @@ public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
         cohesion = cohesion.multiply(this.coherence);
         alignment = alignment.multiply(this.alignment);
         separation = separation.multiply(this.separation);
+        Vec3d randomness = new Vec3d(
+            bird.getRandom().nextFloat() - bird.getRandom().nextFloat(),
+            bird.getRandom().nextFloat() - bird.getRandom().nextFloat(),
+            bird.getRandom().nextFloat() - bird.getRandom().nextFloat())
+            .multiply(0.5);
 
-        return cohesion.add(separation).add(alignment);
+        return cohesion.add(separation).add(alignment).add(randomness);
     }
 }
