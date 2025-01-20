@@ -147,11 +147,11 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public int duckSpawnWeight = 10;
+    public int duckSpawnWeight = 8;
     @SerialEntry
     public int duckMinGroupSize = 6;
     @SerialEntry
-    public int duckMaxGroupSize = 12;
+    public int duckMaxGroupSize = 10;
 
     // Gull
 
