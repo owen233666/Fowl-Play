@@ -3,75 +3,55 @@ package aqario.fowlplay.common.world.gen;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.HawkEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityData;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.ServerStatHandler;
-import net.minecraft.stat.Stats;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.spawner.SpecialSpawner;
 
 public class HawkSpawner implements SpecialSpawner {
+    private static final int SPAWN_COOLDOWN = 6000;
     private int cooldown;
 
     @Override
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
-        if (!spawnAnimals) {
+        if (!spawnAnimals || !world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
             return 0;
         }
-        Random random = world.random;
         this.cooldown--;
         if (this.cooldown > 0) {
             return 0;
         }
-        this.cooldown = this.cooldown + (60 + random.nextInt(60)) * 20;
-        if (world.getAmbientDarkness() < 5 && world.getDimension().hasSkyLight()) {
+        Random random = world.random;
+        this.cooldown = SPAWN_COOLDOWN + (random.nextInt(60) - random.nextInt(60)) * 20;
+        PlayerEntity player = world.getRandomAlivePlayer();
+        if (player == null || player.isSpectator()) {
             return 0;
         }
-        int i = 0;
-
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            if (player.isSpectator()) {
-                continue;
+        BlockPos playerPos = player.getBlockPos();
+        BlockPos spawnPos = playerPos
+            .up(30 + random.nextInt(20))
+            .east(-10 + random.nextInt(21))
+            .south(-10 + random.nextInt(21));
+        BlockState block = world.getBlockState(spawnPos);
+        FluidState fluid = world.getFluidState(spawnPos);
+        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK)
+            && HawkEntity.canSpawn(FowlPlayEntityType.HAWK, world, SpawnReason.NATURAL, spawnPos, random)
+        ) {
+            HawkEntity hawk = FowlPlayEntityType.HAWK.create(world);
+            if (hawk == null) {
+                return 0;
             }
-            BlockPos pos = player.getBlockPos();
-            if (!world.getDimension().hasSkyLight() || pos.getY() >= world.getSeaLevel() && world.isSkyVisible(pos)) {
-                LocalDifficulty difficulty = world.getLocalDifficulty(pos);
-                if (difficulty.isHarderThan(random.nextFloat() * 3.0F)) {
-                    ServerStatHandler serverStatHandler = player.getStatHandler();
-                    int j = MathHelper.clamp(serverStatHandler.getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
-                    if (random.nextInt(j) >= 72000) {
-                        BlockPos pos2 = pos
-                            .up(20 + random.nextInt(15))
-                            .east(-10 + random.nextInt(21))
-                            .south(-10 + random.nextInt(21));
-                        BlockState block = world.getBlockState(pos2);
-                        FluidState fluid = world.getFluidState(pos2);
-                        if (SpawnHelper.isClearForSpawn(world, pos2, block, fluid, FowlPlayEntityType.HAWK)) {
-                            EntityData entityData = null;
-                            int l = 1 + random.nextInt(difficulty.getGlobalDifficulty().getId() + 1);
-
-                            for (int m = 0; m < l; m++) {
-                                HawkEntity hawk = FowlPlayEntityType.HAWK.create(world);
-                                if (hawk != null) {
-                                    hawk.refreshPositionAndAngles(pos2, 0.0F, 0.0F);
-                                    entityData = hawk.initialize(world, difficulty, SpawnReason.NATURAL, entityData);
-                                    world.spawnEntityAndPassengers(hawk);
-                                    i++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            hawk.initialize(world, world.getLocalDifficulty(spawnPos), SpawnReason.NATURAL, null);
+            hawk.refreshPositionAndAngles(spawnPos, 0.0F, 0.0F);
+            world.spawnEntityAndPassengers(hawk);
+            return 1;
         }
 
-        return i;
+        return 0;
     }
 }

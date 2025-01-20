@@ -51,7 +51,7 @@ public class FowlPlayConfig {
     // Blue Jay
 
     @SerialEntry
-    public int blueJayCallVolume = 10;
+    public int blueJayCallVolume = 9;
 
     // Cardinal
 
@@ -82,7 +82,7 @@ public class FowlPlayConfig {
     // Hawk
 
     @SerialEntry
-    public int hawkCallVolume = 8;
+    public int hawkCallVolume = 12;
 
     // Penguin
 
