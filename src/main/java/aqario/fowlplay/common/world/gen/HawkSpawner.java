@@ -24,7 +24,10 @@ public class HawkSpawner implements SpecialSpawner {
 
     @Override
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
-        if (!spawnAnimals || !world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
+        if (!spawnAnimals
+            || !world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)
+            || FowlPlayConfig.getInstance().hawkSpawnWeight <= 0
+        ) {
             return 0;
         }
         this.cooldown--;
@@ -44,8 +47,7 @@ public class HawkSpawner implements SpecialSpawner {
             .south(-10 + random.nextInt(21));
         BlockState block = world.getBlockState(spawnPos);
         FluidState fluid = world.getFluidState(spawnPos);
-        if (FowlPlayConfig.getInstance().hawkSpawnWeight > 0
-            && SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK)
+        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK)
             && HawkEntity.canSpawn(FowlPlayEntityType.HAWK, world, SpawnReason.NATURAL, spawnPos, random)
         ) {
             List<HawkEntity> nearbyHawks = world.getNonSpectatingEntities(

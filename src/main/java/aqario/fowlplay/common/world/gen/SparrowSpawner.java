@@ -25,26 +25,30 @@ public class SparrowSpawner implements SpecialSpawner {
     @SuppressWarnings("deprecation")
     @Override
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
-        if (spawnAnimals && world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
-            this.ticksUntilNextSpawn--;
-            if (this.ticksUntilNextSpawn > 0) {
-                return 0;
-            }
-            this.ticksUntilNextSpawn = SPAWN_COOLDOWN;
-            PlayerEntity player = world.getRandomAlivePlayer();
-            if (player == null) {
-                return 0;
-            }
-            Random random = world.random;
-            int x = (8 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
-            int z = (8 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
-            BlockPos pos = player.getBlockPos().add(x, 0, z);
-            if (!world.isRegionLoaded(pos.getX() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getZ() + 10)) {
-                return 0;
-            }
-            if (world.isNearOccupiedPointOfInterest(pos, 2)) {
-                return this.spawnNearPoi(world, pos);
-            }
+        if (!spawnAnimals
+            || !world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)
+            || FowlPlayConfig.getInstance().sparrowSpawnWeight <= 0
+        ) {
+            return 0;
+        }
+        this.ticksUntilNextSpawn--;
+        if (this.ticksUntilNextSpawn > 0) {
+            return 0;
+        }
+        this.ticksUntilNextSpawn = SPAWN_COOLDOWN;
+        PlayerEntity player = world.getRandomAlivePlayer();
+        if (player == null) {
+            return 0;
+        }
+        Random random = world.random;
+        int x = (8 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
+        int z = (8 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
+        BlockPos pos = player.getBlockPos().add(x, 0, z);
+        if (!world.isRegionLoaded(pos.getX() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getZ() + 10)) {
+            return 0;
+        }
+        if (world.isNearOccupiedPointOfInterest(pos, 2)) {
+            return this.spawnNearPoi(world, pos);
         }
 
         return 0;
@@ -55,8 +59,7 @@ public class SparrowSpawner implements SpecialSpawner {
             .count(holder -> holder.matchesKey(PointOfInterestTypes.HOME), pos, 48, PointOfInterestStorage.OccupationStatus.IS_OCCUPIED)
             > 4L) {
             List<SparrowEntity> nearbySparrows = world.getNonSpectatingEntities(SparrowEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
-            if (FowlPlayConfig.getInstance().sparrowSpawnWeight > 0
-                && nearbySparrows.size() < MAX_SPARROWS
+            if (nearbySparrows.size() < MAX_SPARROWS
                 && world.isSkyVisible(pos)
                 && world.getBlockState(pos).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON)
             ) {

@@ -28,7 +28,7 @@ public final class FowlPlayWorldGen {
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, GullEntity::canSpawn
         );
         SpawnRestriction.register(FowlPlayEntityType.HAWK, SpawnLocationTypes.UNRESTRICTED,
-            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HawkEntity::canSpawn
+            Heightmap.Type.MOTION_BLOCKING, HawkEntity::canSpawn
         );
         SpawnRestriction.register(FowlPlayEntityType.PENGUIN, SpawnLocationTypes.UNRESTRICTED,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PenguinEntity::canSpawn
