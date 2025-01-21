@@ -111,7 +111,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Duck
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(VARIANT, Variant.BROWN.toString());
+        builder.add(VARIANT, Variant.MALLARD.toString());
     }
 
     @Override
