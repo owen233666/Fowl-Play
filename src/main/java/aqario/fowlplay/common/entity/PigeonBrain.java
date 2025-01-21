@@ -308,7 +308,7 @@ public class PigeonBrain {
         pigeon.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisiblePigeons(PigeonEntity pigeon) {
+    protected static List<? extends PassiveEntity> getNearbyVisiblePigeons(PigeonEntity pigeon) {
         return pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

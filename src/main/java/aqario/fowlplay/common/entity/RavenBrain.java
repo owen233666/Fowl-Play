@@ -314,7 +314,7 @@ public class RavenBrain {
         raven.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleRavens(RavenEntity raven) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleRavens(RavenEntity raven) {
         return raven.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

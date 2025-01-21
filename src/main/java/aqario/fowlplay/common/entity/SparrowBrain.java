@@ -167,7 +167,7 @@ public class SparrowBrain {
             FowlPlayActivities.FLY,
             ImmutableList.of(
                 Pair.of(0, FlightControlTask.tryStopFlying(sparrow -> true)),
-                Pair.of(1, new FlockTask(
+                Pair.of(1, new LeaderlessFlockTask(
                     0.03f,
                     0.6f,
                     0.05f,
@@ -286,7 +286,7 @@ public class SparrowBrain {
         sparrow.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleSparrows(SparrowEntity sparrow) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleSparrows(SparrowEntity sparrow) {
         return sparrow.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

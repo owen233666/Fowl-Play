@@ -281,7 +281,7 @@ public class ChickadeeBrain {
         chickadee.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleChickadees(ChickadeeEntity chickadee) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleChickadees(ChickadeeEntity chickadee) {
         return chickadee.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

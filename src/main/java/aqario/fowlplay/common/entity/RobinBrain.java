@@ -281,7 +281,7 @@ public class RobinBrain {
         robin.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleRobins(RobinEntity robin) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleRobins(RobinEntity robin) {
         return robin.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class SparrowEntity extends FlyingBirdEntity {
+public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
@@ -189,5 +189,14 @@ public class SparrowEntity extends FlyingBirdEntity {
     protected void sendAiDebugData() {
         super.sendAiDebugData();
         DebugInfoSender.sendBrainDebugData(this);
+    }
+
+    @Override
+    public boolean isLeader() {
+        return false;
+    }
+
+    @Override
+    public void setLeader() {
     }
 }

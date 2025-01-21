@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PigeonEntity extends TameableBirdEntity implements VariantHolder<PigeonEntity.Variant> {
+public class PigeonEntity extends TameableBirdEntity implements VariantHolder<PigeonEntity.Variant>, Flocking {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
     public final AnimationState idleState = new AnimationState();
@@ -397,6 +397,15 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Pi
     protected void sendAiDebugData() {
         super.sendAiDebugData();
         DebugInfoSender.sendBrainDebugData(this);
+    }
+
+    @Override
+    public boolean isLeader() {
+        return false;
+    }
+
+    @Override
+    public void setLeader() {
     }
 
     public enum Variant {

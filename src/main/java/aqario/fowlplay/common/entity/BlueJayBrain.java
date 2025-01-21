@@ -281,7 +281,7 @@ public class BlueJayBrain {
         blueJay.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleBlueJays(BlueJayEntity blueJay) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleBlueJays(BlueJayEntity blueJay) {
         return blueJay.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

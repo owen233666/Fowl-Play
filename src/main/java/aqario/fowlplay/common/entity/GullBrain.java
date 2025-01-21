@@ -314,7 +314,7 @@ public class GullBrain {
         gull.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleGulls(GullEntity gull) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleGulls(GullEntity gull) {
         return gull.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

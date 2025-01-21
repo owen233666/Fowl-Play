@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
+import aqario.fowlplay.common.entity.Flocking;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
@@ -11,14 +12,15 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
-public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
-    public final float coherence;
-    public final float alignment;
+public class GuidedFlockTask extends MultiTickTask<FlyingBirdEntity> {
+    public float coherence;
+    public float alignment;
     public final float separation;
     public final float separationRange;
+    private FlyingBirdEntity leader;
     private List<? extends PassiveEntity> nearbyBirds;
 
-    public FlockTask(float coherence, float alignment, float separation, float separationRange) {
+    public GuidedFlockTask(float separation, float separationRange) {
         super(ImmutableMap.of(
             FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
             MemoryModuleState.VALUE_PRESENT,
@@ -27,8 +29,6 @@ public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
             FowlPlayMemoryModuleType.SEES_FOOD,
             MemoryModuleState.VALUE_ABSENT
         ));
-        this.coherence = coherence;
-        this.alignment = alignment;
         this.separation = separation;
         this.separationRange = separationRange;
     }
@@ -39,9 +39,28 @@ public class FlockTask extends MultiTickTask<FlyingBirdEntity> {
             return false;
         }
 
-        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
+        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)
+            .get()
+            .stream()
+            .filter(entity -> entity.squaredDistanceTo(bird) < 64)
+            .toList();
 
-        return this.nearbyBirds.size() > 5;
+        if (this.nearbyBirds.isEmpty()) {
+            return false;
+        }
+        this.leader = null;
+        this.nearbyBirds.forEach(entity -> {
+            if (entity instanceof Flocking flockingBird && flockingBird.isLeader()) {
+                this.leader = (FlyingBirdEntity) flockingBird;
+            }
+        });
+
+        if (this.leader == null) {
+            ((Flocking) bird).setLeader();
+            return false;
+        }
+
+        return true;
     }
 
     @Override

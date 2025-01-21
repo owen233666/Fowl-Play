@@ -314,7 +314,7 @@ public class DuckBrain {
         duck.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleDucks(DuckEntity duck) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleDucks(DuckEntity duck) {
         return duck.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 

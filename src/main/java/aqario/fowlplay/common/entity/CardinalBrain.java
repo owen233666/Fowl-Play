@@ -281,7 +281,7 @@ public class CardinalBrain {
         cardinal.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
     }
 
-    protected static List<PassiveEntity> getNearbyVisibleCardinals(CardinalEntity cardinal) {
+    protected static List<? extends PassiveEntity> getNearbyVisibleCardinals(CardinalEntity cardinal) {
         return cardinal.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 
