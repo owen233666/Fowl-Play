@@ -1,11 +1,15 @@
 package aqario.fowlplay.common;
 
+import aqario.fowlplay.common.entity.DuckVariant;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
+import aqario.fowlplay.common.entity.SparrowVariant;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.common.item.FowlPlayItems;
+import aqario.fowlplay.common.registry.FowlPlayRegistries;
+import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.world.gen.FowlPlayWorldGen;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
@@ -25,8 +29,12 @@ public class FowlPlay implements ModInitializer {
         LOGGER.info("Loading Fowl Play");
         FowlPlayActivities.init();
         FowlPlayEntityType.init();
+        DuckVariant.init();
+        SparrowVariant.init();
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();
+        FowlPlayRegistries.init();
+        FowlPlayRegistryKeys.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();

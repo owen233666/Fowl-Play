@@ -26,6 +26,6 @@ public class DuckEntityRenderer extends MobEntityRenderer<DuckEntity, DuckEntity
         if ("Quackers".equals(string)) {
             return Identifier.of(FowlPlay.ID, "textures/entity/duck/muscovy_duck.png");
         }
-        return Identifier.of(FowlPlay.ID, "textures/entity/duck/" + duck.getVariant().getId() + "_duck.png");
+        return duck.getVariant().value().texture();
     }
 }
