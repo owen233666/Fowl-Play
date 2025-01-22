@@ -3,6 +3,9 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
+import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.common.registry.FowlPlayRegistries;
+import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
@@ -20,16 +23,17 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Util;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -39,11 +43,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
-public class GullEntity extends TrustingBirdEntity implements VariantHolder<GullEntity.Variant>, Aquatic {
-    private static final TrackedData<String> VARIANT = DataTracker.registerData(GullEntity.class, TrackedDataHandlerRegistry.STRING);
+public class GullEntity extends TrustingBirdEntity implements VariantHolder<RegistryEntry<GullVariant>>, Aquatic {
+    private static final TrackedData<RegistryEntry<GullVariant>> VARIANT = DataTracker.registerData(
+        GullEntity.class,
+        FowlPlayTrackedDataHandlerRegistry.GULL_VARIANT
+    );
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
@@ -76,7 +82,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Gull
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
+        FowlPlayRegistries.GULL_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
@@ -112,31 +118,32 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Gull
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(VARIANT, Variant.HERRING.toString());
+        builder.add(VARIANT, FowlPlayRegistries.GULL_VARIANT.entryOf(GullVariant.HERRING));
     }
 
     @Override
-    public Variant getVariant() {
-        return Variant.valueOf(this.dataTracker.get(VARIANT));
+    public RegistryEntry<GullVariant> getVariant() {
+        return this.dataTracker.get(VARIANT);
     }
 
     @Override
-    public void setVariant(Variant variant) {
-        this.dataTracker.set(VARIANT, variant.toString());
+    public void setVariant(RegistryEntry<GullVariant> variant) {
+        this.dataTracker.set(VARIANT, variant);
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putString("variant", this.getVariant().toString());
+        nbt.putString("variant", this.getVariant().getKey().orElse(GullVariant.HERRING).getValue().toString());
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("variant")) {
-            this.setVariant(Variant.valueOf(nbt.getString("variant")));
-        }
+        Optional.ofNullable(Identifier.tryParse(nbt.getString("variant")))
+            .map(variant -> RegistryKey.of(FowlPlayRegistryKeys.GULL_VARIANT, variant))
+            .flatMap(FowlPlayRegistries.GULL_VARIANT::getEntry)
+            .ifPresent(this::setVariant);
     }
 
     @Override
@@ -282,23 +289,5 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Gull
         BlockPos blockPos = BlockPos.ofFloored(this.getX(), this.getY() + maxWaterHeight, this.getZ());
         double waterHeight = this.getBlockPos().getY() + this.getWorld().getFluidState(blockPos).getHeight(this.getWorld(), blockPos);
         return this.isSubmergedInWater() || waterHeight > this.getY() + maxWaterHeight;
-    }
-
-    public enum Variant {
-        HERRING("herring"),
-        RING_BILLED("ring_billed");
-
-        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(Variant[]::new));
-
-        private final String id;
-
-        Variant(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
     }
 }

@@ -1,8 +1,6 @@
 package aqario.fowlplay.common;
 
-import aqario.fowlplay.common.entity.DuckVariant;
-import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.entity.SparrowVariant;
+import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
@@ -30,6 +28,8 @@ public class FowlPlay implements ModInitializer {
         FowlPlayActivities.init();
         FowlPlayEntityType.init();
         DuckVariant.init();
+        GullVariant.init();
+        PigeonVariant.init();
         SparrowVariant.init();
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();

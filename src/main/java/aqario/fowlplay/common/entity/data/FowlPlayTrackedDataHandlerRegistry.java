@@ -1,6 +1,8 @@
 package aqario.fowlplay.common.entity.data;
 
 import aqario.fowlplay.common.entity.DuckVariant;
+import aqario.fowlplay.common.entity.GullVariant;
+import aqario.fowlplay.common.entity.PigeonVariant;
 import aqario.fowlplay.common.entity.SparrowVariant;
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -14,6 +16,12 @@ import java.util.UUID;
 public final class FowlPlayTrackedDataHandlerRegistry {
     public static final TrackedDataHandler<RegistryEntry<DuckVariant>> DUCK_VARIANT = register(
         TrackedDataHandler.create(DuckVariant.PACKET_CODEC)
+    );
+    public static final TrackedDataHandler<RegistryEntry<GullVariant>> GULL_VARIANT = register(
+        TrackedDataHandler.create(GullVariant.PACKET_CODEC)
+    );
+    public static final TrackedDataHandler<RegistryEntry<PigeonVariant>> PIGEON_VARIANT = register(
+        TrackedDataHandler.create(PigeonVariant.PACKET_CODEC)
     );
     public static final TrackedDataHandler<RegistryEntry<SparrowVariant>> SPARROW_VARIANT = register(
         TrackedDataHandler.create(SparrowVariant.PACKET_CODEC)

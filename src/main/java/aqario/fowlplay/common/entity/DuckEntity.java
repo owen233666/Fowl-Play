@@ -81,12 +81,7 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Regi
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        if (world.getRandom().nextBoolean()) {
-            this.setVariant(FowlPlayRegistries.DUCK_VARIANT.entryOf(DuckVariant.GREEN_HEADED));
-        }
-        else {
-            this.setVariant(FowlPlayRegistries.DUCK_VARIANT.entryOf(DuckVariant.BROWN));
-        }
+        FowlPlayRegistries.DUCK_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 

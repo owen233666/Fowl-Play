@@ -18,7 +18,7 @@ public record SparrowVariant(Identifier texture) {
 
     private static RegistryKey<SparrowVariant> register(String id) {
         RegistryKey<SparrowVariant> key = RegistryKey.of(FowlPlayRegistryKeys.SPARROW_VARIANT, Identifier.of(FowlPlay.ID, id));
-        Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/sparrow/" + key.getValue().getPath() + "sparrow.png");
+        Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/sparrow/" + key.getValue().getPath() + "_sparrow.png");
         Registry.register(FowlPlayRegistries.SPARROW_VARIANT, key, new SparrowVariant(texture));
         return key;
     }
