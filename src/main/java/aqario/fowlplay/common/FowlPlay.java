@@ -15,12 +15,17 @@ import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FowlPlay implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("Fowl Play");
     public static final String ID = "fowlplay";
+
+    public static boolean isYACLLoaded() {
+        return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
+    }
 
     @Override
     public void onInitialize() {

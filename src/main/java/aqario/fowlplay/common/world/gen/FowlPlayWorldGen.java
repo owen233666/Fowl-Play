@@ -3,12 +3,20 @@ package aqario.fowlplay.common.world.gen;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
+import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.Heightmap;
+
+import java.util.function.Predicate;
 
 public final class FowlPlayWorldGen {
     public static void init() {
@@ -134,5 +142,32 @@ public final class FowlPlayWorldGen {
             FowlPlayConfig.getInstance().sparrowMinGroupSize,
             FowlPlayConfig.getInstance().sparrowMaxGroupSize
         );
+
+        addSpawnCost(
+            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_DUCKS),
+            FowlPlayEntityType.DUCK,
+            1,
+            0.1
+        );
+    }
+
+    public static void addSpawnCost(
+        Predicate<BiomeSelectionContext> biomeSelector,
+        EntityType<?> entityType,
+        double mass,
+        double gravityLimit
+    ) {
+        // See constructor of SpawnSettings.SpawnEntry for context
+        Preconditions.checkArgument(entityType.getSpawnGroup() != SpawnGroup.MISC,
+            "Cannot add spawns for entities with spawnGroup=MISC since they'd be replaced by pigs.");
+
+        // We need the entity type to be registered, or we cannot deduce an ID otherwise
+        Identifier id = Registries.ENTITY_TYPE.getId(entityType);
+        Preconditions.checkState(Registries.ENTITY_TYPE.getKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
+
+        // Add a new spawn cost to the chosen biome
+        BiomeModifications.create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+            context.getSpawnSettings().setSpawnCost(entityType, mass, gravityLimit);
+        });
     }
 }

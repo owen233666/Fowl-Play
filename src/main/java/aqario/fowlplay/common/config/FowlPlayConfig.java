@@ -1,44 +1,22 @@
 package aqario.fowlplay.common.config;
 
 import aqario.fowlplay.common.FowlPlay;
-import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
 
 public class FowlPlayConfig {
-    public static boolean isYACLLoaded() {
-        return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
-    }
-
-    private static ConfigClassHandler<FowlPlayConfig> getConfig() {
-        return ConfigClassHandler.createBuilder(FowlPlayConfig.class)
-            .id(Identifier.of(FowlPlay.ID, "config"))
-            .serializer(config -> GsonConfigSerializerBuilder.create(config)
-                .setPath(FabricLoader.getInstance().getConfigDir().resolve(FowlPlay.ID + ".json5"))
-                .setJson5(true)
-                .build())
-            .build();
-    }
-
     public static FowlPlayConfig getInstance() {
-        if (isYACLLoaded()) {
-            return getConfig().instance();
+        if (FowlPlay.isYACLLoaded()) {
+            return YACLIntegration.HANDLED_CONFIG.instance();
         }
         return new FowlPlayConfig();
     }
 
-    public static FowlPlayConfig getDefaults() {
-        return getConfig().defaults();
-    }
-
     public static void load() {
-        getConfig().load();
+        YACLIntegration.HANDLED_CONFIG.load();
     }
 
     public static void save() {
-        getConfig().save();
+        YACLIntegration.HANDLED_CONFIG.save();
     }
 
     // Visual
@@ -147,7 +125,7 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public int duckSpawnWeight = 8;
+    public int duckSpawnWeight = 10;
     @SerialEntry
     public int duckMinGroupSize = 6;
     @SerialEntry
