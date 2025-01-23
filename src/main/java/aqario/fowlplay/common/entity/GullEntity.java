@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
@@ -67,6 +68,11 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
+    protected BirdFlightMoveControl getFlightMoveControl() {
+        return new BirdFlightMoveControl(this, 15, 10);
+    }
+
+    @Override
     protected EntityNavigation getLandNavigation() {
         return new AmphibiousSwimNavigation(this, this.getWorld());
     }
@@ -96,7 +102,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f)
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.22f)
             .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 

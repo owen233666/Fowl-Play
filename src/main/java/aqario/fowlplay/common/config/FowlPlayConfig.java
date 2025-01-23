@@ -98,7 +98,7 @@ public class FowlPlayConfig {
     // Blue Jay
 
     @SerialEntry
-    public int blueJaySpawnWeight = 25;
+    public int blueJaySpawnWeight = 3;
     @SerialEntry
     public int blueJayMinGroupSize = 1;
     @SerialEntry
@@ -107,7 +107,7 @@ public class FowlPlayConfig {
     // Cardinal
 
     @SerialEntry
-    public int cardinalSpawnWeight = 35;
+    public int cardinalSpawnWeight = 3;
     @SerialEntry
     public int cardinalMinGroupSize = 1;
     @SerialEntry
@@ -116,11 +116,11 @@ public class FowlPlayConfig {
     // Chickadee
 
     @SerialEntry
-    public int chickadeeSpawnWeight = 50;
+    public int chickadeeSpawnWeight = 5;
     @SerialEntry
-    public int chickadeeMinGroupSize = 3;
+    public int chickadeeMinGroupSize = 1;
     @SerialEntry
-    public int chickadeeMaxGroupSize = 5;
+    public int chickadeeMaxGroupSize = 3;
 
     // Duck
 
@@ -170,27 +170,27 @@ public class FowlPlayConfig {
     // Raven
 
     @SerialEntry
-    public int ravenSpawnWeight = 20;
+    public int ravenSpawnWeight = 10;
     @SerialEntry
     public int ravenMinGroupSize = 1;
     @SerialEntry
-    public int ravenMaxGroupSize = 3;
+    public int ravenMaxGroupSize = 2;
 
     // Robin
 
     @SerialEntry
-    public int robinSpawnWeight = 50;
+    public int robinSpawnWeight = 7;
     @SerialEntry
-    public int robinMinGroupSize = 3;
+    public int robinMinGroupSize = 1;
     @SerialEntry
-    public int robinMaxGroupSize = 5;
+    public int robinMaxGroupSize = 3;
 
     // Sparrow
 
     @SerialEntry
-    public int sparrowSpawnWeight = 75;
+    public int sparrowSpawnWeight = 10;
     @SerialEntry
-    public int sparrowMinGroupSize = 6;
+    public int sparrowMinGroupSize = 3;
     @SerialEntry
-    public int sparrowMaxGroupSize = 10;
+    public int sparrowMaxGroupSize = 6;
 }

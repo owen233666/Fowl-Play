@@ -114,15 +114,17 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (!nbt.containsUuid("recipient")) {
-            this.setRecipientUuid(null);
-            return;
-        }
-        this.setRecipientUuid(nbt.getUuid("recipient"));
         Optional.ofNullable(Identifier.tryParse(nbt.getString("variant")))
             .map(variant -> RegistryKey.of(FowlPlayRegistryKeys.PIGEON_VARIANT, variant))
             .flatMap(FowlPlayRegistries.PIGEON_VARIANT::getEntry)
             .ifPresent(this::setVariant);
+
+        if (nbt.containsUuid("recipient")) {
+            this.setRecipientUuid(nbt.getUuid("recipient"));
+        }
+        else {
+            this.setRecipientUuid(null);
+        }
     }
 
     @Override

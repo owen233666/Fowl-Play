@@ -58,7 +58,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 12, 8);
+        return new BirdFlightMoveControl(this, 15, 10);
     }
 
     @Nullable

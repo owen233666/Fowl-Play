@@ -12,19 +12,19 @@ import net.minecraft.util.math.Vec3d;
 
 public final class FowlPlayEntityType {
     public static final EntityType<BlueJayEntity> BLUE_JAY = register("blue_jay",
-        EntityType.Builder.create(BlueJayEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(BlueJayEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.4f, 0.55f)
             .eyeHeight(0.475f)
     );
 
     public static final EntityType<CardinalEntity> CARDINAL = register("cardinal",
-        EntityType.Builder.create(CardinalEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(CardinalEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.4f, 0.55f)
             .eyeHeight(0.475f)
     );
 
     public static final EntityType<ChickadeeEntity> CHICKADEE = register("chickadee",
-        EntityType.Builder.create(ChickadeeEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(ChickadeeEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.4f, 0.55f)
             .eyeHeight(0.475f)
     );
@@ -67,13 +67,13 @@ public final class FowlPlayEntityType {
     );
 
     public static final EntityType<RobinEntity> ROBIN = register("robin",
-        EntityType.Builder.create(RobinEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(RobinEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.4f, 0.55f)
             .eyeHeight(0.475f)
     );
 
     public static final EntityType<SparrowEntity> SPARROW = register("sparrow",
-        EntityType.Builder.create(SparrowEntity::new, SpawnGroup.AMBIENT)
+        EntityType.Builder.create(SparrowEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.4f, 0.55f)
             .eyeHeight(0.475f)
     );

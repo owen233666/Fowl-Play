@@ -11,6 +11,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 public class DuckEntityRenderer extends MobEntityRenderer<DuckEntity, DuckEntityModel> {
+    private static final Identifier QUACKERS_TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/duck/muscovy_duck.png");
+
     public DuckEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new DuckEntityModel(context.getPart(DuckEntityModel.MODEL_LAYER)), 0.3f);
         this.addFeature(new BirdHeldItemFeatureRenderer<>(
@@ -24,7 +26,7 @@ public class DuckEntityRenderer extends MobEntityRenderer<DuckEntity, DuckEntity
     public Identifier getTexture(DuckEntity duck) {
         String string = Formatting.strip(duck.getName().getString());
         if ("Quackers".equals(string)) {
-            return Identifier.of(FowlPlay.ID, "textures/entity/duck/muscovy_duck.png");
+            return QUACKERS_TEXTURE;
         }
         return duck.getVariant().value().texture();
     }

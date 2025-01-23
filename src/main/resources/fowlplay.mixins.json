@@ -6,7 +6,8 @@
     "ChickenEntityMixin",
     "LivingEntityMixin",
     "PowderSnowBlockMixin",
-    "SensorMixin"
+    "SensorMixin",
+    "SpawnGroupMixin"
   ],
   "client": [
   ],

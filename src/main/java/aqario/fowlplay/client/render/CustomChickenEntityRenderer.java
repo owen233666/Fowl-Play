@@ -10,13 +10,15 @@ import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.util.Identifier;
 
 public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity, CustomChickenEntityModel> {
+    private static final Identifier TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/chicken/white_chicken.png");
+
     public CustomChickenEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER)), 0.3f);
     }
 
     @Override
     public Identifier getTexture(ChickenEntity chicken) {
-        return Identifier.of(FowlPlay.ID, "textures/entity/chicken/white_chicken.png");
+        return TEXTURE;
     }
 
     @Override
