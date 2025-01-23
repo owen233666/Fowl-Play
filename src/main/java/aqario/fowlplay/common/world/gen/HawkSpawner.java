@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.world.gen;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.FowlPlayEntityType;
 import aqario.fowlplay.common.entity.HawkEntity;
 import net.minecraft.block.BlockState;
@@ -18,7 +19,7 @@ import net.minecraft.world.spawner.SpecialSpawner;
 import java.util.List;
 
 public class HawkSpawner implements SpecialSpawner {
-    private static final int SPAWN_COOLDOWN = 2400;
+    private static final int SPAWN_COOLDOWN = 4800;
     private static final int MAX_HAWKS = 2;
     private int cooldown;
 
@@ -48,7 +49,7 @@ public class HawkSpawner implements SpecialSpawner {
         BlockState block = world.getBlockState(spawnPos);
         FluidState fluid = world.getFluidState(spawnPos);
         if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK)
-            && HawkEntity.canSpawn(FowlPlayEntityType.HAWK, world, SpawnReason.NATURAL, spawnPos, random)
+            && FlyingBirdEntity.canSpawnPasserines(FowlPlayEntityType.HAWK, world, SpawnReason.NATURAL, spawnPos, random)
         ) {
             List<HawkEntity> nearbyHawks = world.getNonSpectatingEntities(
                 HawkEntity.class,

@@ -54,6 +54,11 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
     }
 
+    @SuppressWarnings("unused")
+    public static boolean canSpawnWaterfowl(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+        return world.getBlockState(pos).isAir() || world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+    }
+
     @Override
     protected EntityNavigation createNavigation(World world) {
         this.setMoveControl(this.isFlying());
