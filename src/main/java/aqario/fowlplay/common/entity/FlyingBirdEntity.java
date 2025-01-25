@@ -55,6 +55,21 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
+    public boolean cannotDespawn() {
+        return super.cannotDespawn() || this.isPersistent();
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return !this.isPersistent() && !this.hasCustomName();
+    }
+
+    @Override
+    public int getLimitPerChunk() {
+        return 8;
+    }
+
+    @Override
     protected EntityNavigation createNavigation(World world) {
         this.setMoveControl(this.isFlying());
         return this.navigation;
