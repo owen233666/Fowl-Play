@@ -19,8 +19,7 @@ import net.minecraft.world.spawner.SpecialSpawner;
 import java.util.List;
 
 public class HawkSpawner implements SpecialSpawner {
-    private static final int SPAWN_COOLDOWN = 4800;
-    private static final int MAX_HAWKS = 2;
+    private static final int SPAWN_COOLDOWN = 7200;
     private int cooldown;
 
     @Override
@@ -53,9 +52,9 @@ public class HawkSpawner implements SpecialSpawner {
         ) {
             List<HawkEntity> nearbyHawks = world.getNonSpectatingEntities(
                 HawkEntity.class,
-                new Box(spawnPos).expand(48.0, 36.0, 48.0)
+                new Box(spawnPos).expand(72, 48, 72)
             );
-            if (nearbyHawks.size() >= MAX_HAWKS) {
+            if (!nearbyHawks.isEmpty()) {
                 return 0;
             }
             HawkEntity hawk = FowlPlayEntityType.HAWK.create(world);

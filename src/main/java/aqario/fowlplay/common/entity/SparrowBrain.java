@@ -136,7 +136,7 @@ public class SparrowBrain {
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(TaskTriggerer.runIf(
-                                entity -> !entity.getWorld().getBlockState(entity.getBlockPos()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON),
+                                entity -> !entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON),
                                 StrollTask.create(WALK_SPEED)
                             ), 4),
                             Pair.of(TaskTriggerer.predicate(Entity::isInsideWaterOrBubbleColumn), 3),
