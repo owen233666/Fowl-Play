@@ -9,23 +9,37 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.Map;
+
 public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity, CustomChickenEntityModel> {
     private static final Identifier TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/chicken/white_chicken.png");
+    private final Map<Boolean, CustomChickenEntityModel> models;
 
     public CustomChickenEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER)), 0.3f);
+        this.models = bakeModels(context);
+    }
+
+    private static Map<Boolean, CustomChickenEntityModel> bakeModels(EntityRendererFactory.Context context) {
+        return Map.of(
+            false,
+            new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER)),
+            true,
+            new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER))
+        );
+    }
+
+    @Override
+    public void render(ChickenEntity chicken, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int i) {
+        this.model = this.models.get(chicken.isBaby());
+        if (chicken.isBaby()) {
+            matrices.scale(0.6F, 0.6F, 0.6F);
+        }
+        super.render(chicken, f, g, matrices, vertexConsumers, i);
     }
 
     @Override
     public Identifier getTexture(ChickenEntity chicken) {
         return TEXTURE;
-    }
-
-    @Override
-    public void render(ChickenEntity livingEntity, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int i) {
-        if (livingEntity.isBaby()) {
-            matrices.scale(0.6F, 0.6F, 0.6F);
-        }
-        super.render(livingEntity, f, g, matrices, vertexConsumers, i);
     }
 }

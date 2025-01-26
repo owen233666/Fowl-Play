@@ -325,6 +325,10 @@ public class PenguinEntity extends BirdEntity {
         return this.getPose() == EntityPose.SLIDING ? 1.1F : super.getStepHeight();
     }
 
+    public float getScaleFactor() {
+        return this.isBaby() ? 0.62F : 1.0F;
+    }
+
     @Override
     public EntityDimensions getBaseDimensions(EntityPose pose) {
         EntityDimensions dimensions = super.getBaseDimensions(pose);
