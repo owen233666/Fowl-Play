@@ -54,6 +54,7 @@ public class FowlPlayClient implements ClientModInitializer {
 
         if (FowlPlayConfig.getInstance().customChickenModel) {
             EntityModelLayerRegistry.registerModelLayer(CustomChickenEntityModel.MODEL_LAYER, CustomChickenEntityModel::getTexturedModelData);
+            EntityModelLayerRegistry.registerModelLayer(CustomBabyChickenEntityModel.MODEL_LAYER, CustomBabyChickenEntityModel::getTexturedModelData);
             EntityRendererRegistry.register(EntityType.CHICKEN, CustomChickenEntityRenderer::new);
         }
     }

@@ -1,5 +1,6 @@
 package aqario.fowlplay.client.render;
 
+import aqario.fowlplay.client.model.CustomBabyChickenEntityModel;
 import aqario.fowlplay.client.model.CustomChickenEntityModel;
 import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity, CustomChickenEntityModel> {
     private static final Identifier TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/chicken/white_chicken.png");
+    private static final Identifier BABY_TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/chicken/white_baby_chicken.png");
     private final Map<Boolean, CustomChickenEntityModel> models;
 
     public CustomChickenEntityRenderer(EntityRendererFactory.Context context) {
@@ -25,7 +27,7 @@ public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity
             false,
             new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER)),
             true,
-            new CustomChickenEntityModel(context.getPart(CustomChickenEntityModel.MODEL_LAYER))
+            new CustomBabyChickenEntityModel(context.getPart(CustomBabyChickenEntityModel.MODEL_LAYER))
         );
     }
 
@@ -33,13 +35,13 @@ public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity
     public void render(ChickenEntity chicken, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int i) {
         this.model = this.models.get(chicken.isBaby());
         if (chicken.isBaby()) {
-            matrices.scale(0.6F, 0.6F, 0.6F);
+            matrices.scale(0.8F, 0.8F, 0.8F);
         }
         super.render(chicken, f, g, matrices, vertexConsumers, i);
     }
 
     @Override
     public Identifier getTexture(ChickenEntity chicken) {
-        return TEXTURE;
+        return chicken.isBaby() ? BABY_TEXTURE : TEXTURE;
     }
 }

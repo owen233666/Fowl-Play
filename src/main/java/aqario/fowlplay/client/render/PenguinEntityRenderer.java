@@ -40,9 +40,12 @@ public class PenguinEntityRenderer extends MobEntityRenderer<PenguinEntity, Peng
     }
 
     @Override
-    public void render(PenguinEntity penguin, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
+    public void render(PenguinEntity penguin, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i) {
         this.model = this.models.get(penguin.isBaby());
-        super.render(penguin, f, g, matrixStack, vertexConsumerProvider, i);
+        if (penguin.isBaby()) {
+            matrices.scale(0.8F, 0.8F, 0.8F);
+        }
+        super.render(penguin, f, g, matrices, vertexConsumerProvider, i);
     }
 
     @Override
