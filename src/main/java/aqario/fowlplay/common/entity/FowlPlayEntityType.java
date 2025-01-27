@@ -30,19 +30,19 @@ public final class FowlPlayEntityType {
     );
 
     public static final EntityType<DuckEntity> DUCK = register("duck",
-        EntityType.Builder.create(DuckEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(DuckEntity::new, FowlPlaySpawnGroup.BIRD.spawnGroup)
             .dimensions(0.6f, 0.8f)
             .eyeHeight(0.7f)
     );
 
     public static final EntityType<GullEntity> GULL = register("gull",
-        EntityType.Builder.create(GullEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(GullEntity::new, FowlPlaySpawnGroup.BIRD.spawnGroup)
             .dimensions(0.6f, 0.8f)
             .eyeHeight(0.7f)
     );
 
     public static final EntityType<HawkEntity> HAWK = register("hawk",
-        EntityType.Builder.create(HawkEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(HawkEntity::new, FowlPlaySpawnGroup.BIRD.spawnGroup)
             .dimensions(0.6f, 0.8f)
             .eyeHeight(0.7f)
     );
@@ -55,13 +55,13 @@ public final class FowlPlayEntityType {
     );
 
     public static final EntityType<PigeonEntity> PIGEON = register("pigeon",
-        EntityType.Builder.create(PigeonEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(PigeonEntity::new, FowlPlaySpawnGroup.BIRD.spawnGroup)
             .dimensions(0.5f, 0.6f)
             .eyeHeight(0.5f)
     );
 
     public static final EntityType<RavenEntity> RAVEN = register("raven",
-        EntityType.Builder.create(RavenEntity::new, SpawnGroup.CREATURE)
+        EntityType.Builder.create(RavenEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
             .dimensions(0.6f, 0.8f)
             .eyeHeight(0.7f)
     );

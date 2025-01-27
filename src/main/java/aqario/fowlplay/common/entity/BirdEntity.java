@@ -41,6 +41,25 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     @Override
+    public boolean cannotDespawn() {
+        return super.cannotDespawn() || this.isPersistent();
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return !this.isPersistent() && !this.isPersistentSpawnGroup() && !this.hasCustomName();
+    }
+
+    private boolean isPersistentSpawnGroup() {
+        return this.getType().getSpawnGroup() == SpawnGroup.CREATURE || this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD.spawnGroup;
+    }
+
+    @Override
+    public int getLimitPerChunk() {
+        return 8;
+    }
+
+    @Override
     public boolean canEquip(ItemStack stack) {
         EquipmentSlot equipmentSlot = this.getPreferredEquipmentSlot(stack);
         if (!this.getEquippedStack(equipmentSlot).isEmpty()) {

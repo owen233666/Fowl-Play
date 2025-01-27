@@ -80,7 +80,7 @@ public final class FowlPlayWorldGen {
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_DUCKS),
-            SpawnGroup.CREATURE,
+            FowlPlaySpawnGroup.BIRD.spawnGroup,
             FowlPlayEntityType.DUCK,
             FowlPlayConfig.getInstance().duckSpawnWeight,
             FowlPlayConfig.getInstance().duckMinGroupSize,
@@ -88,7 +88,7 @@ public final class FowlPlayWorldGen {
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_GULLS),
-            SpawnGroup.CREATURE,
+            FowlPlaySpawnGroup.BIRD.spawnGroup,
             FowlPlayEntityType.GULL,
             FowlPlayConfig.getInstance().gullSpawnWeight,
             FowlPlayConfig.getInstance().gullMinGroupSize,
@@ -96,7 +96,7 @@ public final class FowlPlayWorldGen {
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_HAWKS),
-            SpawnGroup.CREATURE,
+            FowlPlaySpawnGroup.BIRD.spawnGroup,
             FowlPlayEntityType.HAWK,
             FowlPlayConfig.getInstance().hawkSpawnWeight,
             FowlPlayConfig.getInstance().hawkMinGroupSize,
@@ -112,7 +112,7 @@ public final class FowlPlayWorldGen {
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_PIGEONS),
-            SpawnGroup.CREATURE,
+            FowlPlaySpawnGroup.BIRD.spawnGroup,
             FowlPlayEntityType.PIGEON,
             FowlPlayConfig.getInstance().pigeonSpawnWeight,
             FowlPlayConfig.getInstance().pigeonMinGroupSize,
@@ -120,7 +120,7 @@ public final class FowlPlayWorldGen {
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_RAVENS),
-            SpawnGroup.CREATURE,
+            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
             FowlPlayEntityType.RAVEN,
             FowlPlayConfig.getInstance().ravenSpawnWeight,
             FowlPlayConfig.getInstance().ravenMinGroupSize,
