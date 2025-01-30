@@ -26,6 +26,9 @@
     "client": [
       "aqario.fowlplay.client.FowlPlayClient"
     ],
+    "fabric-datagen": [
+      "aqario.fowlplay.common.data.FowlPlayDataGeneration"
+    ],
     "modmenu": [
       "aqario.fowlplay.common.config.ModMenuIntegration"
     ]

@@ -49,7 +49,7 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
         if (spawnReason == SpawnReason.BREEDING) {
             FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.WHITE).ifPresent(this::setVariant);
         }
-        else if (spawnReason == SpawnReason.NATURAL) {
+        else if (spawnReason == SpawnReason.CHUNK_GENERATION) {
             FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.RED_JUNGLEFOWL).ifPresent(this::setVariant);
         }
         else {

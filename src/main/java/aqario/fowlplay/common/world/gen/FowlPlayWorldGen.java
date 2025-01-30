@@ -94,14 +94,14 @@ public final class FowlPlayWorldGen {
             FowlPlayConfig.getInstance().gullMinGroupSize,
             FowlPlayConfig.getInstance().gullMaxGroupSize
         );
-        BiomeModifications.addSpawn(
-            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_HAWKS),
-            FowlPlaySpawnGroup.BIRD.spawnGroup,
-            FowlPlayEntityType.HAWK,
-            FowlPlayConfig.getInstance().hawkSpawnWeight,
-            FowlPlayConfig.getInstance().hawkMinGroupSize,
-            FowlPlayConfig.getInstance().hawkMaxGroupSize
-        );
+//        BiomeModifications.addSpawn(
+//            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_HAWKS),
+//            FowlPlaySpawnGroup.BIRD.spawnGroup,
+//            FowlPlayEntityType.HAWK,
+//            FowlPlayConfig.getInstance().hawkSpawnWeight,
+//            FowlPlayConfig.getInstance().hawkMinGroupSize,
+//            FowlPlayConfig.getInstance().hawkMaxGroupSize
+//        );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_PENGUINS),
             SpawnGroup.CREATURE,
