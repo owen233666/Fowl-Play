@@ -11,6 +11,26 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public interface CustomSpawnLocations {
+    SpawnLocation PASSERINE = new SpawnLocation() {
+        public boolean isSpawnPositionOk(WorldView worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
+            if (entityType != null && worldView.getWorldBorder().contains(spawnPos)) {
+                BlockPos headPos = spawnPos.up();
+                return this.isClearForSpawn(worldView, spawnPos, entityType) && this.isClearForSpawn(worldView, headPos, entityType);
+            }
+            return false;
+        }
+
+        private boolean isClearForSpawn(WorldView world, BlockPos pos, EntityType<?> entityType) {
+            BlockState blockState = world.getBlockState(pos);
+            return SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), entityType);
+        }
+
+        @Override
+        public BlockPos adjustPosition(WorldView world, BlockPos pos) {
+            BlockPos blockPos = pos.down();
+            return world.getBlockState(blockPos).canPathfindThrough(NavigationType.LAND) ? blockPos : pos;
+        }
+    };
     SpawnLocation SEMIAQUATIC = new SpawnLocation() {
         @Override
         public boolean isSpawnPositionOk(WorldView worldView, BlockPos blockPos, @Nullable EntityType<?> entityType) {
@@ -19,8 +39,8 @@ public interface CustomSpawnLocations {
 
         @Override
         public BlockPos adjustPosition(WorldView world, BlockPos pos) {
-            BlockPos blockPos = pos.down();
-            return world.getBlockState(blockPos).canPathfindThrough(NavigationType.LAND) ? blockPos : pos;
+            BlockPos groundPos = pos.down();
+            return world.getBlockState(groundPos).canPathfindThrough(NavigationType.LAND) ? groundPos : pos;
         }
     };
 

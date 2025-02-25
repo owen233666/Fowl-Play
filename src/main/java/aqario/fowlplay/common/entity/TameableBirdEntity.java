@@ -145,6 +145,12 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     @Override
     public void tick() {
         super.tick();
+        if (this.getOwnerUuid() != null) {
+            this.addTrustedUuid(this.getOwnerUuid());
+            if (!this.isPersistent()) {
+                this.setPersistent();
+            }
+        }
         if (this.isFlying()) {
             this.setSitting(false);
         }
