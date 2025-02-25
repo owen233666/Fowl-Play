@@ -11,7 +11,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public interface CustomSpawnLocations {
-    SpawnLocation PASSERINE = new SpawnLocation() {
+    SpawnLocation GROUND = new SpawnLocation() {
         public boolean isSpawnPositionOk(WorldView worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
             if (entityType != null && worldView.getWorldBorder().contains(spawnPos)) {
                 BlockPos headPos = spawnPos.up();

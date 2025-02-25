@@ -22,13 +22,13 @@ import java.util.function.Predicate;
 
 public final class FowlPlayWorldGen {
     public static void init() {
-        SpawnRestriction.register(FowlPlayEntityType.BLUE_JAY, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.BLUE_JAY, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
-        SpawnRestriction.register(FowlPlayEntityType.CARDINAL, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.CARDINAL, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
-        SpawnRestriction.register(FowlPlayEntityType.CHICKADEE, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.CHICKADEE, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         SpawnRestriction.register(FowlPlayEntityType.DUCK, CustomSpawnLocations.SEMIAQUATIC,
@@ -37,22 +37,22 @@ public final class FowlPlayWorldGen {
         SpawnRestriction.register(FowlPlayEntityType.GULL, CustomSpawnLocations.SEMIAQUATIC,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, FlyingBirdEntity::canSpawnShorebirds
         );
-        SpawnRestriction.register(FowlPlayEntityType.HAWK, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.HAWK, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
         SpawnRestriction.register(FowlPlayEntityType.PENGUIN, CustomSpawnLocations.SEMIAQUATIC,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PenguinEntity::canSpawnPenguins
         );
-        SpawnRestriction.register(FowlPlayEntityType.PIGEON, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.PIGEON, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnShorebirds
         );
-        SpawnRestriction.register(FowlPlayEntityType.RAVEN, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.RAVEN, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
-        SpawnRestriction.register(FowlPlayEntityType.ROBIN, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.ROBIN, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
-        SpawnRestriction.register(FowlPlayEntityType.SPARROW, CustomSpawnLocations.PASSERINE,
+        SpawnRestriction.register(FowlPlayEntityType.SPARROW, CustomSpawnLocations.GROUND,
             Heightmap.Type.MOTION_BLOCKING, FlyingBirdEntity::canSpawnPasserines
         );
 
