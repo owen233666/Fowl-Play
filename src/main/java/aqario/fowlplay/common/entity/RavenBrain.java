@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
 import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -28,6 +27,7 @@ import net.minecraft.util.math.intprovider.UniformIntProvider;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class RavenBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super RavenEntity>>> SENSORS = ImmutableList.of(
@@ -127,7 +127,7 @@ public class RavenBrain {
                 new StayAboveWaterTask(0.5F),
                 new FleeTask<>(RUN_SPEED),
                 AvoidTask.run(),
-                PickupFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -157,7 +157,7 @@ public class RavenBrain {
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
                             Pair.of(TaskTriggerer.runIf(
-                                entity -> !entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON),
+                                Predicate.not(Birds::isPerching),
                                 StrollTask.create(WALK_SPEED)
                             ), 4),
                             Pair.of(new WaitTask(100, 300), 3),
@@ -213,8 +213,8 @@ public class RavenBrain {
                     raven -> raven.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true
                 ),
-                makeRandomFollowTask(),
-                makeRandomWanderTask(),
+                CompositeTasks.makeRandomFollowTask(FowlPlayEntityType.RAVEN),
+                CompositeTasks.makeRandomWanderTask(),
                 AvoidTask.forget()
             ),
             FowlPlayMemoryModuleType.IS_AVOIDING
@@ -225,9 +225,9 @@ public class RavenBrain {
         brain.setTaskList(
             FowlPlayActivities.PICKUP_FOOD,
             ImmutableList.of(
-                Pair.of(0, FlightControlTask.startFlying(Bird::canPickupFood)),
+                Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
-                    Bird::canPickupFood,
+                    Birds::canPickupFood,
                     entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE
@@ -258,35 +258,6 @@ public class RavenBrain {
 
     private static Optional<? extends LivingEntity> getAttackTarget(RavenEntity raven) {
         return LookTargetUtil.hasBreedTarget(raven) ? Optional.empty() : raven.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
-    }
-
-    private static ImmutableList<Pair<SingleTickTask<LivingEntity>, Integer>> createLookTasks() {
-        return ImmutableList.of(
-            Pair.of(LookAtMobTask.create(FowlPlayEntityType.RAVEN, 8.0F), 1),
-            Pair.of(LookAtMobTask.create(8.0F), 1)
-        );
-    }
-
-    private static RandomTask<LivingEntity> makeRandomFollowTask() {
-        return new RandomTask<>(
-            ImmutableList.<Pair<? extends Task<? super LivingEntity>, Integer>>builder()
-                .addAll(createLookTasks())
-                .add(Pair.of(new WaitTask(30, 60), 1))
-                .build()
-        );
-    }
-
-    private static RandomTask<RavenEntity> makeRandomWanderTask() {
-        return new RandomTask<>(
-            ImmutableList.of(
-                Pair.of(StrollTask.create(0.6F), 2),
-                Pair.of(TaskTriggerer.runIf(
-                    livingEntity -> true,
-                    GoTowardsLookTargetTask.create(0.6F, 3)
-                ), 2),
-                Pair.of(new WaitTask(30, 60), 1)
-            )
-        );
     }
 
     public static void onAttacked(RavenEntity raven, LivingEntity attacker) {

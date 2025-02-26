@@ -114,7 +114,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 new BreatheAirTask(SWIM_SPEED),
                 new FleeTask<>(RUN_SPEED),
-                PickupFoodTask.run(Bird::canPickupFood),
+                PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
                 new MoveToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
@@ -189,7 +189,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 SlideControlTask.startSliding(),
                 GoToNearestWantedItemTask.create(
-                    Bird::canPickupFood,
+                    Birds::canPickupFood,
                     entity -> entity.isInsideWaterOrBubbleColumn() ? SWIM_SPEED : RUN_SPEED,
                     true,
                     PICK_UP_RANGE

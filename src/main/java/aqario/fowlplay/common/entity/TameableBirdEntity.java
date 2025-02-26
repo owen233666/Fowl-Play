@@ -167,7 +167,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        return super.interactMob(player, hand);
+        return this.trusts(player) ? super.interactMob(player, hand) : ActionResult.PASS;
     }
 
     @Nullable

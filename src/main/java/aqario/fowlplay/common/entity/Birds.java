@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -12,7 +13,7 @@ import java.util.Optional;
 /**
  * A utility class for bird entities.
  */
-public final class Bird {
+public final class Birds {
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
         if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
@@ -30,5 +31,9 @@ public final class Bird {
             .findFirst();
 
         return !bird.getFood().test(bird.getMainHandStack()) && avoidTarget.isEmpty();
+    }
+
+    public static boolean isPerching(BirdEntity entity) {
+        return entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 }
