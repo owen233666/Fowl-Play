@@ -1,5 +1,6 @@
-package aqario.fowlplay.common.entity;
+package aqario.fowlplay.common.entity.ai.brain;
 
+import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;

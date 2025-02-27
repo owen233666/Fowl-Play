@@ -1,5 +1,6 @@
-package aqario.fowlplay.common.entity;
+package aqario.fowlplay.common.entity.ai.brain.task;
 
+import aqario.fowlplay.common.entity.BirdEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;
