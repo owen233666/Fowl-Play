@@ -17,7 +17,10 @@ import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +41,14 @@ public abstract class BirdEntity extends AnimalEntity {
         return MobEntity.createMobAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+    }
+
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        this.setYaw(MathHelper.wrapDegrees(world.getRandom().nextInt(360)));
+        this.setBodyYaw(this.getYaw());
+        this.setHeadYaw(MathHelper.wrapDegrees(this.getYaw() + world.getRandom().nextInt(31) - 15));
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
