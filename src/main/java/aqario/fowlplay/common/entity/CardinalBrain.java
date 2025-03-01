@@ -79,10 +79,6 @@ public class CardinalBrain {
     );
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
-    private static final int PICK_UP_RANGE = 32;
-    private static final float RUN_SPEED = 1.4F;
-    private static final float WALK_SPEED = 1.0F;
-    private static final float FLY_SPEED = 2.0F;
 
     public static Brain.Profile<CardinalEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -118,7 +114,7 @@ public class CardinalBrain {
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
                 FlightControlTask.stopFalling(),
-                new FleeTask<>(RUN_SPEED),
+                new FleeTask<>(Birds.RUN_SPEED),
                 AvoidTask.run(),
                 PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
@@ -133,10 +129,10 @@ public class CardinalBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(1, new BreedTask(FowlPlayEntityType.CARDINAL, WALK_SPEED, 20)),
-                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.CARDINAL, Birds.WALK_SPEED, 20)),
+                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, LookAtMobTask.create(CardinalBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(4, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -150,7 +146,7 @@ public class CardinalBrain {
                         ImmutableList.of(
                             Pair.of(TaskTriggerer.runIf(
                                 Predicate.not(Birds::isPerching),
-                                StrollTask.create(WALK_SPEED)
+                                StrollTask.create(Birds.WALK_SPEED)
                             ), 4),
                             Pair.of(TaskTriggerer.predicate(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
@@ -172,13 +168,13 @@ public class CardinalBrain {
             FowlPlayActivities.FLY,
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(cardinal -> true)),
-                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     3,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(FlyTask.perch(FLY_SPEED), 1)
+                            Pair.of(FlyTask.perch(Birds.FLY_SPEED), 1)
                         )
                     )
                 )
@@ -199,7 +195,7 @@ public class CardinalBrain {
                 FlightControlTask.startFlying(cardinal -> true),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    cardinal -> cardinal.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    cardinal -> cardinal.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true
                 ),
                 CompositeTasks.makeRandomFollowTask(FowlPlayEntityType.CARDINAL),
@@ -217,9 +213,9 @@ public class CardinalBrain {
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true,
-                    PICK_UP_RANGE
+                    Birds.ITEM_PICK_UP_RANGE
                 )),
                 Pair.of(2, ForgetTask.create(CardinalBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
@@ -263,7 +259,7 @@ public class CardinalBrain {
 
     private static boolean noFoodInRange(CardinalEntity cardinal) {
         Optional<ItemEntity> item = cardinal.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(cardinal, PICK_UP_RANGE);
+        return item.isEmpty() || !item.get().isInRange(cardinal, Birds.ITEM_PICK_UP_RANGE);
     }
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {

@@ -5,7 +5,6 @@ import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
@@ -48,7 +47,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @SuppressWarnings("unused")
     public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON) || world.getBlockState(pos.down()).getBlock() instanceof LeavesBlock;
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @SuppressWarnings("unused")

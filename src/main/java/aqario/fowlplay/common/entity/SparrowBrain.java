@@ -69,10 +69,6 @@ public class SparrowBrain {
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
-    private static final int PICK_UP_RANGE = 32;
-    private static final float RUN_SPEED = 1.4F;
-    private static final float WALK_SPEED = 1.0F;
-    private static final float FLY_SPEED = 2.0F;
 
     public static Brain.Profile<SparrowEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -108,7 +104,7 @@ public class SparrowBrain {
             ImmutableList.of(
                 new StayAboveWaterTask(0.5F),
                 FlightControlTask.stopFalling(),
-                new FleeTask<>(RUN_SPEED),
+                new FleeTask<>(Birds.RUN_SPEED),
                 AvoidTask.run(),
                 PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
@@ -124,7 +120,7 @@ public class SparrowBrain {
             Activity.IDLE,
             ImmutableList.of(
                 Pair.of(1, LookAtMobTask.create(SparrowBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -138,7 +134,7 @@ public class SparrowBrain {
                         ImmutableList.of(
                             Pair.of(TaskTriggerer.runIf(
                                 Predicate.not(Birds::isPerching),
-                                StrollTask.create(WALK_SPEED)
+                                StrollTask.create(Birds.WALK_SPEED)
                             ), 4),
                             Pair.of(TaskTriggerer.predicate(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
@@ -171,7 +167,7 @@ public class SparrowBrain {
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(FlyTask.perch(FLY_SPEED), 1)
+                            Pair.of(FlyTask.perch(Birds.FLY_SPEED), 1)
                         )
                     )
                 )
@@ -192,7 +188,7 @@ public class SparrowBrain {
                 FlightControlTask.startFlying(sparrow -> true),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    sparrow -> sparrow.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    sparrow -> sparrow.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true
                 ),
                 CompositeTasks.makeRandomFollowTask(FowlPlayEntityType.SPARROW),
@@ -210,9 +206,9 @@ public class SparrowBrain {
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true,
-                    PICK_UP_RANGE
+                    Birds.ITEM_PICK_UP_RANGE
                 )),
                 Pair.of(2, ForgetTask.create(SparrowBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
@@ -256,7 +252,7 @@ public class SparrowBrain {
 
     private static boolean noFoodInRange(SparrowEntity sparrow) {
         Optional<ItemEntity> item = sparrow.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(sparrow, PICK_UP_RANGE);
+        return item.isEmpty() || !item.get().isInRange(sparrow, Birds.ITEM_PICK_UP_RANGE);
     }
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {

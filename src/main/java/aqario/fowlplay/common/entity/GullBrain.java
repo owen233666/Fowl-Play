@@ -81,10 +81,6 @@ public class GullBrain {
     );
     private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
-    private static final int PICK_UP_RANGE = 32;
-    private static final float RUN_SPEED = 1.4F;
-    private static final float WALK_SPEED = 1.0F;
-    private static final float FLY_SPEED = 2.0F;
 
     public static Brain.Profile<GullEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -126,7 +122,7 @@ public class GullBrain {
             0,
             ImmutableList.of(
                 FlightControlTask.stopFalling(),
-                new FleeTask<>(RUN_SPEED),
+                new FleeTask<>(Birds.RUN_SPEED),
                 AvoidTask.run(),
                 PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
@@ -141,11 +137,11 @@ public class GullBrain {
         brain.setTaskList(
             Activity.IDLE,
             ImmutableList.of(
-                Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, WALK_SPEED, 20)),
-                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, WALK_SPEED)),
+                Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, Birds.WALK_SPEED, 20)),
+                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, LookAtMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(gull -> !gull.isInsideWaterOrBubbleColumn(), GullBrain::getAttackTarget)),
-                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, WALK_SPEED)),
+                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -159,7 +155,7 @@ public class GullBrain {
                         ImmutableList.of(
                             Pair.of(TaskTriggerer.runIf(
                                 Predicate.not(Birds::isPerching),
-                                StrollTask.create(WALK_SPEED)
+                                StrollTask.create(Birds.WALK_SPEED)
                             ), 4),
                             Pair.of(TaskTriggerer.predicate(Entity::isInsideWaterOrBubbleColumn), 3),
                             Pair.of(new WaitTask(100, 300), 3),
@@ -183,13 +179,13 @@ public class GullBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(gull -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
-                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, FLY_SPEED)),
+                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     4,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
-                            Pair.of(FlyTask.create(FLY_SPEED, 24, 16), 1)
+                            Pair.of(FlyTask.create(Birds.FLY_SPEED, 24, 16), 1)
                         )
                     )
                 )
@@ -211,7 +207,7 @@ public class GullBrain {
                 FlightControlTask.startFlying(gull -> true),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    gull -> gull.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    gull -> gull.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true
                 ),
                 CompositeTasks.makeRandomFollowTask(FowlPlayEntityType.GULL),
@@ -229,9 +225,9 @@ public class GullBrain {
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? FLY_SPEED : RUN_SPEED,
+                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
                     true,
-                    PICK_UP_RANGE
+                    Birds.ITEM_PICK_UP_RANGE
                 )),
                 Pair.of(2, ForgetTask.create(GullBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
             ),
@@ -249,7 +245,7 @@ public class GullBrain {
             ImmutableList.of(
                 FlightControlTask.startFlying(gull -> true),
                 ForgetAttackTargetTask.create(),
-                RangedApproachTask.create(FLY_SPEED),
+                RangedApproachTask.create(Birds.FLY_SPEED),
                 MeleeAttackTask.create(20),
                 ForgetTask.create(LookTargetUtil::hasBreedTarget, MemoryModuleType.ATTACK_TARGET)
             ),
@@ -296,7 +292,7 @@ public class GullBrain {
 
     private static boolean noFoodInRange(GullEntity gull) {
         Optional<ItemEntity> item = gull.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(gull, PICK_UP_RANGE);
+        return item.isEmpty() || !item.get().isInRange(gull, Birds.ITEM_PICK_UP_RANGE);
     }
 
     public static boolean isPlayerHoldingFood(LivingEntity target) {
