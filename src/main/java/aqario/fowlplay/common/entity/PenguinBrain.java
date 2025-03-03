@@ -69,7 +69,6 @@ public class PenguinBrain {
         FowlPlayMemoryModuleType.SEES_FOOD,
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD
     );
-    private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
 
     public static Brain.Profile<PenguinEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -94,7 +93,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 Activity.IDLE,
                 Activity.SWIM,
-                FowlPlayActivities.PICKUP_FOOD,
+                FowlPlayActivities.PICK_UP,
                 Activity.FIGHT
             )
         );
@@ -127,7 +126,7 @@ public class PenguinBrain {
                 Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, Birds.WALK_SPEED, 10)),
                 Pair.of(2, LookAtMobTask.create(EntityType.PLAYER, 32.0F)),
                 Pair.of(3, new TemptTask(penguin -> Birds.WALK_SPEED)),
-                Pair.of(4, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
+                Pair.of(4, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
                 Pair.of(6, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
@@ -157,7 +156,7 @@ public class PenguinBrain {
             Activity.SWIM,
             ImmutableList.of(
                 Pair.of(0, SwimControlTask.stopSwimming()),
-                Pair.of(1, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.SWIM_SPEED)),
+                Pair.of(1, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.SWIM_SPEED)),
                 Pair.of(2, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
                 Pair.of(
                     3,
@@ -180,7 +179,7 @@ public class PenguinBrain {
 
     private static void addPickupFoodActivities(Brain<PenguinEntity> brain) {
         brain.setTaskList(
-            FowlPlayActivities.PICKUP_FOOD,
+            FowlPlayActivities.PICK_UP,
             10,
             ImmutableList.of(
                 SlideControlTask.startSliding(),

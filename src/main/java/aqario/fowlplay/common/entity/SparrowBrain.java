@@ -68,7 +68,6 @@ public class SparrowBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
     public static Brain.Profile<SparrowEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -92,7 +91,7 @@ public class SparrowBrain {
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
                 Activity.AVOID,
-                FowlPlayActivities.PICKUP_FOOD
+                FowlPlayActivities.PICK_UP
             )
         );
     }
@@ -120,7 +119,7 @@ public class SparrowBrain {
             Activity.IDLE,
             ImmutableList.of(
                 Pair.of(1, LookAtMobTask.create(SparrowBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(2, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
+                Pair.of(2, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -201,7 +200,7 @@ public class SparrowBrain {
 
     private static void addPickupFoodActivities(Brain<SparrowEntity> brain) {
         brain.setTaskList(
-            FowlPlayActivities.PICKUP_FOOD,
+            FowlPlayActivities.PICK_UP,
             ImmutableList.of(
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(

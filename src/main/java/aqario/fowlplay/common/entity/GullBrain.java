@@ -79,8 +79,6 @@ public class GullBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
-    private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
     public static Brain.Profile<GullEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -107,7 +105,7 @@ public class GullBrain {
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
                 Activity.AVOID,
-                FowlPlayActivities.PICKUP_FOOD,
+                FowlPlayActivities.PICK_UP,
                 Activity.FIGHT
             )
         );
@@ -138,10 +136,10 @@ public class GullBrain {
             Activity.IDLE,
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.GULL, Birds.WALK_SPEED, 20)),
-                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
+                Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, LookAtMobTask.create(GullBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(gull -> !gull.isInsideWaterOrBubbleColumn(), GullBrain::getAttackTarget)),
-                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
+                Pair.of(5, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -179,7 +177,7 @@ public class GullBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(gull -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
-                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
+                Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     4,
                     new RandomTask<>(
@@ -220,7 +218,7 @@ public class GullBrain {
 
     private static void addPickupFoodActivities(Brain<GullEntity> brain) {
         brain.setTaskList(
-            FowlPlayActivities.PICKUP_FOOD,
+            FowlPlayActivities.PICK_UP,
             ImmutableList.of(
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(

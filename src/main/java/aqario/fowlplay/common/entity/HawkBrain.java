@@ -76,8 +76,6 @@ public class HawkBrain {
         FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD,
         FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS
     );
-    private static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
-    private static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
     public static Brain.Profile<HawkEntity> createProfile() {
         return Brain.createProfile(MEMORIES, SENSORS);
@@ -104,7 +102,7 @@ public class HawkBrain {
                 Activity.IDLE,
                 FowlPlayActivities.FLY,
                 Activity.AVOID,
-                FowlPlayActivities.PICKUP_FOOD,
+                FowlPlayActivities.PICK_UP,
                 Activity.FIGHT
             )
         );
@@ -136,10 +134,10 @@ public class HawkBrain {
             Activity.IDLE,
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.HAWK, Birds.WALK_SPEED, 20)),
-                Pair.of(2, WalkTowardClosestAdultTask.create(FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
+                Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, LookAtMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(hawk -> !hawk.isInsideWaterOrBubbleColumn(), HawkBrain::getAttackTarget)),
-                Pair.of(5, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
+                Pair.of(5, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -176,7 +174,7 @@ public class HawkBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(hawk -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(HawkBrain::getAttackTarget)),
-                Pair.of(3, GoToClosestEntityTask.create(STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
+                Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     4,
                     new RandomTask<>(
@@ -218,7 +216,7 @@ public class HawkBrain {
 
     private static void addPickupFoodActivities(Brain<HawkEntity> brain) {
         brain.setTaskList(
-            FowlPlayActivities.PICKUP_FOOD,
+            FowlPlayActivities.PICK_UP,
             ImmutableList.of(
                 Pair.of(0, FlightControlTask.startFlying(Birds::canPickupFood)),
                 Pair.of(1, GoToNearestWantedItemTask.create(
