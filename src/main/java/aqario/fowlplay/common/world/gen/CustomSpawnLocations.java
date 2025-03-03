@@ -13,16 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public interface CustomSpawnLocations {
     SpawnLocation GROUND = new SpawnLocation() {
         public boolean isSpawnPositionOk(WorldView worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
-            if (entityType != null && worldView.getWorldBorder().contains(spawnPos)) {
-                BlockPos headPos = spawnPos.up();
-                return this.isClearForSpawn(worldView, spawnPos, entityType) && this.isClearForSpawn(worldView, headPos, entityType);
-            }
-            return false;
-        }
-
-        private boolean isClearForSpawn(WorldView world, BlockPos pos, EntityType<?> entityType) {
-            BlockState blockState = world.getBlockState(pos);
-            return SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), entityType);
+            return spawnsOnGround(worldView, spawnPos, entityType);
         }
 
         @Override
@@ -49,16 +40,10 @@ public interface CustomSpawnLocations {
         return SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), entityType);
     }
 
-    private static boolean spawnsOnGround(WorldView world, BlockPos pos, EntityType<?> entityType) {
-        if (entityType != null && world.getWorldBorder().contains(pos)) {
-            BlockPos blockPos2 = pos.up();
-            BlockPos blockPos3 = pos.down();
-            BlockState blockState = world.getBlockState(blockPos3);
-            if (!blockState.allowsSpawning(world, blockPos3, entityType)) {
-                return false;
-            }
-            return isClearForSpawn(world, pos, entityType) && isClearForSpawn(world, blockPos2, entityType);
-
+    private static boolean spawnsOnGround(WorldView world, BlockPos spawnPos, EntityType<?> entityType) {
+        if (entityType != null && world.getWorldBorder().contains(spawnPos)) {
+            BlockPos headPos = spawnPos.up();
+            return isClearForSpawn(world, spawnPos, entityType) && isClearForSpawn(world, headPos, entityType);
         }
         return false;
     }
