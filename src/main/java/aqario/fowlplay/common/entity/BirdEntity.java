@@ -296,7 +296,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public int getMaxHeadRotation() {
-        return 135;
+        return 90;
     }
 
     @Override
