@@ -31,7 +31,7 @@ public class FowlPlay implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Loading Fowl Play");
-        if (FowlPlay.isYACLLoaded()) {
+        if (isYACLLoaded()) {
             FowlPlayConfig.load();
         }
 
