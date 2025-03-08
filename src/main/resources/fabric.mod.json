@@ -27,7 +27,7 @@
       "aqario.fowlplay.client.FowlPlayClient"
     ],
     "fabric-datagen": [
-      "aqario.fowlplay.common.data.FowlPlayDataGeneration"
+      "aqario.fowlplay.datagen.FowlPlayDataGen"
     ],
     "modmenu": [
       "aqario.fowlplay.common.config.ModMenuIntegration"
@@ -37,15 +37,15 @@
     "fowlplay.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.5",
+    "fabricloader": ">=${loader_version}",
     "minecraft": ">=1.21",
     "java": ">=21",
-    "fabric-api": "*"
+    "fabric-api": ">=${fabric_version}"
   },
   "breaks": {
-    "yet_another_config_lib_v3": "<3.6.1+1.21-fabric"
+    "yet_another_config_lib_v3": "<${yacl_version}"
   },
   "suggests": {
-    "yet_another_config_lib_v3": ">=3.6.1+1.21-fabric"
+    "yet_another_config_lib_v3": ">=${yacl_version}"
   }
 }

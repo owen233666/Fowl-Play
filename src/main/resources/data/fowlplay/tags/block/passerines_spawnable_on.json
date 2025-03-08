@@ -1,6 +1,12 @@
 {
   "values": [
-    "#minecraft:leaves",
-    "#minecraft:logs"
+    {
+      "id": "#minecraft:leaves",
+      "required": false
+    },
+    {
+      "id": "#minecraft:logs",
+      "required": false
+    }
   ]
 }

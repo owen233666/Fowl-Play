@@ -265,6 +265,6 @@ public class ChickadeeBrain {
     }
 
     public static Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.SPARROW_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.CHICKADEE_FOOD);
     }
 }

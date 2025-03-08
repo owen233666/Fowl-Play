@@ -12,7 +12,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
-@SuppressWarnings("unused")
 public final class FowlPlayItems {
     public static final Item BLUE_JAY_SPAWN_EGG = register(
         "blue_jay_spawn_egg",
