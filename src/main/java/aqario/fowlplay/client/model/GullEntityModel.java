@@ -35,13 +35,13 @@ public class GullEntityModel extends FlyingBirdEntityModel<GullEntity> {
 
         body.addChild("right_wing", ModelPartBuilder.create().uv(0, 14).mirrored().cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 4.0F, 12.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -4.25F, 0.0F, -0.3491F, 0.0F, 0.0F));
 
-        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 10.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
 
-        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(16, 9).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, -0.1F, -1.0F));
+        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(16, 9).cuboid(0.0F, 0.0F, 0.0F, 12.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(9.0F, -0.1F, -1.0F));
 
-        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-8.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-9.0F, -0.1F, -1.0F, 10.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
 
-        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(16, 9).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, -0.1F, -1.0F));
+        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(16, 9).mirrored().cuboid(-12.0F, 0.0F, 0.0F, 12.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-9.0F, -0.1F, -1.0F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(16, 0).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 1.0F, 3.0F, new Dilation(0.0F))
             .uv(23, 0).cuboid(-1.0F, -1.002F, 3.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.75F, 3.5F, -0.2618F, 0.0F, 0.0F));
@@ -94,13 +94,16 @@ public class GullEntityModel extends FlyingBirdEntityModel<GullEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
+        if (gull.isFlying()) {
+            this.animateMovement(GullEntityAnimations.GULL_FLAP, limbAngle, limbDistance, 2.5F, 2.5F);
+        }
+        else if (!gull.isInsideWaterOrBubbleColumn()) {
             this.animateMovement(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
         }
         this.updateAnimation(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
         this.updateAnimation(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
         this.updateAnimation(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
-        this.updateAnimation(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
+//        this.updateAnimation(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

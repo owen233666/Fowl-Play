@@ -196,7 +196,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     public void tick() {
         if (this.getWorld().isClient()) {
             this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.setRunning(this.isFlying(), this.age);
+            this.glideState.setRunning(this.isFlying(), this.age);
             this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 

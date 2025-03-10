@@ -32,6 +32,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     private float prevRoll;
     private float visualRoll;
     public int timeFlying = 0;
+    private static final int ROLL_FACTOR = 4;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
@@ -118,7 +119,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if (difference < -180.0F) {
             difference = -(360.0F + difference);
         }
-        return -difference * 3;
+        return -difference * ROLL_FACTOR;
     }
 
     public float getRoll(float tickDelta) {
@@ -218,6 +219,34 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
+    public void updateLimbs(boolean flutter) {
+        float yDelta = (float) (this.getY() - this.prevY);
+        float posDelta;
+        if (yDelta > 0) {
+            posDelta = (float) MathHelper.magnitude(this.getX() - this.prevX, 0.0, this.getZ() - this.prevZ);
+        }
+        else {
+            posDelta = (float) MathHelper.magnitude(this.getX() - this.prevX, yDelta, this.getZ() - this.prevZ);
+        }
+        float speed;
+        if (this.isFlying()) {
+            speed = Math.abs(1 - Math.min(posDelta * 0.8F, 1.0F));
+            if (yDelta > 0) {
+                speed = (float) Math.sqrt(speed * speed + yDelta * yDelta * 4.0F);
+            }
+            this.limbAnimator.updateLimbs(speed, 0.4F);
+        }
+        else {
+            speed = Math.min(posDelta * 4.0F, 1.0F);
+            this.limbAnimator.updateLimbs(speed, 0.4F);
+        }
+    }
+
+    @Override
+    protected void updateLimbs(float posDelta) {
+    }
+
+    @Override
     public void travel(Vec3d movementInput) {
         if (!this.isFlying()) {
             super.travel(movementInput);
@@ -243,5 +272,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.setVelocity(this.getVelocity().multiply(friction));
             }
         }
+
+        this.updateLimbs(true);
     }
 }
