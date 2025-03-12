@@ -28,6 +28,9 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    private int timeSinceLastFlap = this.getFlapFrequency();
+    private static final int FLAP_DURATION = 6;
+    private int flapTime = 0;
 
     public SparrowEntity(EntityType<? extends SparrowEntity> entityType, World world) {
         super(entityType, world);
@@ -77,14 +80,36 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
 
     @Override
     public int getFlapFrequency() {
-        return 7;
+        return 2;
     }
 
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
             this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.setRunning(this.isFlying(), this.age);
+            if (this.isFlying()) {
+                if (this.timeSinceLastFlap > this.getFlapFrequency()) {
+                    this.timeSinceLastFlap = 0;
+                    this.flapTime++;
+                }
+                else if (this.flapTime > 0 && this.flapTime < FLAP_DURATION) {
+                    this.flapTime++;
+                    this.glideState.stop();
+                    this.flapState.startIfNotRunning(this.age);
+                }
+                else {
+                    this.timeSinceLastFlap++;
+                    this.flapTime = 0;
+                    this.flapState.stop();
+                    this.glideState.startIfNotRunning(this.age);
+                }
+            }
+            else {
+                this.timeSinceLastFlap = this.getFlapFrequency();
+                this.flapTime = 0;
+                this.flapState.stop();
+                this.glideState.stop();
+            }
             this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 

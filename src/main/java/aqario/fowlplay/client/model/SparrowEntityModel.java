@@ -78,7 +78,7 @@ public class SparrowEntityModel extends FlyingBirdEntityModel<SparrowEntity> {
             this.root.pitch = sparrow.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = sparrow.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (sparrow.isFlying()) {
+        if (sparrow.isFlying() && sparrow.flapState.isRunning()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
             this.leftWing.visible = false;
