@@ -1,6 +1,6 @@
 # Fowl Play
 
-<img src="https://cdn.modrinth.com/data/WpXfePbg/images/83e6917599cf795e9d63a22806f3c55530d029b8.png" alt="Bird showcase">
+![In game screenshot of seagulls flying around](https://cdn.modrinth.com/data/WpXfePbg/images/83e6917599cf795e9d63a22806f3c55530d029b8.png)
 
 Fowl Play adds a variety of birds to Minecraft, with the aim of giving them realistic behaviours and sounds. Unlike the fluttering parrots of the base game, the avians of this mod can all take to the skies gracefully (except flightless birds, of course). Some of them add ambience, others have useful features and all of them try to annoy you as much as they can, just like real birds!
 

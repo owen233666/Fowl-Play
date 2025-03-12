@@ -222,7 +222,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void updateLimbs(boolean flutter) {
         float yDelta = (float) (this.getY() - this.prevY);
         float posDelta;
-        if (yDelta > 0) {
+        if (!this.isFlying() || yDelta > 0) {
             posDelta = (float) MathHelper.magnitude(this.getX() - this.prevX, 0.0, this.getZ() - this.prevZ);
         }
         else {
@@ -234,12 +234,11 @@ public abstract class FlyingBirdEntity extends BirdEntity {
             if (yDelta > 0) {
                 speed = (float) Math.sqrt(speed * speed + yDelta * yDelta * 4.0F);
             }
-            this.limbAnimator.updateLimbs(speed, 0.4F);
         }
         else {
             speed = Math.min(posDelta * 4.0F, 1.0F);
-            this.limbAnimator.updateLimbs(speed, 0.4F);
         }
+        this.limbAnimator.updateLimbs(speed, 0.4F);
     }
 
     @Override
@@ -273,6 +272,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
             }
         }
 
-        this.updateLimbs(true);
+        this.updateLimbs(false);
     }
 }
