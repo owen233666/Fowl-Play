@@ -10,10 +10,7 @@ import aqario.fowlplay.common.item.FowlPlayItems;
 import aqario.fowlplay.common.registry.FowlPlayRegistries;
 import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.world.gen.FowlPlayWorldGen;
-import aqario.fowlplay.common.world.gen.HawkSpawner;
-import aqario.fowlplay.common.world.gen.PigeonSpawner;
-import aqario.fowlplay.common.world.gen.SparrowSpawner;
+import aqario.fowlplay.common.world.gen.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -51,11 +48,17 @@ public class FowlPlay implements ModInitializer {
         FowlPlayTrackedDataHandlerRegistry.init();
         FowlPlayWorldGen.init();
 
+        GullSpawner gullSpawner = new GullSpawner();
         HawkSpawner hawkSpawner = new HawkSpawner();
         PigeonSpawner pigeonSpawner = new PigeonSpawner();
         SparrowSpawner sparrowSpawner = new SparrowSpawner();
 
         ServerTickEvents.END_WORLD_TICK.register(world -> {
+            gullSpawner.spawn(
+                world,
+                world.getServer().isMonsterSpawningEnabled(),
+                world.getServer().shouldSpawnAnimals()
+            );
             hawkSpawner.spawn(
                 world,
                 world.getServer().isMonsterSpawningEnabled(),
