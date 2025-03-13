@@ -1,6 +1,6 @@
 # Fowl Play
 
-![In game screenshot of seagulls flying around](https://cdn.modrinth.com/data/WpXfePbg/images/83e6917599cf795e9d63a22806f3c55530d029b8.png)
+![In game screenshot of seagulls flying around](https://cdn.modrinth.com/data/WpXfePbg/images/41f74f0170525f98788a9911d3596e99b579eea2.png)
 
 Fowl Play adds a variety of birds to Minecraft, with the aim of giving them realistic behaviours and sounds. Unlike the fluttering parrots of the base game, the avians of this mod can all take to the skies gracefully (except flightless birds, of course). Some of them add ambience, others have useful features and all of them try to annoy you as much as they can, just like real birds!
 
@@ -8,12 +8,12 @@ Fowl Play adds a variety of birds to Minecraft, with the aim of giving them real
 
 ## Important Information
 
-This mod currently **does not have a dedicated Forge version**. If you would like to play it on Forge / NeoForged, **I have provided a Sinytra Connector compatible version**. Do keep in mind that **_Fowl Play_** being loaded with Connector can cause crashes with some mods, so this is not a guaranteed solution.
+This mod currently **does not have a dedicated Forge version**. If you would like to play it on Forge / NeoForge, **I have provided a Sinytra Connector compatible version**. Do keep in mind that **_Fowl Play_** being loaded with Connector can cause crashes with some mods, so this is not a guaranteed solution.
 
 <details>
 <summary>I have problems with Sinytra Connector!</summary>
 
-**To use Sinytra connector, you must download the version labelled under Forge / NeoForged, or download older versions from my [GitHub](https://github.com/aqariio/Fowl-Play/releases)**. This is because the normal release will crash when loaded using Sinytra.
+To use Sinytra connector, you must **download the version labelled under Forge / NeoForge**, or download older versions from my [GitHub](https://github.com/aqariio/Fowl-Play/releases). This is because the **normal release will crash** when loaded using Sinytra.
 
 **If you are using the 1.21 version of the mod with Sinytra connector**, mobs will no longer be able to move in water. **To fix this, you will need https://github.com/unilock/sinytra1343**. ([Link to releases page](https://github.com/unilock/sinytra1343/releases))
 
