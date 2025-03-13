@@ -33,6 +33,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     private float visualRoll;
     public int timeFlying = 0;
     private static final int ROLL_FACTOR = 4;
+    private static final float MIN_HEALTH_TO_FLY = 2.0F;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
@@ -95,7 +96,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.timeFlying++;
                 this.setNoGravity(true);
                 this.fallDistance = 0.0F;
-                if (this.isOnGround() || this.isInsideWaterOrBubbleColumn()) {
+                if (this.isOnGround() || this.isInsideWaterOrBubbleColumn() || this.getHealth() < MIN_HEALTH_TO_FLY) {
                     this.stopFlying();
                 }
             }
@@ -165,14 +166,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (!this.getWorld().isClient && this.isFlying()) {
-            this.stopFlying();
-        }
-        return super.damage(source, amount);
-    }
-
-    @Override
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return !this.isFlying() && super.handleFallDamage(fallDistance, damageMultiplier, damageSource);
     }
@@ -185,7 +178,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     public boolean canStartFlying() {
-        return !this.isFlying() && this.getHealth() > 2.0F;
+        return !this.isFlying() && this.getHealth() >= MIN_HEALTH_TO_FLY;
     }
 
     public void startFlying() {

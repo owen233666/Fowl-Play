@@ -2,7 +2,7 @@
   "parent": "minecraft:adventure/shoot_arrow",
   "display": {
     "icon": {
-      "id": "minecraft:feather"
+      "id": "minecraft:spectral_arrow"
     },
     "title": {
       "translate": "advancements.adventure.damage_flying_bird.title"
