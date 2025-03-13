@@ -1,7 +1,9 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
@@ -21,25 +23,28 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class SparrowEntity extends FlyingBirdEntity {
+public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
+    private int timeSinceLastFlap = this.getFlapFrequency();
+    private static final int FLAP_DURATION = 6;
+    private int flapTime = 0;
 
     public SparrowEntity(EntityType<? extends SparrowEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -10.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, -10.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 15);
+        return new BirdFlightMoveControl(this, 15, 15);
     }
 
     @Nullable
@@ -55,7 +60,17 @@ public class SparrowEntity extends FlyingBirdEntity {
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.SPARROW_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.SPARROW_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.SPARROW_AVOIDS);
+    }
+
+    @Override
+    public int getFleeRange() {
+        return 7;
     }
 
     @Override
@@ -65,15 +80,37 @@ public class SparrowEntity extends FlyingBirdEntity {
 
     @Override
     public int getFlapFrequency() {
-        return 7;
+        return 2;
     }
 
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            if (this.isFlying()) {
+                if (this.timeSinceLastFlap > this.getFlapFrequency()) {
+                    this.timeSinceLastFlap = 0;
+                    this.flapTime++;
+                }
+                else if (this.flapTime > 0 && this.flapTime < FLAP_DURATION) {
+                    this.flapTime++;
+                    this.glideState.stop();
+                    this.flapState.startIfNotRunning(this.age);
+                }
+                else {
+                    this.timeSinceLastFlap++;
+                    this.flapTime = 0;
+                    this.flapState.stop();
+                    this.glideState.startIfNotRunning(this.age);
+                }
+            }
+            else {
+                this.timeSinceLastFlap = this.getFlapFrequency();
+                this.flapTime = 0;
+                this.flapState.stop();
+                this.glideState.stop();
+            }
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();
@@ -116,12 +153,12 @@ public class SparrowEntity extends FlyingBirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return 2.0F;
+        return FowlPlayConfig.getInstance().sparrowCallVolume;
     }
 
     @Override
     protected float getSongVolume() {
-        return 8.0F;
+        return FowlPlayConfig.getInstance().sparrowSongVolume;
     }
 
     @Override
@@ -177,5 +214,14 @@ public class SparrowEntity extends FlyingBirdEntity {
     protected void sendAiDebugData() {
         super.sendAiDebugData();
         DebugInfoSender.sendBrainDebugData(this);
+    }
+
+    @Override
+    public boolean isLeader() {
+        return false;
+    }
+
+    @Override
+    public void setLeader() {
     }
 }

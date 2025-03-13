@@ -12,7 +12,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
-@SuppressWarnings("unused")
 public final class FowlPlayItems {
     public static final Item BLUE_JAY_SPAWN_EGG = register(
         "blue_jay_spawn_egg",
@@ -29,9 +28,19 @@ public final class FowlPlayItems {
         new SpawnEggItem(FowlPlayEntityType.CHICKADEE, 0xE8E5E1, 0x8A8B8E, new Item.Settings()),
         ItemGroups.SPAWN_EGGS
     );
+    public static final Item DUCK_SPAWN_EGG = register(
+        "duck_spawn_egg",
+        new SpawnEggItem(FowlPlayEntityType.DUCK, 0xA58C7C, 0x1D7F3C, new Item.Settings()),
+        ItemGroups.SPAWN_EGGS
+    );
     public static final Item GULL_SPAWN_EGG = register(
         "gull_spawn_egg",
         new SpawnEggItem(FowlPlayEntityType.GULL, 0xeaedf0, 0xffd850, new Item.Settings()),
+        ItemGroups.SPAWN_EGGS
+    );
+    public static final Item HAWK_SPAWN_EGG = register(
+        "hawk_spawn_egg",
+        new SpawnEggItem(FowlPlayEntityType.HAWK, 0x544135, 0xE5D8C0, new Item.Settings()),
         ItemGroups.SPAWN_EGGS
     );
     public static final Item PENGUIN_SPAWN_EGG = register(
@@ -61,7 +70,7 @@ public final class FowlPlayItems {
     );
 
     private static Item register(String id, Item item, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addItem(item));
+        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.add(item));
         return Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item);
     }
 

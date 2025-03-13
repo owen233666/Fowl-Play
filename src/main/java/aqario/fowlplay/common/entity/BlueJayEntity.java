@@ -1,6 +1,8 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
@@ -24,21 +26,25 @@ public class BlueJayEntity extends FlyingBirdEntity {
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
-    private int flapAnimationTimeout = 0;
 
     protected BlueJayEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.BLUE_JAY_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.BLUE_JAY_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS);
     }
 
     @Nullable
@@ -60,20 +66,9 @@ public class BlueJayEntity extends FlyingBirdEntity {
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-//            if (!this.isOnGround()) {
-//                this.flapState.start(this.age);
-//            }
-//            else if (this.flapAnimationTimeout <= 0) {
-//                this.flapAnimationTimeout = this.getFlapFrequency();
-//                this.flapState.restart(this.age);
-//            }
-//            else {
-//                --this.flapAnimationTimeout;
-//            }
-
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.flapState.setRunning(this.isFlying(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();
@@ -100,7 +95,7 @@ public class BlueJayEntity extends FlyingBirdEntity {
 
     @Override
     protected float getCallVolume() {
-        return 10.0F;
+        return FowlPlayConfig.getInstance().blueJayCallVolume;
     }
 
     @Override

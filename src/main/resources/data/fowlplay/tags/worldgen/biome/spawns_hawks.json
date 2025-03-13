@@ -1,0 +1,47 @@
+{
+  "values": [
+    {
+      "id": "#natures_spirit:is_alpine",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_autumn",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_cold",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_cypress",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_field",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_frontier",
+      "required": false
+    },
+    {
+      "id": "#natures_spirit:is_freezing",
+      "required": false
+    },
+    {
+      "id": "#c:vegetation_sparse",
+      "required": false
+    },
+    {
+      "id": "#c:is_sparse_vegetation/overworld",
+      "required": false
+    },
+    "minecraft:plains",
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:sparse_jungle",
+    "minecraft:sunflower_plains",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_hills"
+  ]
+}

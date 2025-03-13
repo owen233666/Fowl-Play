@@ -1,8 +1,11 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.common.registry.FowlPlayRegistries;
+import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
 import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.tags.FowlPlayBiomeTags;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.common.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.component.DataComponentTypes;
@@ -24,6 +27,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -31,24 +36,27 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PigeonEntity extends TameableBirdEntity implements VariantProvider<PigeonEntity.Variant> {
-    private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    private static final TrackedData<String> VARIANT = DataTracker.registerData(PigeonEntity.class, TrackedDataHandlerRegistry.STRING);
+public class PigeonEntity extends TameableBirdEntity implements VariantHolder<RegistryEntry<PigeonVariant>>, Flocking {
+    private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(
+        PigeonEntity.class,
+        TrackedDataHandlerRegistry.OPTIONAL_UUID
+    );
+    private static final TrackedData<RegistryEntry<PigeonVariant>> VARIANT = DataTracker.registerData(
+        PigeonEntity.class,
+        FowlPlayTrackedDataHandlerRegistry.PIGEON_VARIANT
+    );
     public final AnimationState idleState = new AnimationState();
     public final AnimationState glideState = new AnimationState();
     public final AnimationState flapState = new AnimationState();
@@ -57,52 +65,47 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
-        this.addPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER, -3.0f);
-        this.addPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
-        this.addPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.COCOA, -1.0f);
-        this.addPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-    }
-
-    @SuppressWarnings("unused")
-    public static boolean canSpawn(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBiome(pos).isIn(FowlPlayBiomeTags.SPAWNS_PIGEONS) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+        this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, -3.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 12.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
+        this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
     }
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        this.setVariant(Util.getRandom(Variant.VARIANTS, world.getRandom()));
+        FowlPlayRegistries.PIGEON_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
-    protected void initEquipment(RandomGenerator random, LocalDifficulty difficulty) {
-        this.setDropChance(EquipmentSlot.MAINHAND, 1.0f);
-        this.setDropChance(EquipmentSlot.OFFHAND, 1.0f);
+    protected void initEquipment(Random random, LocalDifficulty difficulty) {
+        this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 1.0f);
+        this.setEquipmentDropChance(EquipmentSlot.OFFHAND, 1.0f);
     }
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
         builder.add(RECIPIENT, Optional.empty());
-        builder.add(VARIANT, Variant.BANDED.toString());
+        builder.add(VARIANT, FowlPlayRegistries.PIGEON_VARIANT.entryOf(PigeonVariant.BANDED));
     }
 
     @Override
-    public PigeonEntity.Variant getVariant() {
-        return PigeonEntity.Variant.valueOf(this.dataTracker.get(VARIANT));
+    public RegistryEntry<PigeonVariant> getVariant() {
+        return this.dataTracker.get(VARIANT);
     }
 
     @Override
-    public void setVariant(PigeonEntity.Variant variant) {
-        this.dataTracker.set(VARIANT, variant.toString());
+    public void setVariant(RegistryEntry<PigeonVariant> variant) {
+        this.dataTracker.set(VARIANT, variant);
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putString("variant", this.getVariant().toString());
+        nbt.putString("variant", this.getVariant().getKey().orElse(PigeonVariant.BANDED).getValue().toString());
         if (this.getRecipientUuid() != null) {
             nbt.putUuid("recipient", this.getRecipientUuid());
         }
@@ -111,13 +114,16 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (!nbt.containsUuid("recipient")) {
-            this.setRecipientUuid(null);
-            return;
+        Optional.ofNullable(Identifier.tryParse(nbt.getString("variant")))
+            .map(variant -> RegistryKey.of(FowlPlayRegistryKeys.PIGEON_VARIANT, variant))
+            .flatMap(FowlPlayRegistries.PIGEON_VARIANT::getEntry)
+            .ifPresent(this::setVariant);
+
+        if (nbt.containsUuid("recipient")) {
+            this.setRecipientUuid(nbt.getUuid("recipient"));
         }
-        this.setRecipientUuid(nbt.getUuid("recipient"));
-        if (nbt.contains("variant")) {
-            this.setVariant(PigeonEntity.Variant.valueOf(nbt.getString("variant")));
+        else {
+            this.setRecipientUuid(null);
         }
     }
 
@@ -150,11 +156,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         return false;
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return FlyingBirdEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createPigeonAttributes() {
+        return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.26f);
     }
 
     @Override
@@ -236,7 +242,17 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.ofTag(FowlPlayItemTags.PIGEON_FOOD);
+        return Ingredient.fromTag(FowlPlayItemTags.PIGEON_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.PIGEON_AVOIDS);
+    }
+
+    @Override
+    public int getFleeRange() {
+        return this.getTrustedUuids().isEmpty() ? super.getFleeRange() : 6;
     }
 
     @Override
@@ -252,10 +268,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.animateIf(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
-            this.flapState.animateIf(this.isFlying(), this.age);
-            this.floatState.animateIf(this.isInsideWaterOrBubbleColumn(), this.age);
-            this.sitState.animateIf(this.isInSittingPose(), this.age);
+            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
+            this.flapState.setRunning(this.isFlying(), this.age);
+            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.sitState.setRunning(this.isInSittingPose(), this.age);
         }
 
         super.tick();
@@ -314,7 +330,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
             return false;
         }
         List<PlayerEntity> list = this.getWorld()
-            .getEntitiesByClass(PlayerEntity.class, this.getBoundingBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
+            .getEntitiesByClass(PlayerEntity.class, this.getAttackBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
         if (list.isEmpty()) {
             return false;
         }
@@ -334,8 +350,18 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
     }
 
     @Override
+    public int getCallDelay() {
+        return 120;
+    }
+
+    @Override
+    protected float getCallVolume() {
+        return FowlPlayConfig.getInstance().pigeonCallVolume;
+    }
+
+    @Override
     protected float getSongVolume() {
-        return 8.0F;
+        return FowlPlayConfig.getInstance().pigeonSongVolume;
     }
 
     @Override
@@ -377,24 +403,12 @@ public class PigeonEntity extends TameableBirdEntity implements VariantProvider<
         DebugInfoSender.sendBrainDebugData(this);
     }
 
-    public enum Variant {
-        BANDED("banded"),
-        CHECKERED("checkered"),
-        GRAY("gray"),
-        RUSTY("rusty"),
-        WHITE("white");
+    @Override
+    public boolean isLeader() {
+        return false;
+    }
 
-        public static final List<Variant> VARIANTS = List.of(Arrays.stream(values())
-            .toArray(Variant[]::new));
-
-        private final String id;
-
-        Variant(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
+    @Override
+    public void setLeader() {
     }
 }

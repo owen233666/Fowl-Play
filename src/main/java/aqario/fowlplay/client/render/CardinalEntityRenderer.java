@@ -10,18 +10,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 public class CardinalEntityRenderer extends MobEntityRenderer<CardinalEntity, CardinalEntityModel> {
+    private static final Identifier TEXTURE = Identifier.of(FowlPlay.ID, "textures/entity/cardinal/cardinal.png");
+
     public CardinalEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new CardinalEntityModel(context.getPart(CardinalEntityModel.MODEL_LAYER)), 0.15f);
-        this.addFeature(new BirdHeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()) {
-            @Override
-            public Vec3d getItemOffset() {
-                return new Vec3d(0.0F, -0.085F, -0.25625F);
-            }
-        });
+        this.addFeature(new BirdHeldItemFeatureRenderer<>(
+            this,
+            context.getHeldItemRenderer(),
+            new Vec3d(0.0, -0.085, -0.1475)
+        ));
     }
 
     @Override
     public Identifier getTexture(CardinalEntity entity) {
-        return Identifier.of(FowlPlay.ID, "textures/entity/cardinal/cardinal.png");
+        return TEXTURE;
     }
 }

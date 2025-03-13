@@ -9,35 +9,11 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
+public class RavenEntityModel extends FlyingBirdEntityModel<RavenEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "raven"), "main");
-    public final ModelPart root;
-    public final ModelPart body;
-    public final ModelPart neck;
-    public final ModelPart head;
-    public final ModelPart torso;
-    public final ModelPart leftWing;
-    public final ModelPart rightWing;
-    public final ModelPart leftWingOpen;
-    public final ModelPart rightWingOpen;
-    public final ModelPart leftLeg;
-    public final ModelPart rightLeg;
-    public final ModelPart tail;
 
     public RavenEntityModel(ModelPart root) {
         super(root);
-        this.root = root.getChild("root");
-        this.body = this.root.getChild("body");
-        this.neck = this.body.getChild("neck");
-        this.head = this.neck.getChild("head");
-        this.torso = this.body.getChild("torso");
-        this.leftWing = this.body.getChild("left_wing");
-        this.rightWing = this.body.getChild("right_wing");
-        this.leftWingOpen = this.body.getChild("left_wing_open");
-        this.rightWingOpen = this.body.getChild("right_wing_open");
-        this.leftLeg = this.root.getChild("left_leg");
-        this.rightLeg = this.root.getChild("right_leg");
-        this.tail = this.body.getChild("tail");
     }
 
     public static TexturedModelData getTexturedModelData() {
@@ -95,20 +71,16 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
     }
 
     @Override
-    public void setAngles(RavenEntity raven, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-    }
-
-    @Override
     public void animateModel(RavenEntity raven, float limbAngle, float limbDistance, float tickDelta) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(raven, limbAngle, limbDistance, tickDelta);
         float ageInTicks = raven.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, raven.prevBodyYaw, raven.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, raven.prevHeadYaw, raven.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, raven.prevBodyYaw, raven.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, raven.prevHeadYaw, raven.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, raven.prevPitch, raven.getPitch());
-        if (LivingEntityRenderer.renderFlipped(raven)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(raven)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -132,16 +104,16 @@ public class RavenEntityModel extends BirdEntityModel<RavenEntity> {
             this.rightWing.visible = true;
         }
         if (!raven.isFlying() && !raven.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
+            this.animateMovement(RavenEntityAnimations.RAVEN_WALK, limbAngle, limbDistance, 2.5F, 4F);
         }
-        this.animate(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
-        this.animate(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);
-        this.animate(raven.glideState, RavenEntityAnimations.RAVEN_GLIDE, ageInTicks);
-        this.animate(raven.flapState, RavenEntityAnimations.RAVEN_FLAP, ageInTicks);
+        this.updateAnimation(raven.idleState, RavenEntityAnimations.RAVEN_IDLE, ageInTicks);
+        this.updateAnimation(raven.floatState, RavenEntityAnimations.RAVEN_FLOAT, ageInTicks);
+        this.updateAnimation(raven.glideState, RavenEntityAnimations.RAVEN_GLIDE, ageInTicks);
+        this.updateAnimation(raven.flapState, RavenEntityAnimations.RAVEN_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
         this.neck.pitch = headPitch * (float) (Math.PI / 180.0);

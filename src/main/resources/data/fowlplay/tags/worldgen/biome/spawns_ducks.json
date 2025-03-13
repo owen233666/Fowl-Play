@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "#natures_spirit:is_wetland",
+      "required": false
+    },
+    {
+      "id": "#c:river",
+      "required": false
+    },
+    {
+      "id": "#c:swamp",
+      "required": false
+    },
+    {
+      "id": "#c:is_river",
+      "required": false
+    },
+    {
+      "id": "#c:is_swamp",
+      "required": false
+    }
+  ]
+}

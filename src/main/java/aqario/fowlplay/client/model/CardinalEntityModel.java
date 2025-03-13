@@ -9,37 +9,13 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
+public class CardinalEntityModel extends FlyingBirdEntityModel<CardinalEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "cardinal"), "main");
-    public final ModelPart root;
-    public final ModelPart body;
-    public final ModelPart neck;
-    public final ModelPart head;
     public final ModelPart crest;
-    public final ModelPart torso;
-    public final ModelPart leftWing;
-    public final ModelPart rightWing;
-    public final ModelPart leftWingOpen;
-    public final ModelPart rightWingOpen;
-    public final ModelPart leftLeg;
-    public final ModelPart rightLeg;
-    public final ModelPart tail;
 
     public CardinalEntityModel(ModelPart root) {
         super(root);
-        this.root = root.getChild("root");
-        this.body = this.root.getChild("body");
-        this.neck = this.body.getChild("neck");
-        this.head = this.neck.getChild("head");
         this.crest = this.head.getChild("crest");
-        this.torso = this.body.getChild("torso");
-        this.leftWing = this.body.getChild("left_wing");
-        this.rightWing = this.body.getChild("right_wing");
-        this.leftWingOpen = this.body.getChild("left_wing_open");
-        this.rightWingOpen = this.body.getChild("right_wing_open");
-        this.leftLeg = this.root.getChild("left_leg");
-        this.rightLeg = this.root.getChild("right_leg");
-        this.tail = this.body.getChild("tail");
     }
 
     public static TexturedModelData getTexturedModelData() {
@@ -86,20 +62,16 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
     }
 
     @Override
-    public void setAngles(CardinalEntity cardinal, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-    }
-
-    @Override
     public void animateModel(CardinalEntity cardinal, float limbAngle, float limbDistance, float tickDelta) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(cardinal, limbAngle, limbDistance, tickDelta);
         float ageInTicks = cardinal.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, cardinal.prevBodyYaw, cardinal.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, cardinal.prevHeadYaw, cardinal.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, cardinal.prevBodyYaw, cardinal.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, cardinal.prevHeadYaw, cardinal.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, cardinal.prevPitch, cardinal.getPitch());
-        if (LivingEntityRenderer.renderFlipped(cardinal)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(cardinal)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -123,16 +95,16 @@ public class CardinalEntityModel extends BirdEntityModel<CardinalEntity> {
             this.rightWing.visible = true;
         }
         if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(cardinal.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
-        this.animate(cardinal.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
-        this.animate(cardinal.glideState, CardinalEntityAnimations.CARDINAL_GLIDE, ageInTicks);
-        this.animate(cardinal.flapState, CardinalEntityAnimations.CARDINAL_FLAP, ageInTicks);
+        this.updateAnimation(cardinal.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
+        this.updateAnimation(cardinal.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
+        this.updateAnimation(cardinal.glideState, CardinalEntityAnimations.CARDINAL_GLIDE, ageInTicks);
+        this.updateAnimation(cardinal.flapState, CardinalEntityAnimations.CARDINAL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
         this.neck.pitch = headPitch * (float) (Math.PI / 180.0);

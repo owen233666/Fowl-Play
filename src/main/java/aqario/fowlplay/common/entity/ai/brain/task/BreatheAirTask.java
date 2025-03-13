@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldView;
 
-public class BreatheAirTask extends Task<BirdEntity> {
+public class BreatheAirTask extends MultiTickTask<BirdEntity> {
     private final float speed;
 
     public BreatheAirTask(float speed) {
@@ -56,7 +56,7 @@ public class BreatheAirTask extends Task<BirdEntity> {
         }
 
         if (blockPos == null) {
-            blockPos = BlockPos.create(bird.getX(), bird.getY() + 8.0, bird.getZ());
+            blockPos = BlockPos.ofFloored(bird.getX(), bird.getY() + 8.0, bird.getZ());
         }
 
         return new Vec3d(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());

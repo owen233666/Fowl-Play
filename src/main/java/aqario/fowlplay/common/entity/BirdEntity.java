@@ -1,9 +1,12 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -14,6 +17,7 @@ import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -33,15 +37,37 @@ public abstract class BirdEntity extends AnimalEntity {
         this.songChance = this.random.nextInt(this.getSongDelay()) - this.getSongDelay();
     }
 
+    public static DefaultAttributeContainer.Builder createBirdAttributes() {
+        return MobEntity.createMobAttributes()
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+    }
+
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        this.setYaw(MathHelper.wrapDegrees(world.getRandom().nextInt(360)));
+        this.setBodyYaw(this.getYaw());
+        this.setHeadYaw(MathHelper.wrapDegrees(this.getYaw() + world.getRandom().nextInt(31) - 15));
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
+    @Override
+    public boolean cannotDespawn() {
+        return super.cannotDespawn() || this.isPersistent();
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return !this.isPersistent() && !this.isPersistentSpawnGroup() && !this.hasCustomName();
+    }
+
+    private boolean isPersistentSpawnGroup() {
+        return this.getType().getSpawnGroup() == SpawnGroup.CREATURE || this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD.spawnGroup;
+    }
+
+    @Override
+    public int getLimitPerChunk() {
+        return 8;
     }
 
     @Override
@@ -57,8 +83,6 @@ public abstract class BirdEntity extends AnimalEntity {
     public boolean isBreedingItem(ItemStack stack) {
         return false;
     }
-
-    public abstract Ingredient getFood();
 
     @Override
     public boolean canPickupItem(ItemStack stack) {
@@ -90,11 +114,35 @@ public abstract class BirdEntity extends AnimalEntity {
             this.sendPickup(item, stack.getCount());
             item.discard();
             this.eatingTime = 0;
+            if (this.getBrain().isMemoryInState(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)) {
+                this.getBrain().forget(FowlPlayMemoryModuleType.SEES_FOOD);
+            }
+            if (this.getBrain().isMemoryInState(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, MemoryModuleState.VALUE_PRESENT)) {
+                this.getBrain().forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+            }
         }
     }
 
     private boolean canEat(ItemStack stack) {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;
+    }
+
+    public abstract Ingredient getFood();
+
+    public boolean canHunt(LivingEntity target) {
+        return false;
+    }
+
+    public boolean canAttack(LivingEntity target) {
+        return false;
+    }
+
+    public boolean shouldAvoid(LivingEntity entity) {
+        return false;
+    }
+
+    public int getFleeRange() {
+        return 10;
     }
 
     @Override
@@ -185,7 +233,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     protected boolean canSing() {
-        return this.getWorld().isDay();
+        return this.getWorld().isDay() && !this.isBaby();
     }
 
     private void resetCallDelay() {
@@ -237,18 +285,18 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     @Override
-    public int getLookYawSpeed() {
+    public int getMaxLookYawChange() {
         return 100;
     }
 
     @Override
-    public int getLookPitchSpeed() {
+    public int getMaxLookPitchChange() {
         return 100;
     }
 
     @Override
-    public int getBodyYawSpeed() {
-        return 270;
+    public int getMaxHeadRotation() {
+        return 90;
     }
 
     @Override

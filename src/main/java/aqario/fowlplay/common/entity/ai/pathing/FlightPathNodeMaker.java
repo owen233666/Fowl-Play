@@ -15,13 +15,13 @@ public class FlightPathNodeMaker extends LandPathNodeMaker {
     @Override
     public void init(ChunkCache cachedWorld, MobEntity entity) {
         super.init(cachedWorld, entity);
-        this.oldWalkablePenalty = entity.getPenalty(PathNodeType.WALKABLE);
-        entity.addPathfindingPenalty(PathNodeType.WALKABLE, 6.0F);
+        this.oldWalkablePenalty = entity.getPathfindingPenalty(PathNodeType.WALKABLE);
+        entity.setPathfindingPenalty(PathNodeType.WALKABLE, 6.0F);
     }
 
     @Override
     public void clear() {
-        this.entity.addPathfindingPenalty(PathNodeType.WALKABLE, this.oldWalkablePenalty);
+        this.entity.setPathfindingPenalty(PathNodeType.WALKABLE, this.oldWalkablePenalty);
         super.clear();
     }
 
@@ -32,14 +32,14 @@ public class FlightPathNodeMaker extends LandPathNodeMaker {
         }
         return this.getStart(
             new BlockPos(
-                MathHelper.floor(this.entity.getBounds().minX), MathHelper.floor(this.entity.getBounds().minY + 0.5), MathHelper.floor(this.entity.getBounds().minZ)
+                MathHelper.floor(this.entity.getBoundingBox().minX), MathHelper.floor(this.entity.getBoundingBox().minY + 0.5), MathHelper.floor(this.entity.getBoundingBox().minZ)
             )
         );
     }
 
     @Override
     public TargetPathNode getNode(double x, double y, double z) {
-        return this.getTargetPathNode(x, y + 0.5, z);
+        return this.createNode(x, y + 0.5, z);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class FlightPathNodeMaker extends LandPathNodeMaker {
         PathNodeType pathNodeType = this.getNodeType(node.x, node.y + 1, node.z);
         PathNodeType pathNodeType2 = this.getNodeType(node.x, node.y, node.z);
         int j;
-        if (this.entity.getPenalty(pathNodeType) >= 0.0F && pathNodeType2 != PathNodeType.STICKY_HONEY) {
+        if (this.entity.getPathfindingPenalty(pathNodeType) >= 0.0F && pathNodeType2 != PathNodeType.STICKY_HONEY) {
             j = MathHelper.floor(Math.max(1.0F, this.entity.getStepHeight()));
         }
         else {

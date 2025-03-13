@@ -36,7 +36,8 @@
       "fowlplay:mob/cardinal/song4",
       "fowlplay:mob/cardinal/song5",
       "fowlplay:mob/cardinal/song6",
-      "fowlplay:mob/cardinal/song7"
+      "fowlplay:mob/cardinal/song7",
+      "fowlplay:mob/cardinal/song8"
     ],
     "subtitle": "subtitles.entity.cardinal.song"
   },
@@ -79,6 +80,20 @@
     ],
     "subtitle": "subtitles.entity.chickadee.hurt"
   },
+  "entity.duck.call": {
+    "sounds": [
+      "fowlplay:mob/duck/call1",
+      "fowlplay:mob/duck/call2"
+    ],
+    "subtitle": "subtitles.entity.duck.call"
+  },
+  "entity.duck.hurt": {
+    "sounds": [
+      "fowlplay:mob/duck/call1",
+      "fowlplay:mob/duck/call1"
+    ],
+    "subtitle": "subtitles.entity.duck.hurt"
+  },
   "entity.gull.call": {
     "sounds": [
       "fowlplay:mob/gull/call1",
@@ -102,6 +117,23 @@
       "fowlplay:mob/gull/hurt2"
     ],
     "subtitle": "subtitles.entity.gull.hurt"
+  },
+  "entity.hawk.call": {
+    "sounds": [
+      "fowlplay:mob/hawk/call1",
+      "fowlplay:mob/hawk/call2",
+      "fowlplay:mob/hawk/call3",
+      "fowlplay:mob/hawk/call4",
+      "fowlplay:mob/hawk/call5"
+    ],
+    "subtitle": "subtitles.entity.hawk.call"
+  },
+  "entity.hawk.hurt": {
+    "sounds": [
+      "fowlplay:mob/hawk/call1",
+      "fowlplay:mob/hawk/call2"
+    ],
+    "subtitle": "subtitles.entity.hawk.hurt"
   },
   "entity.penguin.call": {
     "sounds": [
@@ -185,9 +217,7 @@
       "fowlplay:mob/robin/song1",
       "fowlplay:mob/robin/song2",
       "fowlplay:mob/robin/song3",
-      "fowlplay:mob/robin/song4",
-      "fowlplay:mob/robin/song5",
-      "fowlplay:mob/robin/song6"
+      "fowlplay:mob/robin/song4"
     ],
     "subtitle": "subtitles.entity.robin.song"
   },

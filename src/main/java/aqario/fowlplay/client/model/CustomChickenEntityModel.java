@@ -84,7 +84,7 @@ public class CustomChickenEntityModel extends SinglePartEntityModel<ChickenEntit
     public void setAngles(ChickenEntity chicken, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         this.updateHeadRotation(netHeadYaw, headPitch);
-        if (chicken.isOnGround()) {
+        if (chicken.isOnGround() || chicken.isInsideWaterOrBubbleColumn()) {
             this.leftWingOpen.visible = false;
             this.rightWingOpen.visible = false;
             this.leftWing.visible = true;
@@ -98,15 +98,15 @@ public class CustomChickenEntityModel extends SinglePartEntityModel<ChickenEntit
         }
 
         if (chicken.isOnGround() && !chicken.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 3F, 3F);
+            this.animateMovement(ChickenEntityAnimations.CHICKEN_WALK, limbSwing, limbSwingAmount, 3F, 3F);
         }
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getIdleState(), ChickenEntityAnimations.CHICKEN_IDLE, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFlapState(), ChickenEntityAnimations.CHICKEN_FLAP, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFloatState(), ChickenEntityAnimations.CHICKEN_FLOAT, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getIdleState(), ChickenEntityAnimations.CHICKEN_IDLE, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getFlapState(), ChickenEntityAnimations.CHICKEN_FLAP, ageInTicks);
+        this.updateAnimation(((ChickenAnimationStates) chicken).fowlplay$getFloatState(), ChickenEntityAnimations.CHICKEN_FLOAT, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.head.yaw = headYaw * (float) (Math.PI / 180.0);
         this.head.pitch = headPitch * (float) (Math.PI / 180.0);

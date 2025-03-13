@@ -15,7 +15,6 @@ import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.world.EntityView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
             nbt.putUuid("owner", this.getOwnerUuid());
         }
 
-        nbt.putBoolean("Sitting", this.sitting);
+        nbt.putBoolean("sitting", this.sitting);
     }
 
     @Override
@@ -71,7 +70,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
             }
         }
 
-        this.sitting = nbt.getBoolean("Sitting");
+        this.sitting = nbt.getBoolean("sitting");
         this.setInSittingPose(this.sitting);
     }
 
@@ -146,20 +145,29 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
     @Override
     public void tick() {
         super.tick();
+        if (this.getOwnerUuid() != null) {
+            this.addTrustedUuid(this.getOwnerUuid());
+            if (!this.isPersistent()) {
+                this.setPersistent();
+            }
+        }
         if (this.isFlying()) {
             this.setSitting(false);
         }
         if (!this.getWorld().isClient) {
-            this.setInSittingPose(this.isSitting());
-            if (this.isSitting() && this.getOwner() != null) {
+            if (this.isSitting()) {
                 this.getNavigation().stop();
+                this.setInSittingPose(true);
+            }
+            else {
+                this.setInSittingPose(false);
             }
         }
     }
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        return super.interactMob(player, hand);
+        return this.trusts(player) ? super.interactMob(player, hand) : ActionResult.PASS;
     }
 
     @Nullable
@@ -230,8 +238,8 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBooleanValue(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
-            this.getOwner().sendSystemMessage(this.getDamageTracker().getDeathMessage());
+        if (!this.getWorld().isClient && this.getWorld().getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
+            this.getOwner().sendMessage(this.getDamageTracker().getDeathMessage());
         }
 
         super.onDeath(source);
@@ -243,10 +251,5 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements T
 
     public void setSitting(boolean sitting) {
         this.sitting = sitting;
-    }
-
-    @Override
-    public EntityView getEntityView() {
-        return null;
     }
 }

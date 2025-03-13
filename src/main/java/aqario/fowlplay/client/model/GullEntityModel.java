@@ -9,35 +9,11 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class GullEntityModel extends BirdEntityModel<GullEntity> {
+public class GullEntityModel extends FlyingBirdEntityModel<GullEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "gull"), "main");
-    public final ModelPart root;
-    public final ModelPart body;
-    public final ModelPart neck;
-    public final ModelPart head;
-    public final ModelPart torso;
-    public final ModelPart leftWing;
-    public final ModelPart rightWing;
-    public final ModelPart leftWingOpen;
-    public final ModelPart rightWingOpen;
-    public final ModelPart leftLeg;
-    public final ModelPart rightLeg;
-    public final ModelPart tail;
 
     public GullEntityModel(ModelPart root) {
         super(root);
-        this.root = root.getChild("root");
-        this.body = this.root.getChild("body");
-        this.neck = this.body.getChild("neck");
-        this.head = this.neck.getChild("head");
-        this.torso = this.body.getChild("torso");
-        this.leftWing = this.body.getChild("left_wing");
-        this.rightWing = this.body.getChild("right_wing");
-        this.leftWingOpen = this.body.getChild("left_wing_open");
-        this.rightWingOpen = this.body.getChild("right_wing_open");
-        this.leftLeg = this.root.getChild("left_leg");
-        this.rightLeg = this.root.getChild("right_leg");
-        this.tail = this.body.getChild("tail");
     }
 
     public static TexturedModelData getTexturedModelData() {
@@ -59,13 +35,13 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
 
         body.addChild("right_wing", ModelPartBuilder.create().uv(0, 14).mirrored().cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 4.0F, 12.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -4.25F, 0.0F, -0.3491F, 0.0F, 0.0F));
 
-        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 10.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
 
-        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(16, 9).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, -0.1F, -1.0F));
+        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(16, 9).cuboid(0.0F, 0.0F, 0.0F, 12.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(9.0F, -0.1F, -1.0F));
 
-        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-8.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-9.0F, -0.1F, -1.0F, 10.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
 
-        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(16, 9).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, -0.1F, -1.0F));
+        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(16, 9).mirrored().cuboid(-12.0F, 0.0F, 0.0F, 12.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-9.0F, -0.1F, -1.0F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(16, 0).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 1.0F, 3.0F, new Dilation(0.0F))
             .uv(23, 0).cuboid(-1.0F, -1.002F, 3.0F, 2.0F, 0.0F, 5.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.75F, 3.5F, -0.2618F, 0.0F, 0.0F));
@@ -86,20 +62,16 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
     }
 
     @Override
-    public void setAngles(GullEntity gull, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-    }
-
-    @Override
     public void animateModel(GullEntity gull, float limbAngle, float limbDistance, float tickDelta) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(gull, limbAngle, limbDistance, tickDelta);
         float ageInTicks = gull.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, gull.prevBodyYaw, gull.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, gull.prevHeadYaw, gull.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, gull.prevBodyYaw, gull.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, gull.prevHeadYaw, gull.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, gull.prevPitch, gull.getPitch());
-        if (LivingEntityRenderer.renderFlipped(gull)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(gull)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -122,17 +94,20 @@ public class GullEntityModel extends BirdEntityModel<GullEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        if (!gull.isFlying() && !gull.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
+        if (gull.isFlying()) {
+            this.animateMovement(GullEntityAnimations.GULL_FLAP, limbAngle, limbDistance, 2.5F, 2.5F);
         }
-        this.animate(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.animate(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
-        this.animate(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
-        this.animate(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
+        else if (!gull.isInsideWaterOrBubbleColumn()) {
+            this.animateMovement(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
+        }
+        this.updateAnimation(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
+        this.updateAnimation(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
+        this.updateAnimation(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
+//        this.updateAnimation(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
         this.neck.pitch = headPitch * (float) (Math.PI / 180.0);

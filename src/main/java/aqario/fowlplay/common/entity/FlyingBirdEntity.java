@@ -17,12 +17,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -32,27 +32,33 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     private float prevRoll;
     private float visualRoll;
     public int timeFlying = 0;
+    private static final int ROLL_FACTOR = 4;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setMoveControl(false);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes()
+    public static DefaultAttributeContainer.Builder createFlyingBirdAttributes() {
+        return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.28f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25f);
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
+    public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @SuppressWarnings("unused")
-    public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, RandomGenerator random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON);
+    public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER);
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean canSpawnWaterfowl(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.WATERFOWL_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER);
     }
 
     @Override
@@ -113,7 +119,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if (difference < -180.0F) {
             difference = -(360.0F + difference);
         }
-        return -difference * 3;
+        return -difference * ROLL_FACTOR;
     }
 
     public float getRoll(float tickDelta) {
@@ -129,7 +135,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 40, 8);
+        return new BirdFlightMoveControl(this, 20, 15);
     }
 
     protected BirdNavigation getFlightNavigation() {
@@ -154,8 +160,16 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
-    protected float getAirSpeed() {
-        return this.isFlying() ? this.getMovementSpeed() : super.getAirSpeed();
+    protected float getOffGroundSpeed() {
+        return this.isFlying() ? this.getMovementSpeed() : super.getOffGroundSpeed();
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        if (!this.getWorld().isClient && this.isFlying()) {
+            this.stopFlying();
+        }
+        return super.damage(source, amount);
     }
 
     @Override
@@ -170,11 +184,13 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         }
     }
 
+    public boolean canStartFlying() {
+        return !this.isFlying() && this.getHealth() > 2.0F;
+    }
+
     public void startFlying() {
-        if (this.getHealth() > 2.0F) {
-            this.setFlying(true);
-            this.setMoveControl(true);
-        }
+        this.setFlying(true);
+        this.setMoveControl(true);
     }
 
     public void stopFlying() {
@@ -188,6 +204,45 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
+    }
+
+    @Override
+    protected void playSecondaryStepSound(BlockState state) {
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+    }
+
+    @Override
+    protected void playCombinationStepSounds(BlockState primaryState, BlockState secondaryState) {
+    }
+
+    @Override
+    public void updateLimbs(boolean flutter) {
+        float yDelta = (float) (this.getY() - this.prevY);
+        float posDelta;
+        if (!this.isFlying() || yDelta > 0) {
+            posDelta = (float) MathHelper.magnitude(this.getX() - this.prevX, 0.0, this.getZ() - this.prevZ);
+        }
+        else {
+            posDelta = (float) MathHelper.magnitude(this.getX() - this.prevX, yDelta, this.getZ() - this.prevZ);
+        }
+        float speed;
+        if (this.isFlying()) {
+            speed = Math.abs(1 - Math.min(posDelta * 0.8F, 1.0F));
+            if (yDelta > 0) {
+                speed = (float) Math.sqrt(speed * speed + yDelta * yDelta * 4.0F);
+            }
+        }
+        else {
+            speed = Math.min(posDelta * 4.0F, 1.0F);
+        }
+        this.limbAnimator.updateLimbs(speed, 0.4F);
+    }
+
+    @Override
+    protected void updateLimbs(float posDelta) {
     }
 
     @Override
@@ -216,5 +271,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.setVelocity(this.getVelocity().multiply(friction));
             }
         }
+
+        this.updateLimbs(false);
     }
 }

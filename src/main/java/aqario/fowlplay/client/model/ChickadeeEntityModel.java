@@ -9,35 +9,11 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class ChickadeeEntityModel extends BirdEntityModel<ChickadeeEntity> {
+public class ChickadeeEntityModel extends FlyingBirdEntityModel<ChickadeeEntity> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FowlPlay.ID, "chickadee"), "main");
-    public final ModelPart root;
-    public final ModelPart body;
-    public final ModelPart neck;
-    public final ModelPart head;
-    public final ModelPart torso;
-    public final ModelPart leftWing;
-    public final ModelPart rightWing;
-    public final ModelPart leftWingOpen;
-    public final ModelPart rightWingOpen;
-    public final ModelPart leftLeg;
-    public final ModelPart rightLeg;
-    public final ModelPart tail;
 
     public ChickadeeEntityModel(ModelPart root) {
         super(root);
-        this.root = root.getChild("root");
-        this.body = this.root.getChild("body");
-        this.neck = this.body.getChild("neck");
-        this.head = this.neck.getChild("head");
-        this.torso = this.body.getChild("torso");
-        this.leftWing = this.body.getChild("left_wing");
-        this.rightWing = this.body.getChild("right_wing");
-        this.leftWingOpen = this.body.getChild("left_wing_open");
-        this.rightWingOpen = this.body.getChild("right_wing_open");
-        this.leftLeg = this.root.getChild("left_leg");
-        this.rightLeg = this.root.getChild("right_leg");
-        this.tail = this.body.getChild("tail");
     }
 
     public static TexturedModelData getTexturedModelData() {
@@ -82,20 +58,16 @@ public class ChickadeeEntityModel extends BirdEntityModel<ChickadeeEntity> {
     }
 
     @Override
-    public void setAngles(ChickadeeEntity chickadee, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch) {
-    }
-
-    @Override
     public void animateModel(ChickadeeEntity chickadee, float limbAngle, float limbDistance, float tickDelta) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
         super.animateModel(chickadee, limbAngle, limbDistance, tickDelta);
         float ageInTicks = chickadee.age + tickDelta;
-        float bodyYaw = MathHelper.lerpDegrees(tickDelta, chickadee.prevBodyYaw, chickadee.bodyYaw);
-        float headYaw = MathHelper.lerpDegrees(tickDelta, chickadee.prevHeadYaw, chickadee.headYaw);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, chickadee.prevBodyYaw, chickadee.bodyYaw);
+        float headYaw = MathHelper.lerpAngleDegrees(tickDelta, chickadee.prevHeadYaw, chickadee.headYaw);
         float relativeHeadYaw = headYaw - bodyYaw;
 
         float headPitch = MathHelper.lerp(tickDelta, chickadee.prevPitch, chickadee.getPitch());
-        if (LivingEntityRenderer.renderFlipped(chickadee)) {
+        if (LivingEntityRenderer.shouldFlipUpsideDown(chickadee)) {
             headPitch *= -1.0F;
             relativeHeadYaw *= -1.0F;
         }
@@ -119,16 +91,16 @@ public class ChickadeeEntityModel extends BirdEntityModel<ChickadeeEntity> {
             this.rightWing.visible = true;
         }
         if (!chickadee.isFlying() && !chickadee.isInsideWaterOrBubbleColumn()) {
-            this.animateWalk(ChickadeeEntityAnimations.CHICKADEE_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(ChickadeeEntityAnimations.CHICKADEE_WALK, limbAngle, limbDistance, 6F, 6F);
         }
-        this.animate(chickadee.idleState, ChickadeeEntityAnimations.CHICKADEE_IDLE, ageInTicks);
-        this.animate(chickadee.floatState, ChickadeeEntityAnimations.CHICKADEE_FLOAT, ageInTicks);
-        this.animate(chickadee.glideState, ChickadeeEntityAnimations.CHICKADEE_GLIDE, ageInTicks);
-        this.animate(chickadee.flapState, ChickadeeEntityAnimations.CHICKADEE_FLAP, ageInTicks);
+        this.updateAnimation(chickadee.idleState, ChickadeeEntityAnimations.CHICKADEE_IDLE, ageInTicks);
+        this.updateAnimation(chickadee.floatState, ChickadeeEntityAnimations.CHICKADEE_FLOAT, ageInTicks);
+        this.updateAnimation(chickadee.glideState, ChickadeeEntityAnimations.CHICKADEE_GLIDE, ageInTicks);
+        this.updateAnimation(chickadee.flapState, ChickadeeEntityAnimations.CHICKADEE_FLAP, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
-        headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+        headYaw = MathHelper.clamp(headYaw, -135.0F, 135.0F);
         headPitch = MathHelper.clamp(headPitch, -25.0F, 45.0F);
         this.neck.yaw = headYaw * (float) (Math.PI / 180.0);
         this.neck.pitch = headPitch * (float) (Math.PI / 180.0);

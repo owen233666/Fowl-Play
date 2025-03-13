@@ -1,133 +1,196 @@
 package aqario.fowlplay.common.config;
 
-import eu.midnightdust.lib.config.MidnightConfig;
+import aqario.fowlplay.common.FowlPlay;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
-public class FowlPlayConfig extends MidnightConfig {
-    public static final String VISUAL = "visual";
-    public static final String AUDIO = "audio";
-    public static final String SPAWNING = "spawning";
+public class FowlPlayConfig {
+    public static FowlPlayConfig getInstance() {
+        if (FowlPlay.isYACLLoaded()) {
+            return YACLIntegration.HANDLED_CONFIG.instance();
+        }
+        return new FowlPlayConfig();
+    }
+
+    public static void load() {
+        YACLIntegration.HANDLED_CONFIG.load();
+    }
+
+    public static void save() {
+        YACLIntegration.HANDLED_CONFIG.save();
+    }
 
     // Visual
 
-    @Entry(category = VISUAL)
-    public static boolean customChickenModel = true;
+    @SerialEntry
+    public boolean customChickenModel = true;
+
+    // Audio
+
+    // Blue Jay
+
+    @SerialEntry
+    public int blueJayCallVolume = 10;
+
+    // Cardinal
+
+    @SerialEntry
+    public int cardinalCallVolume = 4;
+    @SerialEntry
+    public int cardinalSongVolume = 8;
+
+    // Chickadee
+
+    @SerialEntry
+    public int chickadeeCallVolume = 8;
+    @SerialEntry
+    public int chickadeeSongVolume = 8;
+
+    // Duck
+
+    @SerialEntry
+    public int duckCallVolume = 4;
+
+    // Gull
+
+    @SerialEntry
+    public int gullCallVolume = 7;
+    @SerialEntry
+    public int gullSongVolume = 8;
+
+    // Hawk
+
+    @SerialEntry
+    public int hawkCallVolume = 12;
+
+    // Penguin
+
+    @SerialEntry
+    public int penguinCallVolume = 4;
+
+    // Pigeon
+
+    @SerialEntry
+    public int pigeonCallVolume = 1;
+    @SerialEntry
+    public int pigeonSongVolume = 7;
+
+    // Raven
+
+    @SerialEntry
+    public int ravenCallVolume = 10;
+
+    // Robin
+
+    @SerialEntry
+    public int robinCallVolume = 3;
+    @SerialEntry
+    public int robinSongVolume = 8;
+
+    // Sparrow
+
+    @SerialEntry
+    public int sparrowCallVolume = 3;
+    @SerialEntry
+    public int sparrowSongVolume = 7;
 
     // Spawning
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment spacer1;
+    // Blue Jay
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment info;
+    @SerialEntry
+    public int blueJaySpawnWeight = 2;
+    @SerialEntry
+    public int blueJayMinGroupSize = 1;
+    @SerialEntry
+    public int blueJayMaxGroupSize = 2;
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment spacer2;
+    // Cardinal
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment blueJay;
+    @SerialEntry
+    public int cardinalSpawnWeight = 4;
+    @SerialEntry
+    public int cardinalMinGroupSize = 1;
+    @SerialEntry
+    public int cardinalMaxGroupSize = 2;
 
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int blueJaySpawnWeight = 25;
+    // Chickadee
 
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int blueJayMinGroupSize = 1;
+    @SerialEntry
+    public int chickadeeSpawnWeight = 5;
+    @SerialEntry
+    public int chickadeeMinGroupSize = 1;
+    @SerialEntry
+    public int chickadeeMaxGroupSize = 3;
 
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int blueJayMaxGroupSize = 2;
+    // Duck
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment cardinal;
+    @SerialEntry
+    public int duckSpawnWeight = 4;
+    @SerialEntry
+    public int duckMinGroupSize = 12;
+    @SerialEntry
+    public int duckMaxGroupSize = 18;
 
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int cardinalSpawnWeight = 35;
+    // Gull
 
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int cardinalMinGroupSize = 1;
+    @SerialEntry
+    public int gullSpawnWeight = 5;
+    @SerialEntry
+    public int gullMinGroupSize = 10;
+    @SerialEntry
+    public int gullMaxGroupSize = 16;
 
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int cardinalMaxGroupSize = 2;
+    // Hawk
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment chickadee;
+    @SerialEntry
+    public int hawkSpawnWeight = 1;
+    @SerialEntry
+    public int hawkMinGroupSize = 1;
+    @SerialEntry
+    public int hawkMaxGroupSize = 2;
 
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int chickadeeSpawnWeight = 50;
+    // Penguin
 
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int chickadeeMinGroupSize = 3;
+    @SerialEntry
+    public int penguinSpawnWeight = 1;
+    @SerialEntry
+    public int penguinMinGroupSize = 16;
+    @SerialEntry
+    public int penguinMaxGroupSize = 24;
 
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int chickadeeMaxGroupSize = 5;
+    // Pigeon
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment gull;
+    @SerialEntry
+    public int pigeonSpawnWeight = 3;
+    @SerialEntry
+    public int pigeonMinGroupSize = 2;
+    @SerialEntry
+    public int pigeonMaxGroupSize = 5;
 
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int gullSpawnWeight = 30;
+    // Raven
 
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int gullMinGroupSize = 8;
+    @SerialEntry
+    public int ravenSpawnWeight = 1;
+    @SerialEntry
+    public int ravenMinGroupSize = 1;
+    @SerialEntry
+    public int ravenMaxGroupSize = 2;
 
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int gullMaxGroupSize = 12;
+    // Robin
 
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment penguin;
+    @SerialEntry
+    public int robinSpawnWeight = 8;
+    @SerialEntry
+    public int robinMinGroupSize = 1;
+    @SerialEntry
+    public int robinMaxGroupSize = 3;
 
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int penguinSpawnWeight = 1;
+    // Sparrow
 
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int penguinMinGroupSize = 16;
-
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int penguinMaxGroupSize = 24;
-
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment pigeon;
-
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int pigeonSpawnWeight = 20;
-
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int pigeonMinGroupSize = 4;
-
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int pigeonMaxGroupSize = 8;
-
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment raven;
-
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int ravenSpawnWeight = 20;
-
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int ravenMinGroupSize = 1;
-
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int ravenMaxGroupSize = 3;
-
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment robin;
-
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int robinSpawnWeight = 50;
-
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int robinMinGroupSize = 3;
-
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int robinMaxGroupSize = 5;
-
-    @Comment(category = SPAWNING, centered = true)
-    public static Comment sparrow;
-
-    @Entry(category = SPAWNING, min = 0, name = "Spawn Weight")
-    public static int sparrowSpawnWeight = 75;
-
-    @Entry(category = SPAWNING, min = 0, name = "Min Group Size")
-    public static int sparrowMinGroupSize = 6;
-
-    @Entry(category = SPAWNING, min = 0, name = "Max Group Size")
-    public static int sparrowMaxGroupSize = 10;
+    @SerialEntry
+    public int sparrowSpawnWeight = 20;
+    @SerialEntry
+    public int sparrowMinGroupSize = 3;
+    @SerialEntry
+    public int sparrowMaxGroupSize = 6;
 }

@@ -18,9 +18,15 @@ public final class FowlPlaySoundEvents {
     public static final SoundEvent ENTITY_CHICKADEE_SONG = register("entity.chickadee.song");
     public static final SoundEvent ENTITY_CHICKADEE_HURT = register("entity.chickadee.hurt");
 
+    public static final SoundEvent ENTITY_DUCK_CALL = register("entity.duck.call");
+    public static final SoundEvent ENTITY_DUCK_HURT = register("entity.duck.hurt");
+
     public static final SoundEvent ENTITY_GULL_CALL = register("entity.gull.call");
     public static final SoundEvent ENTITY_GULL_LONG_CALL = register("entity.gull.long_call");
     public static final SoundEvent ENTITY_GULL_HURT = register("entity.gull.hurt");
+
+    public static final SoundEvent ENTITY_HAWK_CALL = register("entity.hawk.call");
+    public static final SoundEvent ENTITY_HAWK_HURT = register("entity.hawk.hurt");
 
     public static final SoundEvent ENTITY_PENGUIN_CALL = register("entity.penguin.call");
     public static final SoundEvent ENTITY_PENGUIN_BABY_CALL = register("entity.penguin_baby.call");
@@ -44,7 +50,7 @@ public final class FowlPlaySoundEvents {
 
     private static SoundEvent register(String id) {
         Identifier identifier = Identifier.of(FowlPlay.ID, id);
-        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
+        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
     }
 
     public static void init() {
