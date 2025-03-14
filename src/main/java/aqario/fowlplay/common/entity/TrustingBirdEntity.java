@@ -51,12 +51,11 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (!nbt.contains("trusted")) {
-            return;
-        }
-        NbtList list = (NbtList) nbt.get("trusted");
-        if (list != null) {
-            list.forEach(element -> this.addTrustedUuid(NbtHelper.toUuid(element)));
+        if (nbt.contains("trusted")) {
+            NbtList list = (NbtList) nbt.get("trusted");
+            if (list != null) {
+                list.forEach(element -> this.addTrustedUuid(NbtHelper.toUuid(element)));
+            }
         }
     }
 
@@ -102,8 +101,8 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.isPersistent() && !this.getTrustedUuids().isEmpty()) {
-            this.setPersistent();
+        if (this.isAmbient() && !this.getTrustedUuids().isEmpty()) {
+            this.setAmbient(false);
         }
     }
 

@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -49,17 +50,17 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @SuppressWarnings("unused")
     public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
+        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY() && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
     }
 
     @SuppressWarnings("unused")
     public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER);
+        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY() && (world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER));
     }
 
     @SuppressWarnings("unused")
     public static boolean canSpawnWaterfowl(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.WATERFOWL_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER);
+        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY() && (world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.WATERFOWL_SPAWNABLE_ON) || world.getFluidState(pos.down()).isIn(FluidTags.WATER));
     }
 
     @Override

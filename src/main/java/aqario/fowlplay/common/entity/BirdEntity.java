@@ -13,6 +13,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
@@ -25,6 +26,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BirdEntity extends AnimalEntity {
+    private boolean ambient;
     private int eatingTime;
     public int callChance;
     public int songChance;
@@ -48,21 +50,36 @@ public abstract class BirdEntity extends AnimalEntity {
         this.setYaw(MathHelper.wrapDegrees(world.getRandom().nextInt(360)));
         this.setBodyYaw(this.getYaw());
         this.setHeadYaw(MathHelper.wrapDegrees(this.getYaw() + world.getRandom().nextInt(31) - 15));
+        if (this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup) {
+            this.setAmbient(true);
+        }
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
-    public boolean cannotDespawn() {
-        return super.cannotDespawn() || this.isPersistent();
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("ambient", this.ambient);
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.setAmbient(nbt.getBoolean("ambient"));
+    }
+
+    // non-ambient birds count towards the mob cap, but they don't despawn
+    public boolean isAmbient() {
+        return this.ambient;
+    }
+
+    protected void setAmbient(boolean ambient) {
+        this.ambient = ambient;
     }
 
     @Override
     public boolean canImmediatelyDespawn(double distanceSquared) {
-        return !this.isPersistent() && !this.isPersistentSpawnGroup() && !this.hasCustomName();
-    }
-
-    private boolean isPersistentSpawnGroup() {
-        return this.getType().getSpawnGroup() == SpawnGroup.CREATURE || this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD.spawnGroup;
+        return this.isAmbient() && !this.isPersistent() && !this.hasCustomName();
     }
 
     @Override
