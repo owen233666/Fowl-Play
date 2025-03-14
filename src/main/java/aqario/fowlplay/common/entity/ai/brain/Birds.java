@@ -2,6 +2,8 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -23,6 +25,11 @@ public final class Birds {
     public static final int ITEM_PICK_UP_RANGE = 32;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
+
+    public static boolean notFlightless(Entity entity) {
+        return entity.getType().isIn(FowlPlayEntityTypeTags.BIRDS)
+            && !entity.getType().isIn(FowlPlayEntityTypeTags.FLIGHTLESS);
+    }
 
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();

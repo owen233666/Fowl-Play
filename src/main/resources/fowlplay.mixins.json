@@ -4,6 +4,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChickenEntityMixin",
+    "FenceGateBlockMixin",
+    "HorizontalConnectingBlockMixin",
+    "LeavesBlockMixin",
     "LivingEntityMixin",
     "PowderSnowBlockMixin",
     "SensorMixin",

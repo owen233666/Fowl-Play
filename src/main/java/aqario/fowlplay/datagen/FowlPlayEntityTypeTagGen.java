@@ -40,6 +40,10 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             }
         });
 
+        // Flightless
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.FLIGHTLESS)
+            .add(FowlPlayEntityType.PENGUIN);
+
         // Passerines
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.PASSERINES)
             .add(FowlPlayEntityType.BLUE_JAY)
@@ -48,6 +52,14 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(FowlPlayEntityType.RAVEN)
             .add(FowlPlayEntityType.ROBIN)
             .add(FowlPlayEntityType.SPARROW);
+
+        // Shorebirds
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.SHOREBIRDS)
+            .add(FowlPlayEntityType.GULL);
+
+        // Waterfowl
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.WATERFOWL)
+            .add(FowlPlayEntityType.DUCK);
 
         // Entities to avoid
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS)
