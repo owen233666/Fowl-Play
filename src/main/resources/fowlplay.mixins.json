@@ -3,10 +3,10 @@
   "package": "aqario.fowlplay.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractBlockMixin",
     "ChickenEntityMixin",
     "FenceGateBlockMixin",
     "HorizontalConnectingBlockMixin",
-    "LeavesBlockMixin",
     "LivingEntityMixin",
     "PowderSnowBlockMixin",
     "SensorMixin",

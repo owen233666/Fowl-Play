@@ -65,7 +65,12 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.setAmbient(nbt.getBoolean("ambient"));
+        if (nbt.contains("ambient")) {
+            this.setAmbient(nbt.getBoolean("ambient"));
+        }
+        else {
+            this.setAmbient(this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup);
+        }
     }
 
     // non-ambient birds count towards the mob cap, but they don't despawn
