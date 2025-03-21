@@ -148,7 +148,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return birdNavigation;
     }
 
-    protected void setMoveControl(boolean isFlying) {
+    public void setMoveControl(boolean isFlying) {
         if (isFlying) {
             this.moveControl = this.getFlightMoveControl();
             this.navigation = this.getFlightNavigation();

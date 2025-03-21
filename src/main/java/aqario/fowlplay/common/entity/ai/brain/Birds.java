@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.entity.Entity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.Optional;
@@ -23,8 +25,13 @@ public final class Birds {
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
+    public static final int WALK_RANGE = 16;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
+
+    public static boolean shouldFlyToTarget(FlyingBirdEntity bird, Vec3d target) {
+        return bird.getPos().squaredDistanceTo(target) > WALK_RANGE * WALK_RANGE;
+    }
 
     public static boolean notFlightless(Entity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.BIRDS)

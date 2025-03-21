@@ -31,7 +31,6 @@ public class FowlPlay implements ModInitializer {
         if (isYACLLoaded()) {
             FowlPlayConfig.load();
         }
-
         FowlPlayActivities.init();
         FowlPlayEntityType.init();
         ChickenVariant.init();
