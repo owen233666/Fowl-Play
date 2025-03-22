@@ -53,7 +53,7 @@ You can talk about the mod on my [GitHub Discussions](https://github.com/aqariio
 
 ## Mobs
 
-_This mod adds a custom chicken model in the style of its other birds. The model can be disabled in the config, although a restart is required for it to take effect._
+_This mod adds an updated chicken model in the style of its other birds. The model can be disabled in the config, although a restart is required for it to take effect._
 
 **Added mobs:**
 

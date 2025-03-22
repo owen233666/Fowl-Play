@@ -149,7 +149,7 @@ public class RavenEntity extends TrustingBirdEntity {
         if (this.getWorld().isClient()) {
             this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
             this.flapState.setRunning(this.isFlying(), this.age);
-            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

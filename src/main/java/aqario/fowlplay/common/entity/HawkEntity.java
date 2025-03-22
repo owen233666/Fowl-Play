@@ -164,7 +164,7 @@ public class HawkEntity extends TrustingBirdEntity {
                 this.flapState.stop();
                 this.glideState.stop();
             }
-            this.floatState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();
