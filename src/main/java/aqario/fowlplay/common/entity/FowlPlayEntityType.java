@@ -25,8 +25,8 @@ public final class FowlPlayEntityType {
 
     public static final EntityType<ChickadeeEntity> CHICKADEE = register("chickadee",
         EntityType.Builder.create(ChickadeeEntity::new, FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup)
-            .dimensions(0.4f, 0.55f)
-            .eyeHeight(0.475f)
+            .dimensions(0.3f, 0.45f)
+            .eyeHeight(0.425f)
     );
 
     public static final EntityType<DuckEntity> DUCK = register("duck",

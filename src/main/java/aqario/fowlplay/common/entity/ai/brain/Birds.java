@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.TrustingBirdEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
 import net.minecraft.entity.Entity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
@@ -49,12 +51,28 @@ public final class Birds {
         }
         ItemEntity wantedItem = brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).get();
         Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> true)
-            .filter(bird::shouldAvoid)
-            .filter(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR)
+            .filter(entity -> shouldAvoid(brain, bird, entity))
             .filter(entity -> entity.isInRange(wantedItem, bird.getFleeRange()))
             .findFirst();
 
         return !bird.getFood().test(bird.getMainHandStack()) && avoidTarget.isEmpty();
+    }
+
+    public static boolean shouldAvoid(Brain<?> brain, BirdEntity bird, LivingEntity target) {
+        if (!bird.shouldAvoid(target)) {
+            return false;
+        }
+        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
+            return false;
+        }
+        if (target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {
+            return false;
+        }
+        Optional<LivingEntity> attackTarget = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET);
+        if (attackTarget != null && attackTarget.isPresent() && attackTarget.get().equals(target)) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean isPerching(BirdEntity entity) {

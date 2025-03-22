@@ -3,7 +3,6 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
-import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
 import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.common.registry.FowlPlayRegistries;
 import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
@@ -33,7 +32,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -42,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class GullEntity extends TrustingBirdEntity implements VariantHolder<RegistryEntry<GullVariant>>, Aquatic {
+public class GullEntity extends TrustingBirdEntity implements VariantHolder<RegistryEntry<GullVariant>> {
     private static final TrackedData<RegistryEntry<GullVariant>> VARIANT = DataTracker.registerData(
         GullEntity.class,
         FowlPlayTrackedDataHandlerRegistry.GULL_VARIANT
@@ -84,12 +82,8 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    protected BirdNavigation getFlightNavigation() {
-        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        birdNavigation.setCanSwim(true);
-        return birdNavigation;
+    protected boolean canSwim() {
+        return true;
     }
 
     @Override
@@ -283,12 +277,5 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     @Override
     public float getMaxWaterHeight() {
         return 0.35F;
-    }
-
-    @Override
-    public boolean isFloating() {
-        BlockPos blockPos = BlockPos.ofFloored(this.getX(), this.getY() + this.getMaxWaterHeight(), this.getZ());
-        double waterHeight = this.getBlockPos().getY() + this.getWorld().getFluidState(blockPos).getHeight(this.getWorld(), blockPos);
-        return this.isSubmergedInWater() || waterHeight > this.getY() + this.getMaxWaterHeight();
     }
 }

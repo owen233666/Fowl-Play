@@ -87,6 +87,11 @@ public class CardinalEntity extends FlyingBirdEntity {
         return bl;
     }
 
+    @Override
+    public float getMaxWaterHeight() {
+        return 0.45F;
+    }
+
     @Nullable
     @Override
     protected SoundEvent getCallSound() {

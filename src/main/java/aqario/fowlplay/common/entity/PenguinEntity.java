@@ -432,6 +432,11 @@ public class PenguinEntity extends BirdEntity {
     }
 
     @Override
+    public float getMaxWaterHeight() {
+        return 0F;
+    }
+
+    @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         boolean bl = this.isBreedingItem(player.getStackInHand(hand));
         if (!bl && !this.hasPassengers() && !player.shouldCancelInteraction() && !this.isBaby() && this.isSliding()) {

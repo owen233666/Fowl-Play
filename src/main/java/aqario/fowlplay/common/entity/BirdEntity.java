@@ -18,6 +18,7 @@ import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
@@ -144,6 +145,15 @@ public abstract class BirdEntity extends AnimalEntity {
             }
         }
     }
+
+    public boolean isFloating() {
+        BlockPos blockPos = BlockPos.ofFloored(this.getX(), this.getY() + this.getMaxWaterHeight(), this.getZ());
+        double waterHeight = this.getBlockPos().getY() + this.getWorld().getFluidState(blockPos).getHeight(this.getWorld(), blockPos);
+        return this.isSubmergedInWater() || waterHeight > this.getY() + this.getMaxWaterHeight();
+    }
+
+    // how much of the hitbox the water should cover (from the bottom)
+    public abstract float getMaxWaterHeight();
 
     private boolean canEat(ItemStack stack) {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;

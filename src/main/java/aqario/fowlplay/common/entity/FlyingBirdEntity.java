@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
-import aqario.fowlplay.common.entity.ai.pathing.BirdNavigation;
+import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -35,6 +35,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public int timeFlying = 0;
     private static final int ROLL_FACTOR = 4;
     private static final float MIN_HEALTH_TO_FLY = 2.0F;
+    private static final int MIN_FLIGHT_TIME = 15;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
@@ -97,7 +98,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.timeFlying++;
                 this.setNoGravity(true);
                 this.fallDistance = 0.0F;
-                if (this.isOnGround() || this.isInsideWaterOrBubbleColumn() || this.getHealth() < MIN_HEALTH_TO_FLY) {
+                if (this.shouldStopFlying()) {
                     this.stopFlying();
                 }
             }
@@ -140,12 +141,16 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return new BirdFlightMoveControl(this, 20, 15);
     }
 
-    protected BirdNavigation getFlightNavigation() {
-        BirdNavigation birdNavigation = new BirdNavigation(this, this.getWorld());
-        birdNavigation.setCanPathThroughDoors(false);
-        birdNavigation.setCanEnterOpenDoors(true);
-        birdNavigation.setCanSwim(false);
-        return birdNavigation;
+    protected FlightNavigation getFlightNavigation() {
+        FlightNavigation navigation = new FlightNavigation(this, this.getWorld());
+        navigation.setCanPathThroughDoors(false);
+        navigation.setCanEnterOpenDoors(true);
+        navigation.setCanSwim(this.canSwim());
+        return navigation;
+    }
+
+    protected boolean canSwim() {
+        return false;
     }
 
     public void setMoveControl(boolean isFlying) {
@@ -179,7 +184,17 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     public boolean canStartFlying() {
-        return !this.isFlying() && this.getHealth() >= MIN_HEALTH_TO_FLY;
+        return !this.isFlying() && !this.isFloating() && this.getHealth() >= MIN_HEALTH_TO_FLY;
+    }
+
+    public boolean shouldStopFlying() {
+        if (this.isSubmergedInWater()) {
+            return true;
+        }
+        if (this.timeFlying < MIN_FLIGHT_TIME) {
+            return false;
+        }
+        return this.isOnGround() || this.isFloating() || this.getHealth() < MIN_HEALTH_TO_FLY;
     }
 
     public void startFlying() {
@@ -190,6 +205,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void stopFlying() {
         this.setFlying(false);
         this.setMoveControl(false);
+        this.getNavigation().stop();
     }
 
     public boolean isFlying() {
@@ -248,7 +264,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
         if (this.isLogicalSideForUpdatingMovement()) {
             if (this.isTouchingWater()) {
-                this.updateVelocity(0.02F, movementInput);
+                this.updateVelocity(this.isSubmergedInWater() ? 0.02F : this.getMovementSpeed(), movementInput);
                 this.move(MovementType.SELF, this.getVelocity());
                 this.setVelocity(this.getVelocity().multiply(0.8F));
             }

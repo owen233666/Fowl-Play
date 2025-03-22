@@ -95,7 +95,7 @@ public class GullEntityModel extends FlyingBirdEntityModel<GullEntity> {
             this.rightWing.visible = true;
         }
         if (gull.isFlying()) {
-            this.animateMovement(GullEntityAnimations.GULL_FLAP, limbAngle, limbDistance, 2.5F, 2.5F);
+            this.animateMovement(GullEntityAnimations.GULL_FLAP, limbAngle, limbDistance, 3.25F, 3.25F);
         }
         else if (!gull.isInsideWaterOrBubbleColumn()) {
             this.animateMovement(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);

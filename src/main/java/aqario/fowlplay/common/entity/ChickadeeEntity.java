@@ -94,6 +94,11 @@ public class ChickadeeEntity extends FlyingBirdEntity {
     }
 
     @Override
+    public float getMaxWaterHeight() {
+        return 0.35F;
+    }
+
+    @Override
     protected void addFlapEffects() {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }

@@ -156,6 +156,11 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @Override
+    public float getMaxWaterHeight() {
+        return 0.5F;
+    }
+
+    @Override
     protected void addFlapEffects() {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
