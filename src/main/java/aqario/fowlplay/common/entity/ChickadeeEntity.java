@@ -94,7 +94,7 @@ public class ChickadeeEntity extends FlyingBirdEntity {
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.35F;
     }
 

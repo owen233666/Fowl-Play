@@ -41,7 +41,7 @@ public class FlightControlTask {
                 .apply(
                     instance,
                     (flying, walkTarget) -> (world, bird, l) -> {
-                        if ((bird.isOnGround() || bird.isFloating()) && shouldRun.test(bird)) {
+                        if ((bird.isOnGround() || bird.isBelowWaterline()) && shouldRun.test(bird)) {
                             bird.stopFlying();
                             flying.forget();
                             walkTarget.forget();

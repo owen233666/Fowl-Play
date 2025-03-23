@@ -88,7 +88,7 @@ public class CardinalEntity extends FlyingBirdEntity {
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.45F;
     }
 

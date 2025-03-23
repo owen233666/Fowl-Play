@@ -275,7 +275,7 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.35F;
     }
 }

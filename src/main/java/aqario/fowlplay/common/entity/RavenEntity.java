@@ -156,7 +156,7 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.5F;
     }
 

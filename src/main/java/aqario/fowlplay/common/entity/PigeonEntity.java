@@ -141,7 +141,7 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.45F;
     }
 

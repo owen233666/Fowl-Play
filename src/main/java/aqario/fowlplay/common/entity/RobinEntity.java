@@ -130,7 +130,7 @@ public class RobinEntity extends FlyingBirdEntity implements VariantHolder<Robin
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.45F;
     }
 

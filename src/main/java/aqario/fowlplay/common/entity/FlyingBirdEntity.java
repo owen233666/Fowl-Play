@@ -184,7 +184,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     public boolean canStartFlying() {
-        return !this.isFlying() && !this.isFloating() && this.getHealth() >= MIN_HEALTH_TO_FLY;
+        return !this.isFlying() && !this.isBelowWaterline() && this.getHealth() >= MIN_HEALTH_TO_FLY;
     }
 
     public boolean shouldStopFlying() {
@@ -194,7 +194,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if (this.timeFlying < MIN_FLIGHT_TIME) {
             return false;
         }
-        return this.isOnGround() || this.isFloating() || this.getHealth() < MIN_HEALTH_TO_FLY;
+        return this.isOnGround() || this.isBelowWaterline() || this.getHealth() < MIN_HEALTH_TO_FLY;
     }
 
     public void startFlying() {
@@ -264,7 +264,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
         if (this.isLogicalSideForUpdatingMovement()) {
             if (this.isTouchingWater()) {
-                this.updateVelocity(this.isSubmergedInWater() ? 0.02F : this.getMovementSpeed(), movementInput);
+                this.updateVelocity(this.isBelowWaterline() ? 0.02F : this.getMovementSpeed(), movementInput);
                 this.move(MovementType.SELF, this.getVelocity());
                 this.setVelocity(this.getVelocity().multiply(0.8F));
             }

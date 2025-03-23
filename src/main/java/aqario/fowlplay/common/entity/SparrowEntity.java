@@ -130,7 +130,7 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     }
 
     @Override
-    public float getMaxWaterHeight() {
+    public float getWaterline() {
         return 0.45F;
     }
 
