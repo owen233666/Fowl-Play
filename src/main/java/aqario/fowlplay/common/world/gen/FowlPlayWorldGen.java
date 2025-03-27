@@ -151,6 +151,12 @@ public final class FowlPlayWorldGen {
             1,
             0.07
         );
+        addSpawnCost(
+            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_GULLS),
+            FowlPlayEntityType.GULL,
+            1,
+            0.07
+        );
     }
 
     public static void addSpawnCost(
@@ -168,8 +174,8 @@ public final class FowlPlayWorldGen {
         Preconditions.checkState(Registries.ENTITY_TYPE.getKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
 
         // Add a new spawn cost to the chosen biome
-        BiomeModifications.create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-            context.getSpawnSettings().setSpawnCost(entityType, mass, gravityLimit);
-        });
+        BiomeModifications.create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context ->
+            context.getSpawnSettings().setSpawnCost(entityType, mass, gravityLimit)
+        );
     }
 }

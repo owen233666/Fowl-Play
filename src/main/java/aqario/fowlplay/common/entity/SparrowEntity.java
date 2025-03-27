@@ -80,7 +80,7 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
 
     @Override
     public int getFlapFrequency() {
-        return 2;
+        return 1;
     }
 
     @Override

@@ -17,9 +17,6 @@ public class FowlPlayBlockTagGen extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup lookup) {
-        this.getOrCreateTagBuilder(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON)
-            .addOptionalTag(BlockTags.LEAVES)
-            .addOptionalTag(BlockTags.LOGS);
         this.getOrCreateTagBuilder(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
             .addOptionalTag(BlockTags.ICE)
             .addOptionalTag(BlockTags.SNOW);
@@ -29,6 +26,12 @@ public class FowlPlayBlockTagGen extends FabricTagProvider.BlockTagProvider {
             .addOptionalTag(BlockTags.SAND)
             .add(Blocks.POWDER_SNOW)
             .add(Blocks.SNOW_BLOCK);
+        this.getOrCreateTagBuilder(FowlPlayBlockTags.PERCHES)
+            .addOptionalTag(BlockTags.LEAVES)
+            .addOptionalTag(BlockTags.LOGS)
+            .addOptionalTag(BlockTags.WALLS)
+            .addOptionalTag(BlockTags.FENCES)
+            .addOptionalTag(BlockTags.FENCE_GATES);
         this.getOrCreateTagBuilder(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON)
             .addOptionalTag(BlockTags.DIRT)
             .addOptionalTag(BlockTags.SAND)

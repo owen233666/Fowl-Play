@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("deprecation")
 public class FowlPlayItemTagGen extends FabricTagProvider.ItemTagProvider {
     private static final Identifier WORM = Identifier.of("angling", "worm");
 

@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain;
+package aqario.fowlplay.common.util;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
@@ -76,7 +76,7 @@ public final class Birds {
     }
 
     public static boolean isPerching(BirdEntity entity) {
-        return entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PASSERINES_SPAWNABLE_ON);
+        return entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PERCHES);
     }
 
     public static boolean noFoodInRange(BirdEntity bird) {

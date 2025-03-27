@@ -11,7 +11,8 @@
     "PowderSnowBlockMixin",
     "SensorMixin",
     "SpawnGroupMixin",
-    "SpawnHelperMixin"
+    "SpawnHelperMixin",
+    "WallBlockMixin"
   ],
   "client": [
   ],

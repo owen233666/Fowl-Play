@@ -29,7 +29,7 @@ public class FowlPlayConfig {
     // Blue Jay
 
     @SerialEntry
-    public int blueJayCallVolume = 10;
+    public int blueJayCallVolume = 9;
 
     // Cardinal
 
@@ -41,14 +41,14 @@ public class FowlPlayConfig {
     // Chickadee
 
     @SerialEntry
-    public int chickadeeCallVolume = 8;
+    public int chickadeeCallVolume = 6;
     @SerialEntry
-    public int chickadeeSongVolume = 8;
+    public int chickadeeSongVolume = 6;
 
     // Duck
 
     @SerialEntry
-    public int duckCallVolume = 4;
+    public int duckCallVolume = 3;
 
     // Gull
 
@@ -60,7 +60,7 @@ public class FowlPlayConfig {
     // Hawk
 
     @SerialEntry
-    public int hawkCallVolume = 12;
+    public int hawkCallVolume = 10;
 
     // Penguin
 
@@ -77,21 +77,21 @@ public class FowlPlayConfig {
     // Raven
 
     @SerialEntry
-    public int ravenCallVolume = 10;
+    public int ravenCallVolume = 9;
 
     // Robin
 
     @SerialEntry
     public int robinCallVolume = 3;
     @SerialEntry
-    public int robinSongVolume = 8;
+    public int robinSongVolume = 6;
 
     // Sparrow
 
     @SerialEntry
     public int sparrowCallVolume = 3;
     @SerialEntry
-    public int sparrowSongVolume = 7;
+    public int sparrowSongVolume = 6;
 
     // Spawning
 
@@ -127,18 +127,18 @@ public class FowlPlayConfig {
     @SerialEntry
     public int duckSpawnWeight = 4;
     @SerialEntry
-    public int duckMinGroupSize = 12;
+    public int duckMinGroupSize = 10;
     @SerialEntry
-    public int duckMaxGroupSize = 18;
+    public int duckMaxGroupSize = 15;
 
     // Gull
 
     @SerialEntry
     public int gullSpawnWeight = 5;
     @SerialEntry
-    public int gullMinGroupSize = 10;
+    public int gullMinGroupSize = 5;
     @SerialEntry
-    public int gullMaxGroupSize = 16;
+    public int gullMaxGroupSize = 12;
 
     // Hawk
 
@@ -147,7 +147,7 @@ public class FowlPlayConfig {
     @SerialEntry
     public int hawkMinGroupSize = 1;
     @SerialEntry
-    public int hawkMaxGroupSize = 2;
+    public int hawkMaxGroupSize = 1;
 
     // Penguin
 
