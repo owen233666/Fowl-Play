@@ -1,16 +1,11 @@
 name: Bug Report
 description: Report a bug or crash
-title: "[Summarize the issue]"
 labels: [ "bug" ]
 body:
   - type: markdown
     attributes:
       value: |
-        <br/>
-        
         **Consider the following before continuing:**
-        
-        <br/>
         
         1. Check that the problem isn't answered in the "Important Information" section of the mod description.
         2. If you are using Forge or NeoForge, make sure this isn't a problem with Sinytra Connector.
