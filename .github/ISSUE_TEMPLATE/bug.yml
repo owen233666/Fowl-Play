@@ -15,21 +15,13 @@ body:
   - type: dropdown
     id: version
     attributes:
-      label: Minecraft Version
+      label: Version and loader
       options:
-        - 1.21.1 Fabric
-        - 1.21.1 NeoForge
-        - 1.20.1 Fabric
-        - 1.20.1 Forge
+        - 1.21.1 - Fabric
+        - 1.21.1 - NeoForge
+        - 1.20.1 - Fabric
+        - 1.20.1 - Forge
       default: 0
-    validations:
-      required: true
-
-  - type: input
-    id: mod-version
-    attributes:
-      label: Fowl Play Version
-      placeholder: ex. fowlplay-1.0.0-beta.8+1.21.1
     validations:
       required: true
 
@@ -38,8 +30,10 @@ body:
     attributes:
       label: "Issue Description"
       description: "Describe the problem you are experiencing"
-      placeholder: "Clearly describe what the problem is, and how to reproduce it (if possible)
-      \nInclude a log if the issue causes a crash (found in .minecraft/logs)
-      \nScreenshots and videos are very helpful!"
+      placeholder: "
+      - Clearly describe what the problem is, and how to reproduce it (if possible)\n
+      - Include a log if the issue causes a crash (found in .minecraft/logs)\n
+      - Screenshots and videos are very helpful!
+      "
     validations:
       required: true
