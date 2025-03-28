@@ -1,5 +1,6 @@
 package aqario.fowlplay.mixin;
 
+import aqario.fowlplay.common.util.Birds;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,7 +29,7 @@ public abstract class HorizontalConnectingBlockMixin {
         if (block instanceof FenceBlock
             && context instanceof EntityShapeContext entityContext
             && entityContext.getEntity() != null
-            && BirdUtil.notFlightless(entityContext.getEntity())
+            && Birds.notFlightless(entityContext.getEntity())
         ) {
             VoxelShape originalShape = this.collisionShapes[this.getShapeIndex(state)];
             if (originalShape.getMax(Direction.Axis.Y) > 1) {

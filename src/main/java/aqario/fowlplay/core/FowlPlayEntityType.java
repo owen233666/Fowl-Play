@@ -300,7 +300,6 @@ public final class FowlPlayEntityType {
             1,
             0.07
         );
-
         addSpawnCost(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_GULLS),
             FowlPlayEntityType.GULL,
