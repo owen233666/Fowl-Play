@@ -28,8 +28,7 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: "Issue Description"
-      description: "Describe the problem you are experiencing"
+      label: "Add a description"
       placeholder: "
       - Clearly describe what the problem is, and how to reproduce it (if possible)\n
       - Include a log if the issue causes a crash (found in .minecraft/logs)\n
