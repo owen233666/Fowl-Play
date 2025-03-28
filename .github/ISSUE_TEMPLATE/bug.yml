@@ -30,8 +30,8 @@ body:
     attributes:
       label: "Add a description"
       placeholder: "
-      - Clearly describe what the problem is, and how to reproduce it (if possible)\n
-      - Include a log if the issue causes a crash (found in .minecraft/logs)\n
+      - Clearly describe what the issue is and how to reproduce it (if possible)\n
+      - Include the latest log if the issue causes a crash (found in <instance>/logs/latest.log)\n
       - Screenshots and videos are very helpful!
       "
     validations:
