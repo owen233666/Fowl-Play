@@ -1,6 +1,6 @@
 package aqario.fowlplay.datagen;
 
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;

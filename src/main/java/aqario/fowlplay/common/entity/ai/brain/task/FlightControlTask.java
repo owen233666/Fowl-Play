@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
+import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.TaskTriggerer;

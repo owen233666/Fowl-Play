@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;

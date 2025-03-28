@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.brain.MemoryModuleType;

@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.tags;
+package aqario.fowlplay.core.tags;
 
 import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.item.Item;

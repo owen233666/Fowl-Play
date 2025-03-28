@@ -1,9 +1,9 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
-import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import aqario.fowlplay.core.FowlPlaySoundEvents;
+import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
+import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
@@ -27,7 +27,7 @@ public class CardinalEntity extends FlyingBirdEntity {
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
 
-    protected CardinalEntity(EntityType<? extends BirdEntity> entityType, World world) {
+    public CardinalEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);

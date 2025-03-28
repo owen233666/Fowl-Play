@@ -2,9 +2,9 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
-import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
-import aqario.fowlplay.common.tags.FowlPlayItemTags;
+import aqario.fowlplay.core.FowlPlaySoundEvents;
+import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
+import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;

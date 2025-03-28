@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.registry;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.*;

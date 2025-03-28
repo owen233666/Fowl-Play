@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.sound;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.registry.Registries;

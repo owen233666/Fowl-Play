@@ -1,10 +1,10 @@
 package aqario.fowlplay.mixin;
 
 import aqario.fowlplay.common.entity.ChickenVariant;
-import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
-import aqario.fowlplay.common.registry.FowlPlayRegistries;
-import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
 import aqario.fowlplay.common.util.ChickenAnimationStates;
+import aqario.fowlplay.core.FowlPlayRegistries;
+import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;

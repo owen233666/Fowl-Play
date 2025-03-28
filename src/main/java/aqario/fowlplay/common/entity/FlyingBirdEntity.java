@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;

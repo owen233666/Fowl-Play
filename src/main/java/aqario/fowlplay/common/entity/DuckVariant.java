@@ -1,8 +1,8 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.FowlPlay;
-import aqario.fowlplay.common.registry.FowlPlayRegistries;
-import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
+import aqario.fowlplay.core.FowlPlayRegistries;
+import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;

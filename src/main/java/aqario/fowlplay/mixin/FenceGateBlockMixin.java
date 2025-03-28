@@ -1,6 +1,5 @@
 package aqario.fowlplay.mixin;
 
-import aqario.fowlplay.common.util.Birds;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,7 +30,7 @@ public abstract class FenceGateBlockMixin extends HorizontalFacingBlock {
     private void fowlplay$lowerFenceGateHeight(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
         if (context instanceof EntityShapeContext entityContext
             && entityContext.getEntity() != null
-            && Birds.notFlightless(entityContext.getEntity())
+            && BirdUtil.notFlightless(entityContext.getEntity())
         ) {
             switch (state.get(FACING).getAxis()) {
                 case X -> cir.setReturnValue(VoxelShapes.cuboid(

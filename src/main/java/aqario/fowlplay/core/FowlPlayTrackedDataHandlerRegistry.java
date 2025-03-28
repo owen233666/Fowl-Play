@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.data;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.entity.*;
 import net.minecraft.entity.data.TrackedDataHandler;

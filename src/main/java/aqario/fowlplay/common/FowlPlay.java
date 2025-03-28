@@ -2,15 +2,11 @@ package aqario.fowlplay.common;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayActivities;
-import aqario.fowlplay.common.entity.ai.brain.FowlPlayMemoryModuleType;
-import aqario.fowlplay.common.entity.ai.brain.sensor.FowlPlaySensorType;
-import aqario.fowlplay.common.entity.data.FowlPlayTrackedDataHandlerRegistry;
-import aqario.fowlplay.common.item.FowlPlayItems;
-import aqario.fowlplay.common.registry.FowlPlayRegistries;
-import aqario.fowlplay.common.registry.FowlPlayRegistryKeys;
-import aqario.fowlplay.common.sound.FowlPlaySoundEvents;
-import aqario.fowlplay.common.world.gen.*;
+import aqario.fowlplay.common.world.gen.GullSpawner;
+import aqario.fowlplay.common.world.gen.HawkSpawner;
+import aqario.fowlplay.common.world.gen.PigeonSpawner;
+import aqario.fowlplay.common.world.gen.SparrowSpawner;
+import aqario.fowlplay.core.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,7 +41,6 @@ public class FowlPlay implements ModInitializer {
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();
-        FowlPlayWorldGen.init();
 
         GullSpawner gullSpawner = new GullSpawner();
         HawkSpawner hawkSpawner = new HawkSpawner();

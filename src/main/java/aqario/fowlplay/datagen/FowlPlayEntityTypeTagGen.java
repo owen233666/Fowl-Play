@@ -1,8 +1,8 @@
 package aqario.fowlplay.datagen;
 
 import aqario.fowlplay.common.FowlPlay;
-import aqario.fowlplay.common.entity.FowlPlayEntityType;
-import aqario.fowlplay.common.tags.FowlPlayEntityTypeTags;
+import aqario.fowlplay.core.FowlPlayEntityType;
+import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.entity.EntityType;
