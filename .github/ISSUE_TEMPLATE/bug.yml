@@ -1,12 +1,13 @@
 name: Bug Report
 description: Report a bug or crash
-title: "Brief description of the issue"
+title: "[Summarize the issue]"
 labels: [ "bug" ]
 body:
   - type: markdown
     attributes:
       value: |
-        ## Consider the following before continuing:
+        <br/>
+        **Consider the following before continuing:**
 
         1. Check that the problem isn't answered in the "Important Information" section of the mod description.
         2. If you are using Forge or NeoForge, make sure this isn't a problem with Sinytra Connector.
@@ -38,8 +39,9 @@ body:
     id: description
     attributes:
       label: "Issue Description"
-      description: "Clearly describe what the problem is, and how to reproduce it (if possible).
-      \nInclude a log if the issue causes a crash (found in .minecraft/logs). 
+      description: "Describe the problem you are experiencing"
+      placeholder: "Clearly describe what the problem is, and how to reproduce it (if possible)
+      \nInclude a log if the issue causes a crash (found in .minecraft/logs)
       \nScreenshots and videos are very helpful!"
     validations:
       required: true
