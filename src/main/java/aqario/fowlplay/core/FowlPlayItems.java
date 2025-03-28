@@ -1,6 +1,5 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.FowlPlay;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;

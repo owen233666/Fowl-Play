@@ -1,8 +1,8 @@
 package aqario.fowlplay.client.model;
 
 import aqario.fowlplay.client.render.animation.SparrowEntityAnimations;
-import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.SparrowEntity;
+import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;

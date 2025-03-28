@@ -1,6 +1,5 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;
 import com.mojang.serialization.Codec;
 import net.minecraft.entity.ai.brain.MemoryModuleType;

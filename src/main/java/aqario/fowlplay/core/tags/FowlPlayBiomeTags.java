@@ -1,6 +1,6 @@
 package aqario.fowlplay.core.tags;
 
-import aqario.fowlplay.common.FowlPlay;
+import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;

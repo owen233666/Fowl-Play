@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.config;
 
-import aqario.fowlplay.common.FowlPlay;
+import aqario.fowlplay.core.FowlPlay;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 public class FowlPlayConfig {

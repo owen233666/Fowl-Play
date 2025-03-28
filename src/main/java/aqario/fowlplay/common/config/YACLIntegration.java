@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.config;
 
-import aqario.fowlplay.common.FowlPlay;
+import aqario.fowlplay.core.FowlPlay;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;

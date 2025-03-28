@@ -1,4 +1,4 @@
-package aqario.fowlplay.common;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
@@ -6,7 +6,6 @@ import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
-import aqario.fowlplay.core.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;

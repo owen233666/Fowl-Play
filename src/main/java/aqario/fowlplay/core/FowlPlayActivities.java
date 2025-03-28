@@ -1,6 +1,5 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.FowlPlay;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

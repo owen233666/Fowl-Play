@@ -1,6 +1,5 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.world.gen.CustomSpawnLocations;

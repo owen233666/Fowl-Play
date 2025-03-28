@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
