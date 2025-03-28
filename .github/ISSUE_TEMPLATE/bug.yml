@@ -1,0 +1,45 @@
+name: Bug Report
+description: Report a bug or crash
+title: "Brief description of the issue"
+labels: [ "bug" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Consider the following before continuing:
+
+        1. Check that the problem isn't answered in the "Important Information" section of the mod description.
+        2. If you are using Forge or NeoForge, make sure this isn't a problem with Sinytra Connector.
+        3. Use the search function to confirm there isn't an existing issue.
+        4. Make sure you are on the latest version of the mod.
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Minecraft Version
+      options:
+        - 1.21.1 Fabric
+        - 1.21.1 NeoForge
+        - 1.20.1 Fabric
+        - 1.20.1 Forge
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Fowl Play Version
+      placeholder: ex. fowlplay-1.0.0-beta.8+1.21.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Issue Description"
+      description: "Clearly describe what the problem is, and how to reproduce it (if possible).
+      \nInclude a log if the issue causes a crash (found in .minecraft/logs). 
+      \nScreenshots and videos are very helpful!"
+    validations:
+      required: true
