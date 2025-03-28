@@ -66,6 +66,10 @@ fabricApi {
     configureDataGeneration()
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accesswidener")
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.property "loader_version", project.loader_version
