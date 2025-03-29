@@ -29,7 +29,7 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     public final AnimationState flapState = new AnimationState();
     public final AnimationState floatState = new AnimationState();
     private int timeSinceLastFlap = this.getFlapFrequency();
-    private static final int FLAP_DURATION = 6;
+    private static final int FLAP_DURATION = 8;
     private int flapTime = 0;
 
     public SparrowEntity(EntityType<? extends SparrowEntity> entityType, World world) {
@@ -88,11 +88,11 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
         if (this.getWorld().isClient()) {
             this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
             if (this.isFlying()) {
-                if (this.timeSinceLastFlap > this.getFlapFrequency()) {
+                if (this.timeSinceLastFlap >= this.getFlapFrequency()) {
                     this.timeSinceLastFlap = 0;
                     this.flapTime++;
                 }
-                else if (this.flapTime > 0 && this.flapTime < FLAP_DURATION) {
+                else if (this.flapTime >= 0 && this.flapTime < FLAP_DURATION) {
                     this.flapTime++;
                     this.glideState.stop();
                     this.flapState.startIfNotRunning(this.age);
