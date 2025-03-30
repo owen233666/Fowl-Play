@@ -45,6 +45,11 @@ public class FowlPlayConfig {
     @SerialEntry
     public int chickadeeSongVolume = 6;
 
+    // Crow
+
+    @SerialEntry
+    public int crowCallVolume = 7;
+
     // Duck
 
     @SerialEntry
@@ -121,6 +126,15 @@ public class FowlPlayConfig {
     public int chickadeeMinGroupSize = 1;
     @SerialEntry
     public int chickadeeMaxGroupSize = 3;
+
+    // Crow
+
+    @SerialEntry
+    public int crowSpawnWeight = 3;
+    @SerialEntry
+    public int crowMinGroupSize = 3;
+    @SerialEntry
+    public int crowMaxGroupSize = 6;
 
     // Duck
 

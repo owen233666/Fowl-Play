@@ -179,6 +179,18 @@ public class YACLIntegration {
                         val -> config.chickadeeMaxGroupSize = val
                     ))
                     .group(createSpawningGroup(
+                        "entity.fowlplay.crow",
+                        defaults.crowSpawnWeight,
+                        () -> config.crowSpawnWeight,
+                        val -> config.crowSpawnWeight = val,
+                        defaults.crowMinGroupSize,
+                        () -> config.crowMinGroupSize,
+                        val -> config.crowMinGroupSize = val,
+                        defaults.crowMaxGroupSize,
+                        () -> config.crowMaxGroupSize,
+                        val -> config.crowMaxGroupSize = val
+                    ))
+                    .group(createSpawningGroup(
                         "entity.fowlplay.duck",
                         defaults.duckSpawnWeight,
                         () -> config.duckSpawnWeight,

@@ -70,6 +70,22 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.4f)
     );
 
+    public static final EntityType<CrowEntity> CROW = register("crow",
+        FabricEntityType.Builder.createMob(
+                CrowEntity::new,
+                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+                builder -> builder
+                    .defaultAttributes(CrowEntity::createCrowAttributes)
+                    .spawnRestriction(
+                        CustomSpawnLocations.GROUND,
+                        Heightmap.Type.MOTION_BLOCKING,
+                        FlyingBirdEntity::canSpawnPasserines
+                    )
+            )
+            .dimensions(0.5f, 0.6f)
+            .eyeHeight(0.55f)
+    );
+
     public static final EntityType<DuckEntity> DUCK = register("duck",
         FabricEntityType.Builder.createMob(
                 DuckEntity::new,
@@ -227,6 +243,14 @@ public final class FowlPlayEntityType {
             FowlPlayConfig.getInstance().chickadeeSpawnWeight,
             FowlPlayConfig.getInstance().chickadeeMinGroupSize,
             FowlPlayConfig.getInstance().chickadeeMaxGroupSize
+        );
+        BiomeModifications.addSpawn(
+            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_CROWS),
+            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            FowlPlayEntityType.CROW,
+            FowlPlayConfig.getInstance().crowSpawnWeight,
+            FowlPlayConfig.getInstance().crowMinGroupSize,
+            FowlPlayConfig.getInstance().crowMaxGroupSize
         );
         BiomeModifications.addSpawn(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_DUCKS),

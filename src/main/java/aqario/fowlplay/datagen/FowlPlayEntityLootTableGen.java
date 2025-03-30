@@ -32,6 +32,7 @@ public class FowlPlayEntityLootTableGen extends SimpleFabricLootTableProvider {
         this.registerBird(exporter, FowlPlayEntityType.BLUE_JAY);
         this.registerBird(exporter, FowlPlayEntityType.CARDINAL);
         this.registerBird(exporter, FowlPlayEntityType.CHICKADEE);
+        this.registerBird(exporter, FowlPlayEntityType.CROW);
         this.registerBird(exporter, FowlPlayEntityType.DUCK);
         this.registerBird(exporter, FowlPlayEntityType.GULL);
         this.registerBird(exporter, FowlPlayEntityType.HAWK);

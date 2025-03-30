@@ -44,6 +44,15 @@ public class FowlPlayItemTagGen extends FabricTagProvider.ItemTagProvider {
             .add(Items.SWEET_BERRIES)
             .add(Items.TORCHFLOWER_SEEDS)
             .add(Items.WHEAT_SEEDS);
+        this.getOrCreateTagBuilder(FowlPlayItemTags.CROW_FOOD)
+            .addOptionalTag(ConventionalItemTags.FOODS)
+            .add(Items.BEETROOT_SEEDS)
+            .add(Items.EGG)
+            .add(Items.MELON_SEEDS)
+            .add(Items.PUMPKIN_SEEDS)
+            .add(Items.TORCHFLOWER_SEEDS)
+            .add(Items.TURTLE_EGG)
+            .add(Items.WHEAT_SEEDS);
         this.getOrCreateTagBuilder(FowlPlayItemTags.DUCK_FOOD)
             .add(Items.BEETROOT_SEEDS)
             .add(Items.BREAD)

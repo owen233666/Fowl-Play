@@ -10,6 +10,7 @@ public final class FowlPlayBiomeTags {
     public static final TagKey<Biome> SPAWNS_BLUE_JAYS = create("spawns_blue_jays");
     public static final TagKey<Biome> SPAWNS_CARDINALS = create("spawns_cardinals");
     public static final TagKey<Biome> SPAWNS_CHICKADEES = create("spawns_chickadees");
+    public static final TagKey<Biome> SPAWNS_CROWS = create("spawns_crows");
     public static final TagKey<Biome> SPAWNS_DUCKS = create("spawns_ducks");
     public static final TagKey<Biome> SPAWNS_GULLS = create("spawns_gulls");
     public static final TagKey<Biome> SPAWNS_HAWKS = create("spawns_hawks");

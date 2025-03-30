@@ -49,6 +49,7 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(FowlPlayEntityType.BLUE_JAY)
             .add(FowlPlayEntityType.CARDINAL)
             .add(FowlPlayEntityType.CHICKADEE)
+            .add(FowlPlayEntityType.CROW)
             .add(FowlPlayEntityType.RAVEN)
             .add(FowlPlayEntityType.ROBIN)
             .add(FowlPlayEntityType.SPARROW);
@@ -69,6 +70,9 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(EntityType.PLAYER)
             .add(FowlPlayEntityType.HAWK);
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.CHICKADEE_AVOIDS)
+            .add(EntityType.PLAYER)
+            .add(FowlPlayEntityType.HAWK);
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.CROW_AVOIDS)
             .add(EntityType.PLAYER)
             .add(FowlPlayEntityType.HAWK);
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.DUCK_AVOIDS)

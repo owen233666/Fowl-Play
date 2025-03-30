@@ -18,6 +18,7 @@ public class FowlPlayModelGen extends FabricModelProvider {
         this.registerSpawnEgg(generator, FowlPlayItems.BLUE_JAY_SPAWN_EGG);
         this.registerSpawnEgg(generator, FowlPlayItems.CARDINAL_SPAWN_EGG);
         this.registerSpawnEgg(generator, FowlPlayItems.CHICKADEE_SPAWN_EGG);
+        this.registerSpawnEgg(generator, FowlPlayItems.CROW_SPAWN_EGG);
         this.registerSpawnEgg(generator, FowlPlayItems.DUCK_SPAWN_EGG);
         this.registerSpawnEgg(generator, FowlPlayItems.GULL_SPAWN_EGG);
         this.registerSpawnEgg(generator, FowlPlayItems.HAWK_SPAWN_EGG);
