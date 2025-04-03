@@ -68,8 +68,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     @SuppressWarnings("unused")
     public static boolean canSpawnWaterfowl(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY()
-            && (world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.WATERFOWL_SPAWNABLE_ON)
-            || world.getFluidState(pos.down()).isIn(FluidTags.WATER));
+            && world.getFluidState(pos.down()).isIn(FluidTags.WATER);
     }
 
     @Override

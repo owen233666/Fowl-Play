@@ -19,7 +19,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -48,9 +47,9 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        this.setYaw(MathHelper.wrapDegrees(world.getRandom().nextInt(360)));
+        this.setYaw(world.getRandom().nextFloat() * 360.0F);
         this.setBodyYaw(this.getYaw());
-        this.setHeadYaw(MathHelper.wrapDegrees(this.getYaw() + world.getRandom().nextInt(31) - 15));
+        this.setHeadYaw(this.getYaw());
         if (this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup) {
             this.setAmbient(true);
         }

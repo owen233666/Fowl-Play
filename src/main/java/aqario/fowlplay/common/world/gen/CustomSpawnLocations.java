@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CustomSpawnLocations {
     SpawnLocation GROUND = new SpawnLocation() {
+        @Override
         public boolean isSpawnPositionOk(WorldView worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
             return spawnsOnGround(worldView, spawnPos, entityType);
         }
@@ -24,8 +25,8 @@ public interface CustomSpawnLocations {
     };
     SpawnLocation SEMIAQUATIC = new SpawnLocation() {
         @Override
-        public boolean isSpawnPositionOk(WorldView worldView, BlockPos blockPos, @Nullable EntityType<?> entityType) {
-            return spawnsInWater(worldView, blockPos, entityType) || spawnsOnGround(worldView, blockPos, entityType);
+        public boolean isSpawnPositionOk(WorldView worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
+            return spawnsOnWater(worldView, spawnPos, entityType) || spawnsOnGround(worldView, spawnPos, entityType);
         }
 
         @Override
@@ -34,6 +35,7 @@ public interface CustomSpawnLocations {
             return world.getBlockState(groundPos).canPathfindThrough(NavigationType.LAND) ? groundPos : pos;
         }
     };
+    SpawnLocation AQUATIC = CustomSpawnLocations::spawnsOnWater;
 
     private static boolean isClearForSpawn(WorldView world, BlockPos pos, EntityType<?> entityType) {
         BlockState blockState = world.getBlockState(pos);
@@ -43,15 +45,16 @@ public interface CustomSpawnLocations {
     private static boolean spawnsOnGround(WorldView world, BlockPos spawnPos, EntityType<?> entityType) {
         if (entityType != null && world.getWorldBorder().contains(spawnPos)) {
             BlockPos headPos = spawnPos.up();
-            return isClearForSpawn(world, spawnPos, entityType) && isClearForSpawn(world, headPos, entityType);
+            return isClearForSpawn(world, spawnPos, entityType) && (entityType.getHeight() <= 1 || isClearForSpawn(world, headPos, entityType));
         }
         return false;
     }
 
-    private static boolean spawnsInWater(WorldView world, BlockPos pos, EntityType<?> entityType) {
-        if (entityType != null && world.getWorldBorder().contains(pos)) {
-            BlockPos headPos = pos.up();
-            return world.getFluidState(pos).isIn(FluidTags.WATER) && !world.getBlockState(headPos).isSolidBlock(world, headPos);
+    private static boolean spawnsOnWater(WorldView world, BlockPos spawnPos, EntityType<?> entityType) {
+        if (entityType != null && world.getWorldBorder().contains(spawnPos)) {
+            BlockPos headPos = spawnPos.up();
+            return world.getFluidState(spawnPos.down()).isIn(FluidTags.WATER)
+                && (entityType.getHeight() <= 1 || isClearForSpawn(world, headPos, entityType));
         }
         return false;
     }

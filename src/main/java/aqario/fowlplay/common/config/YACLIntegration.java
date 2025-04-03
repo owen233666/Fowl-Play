@@ -67,6 +67,15 @@ public class YACLIntegration {
                         val -> config.chickadeeSongVolume = val
                     ))
                     .group(createSoundGroup(
+                        "entity.fowlplay.crow",
+                        defaults.crowCallVolume,
+                        () -> config.crowCallVolume,
+                        val -> config.crowCallVolume = val,
+                        0,
+                        null,
+                        null
+                    ))
+                    .group(createSoundGroup(
                         "entity.fowlplay.duck",
                         defaults.duckCallVolume,
                         () -> config.duckCallVolume,

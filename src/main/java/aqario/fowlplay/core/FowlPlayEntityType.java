@@ -93,7 +93,7 @@ public final class FowlPlayEntityType {
                 builder -> builder
                     .defaultAttributes(DuckEntity::createDuckAttributes)
                     .spawnRestriction(
-                        CustomSpawnLocations.SEMIAQUATIC,
+                        CustomSpawnLocations.AQUATIC,
                         Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                         FlyingBirdEntity::canSpawnWaterfowl
                     )
@@ -317,12 +317,12 @@ public final class FowlPlayEntityType {
             FowlPlayConfig.getInstance().sparrowMaxGroupSize
         );
 
-        addSpawnCost(
-            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_DUCKS),
-            FowlPlayEntityType.DUCK,
-            1,
-            0.07
-        );
+//        addSpawnCost(
+//            BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_DUCKS),
+//            FowlPlayEntityType.DUCK,
+//            1,
+//            0.07
+//        );
         addSpawnCost(
             BiomeSelectors.tag(FowlPlayBiomeTags.SPAWNS_GULLS),
             FowlPlayEntityType.GULL,
