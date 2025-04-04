@@ -34,10 +34,14 @@
       "aqario.fowlplay.common.config.ModMenuIntegration"
     ]
   },
-  "mixins": [
-    "fowlplay.mixins.json"
-  ],
   "accessWidener": "fowlplay.accesswidener",
+  "mixins": [
+    "fowlplay.mixins.json",
+    {
+      "config": "fowlplay.client.mixins.json",
+      "environment": "client"
+    }
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": ">=1.21",
