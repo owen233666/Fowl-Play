@@ -103,7 +103,7 @@
   "entity.duck.hurt": {
     "sounds": [
       "fowlplay:mob/duck/call1",
-      "fowlplay:mob/duck/call1"
+      "fowlplay:mob/duck/call2"
     ],
     "subtitle": "subtitles.entity.duck.hurt"
   },

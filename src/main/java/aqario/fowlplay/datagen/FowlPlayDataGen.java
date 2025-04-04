@@ -13,5 +13,6 @@ public class FowlPlayDataGen implements DataGeneratorEntrypoint {
         pack.addProvider(FowlPlayEntityTypeTagGen::new);
         pack.addProvider(FowlPlayItemTagGen::new);
         pack.addProvider(FowlPlayModelGen::new);
+        pack.addProvider(FowlPlaySoundDefinitionsGen::new);
     }
 }

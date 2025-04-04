@@ -9,6 +9,7 @@ import aqario.fowlplay.common.world.gen.SparrowSpawner;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,8 @@ public class FowlPlay implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Loading Fowl Play");
+        ModContainer mod = FabricLoader.getInstance().getModContainer(ID).orElseThrow(() -> new IllegalStateException("Fowl Play mod container not found??"));
+        LOGGER.info("Loading {} {}", mod.getMetadata().getName(), mod.getMetadata().getVersion());
         if (isYACLLoaded()) {
             FowlPlayConfig.load();
         }
