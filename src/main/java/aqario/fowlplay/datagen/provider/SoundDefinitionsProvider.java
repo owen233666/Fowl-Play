@@ -19,13 +19,11 @@ import java.util.function.Supplier;
 public abstract class SoundDefinitionsProvider implements DataProvider {
     private final FabricDataOutput output;
     private final String namespace;
-    private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
     private final Map<String, SoundDefinition> soundDefinitions = new LinkedHashMap<>();
 
     protected SoundDefinitionsProvider(FabricDataOutput output, String namespace, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
         this.output = output;
         this.namespace = namespace;
-        this.registryLookup = registryLookup;
     }
 
     public abstract void generateSounds();

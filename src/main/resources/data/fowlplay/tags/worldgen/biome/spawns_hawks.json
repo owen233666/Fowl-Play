@@ -33,6 +33,10 @@
       "required": false
     },
     {
+      "id": "#c:is_sparse_vegetation",
+      "required": false
+    },
+    {
       "id": "#c:is_sparse_vegetation/overworld",
       "required": false
     },

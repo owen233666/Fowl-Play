@@ -21,10 +21,6 @@
       "required": false
     },
     {
-      "id": "#natures_spirit:is_alpine",
-      "required": false
-    },
-    {
       "id": "#natures_spirit:is_autumn",
       "required": false
     },
@@ -38,10 +34,6 @@
     },
     {
       "id": "#natures_spirit:is_frontier",
-      "required": false
-    },
-    {
-      "id": "#natures_spirit:is_freezing",
       "required": false
     },
     {

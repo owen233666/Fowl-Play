@@ -7,6 +7,7 @@ public class FowlPlayDataGen implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator generator) {
         FabricDataGenerator.Pack pack = generator.createPack();
+        pack.addProvider(FowlPlayAdvancementGen::new);
         pack.addProvider(FowlPlayBiomeTagGen::new);
         pack.addProvider(FowlPlayBlockTagGen::new);
         pack.addProvider(FowlPlayEntityLootTableGen::new);
