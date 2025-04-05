@@ -65,7 +65,6 @@ public class PenguinEntity extends BirdEntity {
     private boolean songPlaying;
     @Nullable
     private BlockPos songSource;
-    private EntityPose lastPose;
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
@@ -181,7 +180,7 @@ public class PenguinEntity extends BirdEntity {
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(LAST_POSE_TICK, 0L);
+        builder.add(LAST_POSE_TICK, LAST_POSE_CHANGE_TICKS);
     }
 
     @Override
@@ -194,7 +193,7 @@ public class PenguinEntity extends BirdEntity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         long l = nbt.getLong("lastPoseTick");
-        if (l < 0L) {
+        if (l < LAST_POSE_CHANGE_TICKS) {
             this.setPose(EntityPose.SLIDING);
         }
 
@@ -212,6 +211,9 @@ public class PenguinEntity extends BirdEntity {
         if (this.getControllingPassenger() != null && this.isInsideWaterOrBubbleColumn()) {
             this.getControllingPassenger().stopRiding();
         }
+        if (this.isInsideWaterOrBubbleColumn() && !this.isSliding()) {
+            this.setSliding();
+        }
         if (this.getWorld().isClient()) {
             this.updateAnimations();
         }
@@ -221,8 +223,6 @@ public class PenguinEntity extends BirdEntity {
                 this.setMoveControl(this.isInsideWaterOrBubbleColumn());
             }
         }
-
-        this.lastPose = this.getPose();
 
         super.tick();
 
@@ -259,7 +259,6 @@ public class PenguinEntity extends BirdEntity {
         this.standingState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn() && !this.isSliding(), this.age);
 
         if (this.isInsideWaterOrBubbleColumn()) {
-            this.setSliding();
             this.standingState.stop();
             this.swimmingState.startIfNotRunning(this.age);
         }
@@ -344,7 +343,7 @@ public class PenguinEntity extends BirdEntity {
     public void setSliding() {
         this.setPose(EntityPose.SLIDING);
         this.emitGameEvent(GameEvent.ENTITY_ACTION);
-        this.setLastPoseTick(Math.min(LAST_POSE_CHANGE_TICKS, -1L * (this.getWorld().getTime() - SLIDING_TRANSITION_TICKS - 1L)));
+        this.setLastPoseTick(-Math.max(LAST_POSE_CHANGE_TICKS, this.getWorld().getTime() - SLIDING_TRANSITION_TICKS - 1L));
     }
 
     private void setLastPoseTick(long lastPoseTick) {
