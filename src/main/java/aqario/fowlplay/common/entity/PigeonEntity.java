@@ -369,20 +369,9 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
         return FowlPlayConfig.getInstance().pigeonSongVolume;
     }
 
-    @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_PARROT_EAT;
-    }
-
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getDeathSound() {
         return null;
     }
 

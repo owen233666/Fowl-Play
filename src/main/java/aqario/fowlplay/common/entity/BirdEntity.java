@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
+import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
@@ -10,6 +11,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.ItemStack;
@@ -18,7 +20,9 @@ import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -311,6 +315,28 @@ public abstract class BirdEntity extends AnimalEntity {
 
     protected float getSongVolume() {
         return 1.0F;
+    }
+
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return SoundEvents.ENTITY_PARROT_EAT;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return null;
+    }
+
+    @Override
+    public SoundCategory getSoundCategory() {
+        return FowlPlaySoundCategory.BIRDS.soundCategory;
     }
 
     @Override

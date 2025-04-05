@@ -12,7 +12,6 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
@@ -57,11 +56,6 @@ public class ChickadeeEntity extends FlyingBirdEntity {
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.CHICKADEE_AVOIDS);
-    }
-
-    @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override
@@ -144,12 +138,6 @@ public class ChickadeeEntity extends FlyingBirdEntity {
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return FowlPlaySoundEvents.ENTITY_CHICKADEE_HURT;
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getDeathSound() {
-        return null;
     }
 
     @Override

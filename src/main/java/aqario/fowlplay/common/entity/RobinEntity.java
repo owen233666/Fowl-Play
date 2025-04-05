@@ -16,7 +16,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.DebugInfoSender;
@@ -93,11 +92,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantHolder<Robin
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.ROBIN_AVOIDS);
-    }
-
-    @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_PARROT_EAT;
     }
 
     @Override
@@ -180,12 +174,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantHolder<Robin
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return FowlPlaySoundEvents.ENTITY_ROBIN_HURT;
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getDeathSound() {
-        return null;
     }
 
     @Override

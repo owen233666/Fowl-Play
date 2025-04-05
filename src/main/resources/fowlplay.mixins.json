@@ -10,6 +10,7 @@
     "LivingEntityMixin",
     "PowderSnowBlockMixin",
     "SensorMixin",
+    "SoundCategoryMixin",
     "SpawnGroupMixin",
     "SpawnHelperMixin",
     "WallBlockMixin"
