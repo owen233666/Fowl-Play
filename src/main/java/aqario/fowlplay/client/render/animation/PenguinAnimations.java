@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class PenguinEntityAnimations {
-    public static final Animation PENGUIN_IDLE = Animation.Builder.create(0f).looping()
+public class PenguinAnimations {
+    public static final Animation STANDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "body",
             new Transformation(
@@ -58,7 +58,7 @@ public class PenguinEntityAnimations {
         )
         .build();
 
-    public static final Animation PENGUIN_WALK = Animation.Builder.create(1f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "body",
             new Transformation(
@@ -142,7 +142,7 @@ public class PenguinEntityAnimations {
         )
         .build();
 
-    public static final Animation PENGUIN_SLIDE = Animation.Builder.create(0f)
+    public static final Animation SLIDING = Animation.Builder.create(0f)
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -236,7 +236,7 @@ public class PenguinEntityAnimations {
         )
         .build();
 
-    public static final Animation PENGUIN_SWIM = Animation.Builder.create(0.5f).looping()
+    public static final Animation SWIMMING = Animation.Builder.create(0.5f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -340,7 +340,7 @@ public class PenguinEntityAnimations {
             )
         ).build();
 
-    public static final Animation PENGUIN_DANCE = Animation.Builder.create(7.708343f).looping()
+    public static final Animation DANCING = Animation.Builder.create(7.708343f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(Transformation.Targets.TRANSLATE,

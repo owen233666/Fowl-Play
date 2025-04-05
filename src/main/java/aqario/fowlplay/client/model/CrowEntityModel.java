@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.CrowEntityAnimations;
+import aqario.fowlplay.client.render.animation.CrowAnimations;
 import aqario.fowlplay.common.entity.CrowEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
@@ -95,12 +95,12 @@ public class CrowEntityModel extends FlyingBirdEntityModel<CrowEntity> {
             this.rightWing.visible = true;
         }
         if (!crow.isFlying() && !crow.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(CrowEntityAnimations.CROW_WALK, limbAngle, limbDistance, 5F, 5F);
+            this.animateMovement(CrowAnimations.WALKING, limbAngle, limbDistance, 5F, 5F);
         }
-        this.updateAnimation(crow.idleState, CrowEntityAnimations.CROW_IDLE, ageInTicks);
-        this.updateAnimation(crow.floatState, CrowEntityAnimations.CROW_FLOAT, ageInTicks);
-        this.updateAnimation(crow.glideState, CrowEntityAnimations.CROW_GLIDE, ageInTicks);
-        this.updateAnimation(crow.flapState, CrowEntityAnimations.CROW_FLAP, ageInTicks);
+        this.updateAnimation(crow.standingState, CrowAnimations.STANDING, ageInTicks);
+        this.updateAnimation(crow.floatingState, CrowAnimations.FLOATING, ageInTicks);
+        this.updateAnimation(crow.glidingState, CrowAnimations.GLIDING, ageInTicks);
+        this.updateAnimation(crow.flappingState, CrowAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

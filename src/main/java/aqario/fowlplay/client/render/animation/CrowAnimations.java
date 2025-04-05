@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class CrowEntityAnimations {
-    public static final Animation CROW_IDLE = Animation.Builder.create(0f).looping()
+public class CrowAnimations {
+    public static final Animation STANDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "left_wing",
             new Transformation(
@@ -114,7 +114,7 @@ public class CrowEntityAnimations {
         )
         .build();
 
-    public static final Animation CROW_WALK = Animation.Builder.create(1f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -233,7 +233,7 @@ public class CrowEntityAnimations {
         )
         .build();
 
-    public static final Animation CROW_FLOAT = Animation.Builder.create(0f).looping()
+    public static final Animation FLOATING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "neck",
             new Transformation(
@@ -376,7 +376,7 @@ public class CrowEntityAnimations {
         )
         .build();
 
-    public static final Animation CROW_GLIDE = Animation.Builder.create(0f).looping()
+    public static final Animation GLIDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -512,7 +512,7 @@ public class CrowEntityAnimations {
         )
         .build();
 
-    public static final Animation CROW_FLAP = Animation.Builder.create(0.3433333f).looping()
+    public static final Animation FLAPPING = Animation.Builder.create(0.3433333f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(

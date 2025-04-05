@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.ChickadeeEntityAnimations;
+import aqario.fowlplay.client.render.animation.ChickadeeAnimations;
 import aqario.fowlplay.common.entity.ChickadeeEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
@@ -91,12 +91,12 @@ public class ChickadeeEntityModel extends FlyingBirdEntityModel<ChickadeeEntity>
             this.rightWing.visible = true;
         }
         if (!chickadee.isFlying() && !chickadee.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(ChickadeeEntityAnimations.CHICKADEE_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(ChickadeeAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
-        this.updateAnimation(chickadee.idleState, ChickadeeEntityAnimations.CHICKADEE_IDLE, ageInTicks);
-        this.updateAnimation(chickadee.floatState, ChickadeeEntityAnimations.CHICKADEE_FLOAT, ageInTicks);
-        this.updateAnimation(chickadee.glideState, ChickadeeEntityAnimations.CHICKADEE_GLIDE, ageInTicks);
-        this.updateAnimation(chickadee.flapState, ChickadeeEntityAnimations.CHICKADEE_FLAP, ageInTicks);
+        this.updateAnimation(chickadee.standingState, ChickadeeAnimations.STANDING, ageInTicks);
+        this.updateAnimation(chickadee.floatingState, ChickadeeAnimations.FLOATING, ageInTicks);
+        this.updateAnimation(chickadee.glidingState, ChickadeeAnimations.GLIDING, ageInTicks);
+        this.updateAnimation(chickadee.flappingState, ChickadeeAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

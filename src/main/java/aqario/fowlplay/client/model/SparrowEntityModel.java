@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.SparrowEntityAnimations;
+import aqario.fowlplay.client.render.animation.SparrowAnimations;
 import aqario.fowlplay.common.entity.SparrowEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
@@ -78,7 +78,7 @@ public class SparrowEntityModel extends FlyingBirdEntityModel<SparrowEntity> {
             this.root.pitch = sparrow.getPitch(tickDelta) * (float) (Math.PI / 180.0);
             this.root.roll = sparrow.getRoll(tickDelta) * (float) (Math.PI / 180.0);
         }
-        if (sparrow.isFlying() && sparrow.flapState.isRunning()) {
+        if (sparrow.isFlying() && sparrow.flappingState.isRunning()) {
             this.leftWingOpen.visible = true;
             this.rightWingOpen.visible = true;
             this.leftWing.visible = false;
@@ -91,12 +91,12 @@ public class SparrowEntityModel extends FlyingBirdEntityModel<SparrowEntity> {
             this.rightWing.visible = true;
         }
         if (!sparrow.isFlying() && !sparrow.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(SparrowEntityAnimations.SPARROW_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(SparrowAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
-        this.updateAnimation(sparrow.idleState, SparrowEntityAnimations.SPARROW_IDLE, ageInTicks);
-        this.updateAnimation(sparrow.floatState, SparrowEntityAnimations.SPARROW_FLOAT, ageInTicks);
-        this.updateAnimation(sparrow.glideState, SparrowEntityAnimations.SPARROW_GLIDE, ageInTicks);
-        this.updateAnimation(sparrow.flapState, SparrowEntityAnimations.SPARROW_FLAP, ageInTicks);
+        this.updateAnimation(sparrow.standingState, SparrowAnimations.STANDING, ageInTicks);
+        this.updateAnimation(sparrow.floatingState, SparrowAnimations.FLOATING, ageInTicks);
+        this.updateAnimation(sparrow.glidingState, SparrowAnimations.GLIDING, ageInTicks);
+        this.updateAnimation(sparrow.flappingState, SparrowAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

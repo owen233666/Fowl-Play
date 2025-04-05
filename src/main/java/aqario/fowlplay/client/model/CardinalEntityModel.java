@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.CardinalEntityAnimations;
+import aqario.fowlplay.client.render.animation.CardinalAnimations;
 import aqario.fowlplay.common.entity.CardinalEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
@@ -95,12 +95,12 @@ public class CardinalEntityModel extends FlyingBirdEntityModel<CardinalEntity> {
             this.rightWing.visible = true;
         }
         if (!cardinal.isFlying() && !cardinal.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(CardinalEntityAnimations.CARDINAL_WALK, limbAngle, limbDistance, 6F, 6F);
+            this.animateMovement(CardinalAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
-        this.updateAnimation(cardinal.idleState, CardinalEntityAnimations.CARDINAL_IDLE, ageInTicks);
-        this.updateAnimation(cardinal.floatState, CardinalEntityAnimations.CARDINAL_FLOAT, ageInTicks);
-        this.updateAnimation(cardinal.glideState, CardinalEntityAnimations.CARDINAL_GLIDE, ageInTicks);
-        this.updateAnimation(cardinal.flapState, CardinalEntityAnimations.CARDINAL_FLAP, ageInTicks);
+        this.updateAnimation(cardinal.standingState, CardinalAnimations.STANDING, ageInTicks);
+        this.updateAnimation(cardinal.floatingState, CardinalAnimations.FLOATING, ageInTicks);
+        this.updateAnimation(cardinal.glidingState, CardinalAnimations.GLIDING, ageInTicks);
+        this.updateAnimation(cardinal.flappingState, CardinalAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

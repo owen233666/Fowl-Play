@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class PigeonEntityAnimations {
-    public static final Animation PIGEON_IDLE = Animation.Builder.create(1.0F).looping()
+public class PigeonAnimations {
+    public static final Animation STANDING = Animation.Builder.create(1.0F).looping()
         .addBoneAnimation(
             "neck",
             new Transformation(
@@ -71,7 +71,7 @@ public class PigeonEntityAnimations {
             )
         ).build();
 
-    public static final Animation PIGEON_WALK = Animation.Builder.create(1.0f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1.0f).looping()
         .addBoneAnimation(
             "body",
             new Transformation(
@@ -183,10 +183,10 @@ public class PigeonEntityAnimations {
         )
         .build();
 
-    public static final Animation PIGEON_FLOAT = Animation.Builder.create(0f).looping()
+    public static final Animation FLOATING = Animation.Builder.create(0f).looping()
         .build();
 
-    public static final Animation PIGEON_GLIDE = Animation.Builder.create(0f).looping()
+    public static final Animation GLIDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -308,7 +308,7 @@ public class PigeonEntityAnimations {
         )
         .build();
 
-    public static final Animation PIGEON_FLAP = Animation.Builder.create(0.25f).looping()
+    public static final Animation FLAPPING = Animation.Builder.create(0.25f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -473,7 +473,7 @@ public class PigeonEntityAnimations {
         )
         .build();
 
-    public static final Animation PIGEON_SIT = Animation.Builder.create(0f).looping()
+    public static final Animation SITTING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(

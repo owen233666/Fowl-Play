@@ -57,11 +57,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
         PigeonEntity.class,
         FowlPlayTrackedDataHandlerRegistry.PIGEON_VARIANT
     );
-    public final AnimationState idleState = new AnimationState();
-    public final AnimationState glideState = new AnimationState();
-    public final AnimationState flapState = new AnimationState();
-    public final AnimationState floatState = new AnimationState();
-    public final AnimationState sitState = new AnimationState();
+    public final AnimationState standingState = new AnimationState();
+    public final AnimationState glidingState = new AnimationState();
+    public final AnimationState flappingState = new AnimationState();
+    public final AnimationState floatingState = new AnimationState();
+    public final AnimationState sittingState = new AnimationState();
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, World world) {
         super(entityType, world);
@@ -273,10 +273,10 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
-            this.flapState.setRunning(this.isFlying(), this.age);
-            this.floatState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
-            this.sitState.setRunning(this.isInSittingPose(), this.age);
+            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
+            this.flappingState.setRunning(this.isFlying(), this.age);
+            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+            this.sittingState.setRunning(this.isInSittingPose(), this.age);
         }
 
         super.tick();

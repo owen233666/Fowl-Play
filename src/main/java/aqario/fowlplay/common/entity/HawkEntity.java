@@ -32,10 +32,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class HawkEntity extends TrustingBirdEntity {
-    public final AnimationState idleState = new AnimationState();
-    public final AnimationState glideState = new AnimationState();
-    public final AnimationState flapState = new AnimationState();
-    public final AnimationState floatState = new AnimationState();
+    public final AnimationState standingState = new AnimationState();
+    public final AnimationState glidingState = new AnimationState();
+    public final AnimationState flappingState = new AnimationState();
+    public final AnimationState floatingState = new AnimationState();
     private int timeSinceLastFlap = this.getFlapFrequency();
     private int flapTime = 0;
 
@@ -140,7 +140,7 @@ public class HawkEntity extends TrustingBirdEntity {
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
             if (this.isFlying()) {
                 if (this.timeSinceLastFlap > this.getFlapFrequency()) {
                     this.timeSinceLastFlap = 0;
@@ -148,23 +148,23 @@ public class HawkEntity extends TrustingBirdEntity {
                 }
                 else if (this.flapTime > 0 && this.flapTime < 60) {
                     this.flapTime++;
-                    this.glideState.stop();
-                    this.flapState.startIfNotRunning(this.age);
+                    this.glidingState.stop();
+                    this.flappingState.startIfNotRunning(this.age);
                 }
                 else {
                     this.timeSinceLastFlap++;
                     this.flapTime = 0;
-                    this.flapState.stop();
-                    this.glideState.startIfNotRunning(this.age);
+                    this.flappingState.stop();
+                    this.glidingState.startIfNotRunning(this.age);
                 }
             }
             else {
                 this.timeSinceLastFlap = this.getFlapFrequency();
                 this.flapTime = 0;
-                this.flapState.stop();
-                this.glideState.stop();
+                this.flappingState.stop();
+                this.glidingState.stop();
             }
-            this.floatState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

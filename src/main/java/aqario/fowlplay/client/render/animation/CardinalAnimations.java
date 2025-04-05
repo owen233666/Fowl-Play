@@ -5,55 +5,55 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class ChickadeeEntityAnimations {
-    public static final Animation CHICKADEE_IDLE = Animation.Builder.create(1f).looping()
+public class CardinalAnimations {
+    public static final Animation STANDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "left_wing",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(-0.2f, -0.25f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(-0.2f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "left_wing",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-7.28f, -5.95f, -2.32f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(0.22f, -5.95f, -2.32f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "right_wing",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0.2f, -0.25f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0.2f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "right_wing",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-7.28f, 5.95f, 2.32f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(0.22f, 5.95f, 2.32f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "body",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(10f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-10f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0f, -0.1f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.1f, -0.25f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-7.5f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(12.5f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -72,7 +72,7 @@ public class ChickadeeEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKADEE_WALK = Animation.Builder.create(1f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "body",
             new Transformation(
@@ -173,10 +173,10 @@ public class ChickadeeEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKADEE_FLOAT = Animation.Builder.create(0f).looping()
+    public static final Animation FLOATING = Animation.Builder.create(0f).looping()
         .build();
 
-    public static final Animation CHICKADEE_GLIDE = Animation.Builder.create(0f).looping()
+    public static final Animation GLIDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -319,7 +319,7 @@ public class ChickadeeEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKADEE_FLAP = Animation.Builder.create(0.16667f).looping()
+    public static final Animation FLAPPING = Animation.Builder.create(0.16667f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(

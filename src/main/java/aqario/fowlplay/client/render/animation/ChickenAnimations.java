@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class ChickenEntityAnimations {
-    public static final Animation CHICKEN_IDLE = Animation.Builder.create(1f).looping()
+public class ChickenAnimations {
+    public static final Animation STANDING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "head",
             new Transformation(
@@ -65,7 +65,7 @@ public class ChickenEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKEN_WALK = Animation.Builder.create(1f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "head",
             new Transformation(
@@ -170,7 +170,7 @@ public class ChickenEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKEN_FLAP = Animation.Builder.create(0.2f).looping()
+    public static final Animation FLAPPING = Animation.Builder.create(0.2f).looping()
         .addBoneAnimation(
             "head",
             new Transformation(
@@ -323,7 +323,7 @@ public class ChickenEntityAnimations {
         )
         .build();
 
-    public static final Animation CHICKEN_FLOAT = Animation.Builder.create(0f).looping()
+    public static final Animation FLOATING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(

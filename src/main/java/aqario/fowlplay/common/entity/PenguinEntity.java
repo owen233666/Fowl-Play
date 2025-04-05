@@ -53,13 +53,13 @@ import java.util.List;
 public class PenguinEntity extends BirdEntity {
     public static final TrackedData<Long> LAST_ANIMATION_TICK = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.LONG);
     private boolean isAquaticMoveControl;
-    public final AnimationState idleState = new AnimationState();
-    public final AnimationState slideState = new AnimationState();
+    public final AnimationState standingState = new AnimationState();
+    public final AnimationState slidingState = new AnimationState();
     public final AnimationState fallingState = new AnimationState();
     public final AnimationState standUpState = new AnimationState();
-    public final AnimationState flapState = new AnimationState();
-    public final AnimationState swimState = new AnimationState();
-    public final AnimationState danceState = new AnimationState();
+    public final AnimationState flappingState = new AnimationState();
+    public final AnimationState swimmingState = new AnimationState();
+    public final AnimationState dancingState = new AnimationState();
     private boolean songPlaying;
     @Nullable
     private BlockPos songSource;
@@ -210,27 +210,27 @@ public class PenguinEntity extends BirdEntity {
             this.getControllingPassenger().stopRiding();
         }
         if (this.getWorld().isClient()) {
-            this.idleState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.swimState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+            this.standingState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.swimmingState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
 
             if (this.isVisuallyFallingDown()) {
-                this.idleState.stop();
+                this.standingState.stop();
                 if (this.isVisuallySliding()) {
-                    this.slideState.startIfNotRunning(this.age);
+                    this.slidingState.startIfNotRunning(this.age);
                     this.fallingState.stop();
                 }
                 else {
-                    this.slideState.stop();
+                    this.slidingState.stop();
                     this.fallingState.startIfNotRunning(this.age);
                 }
             }
             else {
-                this.slideState.stop();
+                this.slidingState.stop();
                 this.fallingState.stop();
                 this.standUpState.setRunning(this.isInAnimationTransition() && this.getAnimationTicks() >= 0L, this.age);
             }
 
-            this.danceState.setRunning(this.isSongPlaying(), this.age);
+            this.dancingState.setRunning(this.isSongPlaying(), this.age);
         }
 
         if (!this.getWorld().isClient) {
@@ -541,7 +541,7 @@ public class PenguinEntity extends BirdEntity {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return FowlPlaySoundEvents.ENTITY_PENGUIN_DEATH;
+        return null;
     }
 
     @Override

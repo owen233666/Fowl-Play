@@ -46,7 +46,6 @@ public class FowlPlaySoundDefinitionsGen extends SoundDefinitionsProvider {
         this.addBird(FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_CALL, "mob/penguin/baby_call");
         this.addBird(FowlPlaySoundEvents.ENTITY_PENGUIN_SWIM, "mob/penguin/swim/swim", 5);
         this.addBird(FowlPlaySoundEvents.ENTITY_PENGUIN_HURT, "mob/penguin/hurt");
-        this.addBird(FowlPlaySoundEvents.ENTITY_PENGUIN_DEATH, "mob/penguin/hurt");
 
         this.addBird(FowlPlaySoundEvents.ENTITY_PIGEON_CALL, "mob/pigeon/call", 3);
         this.addBird(FowlPlaySoundEvents.ENTITY_PIGEON_SONG, "mob/pigeon/song", 1);

@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.model;
 
-import aqario.fowlplay.client.render.animation.GullEntityAnimations;
+import aqario.fowlplay.client.render.animation.GullAnimations;
 import aqario.fowlplay.common.entity.GullEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
@@ -95,15 +95,14 @@ public class GullEntityModel extends FlyingBirdEntityModel<GullEntity> {
             this.rightWing.visible = true;
         }
         if (gull.isFlying()) {
-            this.animateMovement(GullEntityAnimations.GULL_FLAP, limbAngle, limbDistance, 3.25F, 3.25F);
+            this.animateMovement(GullAnimations.FLAPPING, limbAngle, limbDistance, 3.25F, 3.25F);
         }
         else if (!gull.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(GullEntityAnimations.GULL_WALK, limbAngle, limbDistance, 4F, 4F);
+            this.animateMovement(GullAnimations.WALKING, limbAngle, limbDistance, 4F, 4F);
         }
-        this.updateAnimation(gull.idleState, GullEntityAnimations.GULL_IDLE, ageInTicks);
-        this.updateAnimation(gull.floatState, GullEntityAnimations.GULL_FLOAT, ageInTicks);
-        this.updateAnimation(gull.glideState, GullEntityAnimations.GULL_GLIDE, ageInTicks);
-//        this.updateAnimation(gull.flapState, GullEntityAnimations.GULL_FLAP, ageInTicks);
+        this.updateAnimation(gull.standingState, GullAnimations.STANDING, ageInTicks);
+        this.updateAnimation(gull.floatingState, GullAnimations.FLOATING, ageInTicks);
+        this.updateAnimation(gull.glidingState, GullAnimations.GLIDING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

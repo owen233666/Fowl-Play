@@ -45,10 +45,10 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
         GullEntity.class,
         FowlPlayTrackedDataHandlerRegistry.GULL_VARIANT
     );
-    public final AnimationState idleState = new AnimationState();
-    public final AnimationState glideState = new AnimationState();
-    public final AnimationState flapState = new AnimationState();
-    public final AnimationState floatState = new AnimationState();
+    public final AnimationState standingState = new AnimationState();
+    public final AnimationState glidingState = new AnimationState();
+    public final AnimationState flappingState = new AnimationState();
+    public final AnimationState floatingState = new AnimationState();
 
     public GullEntity(EntityType<? extends GullEntity> entityType, World world) {
         super(entityType, world);
@@ -189,9 +189,9 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     @Override
     public void tick() {
         if (this.getWorld().isClient()) {
-            this.idleState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.glideState.setRunning(this.isFlying(), this.age);
-            this.floatState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.glidingState.setRunning(this.isFlying(), this.age);
+            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();

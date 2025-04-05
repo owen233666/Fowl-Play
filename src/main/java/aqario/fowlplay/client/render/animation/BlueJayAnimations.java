@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
-public class BlueJayEntityAnimations {
-    public static final Animation BLUE_JAY_IDLE = Animation.Builder.create(0f).looping()
+public class BlueJayAnimations {
+    public static final Animation STANDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "left_wing",
             new Transformation(
@@ -72,7 +72,7 @@ public class BlueJayEntityAnimations {
         )
         .build();
 
-    public static final Animation BLUE_JAY_WALK = Animation.Builder.create(1f).looping()
+    public static final Animation WALKING = Animation.Builder.create(1f).looping()
         .addBoneAnimation(
             "body",
             new Transformation(
@@ -173,10 +173,10 @@ public class BlueJayEntityAnimations {
         )
         .build();
 
-    public static final Animation BLUE_JAY_FLOAT = Animation.Builder.create(0f).looping()
+    public static final Animation FLOATING = Animation.Builder.create(0f).looping()
         .build();
 
-    public static final Animation BLUE_JAY_GLIDE = Animation.Builder.create(0f).looping()
+    public static final Animation GLIDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
@@ -319,7 +319,7 @@ public class BlueJayEntityAnimations {
         )
         .build();
 
-    public static final Animation BLUE_JAY_FLAP = Animation.Builder.create(0.16667f).looping()
+    public static final Animation FLAPPING = Animation.Builder.create(0.16667f).looping()
         .addBoneAnimation(
             "root",
             new Transformation(
