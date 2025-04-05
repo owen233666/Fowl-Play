@@ -76,7 +76,7 @@ processResources {
     inputs.property "fabric_version", project.fabric_version
     inputs.property "yacl_version", project.yacl_version
 
-    filesMatching("fabric.mod.json") {
+    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
         expand(
             "version": project.version,
             "loader_version": project.loader_version,
