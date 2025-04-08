@@ -20,7 +20,7 @@ displayURL = "https://modrinth.com/mod/fowlplay"
 
 [[dependencies.fowlplay]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
