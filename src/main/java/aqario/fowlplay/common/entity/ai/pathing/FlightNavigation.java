@@ -118,15 +118,14 @@ public class FlightNavigation extends MobNavigation {
         if (this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE >= this.currentPath.getLength()) {
             return false;
         }
-        Vec3d vec3d = Vec3d.ofCenter(this.currentPath.getCurrentNodePos());
-        if (!currentPos.isInRange(vec3d, this.nodeReachProximity)) {
+        Vec3d curNodePos = this.currentPath.getCurrentNodePos().toCenterPos();
+        if (!currentPos.isInRange(curNodePos, this.nodeReachProximity)) {
             return false;
         }
-        Vec3d vec3d1 = Vec3d.ofCenter(this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + 1));
-        Vec3d vec3d2 = vec3d1.subtract(vec3d);
-        Vec3d vec3d3 = currentPos.subtract(vec3d);
-        return vec3d2.dotProduct(vec3d3) > 0.0;
-
+        Vec3d nextNodePos = this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE).toCenterPos();
+        Vec3d nextNodeVec = nextNodePos.subtract(curNodePos);
+        Vec3d curNodeVec = currentPos.subtract(curNodePos);
+        return nextNodeVec.dotProduct(curNodeVec) > 0.0;
     }
 
     @Override
