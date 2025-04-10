@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -49,8 +48,8 @@ public class CrowEntity extends TrustingBirdEntity {
     }
 
     @Override
-    protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 15, 10);
+    public int getMaxPitchChange() {
+        return 15;
     }
 
     @Nullable

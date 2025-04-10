@@ -3,6 +3,7 @@
   "package": "aqario.fowlplay.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "DebugRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,9 +1,9 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.SingleTickTask;
@@ -21,16 +21,11 @@ import java.util.function.Predicate;
 
 public class FlyTask {
     public static Task<FlyingBirdEntity> create(float speed, int horizontalRange, int verticalRange) {
-        return create(speed, (entity) -> FuzzyTargeting.find(entity, horizontalRange, verticalRange), (entity) -> true);
+        return create(speed, (entity) -> FlightTargeting.find(entity, horizontalRange, verticalRange), (entity) -> true);
     }
 
     public static Task<FlyingBirdEntity> perch(float speed) {
         return create(speed, FlyTask::findPerchPos, (entity) -> true);
-    }
-
-    @Nullable
-    private static Vec3d findTargetPos(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
-        return FuzzyTargeting.find(entity, horizontalRange, verticalRange);
     }
 
     private static SingleTickTask<FlyingBirdEntity> create(float speed, Function<FlyingBirdEntity, Vec3d> targetGetter, Predicate<FlyingBirdEntity> predicate) {
@@ -70,6 +65,6 @@ public class FlyTask {
             }
         }
 
-        return FuzzyTargeting.find(entity, 16, 16);
+        return FlightTargeting.find(entity, 16, 16);
     }
 }

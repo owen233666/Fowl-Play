@@ -178,9 +178,9 @@ public class GullBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(gull -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(GullBrain::getAttackTarget)),
-                Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
+//                Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
-                    4,
+                    3,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(

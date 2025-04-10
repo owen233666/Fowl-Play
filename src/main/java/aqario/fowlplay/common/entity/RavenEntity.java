@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -50,11 +49,6 @@ public class RavenEntity extends TrustingBirdEntity {
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.24f);
-    }
-
-    @Override
-    protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 15, 10);
     }
 
     @Nullable

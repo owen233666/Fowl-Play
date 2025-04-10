@@ -37,9 +37,7 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
                 MemoryModuleType.PATH,
                 MemoryModuleState.VALUE_ABSENT,
                 MemoryModuleType.WALK_TARGET,
-                MemoryModuleState.VALUE_PRESENT,
-                FowlPlayMemoryModuleType.TELEPORT_TARGET,
-                MemoryModuleState.VALUE_ABSENT
+                MemoryModuleState.VALUE_PRESENT
             ),
             minRunTime,
             maxRunTime
@@ -52,6 +50,9 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
             return false;
         }
         Brain<?> brain = entity.getBrain();
+        if (brain.isMemoryInState(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleState.VALUE_PRESENT)) {
+            return false;
+        }
         WalkTarget walkTarget = brain.getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get();
         boolean reachedTarget = hasReached(entity, walkTarget);
         if (!reachedTarget && this.hasFinishedPath(entity, walkTarget, world.getTime())) {
@@ -97,11 +98,14 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
     protected void keepRunning(ServerWorld world, MobEntity entity, long l) {
         Path path = entity.getNavigation().getCurrentPath();
         Brain<?> brain = entity.getBrain();
+        // forget path, go straight to destination
+//        if (path != null) {
+//            path.setCurrentNodeIndex(path.getLength() - 1);
+//        }
         if (this.path != path) {
             this.path = path;
             brain.remember(MemoryModuleType.PATH, path);
         }
-
         if (path != null && this.lookTargetPos != null) {
             WalkTarget walkTarget = brain.getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get();
             if (walkTarget.getLookTarget().getBlockPos().getSquaredDistance(this.lookTargetPos) > 4.0 && this.hasFinishedPath(entity, walkTarget, world.getTime())) {

@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
@@ -60,13 +59,13 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    protected MoveControl getLandMoveControl() {
+    protected MoveControl getBirdMoveControl() {
         return new BirdFloatMoveControl(this);
     }
 
     @Override
-    protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 15, 10);
+    public int getMaxPitchChange() {
+        return 15;
     }
 
     @Override

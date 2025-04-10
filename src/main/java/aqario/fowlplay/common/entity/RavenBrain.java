@@ -124,7 +124,7 @@ public class RavenBrain {
                 AvoidTask.run(),
                 PickupFoodTask.run(Birds::canPickupFood),
                 new LookAroundTask(45, 90),
-                new MoveToTargetTask(),
+                new WalkToTargetTask(),
                 new TemptationCooldownTask(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS),
                 new TemptationCooldownTask(MemoryModuleType.GAZE_COOLDOWN_TICKS)
             )

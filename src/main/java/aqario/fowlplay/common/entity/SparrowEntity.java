@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.control.BirdFlightMoveControl;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -39,11 +38,6 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.COCOA, -1.0f);
         this.setPathfindingPenalty(PathNodeType.FENCE, -1.0f);
-    }
-
-    @Override
-    protected BirdFlightMoveControl getFlightMoveControl() {
-        return new BirdFlightMoveControl(this, 15, 15);
     }
 
     @Nullable
