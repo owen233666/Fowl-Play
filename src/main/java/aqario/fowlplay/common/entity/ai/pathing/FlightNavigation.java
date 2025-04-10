@@ -119,7 +119,7 @@ public class FlightNavigation extends MobNavigation {
             return false;
         }
         Vec3d vec3d = Vec3d.ofCenter(this.currentPath.getCurrentNodePos());
-        if (!currentPos.isInRange(vec3d, NODE_RADIUS)) {
+        if (!currentPos.isInRange(vec3d, this.nodeReachProximity)) {
             return false;
         }
         Vec3d vec3d1 = Vec3d.ofCenter(this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + 1));
