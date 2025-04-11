@@ -25,7 +25,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -65,6 +64,11 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Regi
 
     @Override
     public int getMaxPitchChange() {
+        return 15;
+    }
+
+    @Override
+    public int getMaxYawChange() {
         return 15;
     }
 
@@ -164,12 +168,6 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    public boolean canHunt(LivingEntity target) {
-        return target.getType().isIn(FowlPlayEntityTypeTags.DUCK_HUNT_TARGETS) ||
-            (target.getType().isIn(FowlPlayEntityTypeTags.DUCK_BABY_HUNT_TARGETS) && target.isBaby());
-    }
-
-    @Override
     public boolean shouldAvoid(LivingEntity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.DUCK_AVOIDS);
     }
@@ -237,12 +235,6 @@ public class DuckEntity extends TrustingBirdEntity implements VariantHolder<Regi
         DuckBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
-    }
-
-    @Override
-    protected void sendAiDebugData() {
-        super.sendAiDebugData();
-        DebugInfoSender.sendBrainDebugData(this);
     }
 
     @Override

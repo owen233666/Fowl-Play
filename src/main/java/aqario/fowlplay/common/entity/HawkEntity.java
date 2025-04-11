@@ -19,7 +19,6 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -56,6 +55,11 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public int getMaxPitchChange() {
+        return 15;
+    }
+
+    @Override
+    public int getMaxYawChange() {
         return 15;
     }
 
@@ -106,6 +110,11 @@ public class HawkEntity extends TrustingBirdEntity {
 
     public Ingredient getFood() {
         return Ingredient.fromTag(FowlPlayItemTags.HAWK_FOOD);
+    }
+
+    @Override
+    public int getLookDistance() {
+        return 48;
     }
 
     @Override
@@ -229,11 +238,5 @@ public class HawkEntity extends TrustingBirdEntity {
         HawkBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
-    }
-
-    @Override
-    protected void sendAiDebugData() {
-        super.sendAiDebugData();
-        DebugInfoSender.sendBrainDebugData(this);
     }
 }

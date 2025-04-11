@@ -17,7 +17,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -52,8 +51,8 @@ public class CrowEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public int getMaxPitchChange() {
-        return 15;
+    public int getMaxYawChange() {
+        return 18;
     }
 
     @Nullable
@@ -196,11 +195,5 @@ public class CrowEntity extends TrustingBirdEntity {
         CrowBrain.reset(this);
         this.getWorld().getProfiler().pop();
         super.mobTick();
-    }
-
-    @Override
-    protected void sendAiDebugData() {
-        super.sendAiDebugData();
-        DebugInfoSender.sendBrainDebugData(this);
     }
 }

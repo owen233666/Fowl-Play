@@ -32,7 +32,7 @@ import net.minecraft.world.WorldView;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private boolean isFlightMoveControl;
+    private boolean isFlightNavigation;
     private float prevRoll;
     private float visualRoll;
     public int timeFlying = 0;
@@ -115,7 +115,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
                 this.timeFlying = 0;
                 this.setNoGravity(false);
             }
-            if (this.isFlying() != this.isFlightMoveControl) {
+            if (this.isFlying() != this.isFlightNavigation) {
                 this.setNavigation(this.isFlying());
             }
         }
@@ -138,25 +138,12 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return tickDelta == 1.0F ? this.visualRoll : MathHelper.lerp(tickDelta, this.prevRoll, this.visualRoll);
     }
 
-    @Override
-    public MoveControl getMoveControl() {
-        return super.getMoveControl();
-    }
-
     protected MoveControl getBirdMoveControl() {
         return new BirdMoveControl(this);
     }
 
     protected EntityNavigation getLandNavigation() {
         return new MobNavigation(this, this.getWorld());
-    }
-
-    public int getMaxPitchChange() {
-        return 20;
-    }
-
-    public int getMaxYawChange() {
-        return 15;
     }
 
     protected FlightNavigation getFlightNavigation() {
@@ -167,6 +154,14 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return navigation;
     }
 
+    public int getMaxPitchChange() {
+        return 20;
+    }
+
+    public int getMaxYawChange() {
+        return 20;
+    }
+
     protected boolean canSwim() {
         return false;
     }
@@ -174,11 +169,11 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void setNavigation(boolean isFlying) {
         if (isFlying) {
             this.navigation = this.getFlightNavigation();
-            this.isFlightMoveControl = true;
+            this.isFlightNavigation = true;
         }
         else {
             this.navigation = this.getLandNavigation();
-            this.isFlightMoveControl = false;
+            this.isFlightNavigation = false;
         }
     }
 

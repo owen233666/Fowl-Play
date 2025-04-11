@@ -99,7 +99,6 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(FowlPlayEntityType.HAWK);
 
         // Hunted when the target is an adult
-        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.DUCK_HUNT_TARGETS);
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.GULL_HUNT_TARGETS)
             .add(EntityType.TROPICAL_FISH)
             .add(EntityType.SALMON)
@@ -137,7 +136,6 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.RAVEN_HUNT_TARGETS);
 
         // Hunted when the target is a baby
-        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.DUCK_BABY_HUNT_TARGETS);
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.GULL_BABY_HUNT_TARGETS)
             .add(EntityType.CHICKEN)
             .add(EntityType.TURTLE);

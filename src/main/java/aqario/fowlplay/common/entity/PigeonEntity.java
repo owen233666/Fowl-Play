@@ -29,7 +29,6 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -384,12 +383,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     @SuppressWarnings("unchecked")
     public Brain<PigeonEntity> getBrain() {
         return (Brain<PigeonEntity>) super.getBrain();
-    }
-
-    @Override
-    protected void sendAiDebugData() {
-        super.sendAiDebugData();
-        DebugInfoSender.sendBrainDebugData(this);
     }
 
     @Override
