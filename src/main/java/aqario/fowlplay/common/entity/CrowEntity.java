@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -24,6 +25,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Optional;
+
 public class CrowEntity extends TrustingBirdEntity {
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
@@ -42,7 +46,7 @@ public class CrowEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createCrowAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.5f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.22f);
     }
@@ -99,6 +103,19 @@ public class CrowEntity extends TrustingBirdEntity {
 
     public Ingredient getFood() {
         return Ingredient.fromTag(FowlPlayItemTags.CROW_FOOD);
+    }
+
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        if (!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS)) {
+            return false;
+        }
+        if (this.hasLowHealth()) {
+            return false;
+        }
+        Brain<CrowEntity> brain = this.getBrain();
+        Optional<List<? extends PassiveEntity>> nearbyAdults = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
+        return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
     }
 
     @Override

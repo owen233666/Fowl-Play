@@ -25,6 +25,11 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     }
 
     @Override
+    public int getFleeRange(LivingEntity target) {
+        return this.getTrustedUuids().isEmpty() && target instanceof PlayerEntity ? 6 : super.getFleeRange(target);
+    }
+
+    @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
         builder.add(TRUSTED, new ArrayList<>());

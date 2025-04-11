@@ -38,9 +38,6 @@ public class MoveAwayFromTargetTask {
                     }
                     Vec3d entityPos = entity.getPos();
                     Vec3d fleeTargetPos = targetPositionGetter.apply(instance.getValue(targetType));
-                    if (!entityPos.isInRange(fleeTargetPos, entity.getFleeRange())) {
-                        return false;
-                    }
                     if (optional.isPresent() && optional.get().getSpeed() == entitySpeedGetter.apply(entity)) {
                         Vec3d vec3d3 = optional.get().getLookTarget().getPos().subtract(entityPos);
                         Vec3d distanceVec = fleeTargetPos.subtract(entityPos);

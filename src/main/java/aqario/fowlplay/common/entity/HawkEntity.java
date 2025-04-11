@@ -51,7 +51,7 @@ public class HawkEntity extends TrustingBirdEntity {
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.27f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.24f);
     }
 
     @Override
@@ -110,6 +110,7 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
+        // TODO: avoid if the target has hurt this entity and the target is not an attack target
         return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
@@ -121,6 +122,9 @@ public class HawkEntity extends TrustingBirdEntity {
 
     @Override
     public boolean canAttack(LivingEntity target) {
+        if (this.hasLowHealth()) {
+            return false;
+        }
         Optional<LivingEntity> hurtBy = this.getBrain().getOptionalRegisteredMemory(MemoryModuleType.HURT_BY_ENTITY);
         return hurtBy.isPresent() && hurtBy.get().equals(target);
     }

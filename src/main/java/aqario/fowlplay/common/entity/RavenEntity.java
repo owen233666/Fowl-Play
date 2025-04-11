@@ -46,7 +46,7 @@ public class RavenEntity extends TrustingBirdEntity {
     public static DefaultAttributeContainer.Builder createRavenAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.24f);
     }
@@ -109,6 +109,9 @@ public class RavenEntity extends TrustingBirdEntity {
     @Override
     public boolean canAttack(LivingEntity target) {
         if (!target.getType().isIn(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS)) {
+            return false;
+        }
+        if (this.hasLowHealth()) {
             return false;
         }
         Brain<RavenEntity> brain = this.getBrain();

@@ -38,7 +38,7 @@ public class FlightTargeting {
         // the entity's path should be in the same direction as its look vector
         Vec3d direction = entity.getRotationVec(1);
         return FuzzyPositions.guessBest(() -> {
-            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, (float) (Math.PI / 36));
+            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, 5.0F * (Math.PI / 180));
             if (blockPos == null) {
                 return null;
             }

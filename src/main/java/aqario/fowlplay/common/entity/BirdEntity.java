@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
+import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
@@ -174,8 +175,17 @@ public abstract class BirdEntity extends AnimalEntity {
         return false;
     }
 
-    public int getFleeRange() {
-        return 10;
+    public int getFleeRange(LivingEntity target) {
+        return Birds.notFlightless(target) ? 32 : 10;
+    }
+
+    public boolean hasLowHealth() {
+        return this.getHealth() <= this.getMaxHealth() / 2;
+    }
+
+    @Override
+    public boolean canTarget(LivingEntity target) {
+        return super.canTarget(target) && this.canAttack(target);
     }
 
     @Override

@@ -37,7 +37,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     private float visualRoll;
     public int timeFlying = 0;
     private static final int ROLL_FACTOR = 4;
-    private static final float MIN_HEALTH_TO_FLY = 2.0F;
+    private static final float MIN_HEALTH_TO_FLY = 1.5F;
     private static final int MIN_FLIGHT_TIME = 15;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
@@ -184,7 +184,23 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     public float getPathfindingFavor(BlockPos pos, WorldView world) {
-        return this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 1.0F : 0.0F;
+        float perch = this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 1.0F : 0.0F;
+        float withinView = this.isWithinView(pos, 10.0F) ? 100.0F : 0.0F;
+        return perch + withinView;
+    }
+
+    public boolean isWithinView(BlockPos pos, float angle) {
+        Vec3d target = Vec3d.ofCenter(pos);
+        // bird to target
+        Vec3d targetVec = target.subtract(this.getPos());
+        targetVec = targetVec.normalize();
+
+        Vec3d lookVec = this.getRotationVec(1.0F);
+        float dotProduct = (float) lookVec.dotProduct(targetVec);
+
+        // if dot product >= cosine of max angle the angle is within the cone
+        float cosMaxAngle = MathHelper.cos(angle);
+        return dotProduct >= cosMaxAngle;
     }
 
     @Override

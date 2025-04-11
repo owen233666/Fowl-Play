@@ -62,11 +62,6 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     }
 
     @Override
-    public int getFleeRange() {
-        return 7;
-    }
-
-    @Override
     public int getFlapFrequency() {
         return 1;
     }

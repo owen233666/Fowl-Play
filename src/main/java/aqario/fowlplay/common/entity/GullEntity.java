@@ -175,11 +175,6 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    public int getFleeRange() {
-        return this.getTrustedUuids().isEmpty() ? super.getFleeRange() : 6;
-    }
-
-    @Override
     public void tick() {
         if (this.getWorld().isClient()) {
             this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);

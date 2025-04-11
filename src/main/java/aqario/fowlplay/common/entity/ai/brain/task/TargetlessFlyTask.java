@@ -19,13 +19,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class FlyTask {
+public class TargetlessFlyTask {
     public static Task<FlyingBirdEntity> create(float speed, int horizontalRange, int verticalRange) {
         return create(speed, (entity) -> FlightTargeting.find(entity, horizontalRange, verticalRange), (entity) -> true);
     }
 
     public static Task<FlyingBirdEntity> perch(float speed) {
-        return create(speed, FlyTask::findPerchPos, (entity) -> true);
+        return create(speed, TargetlessFlyTask::findPerchPos, (entity) -> true);
     }
 
     private static SingleTickTask<FlyingBirdEntity> create(float speed, Function<FlyingBirdEntity, Vec3d> targetGetter, Predicate<FlyingBirdEntity> predicate) {
@@ -65,6 +65,6 @@ public class FlyTask {
             }
         }
 
-        return FlightTargeting.find(entity, 16, 16);
+        return FlightTargeting.find(entity, 32, 16);
     }
 }

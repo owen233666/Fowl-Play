@@ -151,6 +151,8 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(FowlPlayEntityType.HAWK);
 
         // Entities to attack
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS)
+            .add(FowlPlayEntityType.HAWK);
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS)
             .add(FowlPlayEntityType.HAWK);
 

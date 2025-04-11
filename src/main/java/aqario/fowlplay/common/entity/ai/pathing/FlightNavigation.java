@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class FlightNavigation extends MobNavigation {
-    private static final int NODE_DISTANCE = 3;
+    private static final int NODE_DISTANCE = 4;
     private static final int NODE_RADIUS = 3;
     private final FlyingBirdEntity bird;
 
@@ -99,15 +99,13 @@ public class FlightNavigation extends MobNavigation {
     @Override
     protected void continueFollowingPath() {
         Vec3d pos = this.getPos();
-        this.nodeReachProximity = NODE_RADIUS;
+//        this.nodeReachProximity = NODE_RADIUS;
 //        Vec3i vec3i = this.currentPath.getCurrentNodePos();
 //        double x = Math.abs(this.bird.getX() - ((double) vec3i.getX() + 0.5));
 //        double y = Math.abs(this.bird.getY() - (double) vec3i.getY() + 0.5);
 //        double z = Math.abs(this.bird.getZ() - ((double) vec3i.getZ() + 0.5));
 //        boolean reachedNode = x < this.nodeReachProximity && z < this.nodeReachProximity && y < this.nodeReachProximity;
-        Vec3d nodePos = this.currentPath.getCurrentNodePos().toCenterPos();
-        boolean reachedNode = pos.isInRange(nodePos, this.nodeReachProximity);
-        if (reachedNode || this.canJumpToNext(this.currentPath.getCurrentNode().type) && this.shouldJumpToNextNode(pos)) {
+        if (this.canJumpToNext(this.currentPath.getCurrentNode().type) && this.shouldJumpToNextNode(pos)) {
             this.currentPath.setCurrentNodeIndex(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE);
         }
 
@@ -115,17 +113,15 @@ public class FlightNavigation extends MobNavigation {
     }
 
     private boolean shouldJumpToNextNode(Vec3d currentPos) {
-        if (this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE >= this.currentPath.getLength()) {
-            return false;
-        }
         Vec3d curNodePos = this.currentPath.getCurrentNodePos().toCenterPos();
-        if (!currentPos.isInRange(curNodePos, this.nodeReachProximity)) {
+        if (!currentPos.isInRange(curNodePos, NODE_RADIUS)) {
             return false;
         }
-        Vec3d nextNodePos = this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE).toCenterPos();
-        Vec3d nextNodeVec = nextNodePos.subtract(curNodePos);
-        Vec3d curNodeVec = currentPos.subtract(curNodePos);
-        return nextNodeVec.dotProduct(curNodeVec) > 0.0;
+//        Vec3d nextNodePos = this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE).toCenterPos();
+//        Vec3d nextNodeVec = nextNodePos.subtract(curNodePos);
+//        Vec3d curNodeVec = currentPos.subtract(curNodePos);
+//        return nextNodeVec.dotProduct(curNodeVec) > 0.0;
+        return this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE < this.currentPath.getLength();
     }
 
     @Override
