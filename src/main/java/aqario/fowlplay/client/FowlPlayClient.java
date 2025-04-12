@@ -1,30 +1,21 @@
 package aqario.fowlplay.client;
 
-import aqario.fowlplay.client.render.debug.FowlPlayDebugRenderers;
 import aqario.fowlplay.client.render.entity.*;
 import aqario.fowlplay.client.render.entity.model.*;
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.entity.EntityType;
 
 @SuppressWarnings("unused")
 public class FowlPlayClient implements ClientModInitializer {
+    public static boolean DEBUG_BIRD = false;
+
     @Override
     public void onInitializeClient() {
         registerEntityRenderers();
-
-        FowlPlayDebugRenderers.init();
-
-        PayloadTypeRegistry.playS2C().register(DebugBirdCustomPayload.ID, DebugBirdCustomPayload.CODEC);
-        ClientPlayNetworking.registerGlobalReceiver(DebugBirdCustomPayload.ID, (payload, context) ->
-            DebugBirdCustomPayload.onReceive(payload)
-        );
     }
 
     public static void registerEntityRenderers() {

@@ -1,5 +1,6 @@
 package aqario.fowlplay.client.render.debug;
 
+import aqario.fowlplay.client.FowlPlayClient;
 import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import com.google.common.collect.Maps;
 import net.minecraft.client.MinecraftClient;
@@ -39,6 +40,9 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double cameraX, double cameraY, double cameraZ) {
+        if (!FowlPlayClient.DEBUG_BIRD) {
+            return;
+        }
         this.draw(matrices, vertexConsumers, cameraX, cameraY, cameraZ);
         this.updateTargetedEntity();
     }

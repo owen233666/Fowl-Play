@@ -1,15 +1,22 @@
 package aqario.fowlplay.core;
 
+import aqario.fowlplay.client.FowlPlayClient;
+import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
+import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
+import io.github.flemmli97.debugutils.api.RegisterDebugRenderers;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +26,10 @@ public class FowlPlay implements ModInitializer {
 
     public static boolean isYACLLoaded() {
         return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
+    }
+
+    public static boolean isDebugUtilsLoaded() {
+        return FabricLoader.getInstance().isModLoaded("debugutils");
     }
 
     @Override
@@ -70,5 +81,17 @@ public class FowlPlay implements ModInitializer {
                 world.getServer().shouldSpawnAnimals()
             );
         });
+
+        if (FowlPlay.isDebugUtilsLoaded()) {
+            Identifier debugBirdId = Identifier.of(FowlPlay.ID, "debug/bird");
+            RegisterDebugRenderers.registerCustomDebugRenderer(debugBirdId, BirdDebugRenderer.INSTANCE);
+            RegisterDebugRenderers.registerServerToggle(debugBirdId);
+            RegisterDebugRenderers.registerClientHandler(debugBirdId, b -> FowlPlayClient.DEBUG_BIRD = b);
+
+            PayloadTypeRegistry.playS2C().register(DebugBirdCustomPayload.ID, DebugBirdCustomPayload.CODEC);
+            ClientPlayNetworking.registerGlobalReceiver(DebugBirdCustomPayload.ID, (payload, context) ->
+                DebugBirdCustomPayload.onReceive(payload)
+            );
+        }
     }
 }

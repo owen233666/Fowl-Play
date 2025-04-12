@@ -17,7 +17,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
     public static final PacketCodec<PacketByteBuf, DebugBirdCustomPayload> CODEC = CustomPayload.codecOf(
         DebugBirdCustomPayload::write, DebugBirdCustomPayload::new
     );
-    public static final CustomPayload.Id<DebugBirdCustomPayload> ID = new CustomPayload.Id<>(Identifier.of(FowlPlay.ID, "debug_bird"));
+    public static final CustomPayload.Id<DebugBirdCustomPayload> ID = new CustomPayload.Id<>(Identifier.of(FowlPlay.ID, "debug/bird"));
 
     private DebugBirdCustomPayload(PacketByteBuf buf) {
         this(new BirdData(buf));
@@ -28,7 +28,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
     }
 
     public static void onReceive(DebugBirdCustomPayload payload) {
-         BirdDebugRenderer.INSTANCE.addBird(payload.birdData());
+        BirdDebugRenderer.INSTANCE.addBird(payload.birdData());
     }
 
     @Override

@@ -3,14 +3,14 @@ package aqario.fowlplay.common.network;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.TrustingBirdEntity;
 import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
+import aqario.fowlplay.core.FowlPlay;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.InventoryOwner;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
@@ -19,6 +19,9 @@ import java.util.List;
 
 public class FowlPlayDebugInfoSender {
     public static void sendBirdDebugData(BirdEntity bird) {
+        if (!FowlPlay.isDebugUtilsLoaded()) {
+            return;
+        }
         if (bird.getWorld().isClient()) {
             return;
         }
@@ -58,15 +61,13 @@ public class FowlPlayDebugInfoSender {
             path,
             trusting
         );
-        DebugBirdCustomPayload packet = new DebugBirdCustomPayload(data);
-        sendToAll((ServerWorld) bird.getWorld(), packet);
+        DebugBirdCustomPayload payload = new DebugBirdCustomPayload(data);
+        sendToAll((ServerWorld) bird.getWorld(), payload);
     }
 
     private static void sendToAll(ServerWorld world, CustomPayload payload) {
-        Packet<?> packet = new CustomPayloadS2CPacket(payload);
-
         for (ServerPlayerEntity player : world.getPlayers()) {
-            player.networkHandler.sendPacket(packet);
+            ServerPlayNetworking.send(player, payload);
         }
     }
 }

@@ -41,7 +41,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Debug Utils
-    modRuntimeOnly("io.github.flemmli97:debugutils:${project.debugutils_version}") {
+    modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}") {
         transitive = false
     }
 

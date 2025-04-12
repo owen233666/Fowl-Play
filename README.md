@@ -61,10 +61,10 @@ _This mod adds an updated chicken model in the style of its other birds. The mod
 - Raven (Common raven)
 - Duck (Mallard duck)
 - Hawk (Red-tailed hawk)
+- Crows (American crow, carrion crow)
 
 **Planned additions (in order of priority):**
 
-- Crows (American crow, carrion crow)
 - Old world Vultures (Griffon vulture, lappet-faced vulture)
 - Ostriches (Common ostrich)
 - Owls (Great horned owl, snowy owl, barn owl)
