@@ -10,6 +10,7 @@ import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -106,15 +107,16 @@ public class CrowEntity extends TrustingBirdEntity {
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        if (!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS)) {
-            return false;
-        }
         if (this.hasLowHealth()) {
             return false;
         }
         Brain<CrowEntity> brain = this.getBrain();
+        Optional<LivingEntity> hurtBy = this.getBrain().getOptionalRegisteredMemory(MemoryModuleType.HURT_BY_ENTITY);
+        if (!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS) && (hurtBy.isEmpty() || !hurtBy.get().equals(target))) {
+            return false;
+        }
         Optional<List<? extends PassiveEntity>> nearbyAdults = brain.getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
-        return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
+        return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 4).isPresent();
     }
 
     @Override

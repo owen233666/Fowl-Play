@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FlightNavigation extends MobNavigation {
     private static final int NODE_DISTANCE = 4;
-    private static final int NODE_RADIUS = 3;
+    private static final int NODE_RADIUS = 4;
     private final FlyingBirdEntity bird;
 
     public FlightNavigation(FlyingBirdEntity bird, World world) {
@@ -114,14 +114,11 @@ public class FlightNavigation extends MobNavigation {
 
     private boolean shouldJumpToNextNode(Vec3d currentPos) {
         Vec3d curNodePos = this.currentPath.getCurrentNodePos().toCenterPos();
-        if (!currentPos.isInRange(curNodePos, NODE_RADIUS)) {
-            return false;
-        }
 //        Vec3d nextNodePos = this.currentPath.getNodePos(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE).toCenterPos();
 //        Vec3d nextNodeVec = nextNodePos.subtract(curNodePos);
 //        Vec3d curNodeVec = currentPos.subtract(curNodePos);
 //        return nextNodeVec.dotProduct(curNodeVec) > 0.0;
-        return this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE < this.currentPath.getLength();
+        return currentPos.isInRange(curNodePos, NODE_RADIUS);
     }
 
     @Override

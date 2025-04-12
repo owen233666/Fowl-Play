@@ -111,10 +111,10 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
     }
 
     private static void drawString(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Position pos, int offsetY, String string, int color, float size) {
-        BlockPos blockPos = BlockPos.ofFloored(pos);
-        double f = (double) blockPos.getX() + 0.5;
+//        BlockPos blockPos = BlockPos.ofFloored(pos);
+        double f = pos.getX() + 0.5;
         double g = pos.getY() + 2.4 + (double) offsetY * 0.25;
-        double h = (double) blockPos.getZ() + 0.5;
+        double h = pos.getZ() + 0.5;
         DebugRenderer.drawString(matrices, vertexConsumers, string, f, g, h, color, size, false, 0.5F, true);
     }
 }

@@ -1,4 +1,4 @@
-package aqario.fowlplay.server.network;
+package aqario.fowlplay.common.network;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.TrustingBirdEntity;
@@ -7,6 +7,7 @@ import net.minecraft.entity.InventoryOwner;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
@@ -33,7 +34,15 @@ public class FowlPlayDebugInfoSender {
         }
         List<String> trusting = new ArrayList<>();
         if (bird instanceof TrustingBirdEntity trustingBird) {
-            trustingBird.getTrustedUuids().forEach(uuid -> trusting.add(uuid.toString()));
+            trustingBird.getTrustedUuids().forEach(uuid -> {
+                PlayerEntity player = bird.getWorld().getPlayerByUuid(uuid);
+                if (player != null) {
+                    trusting.add(player.getName().getString());
+                }
+                else {
+                    trusting.add(uuid.toString());
+                }
+            });
         }
 
         DebugBirdCustomPayload.BirdData data = new DebugBirdCustomPayload.BirdData(

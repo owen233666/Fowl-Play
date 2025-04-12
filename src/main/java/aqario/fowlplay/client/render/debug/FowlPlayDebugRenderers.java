@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FowlPlayDebugRenderers {
+    private static final boolean RENDER = false;
     private static final List<DebugRenderer.Renderer> RENDERERS = new LinkedList<>();
 
     public static void add(DebugRenderer.Renderer renderer) {
@@ -15,6 +16,7 @@ public class FowlPlayDebugRenderers {
     }
 
     public static void render(MatrixStack poseStack, VertexConsumerProvider bufferSource, double camX, double camY, double camZ) {
+        if (!RENDER) return;
         RENDERERS.forEach((r) -> r.render(poseStack, bufferSource, camX, camY, camZ));
     }
 

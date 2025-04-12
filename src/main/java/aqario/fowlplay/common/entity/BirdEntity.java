@@ -2,10 +2,10 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
+import aqario.fowlplay.common.network.FowlPlayDebugInfoSender;
 import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
-import aqario.fowlplay.server.network.FowlPlayDebugInfoSender;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
