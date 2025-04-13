@@ -40,13 +40,13 @@ public class HawkEntityModel extends FlyingBirdEntityModel<HawkEntity> {
 
         body.addChild("right_wing", ModelPartBuilder.create().uv(0, 13).mirrored().cuboid(-1.0F, -1.0F, -0.75F, 2.0F, 4.0F, 12.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.75F, -4.0F, -0.25F, -0.6109F, 0.0F, 0.0F));
 
-        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(23, 0).cuboid(-1.0F, 0.0F, -1.5F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -4.5F, 0.5F, -0.6109F, 0.0F, 0.0F));
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(22, 0).cuboid(-1.0F, 0.0F, -1.5F, 9.0F, 1.0F, 9.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -4.5F, 0.5F, -0.6109F, 0.0F, 0.0F));
 
-        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(20, 9).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, 0.0F, -1.5F));
+        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(19, 10).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 9.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, 0.0F, -1.5F));
 
-        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(23, 0).mirrored().cuboid(-8.0F, 0.0F, -1.5F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -4.5F, 0.5F, -0.6109F, 0.0F, 0.0F));
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(22, 0).mirrored().cuboid(-8.0F, 0.0F, -1.5F, 9.0F, 1.0F, 9.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -4.5F, 0.5F, -0.6109F, 0.0F, 0.0F));
 
-        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(20, 9).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, 0.0F, -1.5F));
+        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(19, 10).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 9.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, 0.0F, -1.5F));
 
         ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(15, 0).cuboid(-1.5F, -0.5F, 0.0F, 3.0F, 1.0F, 3.0F, new Dilation(0.0F))
             .uv(49, 0).cuboid(-1.5F, -0.5F, 3.0F, 3.0F, 1.0F, 2.0F, new Dilation(0.0F))
@@ -104,13 +104,15 @@ public class HawkEntityModel extends FlyingBirdEntityModel<HawkEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        if (!hawk.isFlying() && !hawk.isInsideWaterOrBubbleColumn()) {
+        if (hawk.isFlying()) {
+            this.animateMovement(HawkAnimations.FLAPPING, limbAngle, limbDistance, 1.5F, 1.5F);
+        }
+        else if (!hawk.isInsideWaterOrBubbleColumn()) {
             this.animateMovement(HawkAnimations.WALKING, limbAngle, limbDistance, 2.5F, 4F);
         }
         this.updateAnimation(hawk.standingState, HawkAnimations.STANDING, ageInTicks);
         this.updateAnimation(hawk.floatingState, HawkAnimations.FLOATING, ageInTicks);
         this.updateAnimation(hawk.glidingState, HawkAnimations.GLIDING, ageInTicks);
-        this.updateAnimation(hawk.flappingState, HawkAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

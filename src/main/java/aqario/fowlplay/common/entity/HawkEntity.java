@@ -31,7 +31,6 @@ import java.util.Optional;
 public class HawkEntity extends TrustingBirdEntity {
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
     public final AnimationState floatingState = new AnimationState();
     private int timeSinceLastFlap = this.getFlapFrequency();
     private int flapTime = 0;
@@ -147,33 +146,32 @@ public class HawkEntity extends TrustingBirdEntity {
     public void tick() {
         if (this.getWorld().isClient()) {
             this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+            this.glidingState.setRunning(this.isFlying(), this.age);
             if (this.isFlying()) {
                 if (this.timeSinceLastFlap > this.getFlapFrequency()) {
                     this.timeSinceLastFlap = 0;
                     this.flapTime++;
                 }
-                else if (this.flapTime > 0 && this.flapTime < 60) {
+                else if (this.isFlapping()) {
                     this.flapTime++;
-                    this.glidingState.stop();
-                    this.flappingState.startIfNotRunning(this.age);
                 }
                 else {
                     this.timeSinceLastFlap++;
                     this.flapTime = 0;
-                    this.flappingState.stop();
-                    this.glidingState.startIfNotRunning(this.age);
                 }
             }
             else {
                 this.timeSinceLastFlap = this.getFlapFrequency();
                 this.flapTime = 0;
-                this.flappingState.stop();
-                this.glidingState.stop();
             }
             this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
         super.tick();
+    }
+
+    private boolean isFlapping() {
+        return this.flapTime > 0 && this.flapTime < 60;
     }
 
     @Override
