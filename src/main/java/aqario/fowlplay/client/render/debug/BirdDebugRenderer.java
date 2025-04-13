@@ -8,6 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.debug.PathfindingDebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
@@ -43,8 +44,16 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
         if (!FowlPlayClient.DEBUG_BIRD) {
             return;
         }
+        this.removeRemovedBirds();
         this.draw(matrices, vertexConsumers, cameraX, cameraY, cameraZ);
         this.updateTargetedEntity();
+    }
+
+    private void removeRemovedBirds() {
+        this.birds.entrySet().removeIf(entry -> {
+            Entity entity = this.client.world.getEntityById(entry.getValue().entityId());
+            return entity == null || entity.isRemoved();
+        });
     }
 
     private void updateTargetedEntity() {
@@ -74,6 +83,8 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
         drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.name(), -1, 0.03F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "trusting: " + Arrays.toString(birdData.trusting().toArray()), -3355444, 0.02F);
+        i++;
+        drawString(matrices, vertexConsumers, birdData.pos(), i, "ambient: " + birdData.ambient(), -1, 0.02F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "move control: " + birdData.moveControl(), -1, 0.02F);
         i++;

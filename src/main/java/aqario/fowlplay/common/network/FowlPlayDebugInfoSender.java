@@ -59,7 +59,8 @@ public class FowlPlayDebugInfoSender {
             bird.getPos(),
             inventory,
             path,
-            trusting
+            trusting,
+            bird.isAmbient()
         );
         DebugBirdCustomPayload payload = new DebugBirdCustomPayload(data);
         sendToAll((ServerWorld) bird.getWorld(), payload);

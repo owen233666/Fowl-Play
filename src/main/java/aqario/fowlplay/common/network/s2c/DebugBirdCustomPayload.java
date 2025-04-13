@@ -47,7 +47,8 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         Vec3d pos,
         String inventory,
         @Nullable Path path,
-        List<String> trusting
+        List<String> trusting,
+        boolean ambient
     ) {
         public BirdData(PacketByteBuf buf) {
             this(
@@ -61,7 +62,8 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
                 buf.readVec3d(),
                 buf.readString(),
                 buf.readNullable(Path::fromBuf),
-                buf.readList(PacketByteBuf::readString)
+                buf.readList(PacketByteBuf::readString),
+                buf.readBoolean()
             );
         }
 
@@ -77,6 +79,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
             buf.writeString(this.inventory);
             buf.writeNullable(this.path, (bufx, path) -> path.toBuf(bufx));
             buf.writeCollection(this.trusting, PacketByteBuf::writeString);
+            buf.writeBoolean(this.ambient);
         }
     }
 }
