@@ -6,12 +6,12 @@ import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
 
 public class SparrowAnimations {
-    public static final Animation STANDING = Animation.Builder.create(1f).looping()
+    public static final Animation STANDING = Animation.Builder.create(0f).looping()
         .addBoneAnimation(
             "left_wing",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(-0.2f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(-0.2f, -0.25f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -25,7 +25,7 @@ public class SparrowAnimations {
             "right_wing",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0.2f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0.2f, -0.25f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -39,21 +39,21 @@ public class SparrowAnimations {
             "body",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(20f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(5f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0f, -0.35f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0f, -0.1f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-15f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-2.5f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -181,28 +181,28 @@ public class SparrowAnimations {
             "root",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0f, 1f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.06f, 1f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
             "root",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(35f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(25f, 0f, 0f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, -0.1f, 0.25f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.25f, -0.45f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(50f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(62.5f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -251,14 +251,14 @@ public class SparrowAnimations {
             "head",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 1f, -0.85f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.6f, -1f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "head",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-80f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-85f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -272,7 +272,7 @@ public class SparrowAnimations {
             "left_wing_open",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-1.53f, 2.31f, -13.2f), Transformation.Interpolations.CUBIC)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(8.47f, 2.31f, -13.2f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
@@ -293,7 +293,7 @@ public class SparrowAnimations {
             "right_wing_open",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-1.53f, -2.31f, 13.2f), Transformation.Interpolations.CUBIC)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(8.47f, -2.31f, 13.2f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
@@ -306,15 +306,29 @@ public class SparrowAnimations {
         .addBoneAnimation(
             "left_wing",
             new Transformation(
+                Transformation.Targets.TRANSLATE,
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(-0.25f, -0.15f, -0.25f), Transformation.Interpolations.LINEAR)
+            )
+        )
+        .addBoneAnimation(
+            "left_wing",
+            new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-10f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-4.8f, -3.46f, -6.66f), Transformation.Interpolations.LINEAR)
+            )
+        )
+        .addBoneAnimation(
+            "right_wing",
+            new Transformation(
+                Transformation.Targets.TRANSLATE,
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0.25f, -0.15f, -0.25f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "right_wing",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-10f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-4.8f, 3.46f, 6.66f), Transformation.Interpolations.LINEAR)
             )
         )
         .build();
@@ -325,7 +339,7 @@ public class SparrowAnimations {
             new Transformation(
                 Transformation.Targets.TRANSLATE,
                 new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.06f, 1f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.06766667f, AnimationHelper.createTranslationalVector(0f, 0.65f, 1.25f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.06667f, AnimationHelper.createTranslationalVector(0f, 0.4f, 1.01f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.16667f, AnimationHelper.createTranslationalVector(0f, 0.06f, 1f), Transformation.Interpolations.CUBIC)
             )
         )
@@ -333,23 +347,23 @@ public class SparrowAnimations {
             "root",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(35f, 0f, 0f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.06667f, AnimationHelper.createRotationalVector(40f, 0f, 0f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(35f, 0f, 0f), Transformation.Interpolations.CUBIC)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(25f, 0f, 0f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.06667f, AnimationHelper.createRotationalVector(30f, 0f, 0f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(25f, 0f, 0f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, -0.1f, 0.25f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.25f, -0.45f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "neck",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(50f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(62.5f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -400,14 +414,14 @@ public class SparrowAnimations {
             "head",
             new Transformation(
                 Transformation.Targets.TRANSLATE,
-                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 1f, -0.85f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.6f, -1f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
             "head",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(-80f, 0f, 0f), Transformation.Interpolations.LINEAR)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(-85f, 0f, 0f), Transformation.Interpolations.LINEAR)
             )
         )
         .addBoneAnimation(
@@ -415,7 +429,7 @@ public class SparrowAnimations {
             new Transformation(
                 Transformation.Targets.TRANSLATE,
                 new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.25f, 0f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.08333f, AnimationHelper.createTranslationalVector(0.5f, 0.5f, 0f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.08333f, AnimationHelper.createTranslationalVector(0.75f, -0.25f, 0f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.16667f, AnimationHelper.createTranslationalVector(0f, 0.25f, 0f), Transformation.Interpolations.CUBIC)
             )
         )
@@ -423,13 +437,14 @@ public class SparrowAnimations {
             "left_wing_open",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(1.2f, -12.78f, -47.55f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.01667f, AnimationHelper.createRotationalVector(5.76f, -7.27f, -36.54f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.04167f, AnimationHelper.createRotationalVector(10.98f, 8.63f, 4.57f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.08333f, AnimationHelper.createRotationalVector(18.52f, 29.85f, 59.94f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(-3.98f, 10.52f, 11.47f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.15f, AnimationHelper.createRotationalVector(-4.56f, -11.14f, -27.82f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(1.2f, -12.78f, -47.55f), Transformation.Interpolations.CUBIC)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(16.2f, -12.78f, -47.55f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.01667f, AnimationHelper.createRotationalVector(15.76f, -7.27f, -36.54f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.04167f, AnimationHelper.createRotationalVector(13.48f, 8.63f, 4.57f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.08333f, AnimationHelper.createRotationalVector(22.02f, 25.18f, 62.21f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(6.02f, 10.52f, 11.47f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.13333f, AnimationHelper.createRotationalVector(2.55f, 1.76f, -6.06f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.15f, AnimationHelper.createRotationalVector(5.44f, -11.14f, -27.82f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(16.2f, -12.78f, -47.55f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
@@ -440,8 +455,8 @@ public class SparrowAnimations {
                 new Keyframe(0.01667f, AnimationHelper.createRotationalVector(2.54f, -11.68f, -14.38f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.04167f, AnimationHelper.createRotationalVector(2.95f, -5.53f, -5.82f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.06667f, AnimationHelper.createRotationalVector(1.27f, -5.68f, -3.47f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(-11.11f, -19.08f, 52.48f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.15f, AnimationHelper.createRotationalVector(-13.77f, -24.38f, 59.11f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.10833f, AnimationHelper.createRotationalVector(-11.11f, -19.08f, 52.48f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.13333f, AnimationHelper.createRotationalVector(-13.77f, -24.38f, 59.11f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.16667f, AnimationHelper.createRotationalVector(2.78f, -17.69f, -10.64f), Transformation.Interpolations.CUBIC)
             )
         )
@@ -450,7 +465,7 @@ public class SparrowAnimations {
             new Transformation(
                 Transformation.Targets.TRANSLATE,
                 new Keyframe(0f, AnimationHelper.createTranslationalVector(0f, 0.25f, 0f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.08333f, AnimationHelper.createTranslationalVector(-0.5f, 0.5f, 0f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.08333f, AnimationHelper.createTranslationalVector(-0.75f, -0.25f, 0f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.16667f, AnimationHelper.createTranslationalVector(0f, 0.25f, 0f), Transformation.Interpolations.CUBIC)
             )
         )
@@ -458,13 +473,14 @@ public class SparrowAnimations {
             "right_wing_open",
             new Transformation(
                 Transformation.Targets.ROTATE,
-                new Keyframe(0f, AnimationHelper.createRotationalVector(1.2f, 12.78f, 47.55f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.01667f, AnimationHelper.createRotationalVector(5.76f, 7.27f, 36.54f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.04167f, AnimationHelper.createRotationalVector(10.98f, -8.63f, -4.57f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.08333f, AnimationHelper.createRotationalVector(18.52f, -29.85f, -59.94f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(-3.98f, -10.52f, -11.47f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.15f, AnimationHelper.createRotationalVector(-4.56f, 11.14f, 27.82f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(1.2f, 12.78f, 47.55f), Transformation.Interpolations.CUBIC)
+                new Keyframe(0f, AnimationHelper.createRotationalVector(16.2f, 12.78f, 47.55f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.01667f, AnimationHelper.createRotationalVector(15.76f, 7.27f, 36.54f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.04167f, AnimationHelper.createRotationalVector(13.48f, -8.63f, -4.57f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.08333f, AnimationHelper.createRotationalVector(22.02f, -25.18f, -62.21f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(6.02f, -10.52f, -11.47f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.13333f, AnimationHelper.createRotationalVector(2.55f, -1.76f, 6.06f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.15f, AnimationHelper.createRotationalVector(5.44f, 11.14f, 27.82f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.16667f, AnimationHelper.createRotationalVector(16.2f, 12.78f, 47.55f), Transformation.Interpolations.CUBIC)
             )
         )
         .addBoneAnimation(
@@ -475,8 +491,8 @@ public class SparrowAnimations {
                 new Keyframe(0.01667f, AnimationHelper.createRotationalVector(2.54f, 11.68f, 14.38f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.04167f, AnimationHelper.createRotationalVector(5.42f, 5.2f, 5.8f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.06667f, AnimationHelper.createRotationalVector(1.27f, 5.68f, 3.47f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.11667f, AnimationHelper.createRotationalVector(-11.11f, 19.08f, -52.48f), Transformation.Interpolations.CUBIC),
-                new Keyframe(0.15f, AnimationHelper.createRotationalVector(-13.77f, 24.38f, -59.11f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.10833f, AnimationHelper.createRotationalVector(-11.11f, 19.08f, -52.48f), Transformation.Interpolations.CUBIC),
+                new Keyframe(0.13333f, AnimationHelper.createRotationalVector(-13.77f, 24.38f, -59.11f), Transformation.Interpolations.CUBIC),
                 new Keyframe(0.16667f, AnimationHelper.createRotationalVector(2.78f, 17.69f, 10.64f), Transformation.Interpolations.CUBIC)
             )
         )

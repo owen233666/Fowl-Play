@@ -211,8 +211,8 @@ public final class FowlPlayEntityType {
                         FlyingBirdEntity::canSpawnPasserines
                     )
             )
-            .dimensions(0.4f, 0.55f)
-            .eyeHeight(0.475f)
+            .dimensions(0.3f, 0.45f)
+            .eyeHeight(0.4f)
     );
 
     private static <T extends Entity> EntityType<T> register(String id, FabricEntityType.Builder<T> builder) {

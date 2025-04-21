@@ -68,7 +68,7 @@ public final class FowlPlayItems {
     );
     public static final Item SPARROW_SPAWN_EGG = register(
         "sparrow_spawn_egg",
-        new SpawnEggItem(FowlPlayEntityType.SPARROW, 0x6B2F12, 0xBCAE91, new Item.Settings()),
+        new SpawnEggItem(FowlPlayEntityType.SPARROW, 0x5B3423, 0xBCAE91, new Item.Settings()),
         ItemGroups.SPAWN_EGGS
     );
 
