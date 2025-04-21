@@ -60,7 +60,7 @@ public final class Birds {
     }
 
     public static boolean shouldAvoid(Brain<?> brain, BirdEntity bird, LivingEntity target) {
-        if (!bird.shouldAvoid(target) || !shouldAvoidAttacker(brain, target)) {
+        if (!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
             return false;
         }
         if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
