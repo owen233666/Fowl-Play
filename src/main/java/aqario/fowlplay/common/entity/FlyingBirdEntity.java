@@ -179,23 +179,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     public float getPathfindingFavor(BlockPos pos, WorldView world) {
-        float perch = this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 1.0F : 0.0F;
-        float withinView = this.isWithinView(pos, 10.0F) ? 100.0F : 0.0F;
-        return perch + withinView;
-    }
-
-    public boolean isWithinView(BlockPos pos, float angle) {
-        Vec3d target = Vec3d.ofCenter(pos);
-        // bird to target
-        Vec3d targetVec = target.subtract(this.getPos());
-        targetVec = targetVec.normalize();
-
-        Vec3d lookVec = this.getRotationVec(1.0F);
-        float dotProduct = (float) lookVec.dotProduct(targetVec);
-
-        // if dot product >= cosine of max angle the angle is within the cone
-        float cosMaxAngle = MathHelper.cos(angle);
-        return dotProduct >= cosMaxAngle;
+        return this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 1.0F : 0.0F;
     }
 
     @Override

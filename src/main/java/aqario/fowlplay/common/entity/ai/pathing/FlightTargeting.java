@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.pathing;
 
+import aqario.fowlplay.common.util.Birds;
 import net.minecraft.entity.ai.FuzzyPositions;
 import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -37,13 +38,18 @@ public class FlightTargeting {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
         // the entity's path should be in the same direction as its look vector
         Vec3d direction = entity.getRotationVec(1);
+        // the angle within which the target position should be in regard to the entity's look vector
+        final double angle = 15.0;
         return FuzzyPositions.guessBest(() -> {
-            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, 5.0F * (Math.PI / 180));
+            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, angle * (Math.PI / 180));
             if (blockPos == null) {
                 return null;
             }
             BlockPos blockPos2 = towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
-            return blockPos2 == null ? null : validate(entity, blockPos2);
+            if (blockPos2 == null) {
+                return null;
+            }
+            return !Birds.isPosWithinViewAngle(entity, blockPos2, angle * (Math.PI / 180)) ? null : validate(entity, blockPos2);
         }, scorer);
     }
 

@@ -139,7 +139,7 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
 
         Vec3d target = FlightTargeting.findTo(
             (PathAwareEntity) entity,
-            24,
+            32,
             16,
             Vec3d.ofBottomCenter(targetPos)
         );

@@ -138,15 +138,14 @@ public class HawkBrain {
                 Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(3, LookAtMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, UpdateAttackTargetTask.create(hawk -> !hawk.isInsideWaterOrBubbleColumn(), HawkBrain::getAttackTarget)),
-                Pair.of(5, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
-                Pair.of(6, new RandomLookAroundTask(
+                Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
                     0.0F,
                     0.0F
                 )),
                 Pair.of(
-                    7,
+                    6,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
@@ -175,9 +174,8 @@ public class HawkBrain {
             ImmutableList.of(
                 Pair.of(1, FlightControlTask.tryStopFlying(hawk -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(HawkBrain::getAttackTarget)),
-                Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
-                    4,
+                    3,
                     new RandomTask<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
                         ImmutableList.of(
