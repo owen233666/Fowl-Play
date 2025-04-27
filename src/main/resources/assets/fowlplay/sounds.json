@@ -1,4 +1,12 @@
 {
+  "entity.bird.eat": {
+    "sounds": [
+      "mob/parrot/eat1",
+      "mob/parrot/eat2",
+      "mob/parrot/eat3"
+    ],
+    "subtitle": "subtitles.entity.bird.eat"
+  },
   "entity.blue_jay.call": {
     "sounds": [
       "fowlplay:mob/blue_jay/call1",

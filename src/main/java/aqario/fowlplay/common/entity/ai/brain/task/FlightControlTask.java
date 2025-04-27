@@ -32,27 +32,6 @@ public class FlightControlTask {
         );
     }
 
-    public static <E extends FlyingBirdEntity> Task<E> tryStopFlying(Predicate<E> shouldRun) {
-        return TaskTriggerer.task(
-            instance -> instance.group(
-                    instance.queryMemoryValue(FowlPlayMemoryModuleType.IS_FLYING),
-                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
-                )
-                .apply(
-                    instance,
-                    (flying, walkTarget) -> (world, bird, l) -> {
-                        if ((bird.isOnGround() || bird.isBelowWaterline()) && shouldRun.test(bird)) {
-                            bird.stopFlying();
-                            flying.forget();
-                            walkTarget.forget();
-                            return true;
-                        }
-                        return false;
-                    }
-                )
-        );
-    }
-
     public static <E extends FlyingBirdEntity> Task<E> stopFlying(Predicate<E> shouldRun) {
         return TaskTriggerer.task(
             instance -> instance.group(
@@ -64,8 +43,6 @@ public class FlightControlTask {
                     (flying, walkTarget) -> (world, bird, l) -> {
                         if (shouldRun.test(bird)) {
                             bird.stopFlying();
-                            flying.forget();
-                            walkTarget.forget();
                             return true;
                         }
                         return false;

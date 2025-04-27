@@ -6,6 +6,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public final class FowlPlaySoundEvents {
+    public static final SoundEvent ENTITY_BIRD_EAT = register("entity.bird.eat");
+
     public static final SoundEvent ENTITY_BLUE_JAY_CALL = register("entity.blue_jay.call");
     public static final SoundEvent ENTITY_BLUE_JAY_HURT = register("entity.blue_jay.hurt");
 

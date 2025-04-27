@@ -6,6 +6,7 @@ import aqario.fowlplay.common.network.FowlPlayDebugInfoSender;
 import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
+import aqario.fowlplay.core.FowlPlaySoundEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -25,7 +26,6 @@ import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -192,7 +192,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public boolean canTarget(LivingEntity target) {
-        return super.canTarget(target) && this.canAttack(target);
+        return super.canTarget(target) && (this.canAttack(target) || this.canHunt(target));
     }
 
     @Override
@@ -308,6 +308,13 @@ public abstract class BirdEntity extends AnimalEntity {
         }
     }
 
+    @Override
+    protected void playHurtSound(DamageSource damageSource) {
+        this.resetCallDelay();
+        this.resetSongDelay();
+        this.playSound(this.getHurtSound(damageSource), this.getCallVolume(), this.getSoundPitch());
+    }
+
     public int getCallDelay() {
         return 240;
     }
@@ -326,19 +333,6 @@ public abstract class BirdEntity extends AnimalEntity {
         return null;
     }
 
-    protected float getCallVolume() {
-        return 1.0F;
-    }
-
-    protected float getSongVolume() {
-        return 1.0F;
-    }
-
-    @Override
-    public SoundEvent getEatSound(ItemStack stack) {
-        return SoundEvents.ENTITY_PARROT_EAT;
-    }
-
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
@@ -349,6 +343,19 @@ public abstract class BirdEntity extends AnimalEntity {
     @Override
     protected SoundEvent getDeathSound() {
         return null;
+    }
+
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return FowlPlaySoundEvents.ENTITY_BIRD_EAT;
+    }
+
+    protected float getCallVolume() {
+        return 1.0F;
+    }
+
+    protected float getSongVolume() {
+        return 1.0F;
     }
 
     @Override

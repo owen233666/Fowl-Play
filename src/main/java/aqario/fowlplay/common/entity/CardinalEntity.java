@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -73,7 +74,7 @@ public class CardinalEntity extends FlyingBirdEntity {
             return false;
         }
         if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            CardinalBrain.onAttacked(this, entity);
+            Birds.onAttacked(this, entity);
         }
 
         return bl;

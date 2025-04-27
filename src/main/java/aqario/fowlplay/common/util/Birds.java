@@ -3,8 +3,10 @@ package aqario.fowlplay.common.util;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.TrustingBirdEntity;
+import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +14,7 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
@@ -21,9 +24,10 @@ import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
- * A utility class for bird entities.
+ * A utility class for birds.
  */
 public final class Birds {
     public static final float WALK_SPEED = 1.0F;
@@ -34,6 +38,10 @@ public final class Birds {
     public static final int WALK_RANGE = 16;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
+
+    public static <E> Predicate<E> truePredicate() {
+        return e -> true;
+    }
 
     public static boolean shouldFlyToTarget(FlyingBirdEntity bird, Vec3d target) {
         return bird.getPos().squaredDistanceTo(target) > WALK_RANGE * WALK_RANGE;
@@ -65,6 +73,40 @@ public final class Birds {
     public static boolean notFlightless(Entity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.BIRDS)
             && !entity.getType().isIn(FowlPlayEntityTypeTags.FLIGHTLESS);
+    }
+
+    public static <T extends BirdEntity> void onAttacked(T bird, LivingEntity attacker) {
+        if (attacker.getType() == bird.getType()) {
+            return;
+        }
+        Brain<?> brain = bird.getBrain();
+        brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
+        if (attacker instanceof PlayerEntity player) {
+            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
+            if (bird instanceof TrustingBirdEntity trustingBird && trustingBird.trusts(player)) {
+                trustingBird.stopTrusting(player);
+                brain.remember(MemoryModuleType.AVOID_TARGET, player, 600L);
+            }
+        }
+        alertOthers(bird, attacker);
+    }
+
+    public static <T extends BirdEntity> void alertOthers(T bird, LivingEntity attacker) {
+        getNearbyVisibleAdults(bird).forEach(other -> {
+            if (attacker instanceof PlayerEntity) {
+                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
+            }
+            startAvoiding((BirdEntity) other, attacker);
+        });
+    }
+
+    public static <T extends BirdEntity> void startAvoiding(T bird, LivingEntity target) {
+        bird.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+        bird.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
+    }
+
+    public static <T extends BirdEntity> List<? extends PassiveEntity> getNearbyVisibleAdults(T bird) {
+        return bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
     }
 
     public static boolean canPickupFood(BirdEntity bird) {

@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,18 +22,18 @@ public class AttackTargetSensor extends Sensor<BirdEntity> {
             brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);
             return;
         }
-        Optional<LivingEntity> attackTarget = visibleMobs.get().stream(bird::canAttack)
+        List<LivingEntity> attackTarget = visibleMobs.get().stream(bird::canAttack)
             .filter(entity -> canAttack(bird, entity))
-            .findFirst();
-        if (attackTarget.isPresent()) {
-            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, attackTarget.get());
+            .toList();
+        if (!attackTarget.isEmpty()) {
+            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, attackTarget.getFirst());
             return;
         }
-        Optional<LivingEntity> huntTarget = visibleMobs.get().stream(bird::canHunt)
+        List<LivingEntity> huntTarget = visibleMobs.get().stream(bird::canHunt)
             .filter(entity -> canHunt(bird, entity))
-            .findFirst();
-        if (huntTarget.isPresent()) {
-            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, huntTarget.get());
+            .toList();
+        if (!huntTarget.isEmpty()) {
+            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, huntTarget.getFirst());
             return;
         }
         brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);

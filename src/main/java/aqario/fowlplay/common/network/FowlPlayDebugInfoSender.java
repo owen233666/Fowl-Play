@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.NameGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class FowlPlayDebugInfoSender {
         }
 
         Brain<?> brain = bird.getBrain();
+        String name = NameGenerator.name(bird);
         String inventory = "";
         Path path = null;
         if (bird instanceof InventoryOwner inventoryOwner) {
@@ -51,7 +53,7 @@ public class FowlPlayDebugInfoSender {
         DebugBirdCustomPayload.BirdData data = new DebugBirdCustomPayload.BirdData(
             bird.getUuid(),
             bird.getId(),
-            bird.getName().getString(),
+            name,
             bird.getMoveControl().getClass().getSimpleName(),
             bird.getNavigation().getClass().getSimpleName(),
             bird.getHealth(),

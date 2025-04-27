@@ -174,7 +174,6 @@ public class CrowBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightControlTask.tryStopFlying(crow -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(CrowBrain::getAttackTarget)),
                 Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(

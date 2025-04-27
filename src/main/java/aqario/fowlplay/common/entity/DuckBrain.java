@@ -176,7 +176,6 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightControlTask.tryStopFlying(duck -> true)),
                 Pair.of(2, UpdateAttackTargetTask.create(DuckBrain::getAttackTarget)),
                 Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(

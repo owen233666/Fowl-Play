@@ -166,7 +166,6 @@ public class BlueJayBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightControlTask.tryStopFlying(blueJay -> true)),
                 Pair.of(2, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     3,

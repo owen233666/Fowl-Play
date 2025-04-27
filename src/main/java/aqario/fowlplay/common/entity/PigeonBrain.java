@@ -176,7 +176,6 @@ public class PigeonBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(1, FlightControlTask.tryStopFlying(pigeon -> true)),
                 Pair.of(2, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     3,
@@ -204,7 +203,7 @@ public class PigeonBrain {
             ImmutableList.of(
                 FlightControlTask.stopFlying(PigeonBrain::shouldStopFlyingToRecipient),
                 FlightControlTask.startFlying(PigeonBrain::shouldFlyToRecipient),
-                DeliverBundleTask.run(pigeon -> true, pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.WALK_SPEED)
+                DeliverBundleTask.run(Birds.truePredicate(), pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.WALK_SPEED)
             ),
             FowlPlayMemoryModuleType.RECIPIENT
         );
@@ -215,7 +214,7 @@ public class PigeonBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightControlTask.startFlying(pigeon -> true),
+                FlightControlTask.startFlying(Birds.truePredicate()),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,

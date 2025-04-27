@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
+import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import net.minecraft.block.BlockState;
@@ -9,6 +10,8 @@ import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
@@ -222,6 +225,9 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.setFlying(false);
         this.setNavigation(false);
         this.getNavigation().stop();
+        Brain<?> brain = this.getBrain();
+        brain.forget(FowlPlayMemoryModuleType.IS_FLYING);
+        brain.forget(MemoryModuleType.WALK_TARGET);
     }
 
     public boolean isFlying() {

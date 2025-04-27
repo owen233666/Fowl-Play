@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.server.world.ServerWorld;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,13 +22,13 @@ public class AvoidTargetSensor extends Sensor<BirdEntity> {
             brain.forget(MemoryModuleType.AVOID_TARGET);
             return;
         }
-        Optional<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> Birds.shouldAvoid(brain, bird, entity)).findFirst();
+        List<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> Birds.shouldAvoid(brain, bird, entity)).toList();
 
         if (avoidTarget.isEmpty()) {
             brain.forget(MemoryModuleType.AVOID_TARGET);
             return;
         }
-        brain.remember(MemoryModuleType.AVOID_TARGET, avoidTarget.get());
+        brain.remember(MemoryModuleType.AVOID_TARGET, avoidTarget.getFirst());
     }
 
     @Override
