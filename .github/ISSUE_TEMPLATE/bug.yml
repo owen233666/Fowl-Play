@@ -15,7 +15,7 @@ body:
   - type: dropdown
     id: version
     attributes:
-      label: Version and loader
+      label: "Version"
       options:
         - 1.21.1 - Fabric
         - 1.21.1 - NeoForge
@@ -28,7 +28,7 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: "Add a description"
+      label: "Description"
       placeholder: "
       - Clearly describe what the issue is and how to reproduce it (if possible)\n
       - Include the latest log if the issue causes a crash (found in <instance>/logs/latest.log)\n

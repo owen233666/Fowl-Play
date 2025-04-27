@@ -152,9 +152,4 @@ public final class Birds {
         return entity.getWorld().getBlockState(entity.getBlockPos()).isIn(FowlPlayBlockTags.PERCHES)
             || entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PERCHES);
     }
-
-    public static boolean noFoodInRange(BirdEntity bird) {
-        Optional<ItemEntity> item = bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(bird, ITEM_PICK_UP_RANGE);
-    }
 }

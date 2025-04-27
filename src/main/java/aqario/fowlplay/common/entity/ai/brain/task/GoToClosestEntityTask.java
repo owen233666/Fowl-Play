@@ -36,9 +36,7 @@ public class GoToClosestEntityTask {
                             walkTarget.remember(newWalkTarget);
                             return true;
                         }
-                        else {
-                            return false;
-                        }
+                        return false;
                     }
                 )
         );
