@@ -99,6 +99,12 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setFlying(nbt.getBoolean("flying"));
+        if (this.isFlying()) {
+            this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
+        }
+        else {
+            this.getBrain().forget(FowlPlayMemoryModuleType.IS_FLYING);
+        }
     }
 
     public abstract int getFlapFrequency();
