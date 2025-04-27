@@ -78,19 +78,6 @@ public class RavenEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            RavenBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public boolean isBaby() {
         return false;
     }

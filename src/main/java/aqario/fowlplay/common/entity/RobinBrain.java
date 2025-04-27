@@ -6,15 +6,11 @@ import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySensorType;
-import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -22,13 +18,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -37,10 +28,9 @@ public class RobinBrain {
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
-        SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.ATTACKED,
         FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
-        FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.AVOID_TARGETS,
         FowlPlaySensorType.NEARBY_ADULTS
     );
@@ -130,7 +120,7 @@ public class RobinBrain {
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.ROBIN, Birds.WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
-                Pair.of(3, LookAtMobTask.create(RobinBrain::isPlayerHoldingFood, 32.0F)),
+                Pair.of(3, FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F)),
                 Pair.of(4, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
@@ -190,7 +180,7 @@ public class RobinBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightControlTask.startFlying(robin -> true),
+                FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     robin -> robin.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
@@ -215,56 +205,12 @@ public class RobinBrain {
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )),
-                Pair.of(2, ForgetTask.create(RobinBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.create(Predicate.not(Birds::canPickupFood), FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
                 Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
             )
         );
-    }
-
-    public static void onAttacked(RobinEntity robin, LivingEntity attacker) {
-        if (attacker instanceof RobinEntity) {
-            return;
-        }
-        Brain<RobinEntity> brain = robin.getBrain();
-        brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
-        if (attacker instanceof PlayerEntity) {
-            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-        }
-        brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 160L);
-        alertOthers(robin, attacker);
-    }
-
-    protected static void alertOthers(RobinEntity robin, LivingEntity attacker) {
-        getNearbyVisibleRobins(robin).forEach(other -> {
-            if (attacker instanceof PlayerEntity) {
-                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-            }
-            runAwayFrom((RobinEntity) other, attacker);
-        });
-    }
-
-    protected static void runAwayFrom(RobinEntity robin, LivingEntity target) {
-        robin.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        robin.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
-    }
-
-    protected static List<? extends PassiveEntity> getNearbyVisibleRobins(RobinEntity robin) {
-        return robin.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
-    }
-
-    private static boolean noFoodInRange(RobinEntity robin) {
-        Optional<ItemEntity> item = robin.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(robin, Birds.ITEM_PICK_UP_RANGE);
-    }
-
-    public static boolean isPlayerHoldingFood(LivingEntity target) {
-        return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    public static Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.ROBIN_FOOD);
     }
 }

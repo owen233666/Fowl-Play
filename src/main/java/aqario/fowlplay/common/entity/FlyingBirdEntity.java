@@ -24,6 +24,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -219,6 +220,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void startFlying() {
         this.setFlying(true);
         this.setNavigation(true);
+        this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
     }
 
     public void stopFlying() {

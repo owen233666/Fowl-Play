@@ -6,15 +6,11 @@ import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySensorType;
-import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -22,13 +18,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -37,10 +28,9 @@ public class DuckBrain {
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
-        SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.ATTACKED,
         FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
-        FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEARBY_ADULTS,
         FowlPlaySensorType.TEMPTING_PLAYER,
         FowlPlaySensorType.AVOID_TARGETS,
@@ -138,8 +128,8 @@ public class DuckBrain {
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.DUCK, Birds.WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
-                Pair.of(3, LookAtMobTask.create(DuckBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, UpdateAttackTargetTask.create(duck -> !duck.isInsideWaterOrBubbleColumn(), DuckBrain::getAttackTarget)),
+                Pair.of(3, FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F)),
+                Pair.of(4, UpdateAttackTargetTask.create(duck -> !duck.isInsideWaterOrBubbleColumn(), Birds::getAttackTarget)),
                 Pair.of(5, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED)),
                 Pair.of(6, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
@@ -176,7 +166,7 @@ public class DuckBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(2, UpdateAttackTargetTask.create(DuckBrain::getAttackTarget)),
+                Pair.of(2, UpdateAttackTargetTask.create(Birds::getAttackTarget)),
                 Pair.of(3, GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED)),
                 Pair.of(
                     4,
@@ -202,7 +192,7 @@ public class DuckBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightControlTask.startFlying(duck -> true),
+                FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     duck -> duck.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
@@ -227,7 +217,7 @@ public class DuckBrain {
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )),
-                Pair.of(2, ForgetTask.create(DuckBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.create(Predicate.not(Birds::canPickupFood), FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
@@ -241,7 +231,7 @@ public class DuckBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
-                FlightControlTask.startFlying(duck -> true),
+                FlightControlTask.startFlying(),
                 ForgetAttackTargetTask.create(),
                 RangedApproachTask.create(Birds.FLY_SPEED),
                 MeleeAttackTask.create(20),
@@ -249,55 +239,5 @@ public class DuckBrain {
             ),
             MemoryModuleType.ATTACK_TARGET
         );
-    }
-
-    private static Optional<? extends LivingEntity> getAttackTarget(DuckEntity duck) {
-        return LookTargetUtil.hasBreedTarget(duck) ? Optional.empty() : duck.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
-    }
-
-    public static void onAttacked(DuckEntity duck, LivingEntity attacker) {
-        if (attacker instanceof DuckEntity) {
-            return;
-        }
-        Brain<DuckEntity> brain = duck.getBrain();
-        brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
-        if (attacker instanceof PlayerEntity player) {
-            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-            duck.stopTrusting(player);
-        }
-        brain.remember(MemoryModuleType.AVOID_TARGET, attacker, 160L);
-        alertOthers(duck, attacker);
-    }
-
-    protected static void alertOthers(DuckEntity duck, LivingEntity attacker) {
-        getNearbyVisibleDucks(duck).forEach(other -> {
-            if (attacker instanceof PlayerEntity player) {
-                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-                ((DuckEntity) other).stopTrusting(player);
-            }
-            runAwayFrom((DuckEntity) other, attacker);
-        });
-    }
-
-    protected static void runAwayFrom(DuckEntity duck, LivingEntity target) {
-        duck.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        duck.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, 160L);
-    }
-
-    protected static List<? extends PassiveEntity> getNearbyVisibleDucks(DuckEntity duck) {
-        return duck.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
-    }
-
-    private static boolean noFoodInRange(DuckEntity duck) {
-        Optional<ItemEntity> item = duck.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(duck, Birds.ITEM_PICK_UP_RANGE);
-    }
-
-    public static boolean isPlayerHoldingFood(LivingEntity target) {
-        return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    public static Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.DUCK_FOOD);
     }
 }

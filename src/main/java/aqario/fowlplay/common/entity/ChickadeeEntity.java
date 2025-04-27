@@ -74,19 +74,6 @@ public class ChickadeeEntity extends FlyingBirdEntity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            ChickadeeBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public float getWaterline() {
         return 0.35F;
     }

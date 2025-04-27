@@ -140,19 +140,6 @@ public class GullEntity extends TrustingBirdEntity implements VariantHolder<Regi
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            GullBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public boolean isBaby() {
         return false;
     }

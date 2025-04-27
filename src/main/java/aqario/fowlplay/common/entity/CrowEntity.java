@@ -78,19 +78,6 @@ public class CrowEntity extends TrustingBirdEntity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            CrowBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public boolean isBaby() {
         return false;
     }

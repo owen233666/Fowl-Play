@@ -99,19 +99,6 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            SparrowBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public float getWaterline() {
         return 0.45F;
     }

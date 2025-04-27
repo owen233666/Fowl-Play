@@ -6,21 +6,17 @@ import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySensorType;
-import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
@@ -34,8 +30,8 @@ public class PenguinBrain {
     private static final ImmutableList<SensorType<? extends Sensor<? super PenguinEntity>>> SENSORS = ImmutableList.of(
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
-        SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.ATTACKED,
         FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
         FowlPlaySensorType.TEMPTING_PLAYER,
         FowlPlaySensorType.ATTACK_TARGETS
@@ -125,11 +121,11 @@ public class PenguinBrain {
             ImmutableList.of(
                 Pair.of(0, SwimControlTask.startSwimming()),
                 Pair.of(1, new BreedTask(FowlPlayEntityType.PENGUIN, Birds.WALK_SPEED, 10)),
-                Pair.of(2, LookAtMobTask.create(EntityType.PLAYER, 32.0F)),
+                Pair.of(2, FindLookTargetTask.create(EntityType.PLAYER, 32.0F)),
                 Pair.of(3, new TemptTask(penguin -> Birds.WALK_SPEED)),
                 Pair.of(4, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
                 Pair.of(5, new RandomLookAroundTask(UniformIntProvider.create(150, 250), 30.0F, 0.0F, 0.0F)),
-                Pair.of(6, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
+                Pair.of(6, UpdateAttackTargetTask.create(Birds::getAttackTarget)),
                 Pair.of(
                     7,
                     new RandomTask<>(
@@ -158,7 +154,7 @@ public class PenguinBrain {
             ImmutableList.of(
                 Pair.of(0, SwimControlTask.stopSwimming()),
                 Pair.of(1, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.SWIM_SPEED)),
-                Pair.of(2, UpdateAttackTargetTask.create(PenguinBrain::getAttackTarget)),
+                Pair.of(2, UpdateAttackTargetTask.create(Birds::getAttackTarget)),
                 Pair.of(
                     3,
                     new RandomTask<>(
@@ -190,7 +186,7 @@ public class PenguinBrain {
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                ForgetTask.create(PenguinBrain::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD)
+                ForgetTask.create(Predicate.not(Birds::canPickupFood), FowlPlayMemoryModuleType.SEES_FOOD)
             ),
             FowlPlayMemoryModuleType.SEES_FOOD
         );
@@ -222,19 +218,6 @@ public class PenguinBrain {
                 Pair.of(SeekWaterTask.create(32, Birds.WALK_SPEED), 2)
             )
         );
-    }
-
-    private static Optional<? extends LivingEntity> getAttackTarget(PenguinEntity penguin) {
-        return LookTargetUtil.hasBreedTarget(penguin) ? Optional.empty() : penguin.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
-    }
-
-    private static boolean noFoodInRange(PenguinEntity penguin) {
-        Optional<ItemEntity> item = penguin.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        return item.isEmpty() || !item.get().isInRange(penguin, Birds.ITEM_PICK_UP_RANGE);
-    }
-
-    public static Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.PENGUIN_FOOD);
     }
 
     public static class PenguinSwimTask {

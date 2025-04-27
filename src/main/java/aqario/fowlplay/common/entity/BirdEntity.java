@@ -312,7 +312,10 @@ public abstract class BirdEntity extends AnimalEntity {
     protected void playHurtSound(DamageSource damageSource) {
         this.resetCallDelay();
         this.resetSongDelay();
-        this.playSound(this.getHurtSound(damageSource), this.getCallVolume(), this.getSoundPitch());
+        SoundEvent hurt = this.getHurtSound(damageSource);
+        if (hurt != null) {
+            this.playSound(hurt, this.getCallVolume(), this.getSoundPitch());
+        }
     }
 
     public int getCallDelay() {

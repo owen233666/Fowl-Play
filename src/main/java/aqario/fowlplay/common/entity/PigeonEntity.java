@@ -127,19 +127,6 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            PigeonBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public float getWaterline() {
         return 0.45F;
     }

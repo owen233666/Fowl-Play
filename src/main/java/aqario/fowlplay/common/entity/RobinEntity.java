@@ -110,19 +110,6 @@ public class RobinEntity extends FlyingBirdEntity implements VariantHolder<Robin
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean bl = super.damage(source, amount);
-        if (this.getWorld().isClient) {
-            return false;
-        }
-        if (bl && source.getAttacker() instanceof LivingEntity entity) {
-            RobinBrain.onAttacked(this, entity);
-        }
-
-        return bl;
-    }
-
-    @Override
     public float getWaterline() {
         return 0.45F;
     }

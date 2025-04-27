@@ -8,10 +8,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.task.*;
 
 public class CompositeTasks {
-    public static ImmutableList<Pair<SingleTickTask<LivingEntity>, Integer>> createLookTasks(EntityType<? extends LivingEntity> type) {
+    public static ImmutableList<Pair<SingleTickTask<BirdEntity>, Integer>> createLookTasks(EntityType<? extends LivingEntity> type) {
         return ImmutableList.of(
-            Pair.of(LookAtMobTask.create(type, 8.0F), 1),
-            Pair.of(LookAtMobTask.create(8.0F), 1)
+            Pair.of(FindLookTargetTask.create(type, 8.0F), 1),
+            Pair.of(FindLookTargetTask.create(8.0F), 1)
         );
     }
 

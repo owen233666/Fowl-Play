@@ -14,11 +14,14 @@ public final class FowlPlaySensorType {
     public static final SensorType<NearestVisibleAdultsSensor> NEARBY_ADULTS = register("nearest_adults",
         NearestVisibleAdultsSensor::new
     );
-    public static final SensorType<NearbyLivingEntitiesSensor<BirdEntity>> NEARBY_LIVING_ENTITIES = register(
-        "nearby_living_entities", NearbyLivingEntitiesSensor::new
+    public static final SensorType<NearbyLivingEntitiesSensor<BirdEntity>> NEARBY_LIVING_ENTITIES = register("nearby_living_entities",
+        NearbyLivingEntitiesSensor::new
     );
     public static final SensorType<TemptingPlayerSensor> TEMPTING_PLAYER = register("tempting_player",
         TemptingPlayerSensor::new
+    );
+    public static final SensorType<AttackedSensor> ATTACKED = register("attacked",
+        AttackedSensor::new
     );
     public static final SensorType<AvoidTargetSensor> AVOID_TARGETS = register("avoid_targets",
         AvoidTargetSensor::new
@@ -28,9 +31,6 @@ public final class FowlPlaySensorType {
     );
     public static final SensorType<PigeonSpecificSensor> PIGEON_SPECIFIC_SENSOR = register("pigeon_specific_sensor",
         PigeonSpecificSensor::new
-    );
-    public static final SensorType<FlyingStateSensor> IS_FLYING = register("is_flying",
-        FlyingStateSensor::new
     );
 
     private static <U extends Sensor<?>> SensorType<U> register(String id, Supplier<U> factory) {

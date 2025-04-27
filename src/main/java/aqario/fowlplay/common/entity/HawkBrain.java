@@ -6,13 +6,10 @@ import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySensorType;
-import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -20,11 +17,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -33,10 +27,9 @@ public class HawkBrain {
         SensorType.NEAREST_PLAYERS,
         SensorType.NEAREST_ITEMS,
         SensorType.NEAREST_ADULT,
-        SensorType.HURT_BY,
         SensorType.IS_IN_WATER,
+        FowlPlaySensorType.ATTACKED,
         FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
-        FowlPlaySensorType.IS_FLYING,
         FowlPlaySensorType.NEARBY_ADULTS,
         FowlPlaySensorType.TEMPTING_PLAYER,
         FowlPlaySensorType.AVOID_TARGETS,
@@ -135,8 +128,8 @@ public class HawkBrain {
             ImmutableList.of(
                 Pair.of(1, new BreedTask(FowlPlayEntityType.HAWK, Birds.WALK_SPEED, 20)),
                 Pair.of(2, WalkTowardClosestAdultTask.create(Birds.FOLLOW_ADULT_RANGE, Birds.WALK_SPEED)),
-                Pair.of(3, LookAtMobTask.create(HawkBrain::isPlayerHoldingFood, 32.0F)),
-                Pair.of(4, UpdateAttackTargetTask.create(Birds.truePredicate(), HawkBrain::getAttackTarget)),
+                Pair.of(3, FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F)),
+                Pair.of(4, UpdateAttackTargetTask.create(Birds.truePredicate(), Birds::getAttackTarget)),
                 Pair.of(5, new RandomLookAroundTask(
                     UniformIntProvider.create(150, 250),
                     30.0F,
@@ -171,7 +164,7 @@ public class HawkBrain {
         brain.setTaskList(
             FowlPlayActivities.FLY,
             ImmutableList.of(
-                Pair.of(2, UpdateAttackTargetTask.create(HawkBrain::getAttackTarget)),
+                Pair.of(2, UpdateAttackTargetTask.create(Birds::getAttackTarget)),
                 Pair.of(
                     3,
                     new RandomTask<>(
@@ -196,7 +189,7 @@ public class HawkBrain {
         brain.setTaskList(
             FowlPlayActivities.PERCH,
             ImmutableList.of(
-                Pair.of(2, UpdateAttackTargetTask.create(HawkBrain::getAttackTarget)),
+                Pair.of(2, UpdateAttackTargetTask.create(Birds::getAttackTarget)),
                 Pair.of(
                     3,
                     new RandomTask<>(
@@ -222,7 +215,7 @@ public class HawkBrain {
             Activity.AVOID,
             10,
             ImmutableList.of(
-                FlightControlTask.startFlying(Birds.truePredicate()),
+                FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     hawk -> hawk.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
@@ -247,7 +240,7 @@ public class HawkBrain {
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )),
-                Pair.of(2, ForgetTask.create(Birds::noFoodInRange, FowlPlayMemoryModuleType.SEES_FOOD))
+                Pair.of(2, ForgetTask.create(Predicate.not(Birds::canPickupFood), FowlPlayMemoryModuleType.SEES_FOOD))
             ),
             Set.of(
                 Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT),
@@ -262,7 +255,7 @@ public class HawkBrain {
             Activity.FIGHT,
             0,
             ImmutableList.of(
-                FlightControlTask.startFlying(Birds.truePredicate()),
+                FlightControlTask.startFlying(),
                 ForgetAttackTargetTask.create(),
                 GoToAttackTargetTask.create(hawk -> hawk.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED),
                 MeleeAttackTask.create(20),
@@ -270,32 +263,5 @@ public class HawkBrain {
             ),
             MemoryModuleType.ATTACK_TARGET
         );
-    }
-
-    private static Optional<? extends LivingEntity> getAttackTarget(HawkEntity hawk) {
-        return LookTargetUtil.hasBreedTarget(hawk) ? Optional.empty() : hawk.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
-    }
-
-    public static void onAttacked(HawkEntity hawk, LivingEntity attacker) {
-        if (attacker instanceof HawkEntity) {
-            return;
-        }
-        Brain<HawkEntity> brain = hawk.getBrain();
-        brain.forget(FowlPlayMemoryModuleType.SEES_FOOD);
-        if (attacker instanceof PlayerEntity player) {
-            brain.remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, 1200L);
-            if (hawk.trusts(player)) {
-                hawk.stopTrusting(player);
-                brain.remember(MemoryModuleType.AVOID_TARGET, player, 600L);
-            }
-        }
-    }
-
-    public static boolean isPlayerHoldingFood(LivingEntity target) {
-        return target.getType() == EntityType.PLAYER && target.isHolding(stack -> getFood().test(stack));
-    }
-
-    public static Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.HAWK_FOOD);
     }
 }
