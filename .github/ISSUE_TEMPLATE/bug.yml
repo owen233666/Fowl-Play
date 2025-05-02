@@ -10,9 +10,9 @@ body:
       value: |
         <br/>
         
-        ### Read before making an issue‼️
+        ### ‼️Read before making an issue‼️
         
-        1. Check that the problem isn't answered in the **"Important Information"** section of the mod description.
+        1. Check that the problem isn't answered in the **"Important Information"** section of the [mod description](https://modrinth.com/mod/fowlplay).
         2. If you are using Forge or NeoForge, make sure this isn't a problem with Sinytra Connector.
         3. Use the search function to confirm your issue doesn't already exist.
         4. Make sure you are on the latest version of the mod.
