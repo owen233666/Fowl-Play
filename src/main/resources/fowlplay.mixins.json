@@ -9,7 +9,6 @@
     "HorizontalConnectingBlockMixin",
     "LivingEntityMixin",
     "PowderSnowBlockMixin",
-    "SensorMixin",
     "SoundCategoryMixin",
     "SpawnGroupMixin",
     "SpawnHelperMixin",

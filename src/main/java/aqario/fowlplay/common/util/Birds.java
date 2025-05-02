@@ -38,8 +38,8 @@ public final class Birds {
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
     public static final int WALK_RANGE = 16;
-    public static final long AVOID_TICKS = 160L;
-    public static final long CANNOT_PICKUP_FOOD_TICKS = 1200L;
+    public static final int AVOID_TICKS = 160;
+    public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
@@ -115,14 +115,15 @@ public final class Birds {
             return false;
         }
         List<LivingEntity> avoidTargets = visibleMobs.get().stream(entity -> true)
-            .filter(entity -> shouldAvoid(brain, bird, entity))
+            .filter(entity -> shouldAvoid(bird, entity))
             .filter(entity -> entity.isInRange(wantedItem.get(), bird.getFleeRange(entity)))
             .toList();
 
         return avoidTargets.isEmpty();
     }
 
-    public static boolean shouldAvoid(Brain<?> brain, BirdEntity bird, LivingEntity target) {
+    public static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
+        Brain<?> brain = bird.getBrain();
         if (!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
             return false;
         }
@@ -146,6 +147,14 @@ public final class Birds {
 
     public static Optional<? extends LivingEntity> getAttackTarget(BirdEntity bird) {
         return LookTargetUtil.hasBreedTarget(bird) ? Optional.empty() : bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+    }
+
+    public static boolean canAttack(BirdEntity bird) {
+        return !bird.isInsideWaterOrBubbleColumn() && !LookTargetUtil.hasBreedTarget(bird);
+    }
+
+    public static boolean canAquaticAttack(BirdEntity bird) {
+        return !LookTargetUtil.hasBreedTarget(bird);
     }
 
     public static boolean isPerched(BirdEntity entity) {

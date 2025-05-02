@@ -28,6 +28,10 @@ repositories {
     maven {
         url = "https://maven.architectury.dev/"
     }
+    maven {
+        name = "SmartBrainLib (SBL) Maven Repo"
+        url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+    }
 }
 
 dependencies {
@@ -69,6 +73,9 @@ dependencies {
 
     // Observable
     modRuntimeOnly("maven.modrinth:observable:${project.observable_version}")
+
+    // Smart Brain Lib
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}"
 
     // Yet Another Config Lib
     modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}")

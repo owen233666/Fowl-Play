@@ -2,37 +2,41 @@ package aqario.fowlplay.common.entity.ai.brain.sensor;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.core.FowlPlaySensorType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.function.BiPredicate;
 
-public class AvoidTargetSensor extends Sensor<BirdEntity> {
+public class AvoidTargetSensor<E extends BirdEntity> extends EntityFilteringSensor<LivingEntity, E> {
     @Override
-    protected void sense(ServerWorld world, BirdEntity bird) {
-        Brain<?> brain = bird.getBrain();
-        Optional<LivingTargetCache> visibleMobs = brain.getOptionalRegisteredMemory(MemoryModuleType.VISIBLE_MOBS);
-        if (visibleMobs.isEmpty()) {
-            brain.forget(MemoryModuleType.AVOID_TARGET);
-            return;
-        }
-        List<LivingEntity> avoidTarget = visibleMobs.get().stream(entity -> Birds.shouldAvoid(brain, bird, entity)).toList();
-
-        if (avoidTarget.isEmpty()) {
-            brain.forget(MemoryModuleType.AVOID_TARGET);
-            return;
-        }
-        brain.remember(MemoryModuleType.AVOID_TARGET, avoidTarget.getFirst());
+    protected MemoryModuleType<LivingEntity> getMemory() {
+        return MemoryModuleType.AVOID_TARGET;
     }
 
     @Override
-    public Set<MemoryModuleType<?>> getOutputMemoryModules() {
-        return Set.of(MemoryModuleType.AVOID_TARGET);
+    public List<MemoryModuleType<?>> memoriesUsed() {
+        return List.of(this.getMemory(), MemoryModuleType.VISIBLE_MOBS);
+    }
+
+    @Override
+    public SensorType<? extends ExtendedSensor<?>> type() {
+        return FowlPlaySensorType.AVOID_TARGETS;
+    }
+
+    @Override
+    protected BiPredicate<LivingEntity, E> predicate() {
+        return (target, self) -> Birds.shouldAvoid(self, target);
+    }
+
+    @Override
+    protected @Nullable LivingEntity findMatches(E entity, LivingTargetCache matcher) {
+        return matcher.findFirst(target -> predicate().test(target, entity)).orElse(null);
     }
 }

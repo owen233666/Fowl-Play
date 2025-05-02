@@ -2,51 +2,43 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.Task;
-import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 import net.minecraft.util.Unit;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 /**
  * A collection of tasks that control the swimming behavior of birds.
  */
 public class SwimControlTask {
-    public static <E extends BirdEntity> Task<E> startSwimming() {
-        return TaskTriggerer.task(
-            instance -> instance.group(
-                    instance.queryMemoryAbsent(MemoryModuleType.IS_IN_WATER),
-                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
-                )
-                .apply(
-                    instance,
-                    (swimming, walkTarget) -> (world, bird, l) -> {
-                        if (bird.isInsideWaterOrBubbleColumn()) {
-                            swimming.remember(Unit.INSTANCE);
-                            walkTarget.forget();
-                            return true;
-                        }
-                        return false;
-                    }
-                )
+    public static <E extends BirdEntity> SingleTickBehaviour<E> startSwimming() {
+        return new SingleTickBehaviour<>(
+            MemoryTest.builder(2)
+                .noMemory(MemoryModuleType.IS_IN_WATER)
+                .usesMemory(MemoryModuleType.WALK_TARGET),
+            (bird, brain) -> {
+                if (bird.isInsideWaterOrBubbleColumn()) {
+                    BrainUtils.setMemory(brain, MemoryModuleType.IS_IN_WATER, Unit.INSTANCE);
+                    BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+                    return true;
+                }
+                return false;
+            }
         );
     }
 
-    public static <E extends BirdEntity> Task<E> stopSwimming() {
-        return TaskTriggerer.task(
-            instance -> instance.group(
-                    instance.queryMemoryValue(MemoryModuleType.IS_IN_WATER),
-                    instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
-                )
-                .apply(
-                    instance,
-                    (swimming, walkTarget) -> (world, bird, l) -> {
-                        if (!bird.isInsideWaterOrBubbleColumn()) {
-                            swimming.forget();
-                            walkTarget.forget();
-                            return true;
-                        }
-                        return false;
-                    }
-                )
+    public static <E extends BirdEntity> SingleTickBehaviour<E> stopSwimming() {
+        return new SingleTickBehaviour<>(
+            MemoryTest.builder(2)
+                .hasMemory(MemoryModuleType.IS_IN_WATER)
+                .usesMemory(MemoryModuleType.WALK_TARGET),
+            (bird, brain) -> {
+                if (!bird.isInsideWaterOrBubbleColumn()) {
+                    BrainUtils.clearMemory(brain, MemoryModuleType.IS_IN_WATER);
+                    BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+                    return true;
+                }
+                return false;
+            }
         );
     }
 }

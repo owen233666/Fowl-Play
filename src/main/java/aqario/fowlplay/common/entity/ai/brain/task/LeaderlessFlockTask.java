@@ -2,31 +2,33 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
-import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
-import net.minecraft.entity.ai.brain.task.MultiTickTask;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
-public class LeaderlessFlockTask extends MultiTickTask<FlyingBirdEntity> {
+public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
+    private static final MemoryTest MEMORIES = MemoryTest.builder(3)
+        .hasMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)
+        .hasNoMemories(FowlPlayMemoryModuleType.IS_AVOIDING, FowlPlayMemoryModuleType.SEES_FOOD);
+    private static final int VIEW_RADIUS = 64;
+    public final int minFlockSize;
     public final float coherence;
     public final float alignment;
     public final float separation;
     public final float separationRange;
     private List<? extends PassiveEntity> nearbyBirds;
 
-    public LeaderlessFlockTask(float coherence, float alignment, float separation, float separationRange) {
-        super(ImmutableMap.of(
-            FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
-            MemoryModuleState.VALUE_PRESENT,
-            FowlPlayMemoryModuleType.IS_AVOIDING,
-            MemoryModuleState.VALUE_ABSENT,
-            FowlPlayMemoryModuleType.SEES_FOOD,
-            MemoryModuleState.VALUE_ABSENT
-        ));
+    public LeaderlessFlockTask(int minFlockSize, float coherence, float alignment, float separation, float separationRange) {
+        this.minFlockSize = minFlockSize;
         this.coherence = coherence;
         this.alignment = alignment;
         this.separation = separation;
@@ -34,26 +36,33 @@ public class LeaderlessFlockTask extends MultiTickTask<FlyingBirdEntity> {
     }
 
     @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
+        return MEMORIES;
+    }
+
+    @Override
     protected boolean shouldRun(ServerWorld world, FlyingBirdEntity bird) {
         if (!bird.isFlying()) {
             return false;
         }
-        if (bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).isEmpty()) {
+        Brain<?> brain = bird.getBrain();
+        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)) {
             return false;
         }
-        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).get();
-        this.nearbyBirds.removeIf(entity -> entity.squaredDistanceTo(bird) > 64);
+        this.nearbyBirds = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
+        assert this.nearbyBirds != null;
+        this.nearbyBirds.removeIf(entity -> entity.squaredDistanceTo(bird) > VIEW_RADIUS * VIEW_RADIUS);
 
-        return this.nearbyBirds.size() > 5;
+        return this.nearbyBirds.size() > this.minFlockSize;
     }
 
     @Override
-    protected boolean shouldKeepRunning(ServerWorld world, FlyingBirdEntity bird, long time) {
-        return this.shouldRun(world, bird);
+    protected boolean shouldKeepRunning(FlyingBirdEntity bird) {
+        return this.shouldRun((ServerWorld) bird.getWorld(), bird);
     }
 
     @Override
-    protected void keepRunning(ServerWorld world, FlyingBirdEntity bird, long time) {
+    protected void tick(FlyingBirdEntity bird) {
         Vec3d heading = this.getHeading(bird).add(bird.getPos());
         bird.getMoveControl().moveTo(heading.x, heading.y, heading.z, (bird.getRandom().nextFloat() - bird.getRandom().nextFloat()) * 1.5 + 2);
     }

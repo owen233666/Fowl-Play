@@ -1,44 +1,43 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
-import net.minecraft.entity.LivingEntity;
+import aqario.fowlplay.common.entity.BirdEntity;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.SingleTickTask;
-import net.minecraft.entity.ai.brain.task.TaskTriggerer;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class GoToClosestEntityTask {
-    public static SingleTickTask<PassiveEntity> create(UniformIntProvider executionRange, float speed) {
-        return create(executionRange, livingEntity -> speed);
+    public static SingleTickBehaviour<BirdEntity> create(UniformIntProvider executionRange, float speed) {
+        return create(executionRange, entity -> speed);
     }
 
-    public static SingleTickTask<PassiveEntity> create(UniformIntProvider executionRange, Function<LivingEntity, Float> speedGetter) {
-        return TaskTriggerer.task(
-            instance -> instance.group(
-                    instance.queryMemoryValue(MemoryModuleType.NEAREST_VISIBLE_ADULT),
-                    instance.queryMemoryOptional(MemoryModuleType.LOOK_TARGET),
-                    instance.queryMemoryAbsent(MemoryModuleType.WALK_TARGET)
-                )
-                .apply(
-                    instance,
-                    (nearestVisibleAdult, lookTarget, walkTarget) -> (world, entity, l) -> {
-                        PassiveEntity nearest = instance.getValue(nearestVisibleAdult);
-                        if (entity.isInRange(nearest, executionRange.getMax() + 1)
-                            && !entity.isInRange(nearest, executionRange.getMin())) {
-                            WalkTarget newWalkTarget = new WalkTarget(
-                                new EntityLookTarget(nearest, false), speedGetter.apply(entity), executionRange.getMin() - 1
-                            );
-                            lookTarget.remember(new EntityLookTarget(nearest, true));
-                            walkTarget.remember(newWalkTarget);
-                            return true;
-                        }
-                        return false;
-                    }
-                )
+    public static SingleTickBehaviour<BirdEntity> create(UniformIntProvider executionRange, Function<BirdEntity, Float> speedGetter) {
+        return new SingleTickBehaviour<>(
+            List.of(
+                Pair.of(MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleState.VALUE_PRESENT),
+                Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED),
+                Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT)
+            ),
+            (bird, brain) -> {
+                PassiveEntity nearest = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT);
+                if (bird.isInRange(nearest, executionRange.getMax() + 1)
+                    && !bird.isInRange(nearest, executionRange.getMin())) {
+                    WalkTarget newWalkTarget = new WalkTarget(
+                        new EntityLookTarget(nearest, false), speedGetter.apply(bird), executionRange.getMin() - 1
+                    );
+                    BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(nearest, true));
+                    BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, newWalkTarget);
+                    return true;
+                }
+                return false;
+            }
         );
     }
 }

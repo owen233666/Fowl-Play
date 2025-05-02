@@ -2,37 +2,47 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
-import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
-import net.minecraft.entity.ai.brain.task.MultiTickTask;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
-public class TeleportToTargetTask extends MultiTickTask<BirdEntity> {
-    public TeleportToTargetTask() {
-        super(ImmutableMap.of(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleState.VALUE_PRESENT));
+import java.util.List;
+
+public class TeleportToTargetTask extends ExtendedBehaviour<BirdEntity> {
+    private static final MemoryTest MEMORIES = MemoryTest.builder(1)
+        .hasMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET);
+
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
+        return MEMORIES;
     }
 
     @Override
-    protected boolean shouldKeepRunning(ServerWorld world, BirdEntity entity, long time) {
-        return entity.getBrain().isMemoryInState(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleState.VALUE_PRESENT);
+    protected boolean shouldKeepRunning(BirdEntity entity) {
+        return BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET);
     }
 
     @Override
-    protected void keepRunning(ServerWorld world, BirdEntity entity, long time) {
-        if (this.tryTeleport(entity)) {
-            entity.getBrain().forget(FowlPlayMemoryModuleType.TELEPORT_TARGET);
+    protected void tick(BirdEntity entity) {
+        Brain<?> brain = entity.getBrain();
+        if (this.tryTeleport(entity, brain)) {
+            BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET);
         }
     }
 
-    private boolean tryTeleport(BirdEntity entity) {
-        if (!entity.getBrain().hasMemoryModule(FowlPlayMemoryModuleType.TELEPORT_TARGET)) {
+    private boolean tryTeleport(BirdEntity entity, Brain<?> brain) {
+        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET)) {
             return false;
         }
-        Entity target = entity.getBrain().getOptionalMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET).get().entity();
+        Entity target = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET).entity();
         BlockPos pos = target.getBlockPos();
 
         for (int i = 0; i < 10; i++) {
