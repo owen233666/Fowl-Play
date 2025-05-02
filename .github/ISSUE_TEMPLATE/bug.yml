@@ -15,13 +15,6 @@ body:
         3. Use the search function to confirm your issue doesn't already exist.
         4. Make sure you are on the latest version of the mod.
 
-  - type: markdown
-    attributes:
-      value: |
-        ### Minecraft Version and Mod Loader:
-        
-        - Choose the version of Minecraft and the mod loader you are on
-
   - type: dropdown
     id: version
     attributes:
@@ -38,7 +31,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### Add a Description:
+        <br/>
+        
+        **Add a Description:**
         
         - Clearly describe what the issue is and how to reproduce it (if possible)
         - Include the latest log if the issue causes a crash (found in <instance>/logs/latest.log)
