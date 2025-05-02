@@ -1,16 +1,26 @@
-name: Bug Report
+name: Bug / Crash Report
 description: Report a bug or crash
+title: "[Bug] "
 labels: [ "bug" ]
+assignees:
+  - aqariio
 body:
   - type: markdown
     attributes:
       value: |
-        **Consider the following before continuing:**
+        ### Read before making an issue:
         
-        1. Check that the problem isn't answered in the "Important Information" section of the mod description.
+        1. Check that the problem isn't answered in the **"Important Information"** section of the mod description.
         2. If you are using Forge or NeoForge, make sure this isn't a problem with Sinytra Connector.
-        3. Use the search function to confirm there isn't an existing issue.
+        3. Use the search function to confirm your issue doesn't already exist.
         4. Make sure you are on the latest version of the mod.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Minecraft Version and Mod Loader:
+        
+        - Choose the version of Minecraft and the mod loader you are on
 
   - type: dropdown
     id: version
@@ -25,14 +35,18 @@ body:
     validations:
       required: true
 
+  - type: markdown
+    attributes:
+      value: |
+        ### Add a Description:
+        
+        - Clearly describe what the issue is and how to reproduce it (if possible)
+        - Include the latest log if the issue causes a crash (found in <instance>/logs/latest.log)
+        - Screenshots and videos are very helpful!
+
   - type: textarea
     id: description
     attributes:
       label: "Description"
-      placeholder: "
-      - Clearly describe what the issue is and how to reproduce it (if possible)\n
-      - Include the latest log if the issue causes a crash (found in <instance>/logs/latest.log)\n
-      - Screenshots and videos are very helpful!
-      "
     validations:
       required: true
