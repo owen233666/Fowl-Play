@@ -419,9 +419,9 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F),
-                GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new SetRandomLookTarget<>()
-                    .cooldownFor(entity -> entity.getRandom().nextBetween(150, 250)),
+                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<PigeonEntity>()

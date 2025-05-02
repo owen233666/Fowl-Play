@@ -286,7 +286,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 new SetAttackTarget<HawkEntity>()
                     .attackPredicate(Birds::canAttack),
                 new SetRandomLookTarget<>()
-                    .cooldownFor(entity -> entity.getRandom().nextBetween(150, 250)),
+                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<HawkEntity>()

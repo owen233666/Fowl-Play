@@ -654,10 +654,11 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 FindLookTargetTask.create(EntityType.PLAYER, 32.0F),
-                new FollowTemptation<>(),
+                new FollowTemptation<>()
+                    .speedMod((entity, target) -> entity.isInsideWaterOrBubbleColumn() ? Birds.SWIM_SPEED : Birds.WALK_SPEED),
                 new FollowParent<>(),
                 new SetRandomLookTarget<>()
-                    .cooldownFor(entity -> entity.getRandom().nextBetween(150, 250)),
+                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new SetAttackTarget<PenguinEntity>()
                     .attackPredicate(Birds::canAttack),
                 new OneRandomBehaviour<>(

@@ -75,7 +75,7 @@ dependencies {
     modRuntimeOnly("maven.modrinth:observable:${project.observable_version}")
 
     // Smart Brain Lib
-    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}"
+    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")
 
     // Yet Another Config Lib
     modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}")
@@ -90,18 +90,20 @@ loom {
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "loader_version", project.loader_version
-    inputs.property "fabric_version", project.fabric_version
-    inputs.property "yacl_version", project.yacl_version
+    Map<String, Object> properties = [
+        "version": project.version,
+        "loader_version": project.loader_version,
+        "fabric_version": project.fabric_version,
+        "sbl_version": project.sbl_version,
+        "yacl_version": project.yacl_version
+    ]
+
+    properties.each { key, value ->
+        inputs.property(key, value)
+    }
 
     filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
-        expand(
-            "version": project.version,
-            "loader_version": project.loader_version,
-            "fabric_version": project.fabric_version,
-            "yacl_version": project.yacl_version
-        )
+        expand(properties)
     }
 }
 

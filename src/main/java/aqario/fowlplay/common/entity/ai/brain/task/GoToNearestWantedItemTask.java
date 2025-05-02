@@ -7,6 +7,7 @@ import net.minecraft.entity.ai.brain.EntityLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -21,21 +22,21 @@ public class GoToNearestWantedItemTask {
         return new SingleTickBehaviour<>(
             List.of(
                 Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED),
-                Pair.of(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, MemoryModuleState.VALUE_PRESENT),
+                Pair.of(SBLMemoryTypes.NEARBY_ITEMS.get(), MemoryModuleState.VALUE_PRESENT),
                 Pair.of(MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS, MemoryModuleState.REGISTERED),
                 requiresWalkTarget
                     ? Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.REGISTERED)
                     : Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT)
             ),
             (bird, brain) -> {
-                ItemEntity itemEntity = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-                assert itemEntity != null;
+                List<ItemEntity> wantedItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
+                assert wantedItems != null;
                 if (!BrainUtils.hasMemory(brain, MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
                     && startPredicate.test(bird)
-                    && itemEntity.isInRange(bird, radius)
-                    && bird.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
-                    WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(bird), 0);
-                    BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(itemEntity, true));
+                    && wantedItems.getFirst().isInRange(bird, radius)
+                    && bird.getWorld().getWorldBorder().contains(wantedItems.getFirst().getBlockPos())) {
+                    WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(wantedItems.getFirst(), false), entitySpeedGetter.apply(bird), 0);
+                    BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(wantedItems.getFirst(), true));
                     BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, newWalkTarget);
                     return true;
                 }

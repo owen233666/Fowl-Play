@@ -303,9 +303,9 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                 FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F),
                 new SetAttackTarget<GullEntity>()
                     .attackPredicate(Birds::canAttack),
-                GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new SetRandomLookTarget<>()
-                    .cooldownFor(entity -> entity.getRandom().nextBetween(150, 250)),
+                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<GullEntity>()

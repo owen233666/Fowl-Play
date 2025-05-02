@@ -13,7 +13,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import java.util.List;
 import java.util.function.Function;
 
-public class GoToClosestEntityTask {
+public class SetWalkTargetToClosestAdult {
     public static SingleTickBehaviour<BirdEntity> create(UniformIntProvider executionRange, float speed) {
         return create(executionRange, entity -> speed);
     }
