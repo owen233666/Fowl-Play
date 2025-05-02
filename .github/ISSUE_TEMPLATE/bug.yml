@@ -8,6 +8,8 @@ body:
   - type: markdown
     attributes:
       value: |
+        <br/>
+        
         ### Read before making an issue:
         
         1. Check that the problem isn't answered in the **"Important Information"** section of the mod description.
