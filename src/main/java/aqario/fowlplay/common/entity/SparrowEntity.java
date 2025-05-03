@@ -25,6 +25,8 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
     public final AnimationState glidingState = new AnimationState();
     public final AnimationState flappingState = new AnimationState();
     public final AnimationState floatingState = new AnimationState();
+    public final AnimationState scratchingState = new AnimationState();
+    public final AnimationState preeningState = new AnimationState();
     private int timeSinceLastFlap = this.getFlapFrequency();
     private static final int FLAP_DURATION = 8;
     private int flapTime = 0;
@@ -67,35 +69,76 @@ public class SparrowEntity extends FlyingBirdEntity implements Flocking {
 
     @Override
     public void tick() {
-        if (this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            if (this.isFlying()) {
-                if (this.timeSinceLastFlap >= this.getFlapFrequency()) {
-                    this.timeSinceLastFlap = 0;
-                    this.flapTime++;
-                }
-                else if (this.flapTime >= 0 && this.flapTime < FLAP_DURATION) {
-                    this.flapTime++;
-                    this.glidingState.stop();
-                    this.flappingState.startIfNotRunning(this.age);
+        super.tick();
+    }
+
+    private boolean isMoving() {
+        return this.limbAnimator.isLimbMoving();
+    }
+
+    @Override
+    protected void updateAnimations() {
+        // on land
+        if (!this.isFlying() && !this.isInsideWaterOrBubbleColumn()) {
+            if (this.random.nextInt(1000) < this.idleAnimationChance++ && !this.isMoving()) {
+                this.resetIdleAnimationDelay();
+                this.standingState.stop();
+                this.preeningState.stop();
+                this.scratchingState.stop();
+                if (this.getRandom().nextFloat() < 0.75f) {
+                    this.preeningState.start(this.age);
                 }
                 else {
-                    this.timeSinceLastFlap++;
-                    this.flapTime = 0;
-                    this.flappingState.stop();
-                    this.glidingState.startIfNotRunning(this.age);
+                    this.scratchingState.start(this.age);
                 }
             }
+            else if (this.isMoving()) {
+                this.preeningState.stop();
+                this.scratchingState.stop();
+            }
+            if (!(this.preeningState.isRunning() || this.scratchingState.isRunning())) {
+                this.standingState.startIfNotRunning(this.age);
+            }
             else {
-                this.timeSinceLastFlap = this.getFlapFrequency();
+                this.standingState.stop();
+            }
+        }
+        else {
+            this.standingState.stop();
+            this.preeningState.stop();
+            this.scratchingState.stop();
+        }
+        // flying
+        if (this.isFlying()) {
+            if (this.timeSinceLastFlap >= this.getFlapFrequency()) {
+                this.timeSinceLastFlap = 0;
+                this.flapTime++;
+            }
+            else if (this.flapTime >= 0 && this.flapTime < FLAP_DURATION) {
+                this.flapTime++;
+                this.glidingState.stop();
+                this.flappingState.startIfNotRunning(this.age);
+            }
+            else {
+                this.timeSinceLastFlap++;
                 this.flapTime = 0;
                 this.flappingState.stop();
-                this.glidingState.stop();
+                this.glidingState.startIfNotRunning(this.age);
             }
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
+        else {
+            this.timeSinceLastFlap = this.getFlapFrequency();
+            this.flapTime = 0;
+            this.flappingState.stop();
+            this.glidingState.stop();
+        }
+        // in water
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+    }
 
-        super.tick();
+    @Override
+    protected int getIdleAnimationDelay() {
+        return 400;
     }
 
     @Override

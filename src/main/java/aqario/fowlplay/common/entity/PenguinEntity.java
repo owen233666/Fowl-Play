@@ -213,10 +213,6 @@ public class PenguinEntity extends BirdEntity {
         if (this.isInsideWaterOrBubbleColumn() && !this.isSliding()) {
             this.setSliding();
         }
-        if (this.getWorld().isClient()) {
-            this.updateAnimations();
-        }
-
         if (!this.getWorld().isClient()) {
             if (this.isInsideWaterOrBubbleColumn() != this.isAquaticMoveControl) {
                 this.setMoveControl(this.isInsideWaterOrBubbleColumn());
@@ -254,7 +250,8 @@ public class PenguinEntity extends BirdEntity {
         }
     }
 
-    private void updateAnimations() {
+    @Override
+    protected void updateAnimations() {
         this.standingState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn() && !this.isSliding(), this.age);
 
         if (this.isInsideWaterOrBubbleColumn()) {

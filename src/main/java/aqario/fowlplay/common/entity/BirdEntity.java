@@ -35,13 +35,15 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BirdEntity extends AnimalEntity {
     private boolean ambient;
     private int eatingTime;
-    public int callChance;
-    public int songChance;
+    protected int idleAnimationChance;
+    protected int callChance;
+    protected int songChance;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setCanPickUpLoot(true);
         this.lookControl = new BirdLookControl(this, 85);
+        this.idleAnimationChance = this.random.nextInt(this.getIdleAnimationDelay()) - this.getIdleAnimationDelay();
         this.callChance = this.random.nextInt(this.getCallDelay()) - this.getCallDelay();
         this.songChance = this.random.nextInt(this.getSongDelay()) - this.getSongDelay();
     }
@@ -276,6 +278,25 @@ public abstract class BirdEntity extends AnimalEntity {
         }
 
         this.getWorld().getProfiler().pop();
+    }
+
+    @Override
+    public void tick() {
+        if (this.getWorld().isClient()) {
+            this.updateAnimations();
+        }
+        super.tick();
+    }
+
+    protected void updateAnimations() {
+    }
+
+    protected int getIdleAnimationDelay() {
+        return 240;
+    }
+
+    protected void resetIdleAnimationDelay() {
+        this.idleAnimationChance = -(this.getIdleAnimationDelay() - 100 + this.random.nextInt(200));
     }
 
     protected boolean canCall() {
