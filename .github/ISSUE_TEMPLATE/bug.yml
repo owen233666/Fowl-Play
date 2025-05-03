@@ -47,5 +47,6 @@ body:
     id: description
     attributes:
       label: "Description"
+      placeholder: "Describe your issue"
     validations:
       required: true
