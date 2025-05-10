@@ -296,7 +296,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     protected void resetIdleAnimationDelay() {
-        this.idleAnimationChance = -(this.getIdleAnimationDelay() - 100 + this.random.nextInt(200));
+        this.idleAnimationChance = -(this.getIdleAnimationDelay() + this.random.nextBetween(-200, 200));
     }
 
     protected boolean canCall() {
@@ -308,11 +308,11 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     private void resetCallDelay() {
-        this.callChance = -(this.getCallDelay() - 100 + this.random.nextInt(200));
+        this.callChance = -(this.getCallDelay() + this.random.nextBetween(-150, 150));
     }
 
     private void resetSongDelay() {
-        this.songChance = -(this.getSongDelay() - 100 + this.random.nextInt(200));
+        this.songChance = -(this.getSongDelay() + this.random.nextBetween(-150, 150));
     }
 
     public final void playCallSound() {

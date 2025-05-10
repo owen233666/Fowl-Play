@@ -1,5 +1,6 @@
 package aqario.fowlplay.client;
 
+import aqario.fowlplay.client.particle.SmallBubbleParticle;
 import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.client.render.entity.*;
 import aqario.fowlplay.client.render.entity.model.*;
@@ -7,9 +8,11 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayEntityType;
+import aqario.fowlplay.core.FowlPlayParticleTypes;
 import io.github.flemmli97.debugutils.api.RegisterDebugRenderers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -23,6 +26,7 @@ public class FowlPlayClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         registerEntityRenderers();
+        registerParticleFactories();
 
         if (FowlPlay.isDebugUtilsLoaded()) {
             Identifier debugBirdId = Identifier.of(FowlPlay.ID, "debug/bird");
@@ -80,5 +84,9 @@ public class FowlPlayClient implements ClientModInitializer {
             EntityModelLayerRegistry.registerModelLayer(CustomBabyChickenEntityModel.MODEL_LAYER, CustomBabyChickenEntityModel::getTexturedModelData);
             EntityRendererRegistry.register(EntityType.CHICKEN, CustomChickenEntityRenderer::new);
         }
+    }
+
+    public static void registerParticleFactories() {
+        ParticleFactoryRegistry.getInstance().register(FowlPlayParticleTypes.SMALL_BUBBLE, SmallBubbleParticle.Factory::new);
     }
 }

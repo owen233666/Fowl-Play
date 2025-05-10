@@ -32,6 +32,7 @@ public class PenguinBrain {
         SensorType.NEAREST_ADULT,
         SensorType.IS_IN_WATER,
         FowlPlaySensorType.ATTACKED,
+        FowlPlaySensorType.NEARBY_ADULTS,
         FowlPlaySensorType.NEARBY_LIVING_ENTITIES,
         FowlPlaySensorType.TEMPTING_PLAYER,
         FowlPlaySensorType.ATTACK_TARGETS
