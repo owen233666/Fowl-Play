@@ -103,13 +103,15 @@ public class RavenEntityModel extends FlyingBirdEntityModel<RavenEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        if (!raven.isFlying() && !raven.isInsideWaterOrBubbleColumn()) {
+        if (raven.isFlying()) {
+            this.animateMovement(RavenAnimations.FLAPPING, limbAngle, limbDistance, 1.5F, 1.5F);
+        }
+        else if (!raven.isInsideWaterOrBubbleColumn()) {
             this.animateMovement(RavenAnimations.WALKING, limbAngle, limbDistance, 2.5F, 4F);
         }
         this.updateAnimation(raven.standingState, RavenAnimations.STANDING, ageInTicks);
         this.updateAnimation(raven.floatingState, RavenAnimations.FLOATING, ageInTicks);
         this.updateAnimation(raven.glidingState, RavenAnimations.GLIDING, ageInTicks);
-        this.updateAnimation(raven.flappingState, RavenAnimations.FLAPPING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

@@ -70,7 +70,6 @@ import java.util.function.Predicate;
 public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<RavenEntity> {
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
     public final AnimationState floatingState = new AnimationState();
 
     public RavenEntity(EntityType<? extends RavenEntity> entityType, World world) {
@@ -160,7 +159,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
     public void tick() {
         if (this.getWorld().isClient()) {
             this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flappingState.setRunning(this.isFlying(), this.age);
+            this.glidingState.setRunning(this.isFlying(), this.age);
             this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
 
@@ -195,7 +194,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
 
     @Override
     public int getCallDelay() {
-        return 600;
+        return 1200;
     }
 
     @Nullable

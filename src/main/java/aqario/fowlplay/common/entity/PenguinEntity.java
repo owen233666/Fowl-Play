@@ -6,10 +6,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayActivities;
-import aqario.fowlplay.core.FowlPlayEntityType;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
-import aqario.fowlplay.core.FowlPlaySoundEvents;
+import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayBiomeTags;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -42,7 +39,6 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -120,6 +116,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
     }
 
     protected void setMoveControl(boolean isSwimming) {
+        // TODO: baby penguins should not be able to swim
         if (isSwimming) {
             this.moveControl = new AquaticMoveControl(this, 85, 15, 1.0F, 1.0F, true);
             this.isAquaticMoveControl = true;
@@ -250,10 +247,6 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
         if (this.isInsideWaterOrBubbleColumn() && !this.isSliding()) {
             this.setSliding();
         }
-        if (this.getWorld().isClient()) {
-            this.updateAnimations();
-        }
-
         if (!this.getWorld().isClient()) {
             if (this.isInsideWaterOrBubbleColumn() != this.isAquaticMoveControl) {
                 this.setMoveControl(this.isInsideWaterOrBubbleColumn());
@@ -278,20 +271,22 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
     }
 
     private void addSwimParticles() {
-        for (int i = 0; i < 20; i++) {
+        Vec3d velocity = this.getRotationVector().negate().multiply(0.5);
+        for (int i = 0; i < 25; i++) {
             this.getWorld().addParticle(
-                ParticleTypes.DOLPHIN,
-                (this.getX() + (this.random.nextFloat() * 0.5F - 0.25F)),
-                (this.getY() + this.getBoundingBox().getLengthY() / 2) + (this.random.nextFloat() * 0.5F - 0.25F),
-                (this.getZ() + (this.random.nextFloat() * 0.5F - 0.25F)),
-                0.0,
-                0.0,
-                0.0
+                FowlPlayParticleTypes.SMALL_BUBBLE,
+                this.getX() + (this.random.nextFloat() * 0.75F - 0.375F),
+                (this.getY() + this.getBoundingBox().getLengthY() / 2) + (this.random.nextFloat() * 0.75F - 0.375F),
+                this.getZ() + (this.random.nextFloat() * 0.75F - 0.375F),
+                velocity.x,
+                velocity.y,
+                velocity.z
             );
         }
     }
 
-    private void updateAnimations() {
+    @Override
+    protected void updateAnimations() {
         this.standingState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn() && !this.isSliding(), this.age);
 
         if (this.isInsideWaterOrBubbleColumn()) {

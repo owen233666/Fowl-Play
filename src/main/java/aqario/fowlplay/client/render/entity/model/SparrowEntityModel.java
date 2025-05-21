@@ -97,6 +97,8 @@ public class SparrowEntityModel extends FlyingBirdEntityModel<SparrowEntity> {
         this.updateAnimation(sparrow.floatingState, SparrowAnimations.FLOATING, ageInTicks);
         this.updateAnimation(sparrow.glidingState, SparrowAnimations.GLIDING, ageInTicks);
         this.updateAnimation(sparrow.flappingState, SparrowAnimations.FLAPPING, ageInTicks);
+        this.updateAnimation(sparrow.preeningState, SparrowAnimations.PREENING, ageInTicks);
+        this.updateAnimation(sparrow.scratchingState, SparrowAnimations.SCRATCHING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

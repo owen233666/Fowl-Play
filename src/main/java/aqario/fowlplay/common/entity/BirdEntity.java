@@ -34,13 +34,15 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BirdEntity extends AnimalEntity {
     private boolean ambient;
     private int eatingTime;
-    public int callChance;
-    public int songChance;
+    protected int idleAnimationChance;
+    protected int callChance;
+    protected int songChance;
 
     protected BirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setCanPickUpLoot(true);
         this.lookControl = new BirdLookControl(this, 85);
+        this.idleAnimationChance = this.random.nextInt(this.getIdleAnimationDelay()) - this.getIdleAnimationDelay();
         this.callChance = this.random.nextInt(this.getCallDelay()) - this.getCallDelay();
         this.songChance = this.random.nextInt(this.getSongDelay()) - this.getSongDelay();
     }
@@ -270,6 +272,25 @@ public abstract class BirdEntity extends AnimalEntity {
         this.getWorld().getProfiler().pop();
     }
 
+    @Override
+    public void tick() {
+        if (this.getWorld().isClient()) {
+            this.updateAnimations();
+        }
+        super.tick();
+    }
+
+    protected void updateAnimations() {
+    }
+
+    protected int getIdleAnimationDelay() {
+        return 240;
+    }
+
+    protected void resetIdleAnimationDelay() {
+        this.idleAnimationChance = -(this.getIdleAnimationDelay() + this.random.nextBetween(-200, 200));
+    }
+
     protected boolean canCall() {
         return this.getWorld().isDay() || this.random.nextFloat() < 0.05F;
     }
@@ -279,11 +300,11 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     private void resetCallDelay() {
-        this.callChance = -(this.getCallDelay() - 100 + this.random.nextInt(200));
+        this.callChance = -(this.getCallDelay() + this.random.nextBetween(-150, 150));
     }
 
     private void resetSongDelay() {
-        this.songChance = -(this.getSongDelay() - 100 + this.random.nextInt(200));
+        this.songChance = -(this.getSongDelay() + this.random.nextBetween(-150, 150));
     }
 
     public final void playCallSound() {
