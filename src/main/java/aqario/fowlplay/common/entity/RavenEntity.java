@@ -155,7 +155,7 @@ public class RavenEntity extends TrustingBirdEntity {
 
     @Override
     public int getCallDelay() {
-        return 600;
+        return 1200;
     }
 
     @Nullable
