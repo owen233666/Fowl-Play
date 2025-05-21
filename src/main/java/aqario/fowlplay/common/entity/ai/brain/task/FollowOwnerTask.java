@@ -3,15 +3,19 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
-import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.EntityLookTarget;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.MultiTickTask;
+import net.minecraft.entity.ai.brain.*;
 import net.minecraft.server.world.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
-public class FollowOwnerTask extends MultiTickTask<PigeonEntity> {
+import java.util.List;
+
+public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
+    private static final MemoryTest MEMORIES = MemoryTest.builder(3)
+        .usesMemories(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
     private LivingEntity owner;
     private final float speed;
     private int updateCountdownTicks;
@@ -19,10 +23,14 @@ public class FollowOwnerTask extends MultiTickTask<PigeonEntity> {
     private final float minDistance;
 
     public FollowOwnerTask(float speed, float minDistance, float maxDistance) {
-        super(ImmutableMap.of());
         this.speed = speed;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
+    }
+
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
+        return MEMORIES;
     }
 
     @Override
@@ -48,7 +56,7 @@ public class FollowOwnerTask extends MultiTickTask<PigeonEntity> {
     }
 
     @Override
-    protected boolean shouldKeepRunning(ServerWorld world, PigeonEntity pigeon, long time) {
+    protected boolean shouldKeepRunning(PigeonEntity pigeon) {
         if (pigeon.getRecipientUuid() != null) {
             return false;
         }
@@ -63,16 +71,17 @@ public class FollowOwnerTask extends MultiTickTask<PigeonEntity> {
     }
 
     @Override
-    protected void keepRunning(ServerWorld world, PigeonEntity pigeon, long time) {
-        pigeon.getBrain().remember(MemoryModuleType.LOOK_TARGET, new EntityLookTarget(this.owner, true));
+    protected void tick(PigeonEntity pigeon) {
+        Brain<?> brain = pigeon.getBrain();
+        BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(this.owner, true));
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = 20;
             if (!pigeon.isLeashed() && !pigeon.hasVehicle()) {
                 if (pigeon.squaredDistanceTo(this.owner) >= 144.0) {
-                    pigeon.getBrain().remember(FowlPlayMemoryModuleType.TELEPORT_TARGET, new TeleportTarget(this.owner));
+                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET, new TeleportTarget(this.owner));
                 }
                 else {
-                    pigeon.getBrain().remember(MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speed, 0));
+                    BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speed, 0));
                 }
             }
         }

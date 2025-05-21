@@ -1,15 +1,16 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
-import com.mojang.datafixers.kinds.K1;
+import aqario.fowlplay.common.entity.BirdEntity;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.MemoryQueryResult;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.Task;
-import net.minecraft.entity.ai.brain.task.TaskTriggerer;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -17,34 +18,29 @@ import java.util.function.Predicate;
  * Improved {@link net.minecraft.entity.ai.brain.task.WalkToNearestVisibleWantedItemTask WalkToNearestVisibleWantedItemTask} with a speedGetter
  */
 public class GoToNearestWantedItemTask {
-    public static <E extends LivingEntity> Task<E> create(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
-        return TaskTriggerer.task(
-            instance -> {
-                TaskTriggerer<E, ? extends MemoryQueryResult<? extends K1, WalkTarget>> taskBuilder = requiresWalkTarget
-                    ? instance.queryMemoryOptional(MemoryModuleType.WALK_TARGET)
-                    : instance.queryMemoryAbsent(MemoryModuleType.WALK_TARGET);
-                return instance.group(
-                        instance.queryMemoryOptional(MemoryModuleType.LOOK_TARGET),
-                        taskBuilder,
-                        instance.queryMemoryValue(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM),
-                        instance.queryMemoryOptional(MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
-                    )
-                    .apply(
-                        instance,
-                        (lookTarget, walkTarget, nearestWantedItem, pickupCooldownTicks) -> (world, entity, l) -> {
-                            ItemEntity itemEntity = instance.getValue(nearestWantedItem);
-                            if (instance.getOptionalValue(pickupCooldownTicks).isEmpty()
-                                && startPredicate.test(entity)
-                                && itemEntity.isInRange(entity, radius)
-                                && entity.getWorld().getWorldBorder().contains(itemEntity.getBlockPos())) {
-                                WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(itemEntity, false), entitySpeedGetter.apply(entity), 0);
-                                lookTarget.remember(new EntityLookTarget(itemEntity, true));
-                                walkTarget.remember(newWalkTarget);
-                                return true;
-                            }
-                            return false;
-                        }
-                    );
+    public static <E extends BirdEntity> SingleTickBehaviour<E> create(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
+        return new SingleTickBehaviour<>(
+            List.of(
+                Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED),
+                Pair.of(SBLMemoryTypes.NEARBY_ITEMS.get(), MemoryModuleState.VALUE_PRESENT),
+                Pair.of(MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS, MemoryModuleState.REGISTERED),
+                requiresWalkTarget
+                    ? Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.REGISTERED)
+                    : Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT)
+            ),
+            (bird, brain) -> {
+                List<ItemEntity> wantedItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
+                assert wantedItems != null;
+                if (!BrainUtils.hasMemory(brain, MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
+                    && startPredicate.test(bird)
+                    && wantedItems.getFirst().isInRange(bird, radius)
+                    && bird.getWorld().getWorldBorder().contains(wantedItems.getFirst().getBlockPos())) {
+                    WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(wantedItems.getFirst(), false), entitySpeedGetter.apply(bird), 0);
+                    BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(wantedItems.getFirst(), true));
+                    BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, newWalkTarget);
+                    return true;
+                }
+                return false;
             }
         );
     }

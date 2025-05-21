@@ -179,6 +179,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void setNavigation(boolean isFlying) {
         if (isFlying) {
             this.navigation = this.getFlightNavigation();
+//            this.navigation = new SmoothFlyingPathNavigation(this, this.getWorld());
             this.isFlightNavigation = true;
         }
         else {

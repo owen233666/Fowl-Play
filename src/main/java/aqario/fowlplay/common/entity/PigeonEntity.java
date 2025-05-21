@@ -1,16 +1,24 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.core.FowlPlayRegistries;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import aqario.fowlplay.core.FowlPlaySoundEvents;
-import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
+import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
+import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
+import aqario.fowlplay.common.entity.ai.brain.sensor.PigeonSpecificSensor;
+import aqario.fowlplay.common.entity.ai.brain.task.*;
+import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
-import com.mojang.serialization.Dynamic;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -41,13 +49,36 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Panic;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyItemsSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public class PigeonEntity extends TameableBirdEntity implements VariantHolder<RegistryEntry<PigeonVariant>>, Flocking {
+public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<PigeonEntity>, VariantHolder<RegistryEntry<PigeonVariant>>, Flocking {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(
         PigeonEntity.class,
         TrackedDataHandlerRegistry.OPTIONAL_UUID
@@ -264,39 +295,11 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     }
 
     @Override
-    protected void mobTick() {
-        this.getWorld().getProfiler().push("pigeonBrain");
-        this.getBrain().tick((ServerWorld) this.getWorld(), this);
-        this.getWorld().getProfiler().pop();
-        this.getWorld().getProfiler().push("pigeonActivityUpdate");
-        PigeonBrain.reset(this);
-        this.getWorld().getProfiler().pop();
-        super.mobTick();
-
-        if (this.getServer() == null) {
-            return;
-        }
-
-        if (!this.isTamed()) {
-            return;
-        }
-
-        ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
-        ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
-
-        if (!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
-            this.setRecipientUuid(null);
-            return;
-        }
-
-        this.setRecipientUuid(recipient.getUuid());
-    }
-
-    @Override
     protected void addFlapEffects() {
         this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
 
+    @Nullable
     public UUID getRecipientUuid() {
         return this.dataTracker.get(RECIPIENT).orElse(null);
     }
@@ -357,27 +360,233 @@ public class PigeonEntity extends TameableBirdEntity implements VariantHolder<Re
     }
 
     @Override
-    protected Brain.Profile<PigeonEntity> createBrainProfile() {
-        return PigeonBrain.createProfile();
-    }
-
-    @Override
-    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
-        return PigeonBrain.create(this.createBrainProfile().deserialize(dynamic));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Brain<PigeonEntity> getBrain() {
-        return (Brain<PigeonEntity>) super.getBrain();
-    }
-
-    @Override
     public boolean isLeader() {
         return false;
     }
 
     @Override
     public void setLeader() {
+    }
+
+    @Override
+    protected Brain.Profile<PigeonEntity> createBrainProfile() {
+        return new SmartBrainProvider<>(this);
+    }
+
+    @Override
+    public List<? extends ExtendedSensor<? extends PigeonEntity>> getSensors() {
+        return ObjectArrayList.of(
+            new NearbyLivingEntitySensor<>(),
+            new NearbyPlayersSensor<>(),
+            new NearbyItemsSensor<>(),
+            new NearbyAdultSensor<>(),
+            new NearbyAdultsSensor<>(),
+            new InWaterSensor<>(),
+            new AttackedSensor<PigeonEntity>()
+                .setScanRate(bird -> 10),
+            new AvoidTargetSensor<>(),
+            new PigeonSpecificSensor()
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public BrainActivityGroup<? extends PigeonEntity> getCoreTasks() {
+        return new BrainActivityGroup<PigeonEntity>(Activity.CORE)
+            .priority(0)
+            .behaviours(
+                new FloatToSurfaceOfFluid<>()
+                    .riseChance(0.5F),
+                FlightControlTask.stopFalling(),
+                new TeleportToTargetTask(),
+                new Panic<>(),
+                new FollowOwnerTask(Birds.WALK_SPEED, 5, 10),
+                AvoidTask.run(),
+                PickupFoodTask.<PigeonEntity>run(Birds::canPickupFood)
+                    .startCondition(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
+                new LookAtTarget<>()
+                    .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+                new MoveToWalkTarget<>()
+            );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public BrainActivityGroup<? extends PigeonEntity> getIdleTasks() {
+        return new BrainActivityGroup<PigeonEntity>(Activity.IDLE)
+            .priority(10)
+            .behaviours(
+                new BreedWithPartner<>(),
+                new FollowParent<>(),
+                FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F),
+                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+                new SetRandomLookTarget<>()
+                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        new SetRandomWalkTarget<PigeonEntity>()
+                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
+                            .setRadius(16, 8)
+                            .startCondition(Predicate.not(Birds::isPerched)),
+                        4
+                    ),
+                    Pair.of(
+                        new Idle<PigeonEntity>()
+                            .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
+                        3
+                    ),
+                    Pair.of(
+                        FlightControlTask.<PigeonEntity>startFlying(entity -> !entity.isSitting() && entity.getRandom().nextFloat() < 0.1F),
+                        1
+                    )
+                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends PigeonEntity> getFlyTasks() {
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.FLY)
+            .priority(10)
+            .behaviours(
+                new LeaderlessFlockTask(
+                    5,
+                    0.03f,
+                    0.6f,
+                    0.05f,
+                    3f
+                ),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.perch(Birds.FLY_SPEED),
+                        1
+                    )
+                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends PigeonEntity> getDeliverTasks() {
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.DELIVER)
+            .priority(10)
+            .behaviours(
+                FlightControlTask.<PigeonEntity>stopFlying()
+                    .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
+                FlightControlTask.startFlying(PigeonEntity::shouldFlyToRecipient),
+                DeliverBundleTask.run(Birds.truePredicate(), pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.WALK_SPEED)
+            )
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends PigeonEntity> getAvoidTasks() {
+        return new BrainActivityGroup<PigeonEntity>(Activity.AVOID)
+            .priority(10)
+            .behaviours(
+                FlightControlTask.startFlying(),
+                MoveAwayFromTargetTask.entity(
+                    MemoryModuleType.AVOID_TARGET,
+                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    true
+                ),
+                AvoidTask.forget()
+            )
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends PigeonEntity> getPickupFoodTasks() {
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.PICK_UP)
+            .priority(10)
+            .behaviours(
+                FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && Birds.canPickupFood(pigeon)),
+                GoToNearestWantedItemTask.create(
+                    Birds::canPickupFood,
+                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    true,
+                    Birds.ITEM_PICK_UP_RANGE
+                ),
+                new InvalidateMemory<PigeonEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                    .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @Override
+    public Map<Activity, BrainActivityGroup<? extends PigeonEntity>> getAdditionalTasks() {
+        Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends PigeonEntity>> taskList = new Object2ObjectOpenHashMap<>();
+        taskList.put(FowlPlayActivities.FLY, this.getFlyTasks());
+        taskList.put(FowlPlayActivities.DELIVER, this.getDeliverTasks());
+        taskList.put(Activity.AVOID, this.getAvoidTasks());
+        taskList.put(FowlPlayActivities.PICK_UP, this.getPickupFoodTasks());
+        return taskList;
+    }
+
+    @Override
+    public List<Activity> getActivityPriorities() {
+        return ObjectArrayList.of(
+            Activity.IDLE,
+            FowlPlayActivities.FLY,
+            FowlPlayActivities.DELIVER,
+            Activity.AVOID,
+            FowlPlayActivities.PICK_UP
+        );
+    }
+
+    private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
+        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
+        if (recipientUuid == null) {
+            return false;
+        }
+        PlayerEntity recipient = pigeon.getWorld().getPlayerByUuid(recipientUuid);
+        if (recipient == null) {
+            return false;
+        }
+        return pigeon.squaredDistanceTo(recipient) > 64;
+    }
+
+    private static boolean shouldStopFlyingToRecipient(PigeonEntity pigeon) {
+        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
+        if (recipientUuid == null) {
+            return true;
+        }
+        PlayerEntity recipient = pigeon.getWorld().getPlayerByUuid(recipientUuid);
+        if (recipient == null) {
+            return true;
+        }
+        return pigeon.squaredDistanceTo(recipient) < 16;
+    }
+
+    @Override
+    protected void mobTick() {
+        this.tickBrain(this);
+        super.mobTick();
+
+        if (this.getServer() == null) {
+            return;
+        }
+
+        if (!this.isTamed()) {
+            return;
+        }
+
+        ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
+        ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
+
+        if (!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
+            this.setRecipientUuid(null);
+            return;
+        }
+
+        this.setRecipientUuid(recipient.getUuid());
     }
 }

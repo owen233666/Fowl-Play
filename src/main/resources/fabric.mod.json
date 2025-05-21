@@ -45,7 +45,8 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": ">=1.21",
-    "fabric-api": ">=${fabric_version}"
+    "fabric-api": ">=${fabric_version}",
+    "smartbrainlib": ">=${sbl_version}"
   },
   "breaks": {
     "yet_another_config_lib_v3": "<${yacl_version}"

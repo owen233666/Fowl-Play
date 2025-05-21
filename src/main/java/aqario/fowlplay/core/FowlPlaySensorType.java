@@ -1,6 +1,5 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
@@ -11,22 +10,19 @@ import net.minecraft.util.Identifier;
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
-    public static final SensorType<NearestVisibleAdultsSensor> NEARBY_ADULTS = register("nearest_adults",
-        NearestVisibleAdultsSensor::new
-    );
-    public static final SensorType<NearbyLivingEntitiesSensor<BirdEntity>> NEARBY_LIVING_ENTITIES = register("nearby_living_entities",
-        NearbyLivingEntitiesSensor::new
+    public static final SensorType<NearbyAdultsSensor<?>> NEARBY_ADULTS = register("nearby_adults",
+        NearbyAdultsSensor::new
     );
     public static final SensorType<TemptingPlayerSensor> TEMPTING_PLAYER = register("tempting_player",
         TemptingPlayerSensor::new
     );
-    public static final SensorType<AttackedSensor> ATTACKED = register("attacked",
+    public static final SensorType<AttackedSensor<?>> ATTACKED = register("attacked",
         AttackedSensor::new
     );
-    public static final SensorType<AvoidTargetSensor> AVOID_TARGETS = register("avoid_targets",
+    public static final SensorType<AvoidTargetSensor<?>> AVOID_TARGETS = register("avoid_targets",
         AvoidTargetSensor::new
     );
-    public static final SensorType<AttackTargetSensor> ATTACK_TARGETS = register("attack_targets",
+    public static final SensorType<AttackTargetSensor<?>> ATTACK_TARGETS = register("attack_targets",
         AttackTargetSensor::new
     );
     public static final SensorType<PigeonSpecificSensor> PIGEON_SPECIFIC_SENSOR = register("pigeon_specific_sensor",

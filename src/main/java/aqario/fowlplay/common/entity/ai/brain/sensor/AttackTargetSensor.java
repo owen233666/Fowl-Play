@@ -1,56 +1,58 @@
 package aqario.fowlplay.common.entity.ai.brain.sensor;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.core.FowlPlaySensorType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.world.ServerWorld;
+import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.util.SensoryUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.function.BiPredicate;
 
-public class AttackTargetSensor extends Sensor<BirdEntity> {
+public class AttackTargetSensor<E extends BirdEntity> extends EntityFilteringSensor<LivingEntity, E> {
     @Override
-    protected void sense(ServerWorld world, BirdEntity bird) {
-        Brain<?> brain = bird.getBrain();
-        Optional<LivingTargetCache> visibleMobs = brain.getOptionalRegisteredMemory(MemoryModuleType.VISIBLE_MOBS);
-        if (visibleMobs.isEmpty()) {
-            brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);
-            return;
-        }
-        List<LivingEntity> attackTarget = visibleMobs.get().stream(bird::canAttack)
-            .filter(entity -> canAttack(bird, entity))
-            .toList();
-        if (!attackTarget.isEmpty()) {
-            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, attackTarget.getFirst());
-            return;
-        }
-        List<LivingEntity> huntTarget = visibleMobs.get().stream(bird::canHunt)
-            .filter(entity -> canHunt(bird, entity))
-            .toList();
-        if (!huntTarget.isEmpty()) {
-            brain.remember(MemoryModuleType.NEAREST_ATTACKABLE, huntTarget.getFirst());
-            return;
-        }
-        brain.forget(MemoryModuleType.NEAREST_ATTACKABLE);
+    protected MemoryModuleType<LivingEntity> getMemory() {
+        return MemoryModuleType.NEAREST_ATTACKABLE;
+    }
+
+    @Override
+    public List<MemoryModuleType<?>> memoriesUsed() {
+        return List.of(this.getMemory(), MemoryModuleType.VISIBLE_MOBS);
+    }
+
+    @Override
+    public SensorType<? extends ExtendedSensor<?>> type() {
+        return FowlPlaySensorType.ATTACK_TARGETS;
+    }
+
+    @Override
+    protected BiPredicate<LivingEntity, E> predicate() {
+        return (target, self) -> {
+            if (self.canAttack(target) && canAttack(self, target)) {
+                return true;
+            }
+            return self.canHunt(target) && canHunt(self, target);
+        };
+    }
+
+    @Override
+    protected @Nullable LivingEntity findMatches(E entity, LivingTargetCache matcher) {
+        return matcher.findFirst(target -> predicate().test(target, entity)).orElse(null);
     }
 
     private static boolean canAttack(BirdEntity bird, LivingEntity target) {
-        return Sensor.testAttackableTargetPredicate(bird, target)
+        return SensoryUtils.isEntityAttackable(bird, target)
             && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target);
     }
 
     private static boolean canHunt(BirdEntity bird, LivingEntity target) {
         return !bird.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)
             && canAttack(bird, target);
-    }
-
-    @Override
-    public Set<MemoryModuleType<?>> getOutputMemoryModules() {
-        return Set.of(MemoryModuleType.NEAREST_ATTACKABLE);
     }
 }

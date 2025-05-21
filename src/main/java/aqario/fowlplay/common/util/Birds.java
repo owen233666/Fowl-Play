@@ -23,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +40,8 @@ public final class Birds {
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
     public static final int WALK_RANGE = 16;
-    public static final long AVOID_TICKS = 160L;
-    public static final long CANNOT_PICKUP_FOOD_TICKS = 1200L;
+    public static final int AVOID_TICKS = 160;
+    public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
@@ -103,11 +105,12 @@ public final class Birds {
 
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
-        if (!brain.hasMemoryModule(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)) {
+        if (!BrainUtils.hasMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get())) {
             return false;
         }
-        Optional<ItemEntity> wantedItem = brain.getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-        if (wantedItem.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
+        List<ItemEntity> foodItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
+        assert foodItems != null;
+        if (foodItems.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
             return false;
         }
         Optional<LivingTargetCache> visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
@@ -115,14 +118,15 @@ public final class Birds {
             return false;
         }
         List<LivingEntity> avoidTargets = visibleMobs.get().stream(entity -> true)
-            .filter(entity -> shouldAvoid(brain, bird, entity))
-            .filter(entity -> entity.isInRange(wantedItem.get(), bird.getFleeRange(entity)))
+            .filter(entity -> shouldAvoid(bird, entity))
+            .filter(entity -> entity.isInRange(foodItems.getFirst(), bird.getFleeRange(entity)))
             .toList();
 
         return avoidTargets.isEmpty();
     }
 
-    public static boolean shouldAvoid(Brain<?> brain, BirdEntity bird, LivingEntity target) {
+    public static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
+        Brain<?> brain = bird.getBrain();
         if (!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
             return false;
         }
@@ -146,6 +150,14 @@ public final class Birds {
 
     public static Optional<? extends LivingEntity> getAttackTarget(BirdEntity bird) {
         return LookTargetUtil.hasBreedTarget(bird) ? Optional.empty() : bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+    }
+
+    public static boolean canAttack(BirdEntity bird) {
+        return !bird.isInsideWaterOrBubbleColumn() && !LookTargetUtil.hasBreedTarget(bird);
+    }
+
+    public static boolean canAquaticAttack(BirdEntity bird) {
+        return !LookTargetUtil.hasBreedTarget(bird);
     }
 
     public static boolean isPerched(BirdEntity entity) {

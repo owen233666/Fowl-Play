@@ -10,7 +10,6 @@ import aqario.fowlplay.core.FowlPlaySoundEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.BodyControl;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -50,6 +49,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     public static DefaultAttributeContainer.Builder createBirdAttributes() {
         return MobEntity.createMobAttributes()
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32)
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f);
     }
@@ -148,9 +148,6 @@ public abstract class BirdEntity extends AnimalEntity {
             if (this.getBrain().isMemoryInState(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)) {
                 this.getBrain().forget(FowlPlayMemoryModuleType.SEES_FOOD);
             }
-            if (this.getBrain().isMemoryInState(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, MemoryModuleState.VALUE_PRESENT)) {
-                this.getBrain().forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
-            }
         }
     }
 
@@ -163,11 +160,6 @@ public abstract class BirdEntity extends AnimalEntity {
 
     private boolean canEat(ItemStack stack) {
         return this.getFood().test(stack)/* && !this.isSleeping()*/;
-    }
-
-    // how far the bird can see in blocks
-    public int getLookDistance() {
-        return 32;
     }
 
     public abstract Ingredient getFood();
