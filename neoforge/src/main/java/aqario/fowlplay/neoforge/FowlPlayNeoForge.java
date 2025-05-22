@@ -1,6 +1,6 @@
 package aqario.fowlplay.neoforge;
 
-import aqario.fowlplay.common.FowlPlay;
+import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.neoforge.init.FowlPlayItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -13,6 +13,8 @@ public final class FowlPlayNeoForge {
         FowlPlayItems.register(bus);
 
         bus.addListener(this::addSpawnEggsToCreativeMenu);
+
+        FowlPlay.init();
 
         // rendering
 

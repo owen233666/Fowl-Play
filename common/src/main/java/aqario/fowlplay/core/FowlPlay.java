@@ -6,30 +6,25 @@ import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import aqario.fowlplay.core.platform.PlatformHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FowlPlay implements ModInitializer {
+public class FowlPlay {
     public static final Logger LOGGER = LoggerFactory.getLogger("Fowl Play");
     public static final String ID = "fowlplay";
 
     public static boolean isYACLLoaded() {
-        return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
+        return PlatformHelper.isModLoaded("yet_another_config_lib_v3");
     }
 
     public static boolean isDebugUtilsLoaded() {
-        return FabricLoader.getInstance().isModLoaded("debugutils");
+        return PlatformHelper.isModLoaded("debugutils");
     }
 
-    @Override
-    public void onInitialize() {
-        ModContainer mod = FabricLoader.getInstance().getModContainer(ID).orElseThrow(() -> new IllegalStateException("Fowl Play mod container not found??"));
-        LOGGER.info("Loading {} {}", mod.getMetadata().getName(), mod.getMetadata().getVersion());
-        if (isYACLLoaded()) {
+    public static void init() {
+        LOGGER.info("Loading Fowl Play");
+        if(isYACLLoaded()) {
             FowlPlayConfig.load();
         }
         FowlPlayActivities.init();

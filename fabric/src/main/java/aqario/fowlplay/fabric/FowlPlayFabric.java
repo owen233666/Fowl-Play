@@ -1,9 +1,10 @@
 package aqario.fowlplay.fabric;
 
-import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.*;
-import aqario.fowlplay.common.item.FowlPlayItems;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
+import aqario.fowlplay.core.FowlPlay;
+import aqario.fowlplay.core.FowlPlayEntityType;
+import aqario.fowlplay.core.FowlPlayItems;
 import aqario.fowlplay.fabric.world.gen.FowlPlayWorldGen;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -23,13 +24,13 @@ public final class FowlPlayFabric implements ModInitializer {
 
         FowlPlayWorldGen.init();
 
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.GULL, GullEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.ROBIN, RobinEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.SPARROW, SparrowEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntity.createFlyingBirdAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntity.createFlyingBirdAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.GULL, GullEntity.createFlyingBirdAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntity.createPenguinAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntity.createFlyingBirdAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.ROBIN, RobinEntity.createFlyingBirdAttributes());
+        FabricDefaultAttributeRegistry.register(FowlPlayEntityType.SPARROW, SparrowEntity.createFlyingBirdAttributes());
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(entries -> {
             entries.addItem(FowlPlayItems.BLUE_JAY_SPAWN_EGG);
