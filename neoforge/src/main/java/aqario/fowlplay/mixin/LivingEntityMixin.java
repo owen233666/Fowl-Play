@@ -1,7 +1,7 @@
 package aqario.fowlplay.mixin;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
-import aqario.fowlplay.common.tags.FowlPlayBlockTags;
+import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -37,7 +37,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "getOffGroundSpeed", at = @At("RETURN"), cancellable = true)
     private void fowlplay$increaseAirSpeed(CallbackInfoReturnable<Float> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if(entity instanceof PenguinEntity penguin && penguin.getPrimaryPassenger() instanceof PlayerEntity) {
+        if(entity instanceof PenguinEntity penguin && penguin.getControllingPassenger() instanceof PlayerEntity) {
             cir.setReturnValue(entity.getMovementSpeed() * 0.216f);
         }
     }
@@ -45,7 +45,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "travelControlled", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;travel(Lnet/minecraft/util/math/Vec3d;)V"))
     private void fowlplay$stepDownwards(PlayerEntity player, Vec3d input, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if(entity instanceof PenguinEntity penguin && penguin.getPrimaryPassenger() instanceof PlayerEntity && penguin.shouldStepDown()) {
+        if(entity instanceof PenguinEntity penguin && penguin.getControllingPassenger() instanceof PlayerEntity && penguin.shouldStepDown()) {
             entity.addVelocityInternal(new Vec3d(0, -0.5, 0));
         }
     }

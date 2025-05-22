@@ -1,11 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "aqario.fowlplay.fabric.mixin",
+  "package": "aqario.fowlplay.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "aqario.fowlplay.mixin.LivingEntityMixin",
-    "aqario.fowlplay.mixin.PowderSnowBlockMixin"
+    "LivingEntityMixin",
+    "PowderSnowBlockMixin"
   ],
   "client": [
   ],

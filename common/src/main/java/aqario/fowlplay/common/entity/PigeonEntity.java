@@ -136,7 +136,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("variant", this.getVariant().getKey().orElse(PigeonVariant.BANDED).getValue().toString());
-        if (this.getRecipientUuid() != null) {
+        if(this.getRecipientUuid() != null) {
             nbt.putUuid("recipient", this.getRecipientUuid());
         }
     }
@@ -149,7 +149,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
             .flatMap(FowlPlayRegistries.PIGEON_VARIANT::getEntry)
             .ifPresent(this::setVariant);
 
-        if (nbt.containsUuid("recipient")) {
+        if(nbt.containsUuid("recipient")) {
             this.setRecipientUuid(nbt.getUuid("recipient"));
         }
         else {
@@ -200,8 +200,8 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         ItemStack bundleStack = this.getStackInHand(Hand.OFF_HAND);
 
         // Equip bundle
-        if (bundleStack.isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
-            if (!this.getWorld().isClient) {
+        if(bundleStack.isEmpty() && playerStack.getItem() instanceof BundleItem && playerStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) && this.isTamed()) {
+            if(!this.getWorld().isClient) {
                 this.setStackInHand(Hand.OFF_HAND, playerStack);
                 player.setStackInHand(hand, ItemStack.EMPTY);
             }
@@ -209,8 +209,8 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         }
 
         // Unequip bundle
-        if (playerStack.isEmpty() && bundleStack.getItem() instanceof BundleItem) {
-            if (!this.getWorld().isClient) {
+        if(playerStack.isEmpty() && bundleStack.getItem() instanceof BundleItem) {
+            if(!this.getWorld().isClient) {
                 player.setStackInHand(hand, bundleStack);
                 this.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
             }
@@ -218,10 +218,10 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         }
 
         // Taming
-        if (this.isBreedingItem(playerStack) && !this.isTamed()) {
-            if (!this.getWorld().isClient) {
+        if(this.isBreedingItem(playerStack) && !this.isTamed()) {
+            if(!this.getWorld().isClient) {
                 this.eat(player, hand, playerStack);
-                if (this.random.nextInt(4) == 0) {
+                if(this.random.nextInt(4) == 0) {
                     this.setOwner(player);
                     this.navigation.stop();
                     this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
@@ -234,8 +234,8 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         }
 
         // Sitting
-        if (this.isOnGround() && this.isTamed() && this.isOwner(player)) {
-            if (!this.getWorld().isClient) {
+        if(this.isOnGround() && this.isTamed() && this.isOwner(player)) {
+            if(!this.getWorld().isClient) {
                 this.setSitting(!this.isSitting());
                 this.jumping = false;
                 this.navigation.stop();
@@ -256,7 +256,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     @Override
     public boolean canEquip(ItemStack stack) {
         EquipmentSlot equipmentSlot = this.getPreferredEquipmentSlot(stack);
-        if (!this.getEquippedStack(equipmentSlot).isEmpty()) {
+        if(!this.getEquippedStack(equipmentSlot).isEmpty()) {
             return false;
         }
         return equipmentSlot == EquipmentSlot.MAINHAND || equipmentSlot == EquipmentSlot.OFFHAND && super.canEquip(stack);
@@ -284,7 +284,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @Override
     public void tick() {
-        if (this.getWorld().isClient()) {
+        if(this.getWorld().isClient()) {
             this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
             this.flappingState.setRunning(this.isFlying(), this.age);
             this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
@@ -315,12 +315,12 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @Override
     protected boolean canSing() {
-        if (this.getWorld().isDay()) {
+        if(this.getWorld().isDay()) {
             return false;
         }
         List<PlayerEntity> list = this.getWorld()
             .getEntitiesByClass(PlayerEntity.class, this.getAttackBox().expand(16.0, 16.0, 16.0), EntityPredicates.EXCEPT_SPECTATOR);
-        if (list.isEmpty()) {
+        if(list.isEmpty()) {
             return false;
         }
         return super.canSing();
@@ -449,7 +449,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends PigeonEntity> getFlyTasks() {
-        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.FLY)
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
                 new LeaderlessFlockTask(
@@ -474,7 +474,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends PigeonEntity> getDeliverTasks() {
-        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.DELIVER)
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.DELIVER.get())
             .priority(10)
             .behaviours(
                 FlightControlTask.<PigeonEntity>stopFlying()
@@ -503,7 +503,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends PigeonEntity> getPickupFoodTasks() {
-        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.PICK_UP)
+        return new BrainActivityGroup<PigeonEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
                 FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && Birds.canPickupFood(pigeon)),
@@ -524,10 +524,10 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     @Override
     public Map<Activity, BrainActivityGroup<? extends PigeonEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends PigeonEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY, this.getFlyTasks());
-        taskList.put(FowlPlayActivities.DELIVER, this.getDeliverTasks());
+        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.DELIVER.get(), this.getDeliverTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
-        taskList.put(FowlPlayActivities.PICK_UP, this.getPickupFoodTasks());
+        taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
     }
 
@@ -535,20 +535,20 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
             Activity.IDLE,
-            FowlPlayActivities.FLY,
-            FowlPlayActivities.DELIVER,
+            FowlPlayActivities.FLY.get(),
+            FowlPlayActivities.DELIVER.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP
+            FowlPlayActivities.PICK_UP.get()
         );
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
         UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
-        if (recipientUuid == null) {
+        if(recipientUuid == null) {
             return false;
         }
         PlayerEntity recipient = pigeon.getWorld().getPlayerByUuid(recipientUuid);
-        if (recipient == null) {
+        if(recipient == null) {
             return false;
         }
         return pigeon.squaredDistanceTo(recipient) > 64;
@@ -556,11 +556,11 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     private static boolean shouldStopFlyingToRecipient(PigeonEntity pigeon) {
         UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
-        if (recipientUuid == null) {
+        if(recipientUuid == null) {
             return true;
         }
         PlayerEntity recipient = pigeon.getWorld().getPlayerByUuid(recipientUuid);
-        if (recipient == null) {
+        if(recipient == null) {
             return true;
         }
         return pigeon.squaredDistanceTo(recipient) < 16;
@@ -571,18 +571,18 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         this.tickBrain(this);
         super.mobTick();
 
-        if (this.getServer() == null) {
+        if(this.getServer() == null) {
             return;
         }
 
-        if (!this.isTamed()) {
+        if(!this.isTamed()) {
             return;
         }
 
         ItemStack stack = this.getEquippedStack(EquipmentSlot.OFFHAND);
         ServerPlayerEntity recipient = this.getServer().getPlayerManager().getPlayer(stack.getName().getString());
 
-        if (!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
+        if(!(stack.getItem() instanceof BundleItem) || !stack.getComponents().contains(DataComponentTypes.CUSTOM_NAME) || recipient == null || recipient.getUuid() == null) {
             this.setRecipientUuid(null);
             return;
         }

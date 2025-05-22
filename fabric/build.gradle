@@ -35,7 +35,12 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     // Architectury
-    modRuntimeOnly("dev.architectury:architectury-fabric:${rootProject.architectury_version}")
+    modImplementation("dev.architectury:architectury-fabric:${rootProject.architectury_version}")
+
+    // Debug Utils
+    modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}-fabric") {
+        transitive = false
+    }
 
     // Dev Tools
 //    modRuntimeOnly("maven.modrinth:dev-tools-unlocker:${rootProject.devtools_version}") {
@@ -56,16 +61,14 @@ dependencies {
     // Observable
     modRuntimeOnly("maven.modrinth:observable:${rootProject.observable_version}")
 
+    // Smart Brain Lib
+    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")
+
+    // Yet Another Config Lib
+    modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
-}
-
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('fabric.mod.json') {
-        expand version: project.version
-    }
 }
 
 shadowJar {

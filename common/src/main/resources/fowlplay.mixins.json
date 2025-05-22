@@ -7,7 +7,6 @@
     "ChickenEntityMixin",
     "FenceGateBlockMixin",
     "HorizontalConnectingBlockMixin",
-    "LivingEntityMixin",
     "PowderSnowBlockMixin",
     "SoundCategoryMixin",
     "SpawnGroupMixin",

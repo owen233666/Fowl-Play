@@ -60,7 +60,7 @@ public class SparrowSpawner implements SpecialSpawner {
             > 4L) {
             List<SparrowEntity> nearbySparrows = world.getNonSpectatingEntities(SparrowEntity.class, new Box(pos).expand(48.0, 8.0, 48.0));
             if (nearbySparrows.size() < MAX_SPARROWS
-                && FlyingBirdEntity.canSpawnPasserines(FowlPlayEntityType.SPARROW, world, SpawnReason.NATURAL, pos, world.getRandom())
+                && FlyingBirdEntity.canSpawnPasserines(FowlPlayEntityType.SPARROW.get(), world, SpawnReason.NATURAL, pos, world.getRandom())
             ) {
                 return this.spawn(pos, world);
             }
@@ -70,7 +70,7 @@ public class SparrowSpawner implements SpecialSpawner {
     }
 
     private int spawn(BlockPos pos, ServerWorld world) {
-        SparrowEntity sparrow = FowlPlayEntityType.SPARROW.create(world);
+        SparrowEntity sparrow = FowlPlayEntityType.SPARROW.get().create(world);
         if (sparrow == null) {
             return 0;
         }

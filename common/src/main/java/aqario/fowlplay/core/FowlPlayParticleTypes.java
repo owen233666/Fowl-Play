@@ -1,15 +1,24 @@
 package aqario.fowlplay.core;
 
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKeys;
 
 public class FowlPlayParticleTypes {
-    public static final SimpleParticleType SMALL_BUBBLE = register("small_bubble", false);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(
+        FowlPlay.ID,
+        RegistryKeys.PARTICLE_TYPE
+    );
 
-    private static SimpleParticleType register(String name, boolean alwaysShow) {
-        return Registry.register(Registries.PARTICLE_TYPE, Identifier.of(FowlPlay.ID, name), FabricParticleTypes.simple(alwaysShow));
+    public static final RegistrySupplier<SimpleParticleType> SMALL_BUBBLE = register("small_bubble", false);
+
+    private static RegistrySupplier<SimpleParticleType> register(String name, boolean alwaysShow) {
+        return PARTICLE_TYPES.register(name, () -> new SimpleParticleType(alwaysShow));
+    }
+
+    public static void init() {
+        PARTICLE_TYPES.register();
     }
 }

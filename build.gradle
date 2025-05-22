@@ -28,6 +28,14 @@ subprojects {
 
     repositories {
         maven {
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases'
+        }
+        maven {
+            name = 'Kotlin for Forge'
+            url = 'https://thedarkcolour.github.io/KotlinForForge/'
+        }
+        maven {
             name = "modrinth"
             url = "https://api.modrinth.com/maven"
         }
@@ -53,17 +61,6 @@ subprojects {
     dependencies {
         // Minecraft
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-
-        // Debug Utils
-        modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}") {
-            transitive = false
-        }
-
-        // Smart Brain Lib
-        modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")
-
-        // Yet Another Config Lib
-        modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}")
     }
 
 //    fabricApi {

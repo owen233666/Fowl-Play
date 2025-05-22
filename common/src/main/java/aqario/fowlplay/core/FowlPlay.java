@@ -6,7 +6,8 @@ import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
-import aqario.fowlplay.core.platform.PlatformHelper;
+import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.platform.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,19 +15,13 @@ public class FowlPlay {
     public static final Logger LOGGER = LoggerFactory.getLogger("Fowl Play");
     public static final String ID = "fowlplay";
 
-    public static boolean isYACLLoaded() {
-        return PlatformHelper.isModLoaded("yet_another_config_lib_v3");
-    }
-
     public static boolean isDebugUtilsLoaded() {
-        return PlatformHelper.isModLoaded("debugutils");
+        return Platform.isModLoaded("debugutils");
     }
 
     public static void init() {
         LOGGER.info("Loading Fowl Play");
-        if(isYACLLoaded()) {
-            FowlPlayConfig.load();
-        }
+        FowlPlayConfig.load();
         FowlPlayActivities.init();
         FowlPlayEntityType.init();
         ChickenVariant.init();
@@ -36,18 +31,22 @@ public class FowlPlay {
         SparrowVariant.init();
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();
+        FowlPlayParticleTypes.init();
         FowlPlayRegistries.init();
         FowlPlayRegistryKeys.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();
+        initSpawners();
+    }
 
+    private static void initSpawners() {
         GullSpawner gullSpawner = new GullSpawner();
         HawkSpawner hawkSpawner = new HawkSpawner();
         PigeonSpawner pigeonSpawner = new PigeonSpawner();
         SparrowSpawner sparrowSpawner = new SparrowSpawner();
 
-        ServerTickEvents.END_WORLD_TICK.register(world -> {
+        TickEvent.SERVER_LEVEL_POST.register(world -> {
             gullSpawner.spawn(
                 world,
                 world.getServer().isMonsterSpawningEnabled(),

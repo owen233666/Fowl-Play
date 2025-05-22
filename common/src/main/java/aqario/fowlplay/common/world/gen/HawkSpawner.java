@@ -49,7 +49,7 @@ public class HawkSpawner implements SpecialSpawner {
             .south(-10 + random.nextInt(21));
         BlockState block = world.getBlockState(spawnPos);
         FluidState fluid = world.getFluidState(spawnPos);
-        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK)
+        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.HAWK.get())
             && world.getBiome(spawnPos).isIn(FowlPlayBiomeTags.SPAWNS_HAWKS)
         ) {
             if (spawnPos.getY() - world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, spawnPos.getX(), spawnPos.getZ()) > MAX_SPAWN_HEIGHT) {
@@ -62,7 +62,7 @@ public class HawkSpawner implements SpecialSpawner {
             if (!nearbyHawks.isEmpty()) {
                 return 0;
             }
-            HawkEntity hawk = FowlPlayEntityType.HAWK.create(world);
+            HawkEntity hawk = FowlPlayEntityType.HAWK.get().create(world);
             if (hawk == null) {
                 return 0;
             }

@@ -49,7 +49,7 @@ public class GullSpawner implements SpecialSpawner {
             .south(-40 + random.nextInt(81));
         BlockState block = world.getBlockState(spawnPos);
         FluidState fluid = world.getFluidState(spawnPos);
-        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.GULL)
+        if (SpawnHelper.isClearForSpawn(world, spawnPos, block, fluid, FowlPlayEntityType.GULL.get())
             && world.getBiome(spawnPos).isIn(FowlPlayBiomeTags.SPAWNS_GULLS)
         ) {
             if (spawnPos.getY() - world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, spawnPos.getX(), spawnPos.getZ()) > MAX_SPAWN_HEIGHT) {
@@ -62,7 +62,7 @@ public class GullSpawner implements SpecialSpawner {
             if (!nearbyGulls.isEmpty()) {
                 return 0;
             }
-            GullEntity gull = FowlPlayEntityType.GULL.create(world);
+            GullEntity gull = FowlPlayEntityType.GULL.get().create(world);
             if (gull == null) {
                 return 0;
             }

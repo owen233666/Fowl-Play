@@ -1,30 +1,29 @@
 package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.entity.*;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import aqario.fowlplay.common.util.RegistryBuilder;
 import net.minecraft.registry.Registry;
 
 public class FowlPlayRegistries {
-    public static final Registry<ChickenVariant> CHICKEN_VARIANT = FabricRegistryBuilder
-        .createSimple(FowlPlayRegistryKeys.CHICKEN_VARIANT)
-        .attribute(RegistryAttribute.SYNCED)
+    public static final Registry<ChickenVariant> CHICKEN_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.CHICKEN_VARIANT)
+        .sync()
         .buildAndRegister();
-    public static final Registry<DuckVariant> DUCK_VARIANT = FabricRegistryBuilder
-        .createSimple(FowlPlayRegistryKeys.DUCK_VARIANT)
-        .attribute(RegistryAttribute.SYNCED)
+    public static final Registry<DuckVariant> DUCK_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.DUCK_VARIANT)
+        .sync()
         .buildAndRegister();
-    public static final Registry<GullVariant> GULL_VARIANT = FabricRegistryBuilder
-        .createSimple(FowlPlayRegistryKeys.GULL_VARIANT)
-        .attribute(RegistryAttribute.SYNCED)
+    public static final Registry<GullVariant> GULL_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.GULL_VARIANT)
+        .sync()
         .buildAndRegister();
-    public static final Registry<PigeonVariant> PIGEON_VARIANT = FabricRegistryBuilder
-        .createSimple(FowlPlayRegistryKeys.PIGEON_VARIANT)
-        .attribute(RegistryAttribute.SYNCED)
+    public static final Registry<PigeonVariant> PIGEON_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.PIGEON_VARIANT)
+        .sync()
         .buildAndRegister();
-    public static final Registry<SparrowVariant> SPARROW_VARIANT = FabricRegistryBuilder
-        .createSimple(FowlPlayRegistryKeys.SPARROW_VARIANT)
-        .attribute(RegistryAttribute.SYNCED)
+    public static final Registry<SparrowVariant> SPARROW_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.SPARROW_VARIANT)
+        .sync()
         .buildAndRegister();
 
     public static void init() {

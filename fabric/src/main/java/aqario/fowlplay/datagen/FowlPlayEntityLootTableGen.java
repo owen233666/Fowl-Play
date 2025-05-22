@@ -29,18 +29,18 @@ public class FowlPlayEntityLootTableGen extends SimpleFabricLootTableProvider {
 
     @Override
     public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter) {
-        this.registerBird(exporter, FowlPlayEntityType.BLUE_JAY);
-        this.registerBird(exporter, FowlPlayEntityType.CARDINAL);
-        this.registerBird(exporter, FowlPlayEntityType.CHICKADEE);
-        this.registerBird(exporter, FowlPlayEntityType.CROW);
-        this.registerBird(exporter, FowlPlayEntityType.DUCK);
-        this.registerBird(exporter, FowlPlayEntityType.GULL);
-        this.registerBird(exporter, FowlPlayEntityType.HAWK);
-        this.registerBird(exporter, FowlPlayEntityType.PENGUIN);
-        this.registerBird(exporter, FowlPlayEntityType.PIGEON);
-        this.registerBird(exporter, FowlPlayEntityType.RAVEN);
-        this.registerBird(exporter, FowlPlayEntityType.ROBIN);
-        this.registerBird(exporter, FowlPlayEntityType.SPARROW);
+        this.registerBird(exporter, FowlPlayEntityType.BLUE_JAY.get());
+        this.registerBird(exporter, FowlPlayEntityType.CARDINAL.get());
+        this.registerBird(exporter, FowlPlayEntityType.CHICKADEE.get());
+        this.registerBird(exporter, FowlPlayEntityType.CROW.get());
+        this.registerBird(exporter, FowlPlayEntityType.DUCK.get());
+        this.registerBird(exporter, FowlPlayEntityType.GULL.get());
+        this.registerBird(exporter, FowlPlayEntityType.HAWK.get());
+        this.registerBird(exporter, FowlPlayEntityType.PENGUIN.get());
+        this.registerBird(exporter, FowlPlayEntityType.PIGEON.get());
+        this.registerBird(exporter, FowlPlayEntityType.RAVEN.get());
+        this.registerBird(exporter, FowlPlayEntityType.ROBIN.get());
+        this.registerBird(exporter, FowlPlayEntityType.SPARROW.get());
     }
 
     private void registerBird(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, EntityType<?> type) {

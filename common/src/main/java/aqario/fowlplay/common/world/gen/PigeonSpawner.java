@@ -68,7 +68,7 @@ public class PigeonSpawner implements SpecialSpawner {
     }
 
     private int spawn(BlockPos pos, ServerWorld world) {
-        PigeonEntity pigeon = FowlPlayEntityType.PIGEON.create(world);
+        PigeonEntity pigeon = FowlPlayEntityType.PIGEON.get().create(world);
         if (pigeon == null) {
             return 0;
         }

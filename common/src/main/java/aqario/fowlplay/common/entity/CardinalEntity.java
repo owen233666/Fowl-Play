@@ -216,7 +216,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends CardinalEntity> getFlyTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FLY)
+        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
                 SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED),
@@ -250,7 +250,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends CardinalEntity> getPickupFoodTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PICK_UP)
+        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
                 FlightControlTask.startFlying(Birds::canPickupFood),
@@ -270,9 +270,9 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
     @Override
     public Map<Activity, BrainActivityGroup<? extends CardinalEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends CardinalEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY, this.getFlyTasks());
+        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
-        taskList.put(FowlPlayActivities.PICK_UP, this.getPickupFoodTasks());
+        taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
     }
 
@@ -280,9 +280,9 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
             Activity.IDLE,
-            FowlPlayActivities.FLY,
+            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP
+            FowlPlayActivities.PICK_UP.get()
         );
     }
 

@@ -315,7 +315,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends HawkEntity> getFlyTasks() {
-        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.FLY)
+        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
                 new SetAttackTarget<HawkEntity>()
@@ -355,7 +355,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
 
     @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends HawkEntity> getPickupFoodTasks() {
-        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.PICK_UP)
+        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
                 FlightControlTask.startFlying(Birds::canPickupFood),
@@ -392,9 +392,9 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
     @Override
     public Map<Activity, BrainActivityGroup<? extends HawkEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends HawkEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY, this.getFlyTasks());
+        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
-        taskList.put(FowlPlayActivities.PICK_UP, this.getPickupFoodTasks());
+        taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
     }
 
@@ -402,9 +402,9 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
             Activity.IDLE,
-            FowlPlayActivities.FLY,
+            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP,
+            FowlPlayActivities.PICK_UP.get(),
             Activity.FIGHT
         );
     }
