@@ -13,7 +13,7 @@ displayName = "Fowl Play"
 description = '''
 Just smile and wave, boys. Smile and wave.
 '''
-logoFile = "assets/fowlplay/icon.png"
+logoFile = "../assets/fowlplay/icon.png"
 authors = "aqario"
 credits = "Penguin60, Disketaa, owen233666"
 displayURL = "https://modrinth.com/mod/fowlplay"

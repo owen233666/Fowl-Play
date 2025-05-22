@@ -1,155 +1,160 @@
 plugins {
-    id "fabric-loom" version "1.9-SNAPSHOT"
-    id "maven-publish"
+    id 'dev.architectury.loom' version '1.10-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
 
-version = "${project.mod_version}+${project.minecraft_version}"
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
+architectury {
+    minecraft = project.minecraft_version
 }
 
-repositories {
-    maven {
-        name = "modrinth"
-        url = "https://api.modrinth.com/maven"
-    }
-    maven {
-        url = "https://maven.terraformersmc.com/releases/"
-    }
-    maven {
-        url = "https://gitlab.com/api/v4/projects/21830712/packages/maven"
-    }
-    maven {
-        name = "Xander Maven"
-        url = "https://maven.isxander.dev/releases"
-    }
-    maven {
-        url = "https://maven.architectury.dev/"
-    }
-    maven {
-        name = "SmartBrainLib (SBL) Maven Repo"
-        url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
-    }
+allprojects {
+    group = rootProject.maven_group
+    version = project.version
 }
 
-dependencies {
-    // Minecraft
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
 
-    // Mappings
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-
-    // Fabric Loader
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Architectury
-    modRuntimeOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
-
-    // Debug Utils
-    modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}") {
-        transitive = false
+    loom {
+        accessWidenerPath = file("src/main/resources/fowlplay.accesswidener")
     }
 
-    // Dev Tools
+    base {
+        archivesName = "$rootProject.version+$rootProject.minecraft_version"
+    }
+
+    repositories {
+        maven {
+            name = "modrinth"
+            url = "https://api.modrinth.com/maven"
+        }
+        maven {
+            url = "https://maven.terraformersmc.com/releases/"
+        }
+        maven {
+            url = "https://gitlab.com/api/v4/projects/21830712/packages/maven"
+        }
+        maven {
+            name = "Xander Maven"
+            url = "https://maven.isxander.dev/releases"
+        }
+        maven {
+            url = "https://maven.architectury.dev/"
+        }
+        maven {
+            name = "SmartBrainLib (SBL) Maven Repo"
+            url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+        }
+    }
+
+    dependencies {
+        // Minecraft
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+
+        // Architectury
+//        modRuntimeOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
+
+        // Debug Utils
+        modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}") {
+            transitive = false
+        }
+
+        // Dev Tools
 //    modRuntimeOnly("maven.modrinth:dev-tools-unlocker:${project.devtools_version}") {
 //        transitive = false
 //    }
 
-    // Fabric Language Kotlin
-    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}")
+        // Fabric Language Kotlin
+//    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}")
 
-    // Item Suggestions Not Require Mod Name
-    modRuntimeOnly("maven.modrinth:isnrmn:${project.isnrmn_version}")
+        // Item Suggestions Not Require Mod Name
+//    modRuntimeOnly("maven.modrinth:isnrmn:${project.isnrmn_version}")
 
-    // Mod Menu
-    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
-        transitive = false
+        // Mod Menu
+//    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
+//        transitive = false
+//    }
+
+        // Observable
+//    modRuntimeOnly("maven.modrinth:observable:${project.observable_version}")
+
+        // Smart Brain Lib
+        modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")
+
+        // Yet Another Config Lib
+        modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}")
     }
 
-    // Observable
-    modRuntimeOnly("maven.modrinth:observable:${project.observable_version}")
+//    fabricApi {
+//        configureDataGeneration()
+//    }
 
-    // Smart Brain Lib
-    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")
+    processResources {
+        Map<String, Object> properties = [
+            "version"            : project.version,
+            fabric_loader_version: rootProject.fabric_loader_version,
+            fabric_api_version   : rootProject.fabric_api_version,
+            "neoforge_version"   : rootProject.neoforge_version,
+            "sbl_version"        : rootProject.sbl_version,
+            "yacl_version"       : rootProject.yacl_version
+        ]
 
-    // Yet Another Config Lib
-    modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}")
-}
+        properties.each { key, value ->
+            inputs.property(key, value)
+        }
 
-fabricApi {
-    configureDataGeneration()
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/${project.archives_base_name}.accesswidener")
-}
-
-processResources {
-    Map<String, Object> properties = [
-        "version": project.version,
-        "loader_version": project.loader_version,
-        "fabric_version": project.fabric_version,
-        "sbl_version": project.sbl_version,
-        "yacl_version": project.yacl_version
-    ]
-
-    properties.each { key, value ->
-        inputs.property(key, value)
-    }
-
-    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
-        expand(properties)
-    }
-}
-
-tasks.register("cleanGenerated", Delete) {
-    delete file("src/main/generated")
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.dependsOn tasks.named("cleanGenerated")
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
-}
-
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
-// If you plan to use a different file for the license, don't forget to change the file name here!
-jar {
-    from("LICENSE.md") {
-        rename { "${it}_${project.base.archivesName.get()}" }
-    }
-}
-
-// Configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.base.archivesName.get()
-            from components.java
+        filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+            expand(properties)
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+    tasks.register("cleanGenerated", Delete) {
+        delete file("src/main/generated")
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.dependsOn tasks.named("cleanGenerated")
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
+    }
+
+    java {
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+// If you plan to use a different file for the license, don't forget to change the file name here!
+    jar {
+        from("LICENSE.md") {
+            rename { "${it}_${project.base.archivesName.get()}" }
+        }
+    }
+
+// Configure the maven publication
+    publishing {
+        publications {
+            create("mavenJava", MavenPublication) {
+                artifactId = project.base.archivesName.get()
+                from components.java
+            }
+        }
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+            // Notice: This block does NOT have the same function as the block in the top level.
+            // The repositories here will be used for publishing your artifact, not for
+            // retrieving dependencies.
+        }
     }
 }
