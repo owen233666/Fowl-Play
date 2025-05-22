@@ -7,23 +7,39 @@ license = "MIT"
 modId = "fowlplay"
 version = "${version}"
 displayName = "Fowl Play"
-authors = "aqario"
 description = '''
 Just smile and wave, boys. Smile and wave.
 '''
+authors = "aqario"
+credits = "Penguin60, Disketaa, owen233666"
 logoFile = "assets/fowlplay/icon.png"
-
-[[dependencies.fowlplay]]
-modId = "neoforge"
-type = "required"
-versionRange = "[21.0,)"
-ordering = "NONE"
-side = "BOTH"
+displayURL = "https://modrinth.com/mod/fowlplay"
 
 [[dependencies.fowlplay]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.fowlplay]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.fowlplay]]
+modId = "smartbrainlib"
+type = "required"
+versionRange = "[${sbl_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.fowlplay]]
+modId = "yet_another_config_lib_v3"
+type = "required"
+versionRange = "[${yacl_version},)"
 ordering = "NONE"
 side = "BOTH"
 

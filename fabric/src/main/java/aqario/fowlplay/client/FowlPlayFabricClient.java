@@ -1,4 +1,4 @@
-package aqario.fowlplay.fabric.client;
+package aqario.fowlplay.client;
 
 import aqario.fowlplay.client.model.*;
 import aqario.fowlplay.common.config.FowlPlayConfig;

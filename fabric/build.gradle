@@ -34,6 +34,28 @@ dependencies {
     // Fabric API
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
+    // Architectury
+    modRuntimeOnly("dev.architectury:architectury-fabric:${rootProject.architectury_version}")
+
+    // Dev Tools
+//    modRuntimeOnly("maven.modrinth:dev-tools-unlocker:${rootProject.devtools_version}") {
+//        transitive = false
+//    }
+
+    // Fabric Language Kotlin
+    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:${rootProject.fabric_language_kotlin_version}")
+
+    // Item Suggestions Not Require Mod Name
+    modRuntimeOnly("maven.modrinth:isnrmn:${rootProject.isnrmn_version}")
+
+    // Mod Menu
+    modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}") {
+        transitive = false
+    }
+
+    // Observable
+    modRuntimeOnly("maven.modrinth:observable:${rootProject.observable_version}")
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }

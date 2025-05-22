@@ -1,7 +1,5 @@
-package aqario.fowlplay.neoforge;
+package aqario.fowlplay.core;
 
-import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.neoforge.init.FowlPlayItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;

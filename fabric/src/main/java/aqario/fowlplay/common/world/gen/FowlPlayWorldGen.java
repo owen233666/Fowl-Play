@@ -1,4 +1,4 @@
-package aqario.fowlplay.fabric.world.gen;
+package aqario.fowlplay.common.world.gen;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.GullEntity;

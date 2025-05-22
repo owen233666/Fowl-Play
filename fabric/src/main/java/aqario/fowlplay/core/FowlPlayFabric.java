@@ -1,11 +1,8 @@
-package aqario.fowlplay.fabric;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.entity.*;
+import aqario.fowlplay.common.world.gen.FowlPlayWorldGen;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
-import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.core.FowlPlayEntityType;
-import aqario.fowlplay.core.FowlPlayItems;
-import aqario.fowlplay.fabric.world.gen.FowlPlayWorldGen;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;

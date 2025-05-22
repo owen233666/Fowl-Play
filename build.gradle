@@ -54,32 +54,10 @@ subprojects {
         // Minecraft
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
 
-        // Architectury
-//        modRuntimeOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
-
         // Debug Utils
         modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}") {
             transitive = false
         }
-
-        // Dev Tools
-//    modRuntimeOnly("maven.modrinth:dev-tools-unlocker:${project.devtools_version}") {
-//        transitive = false
-//    }
-
-        // Fabric Language Kotlin
-//    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:${project.fabric_language_kotlin_version}")
-
-        // Item Suggestions Not Require Mod Name
-//    modRuntimeOnly("maven.modrinth:isnrmn:${project.isnrmn_version}")
-
-        // Mod Menu
-//    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
-//        transitive = false
-//    }
-
-        // Observable
-//    modRuntimeOnly("maven.modrinth:observable:${project.observable_version}")
 
         // Smart Brain Lib
         modImplementation("net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}")

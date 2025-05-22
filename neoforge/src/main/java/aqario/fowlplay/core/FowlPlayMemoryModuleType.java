@@ -1,4 +1,4 @@
-package aqario.fowlplay.neoforge.init;
+package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.FowlPlay;
 import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;

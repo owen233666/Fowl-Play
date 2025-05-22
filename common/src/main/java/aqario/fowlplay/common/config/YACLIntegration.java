@@ -23,7 +23,7 @@ public class YACLIntegration {
             .build())
         .build();
 
-    protected static Screen createScreen(Screen parent) {
+    public static Screen createScreen(Screen parent) {
         return YetAnotherConfigLib.create(HANDLED_CONFIG, (defaults, config, builder) -> builder
                 .title(Text.translatable("config.title"))
                 .category(ConfigCategory.createBuilder()

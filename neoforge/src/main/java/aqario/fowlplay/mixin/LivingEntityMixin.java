@@ -1,4 +1,4 @@
-package aqario.fowlplay.neoforge.mixin;
+package aqario.fowlplay.mixin;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.tags.FowlPlayBlockTags;

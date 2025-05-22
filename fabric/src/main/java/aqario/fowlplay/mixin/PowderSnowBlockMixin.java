@@ -1,4 +1,4 @@
-package aqario.fowlplay.fabric.mixin;
+package aqario.fowlplay.mixin;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
 import net.minecraft.block.BlockState;

@@ -4,7 +4,6 @@
   "advancements.adventure.fly_penguin.title": "When Penguins Fly",
   "advancements.adventure.fly_penguin.description": "Ride a Penguin off a cliff",
   "config.title": "Fowl Play Config",
-  "config.info.require_yacl": "Yet Another Config Lib v3 is required to configure Fowl Play. Would you like to open the download link?",
   "config.info.restart": "Requires a restart to be effective.",
   "config.visual": "Visual",
   "config.visual.customChickenModel": "Custom Chicken Model",

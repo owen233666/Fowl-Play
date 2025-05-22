@@ -22,7 +22,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "aqario.fowlplay.core.FowlPlay"
+      "aqario.fowlplay.core.FowlPlayFabric"
     ],
     "client": [
       "aqario.fowlplay.client.FowlPlayClient"
@@ -31,27 +31,18 @@
       "aqario.fowlplay.datagen.FowlPlayDataGen"
     ],
     "modmenu": [
-      "aqario.fowlplay.common.config.ModMenuIntegration"
+      "aqario.fowlplay.common.compat.ModMenuIntegration"
     ]
   },
   "accessWidener": "fowlplay.accesswidener",
   "mixins": [
-    "fowlplay.mixins.json",
-    {
-      "config": "fowlplay.client.mixins.json",
-      "environment": "client"
-    }
+    "fowlplay.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": ">=1.21",
     "fabric-api": ">=${fabric_version}",
-    "smartbrainlib": ">=${sbl_version}"
-  },
-  "breaks": {
-    "yet_another_config_lib_v3": "<${yacl_version}"
-  },
-  "suggests": {
+    "smartbrainlib": ">=${sbl_version}",
     "yet_another_config_lib_v3": ">=${yacl_version}"
   }
 }
