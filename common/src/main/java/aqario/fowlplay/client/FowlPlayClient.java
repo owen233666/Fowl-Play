@@ -23,8 +23,9 @@ public class FowlPlayClient {
     public static boolean DEBUG_BIRD = false;
 
     public static void init() {
-        registerEntityRenderers();
-        registerParticleFactories();
+//        registerModelLayers();
+//        registerEntityRenderers();
+//        registerParticleFactories();
 
         if(FowlPlay.isDebugUtilsLoaded()) {
             Identifier debugBirdId = Identifier.of(FowlPlay.ID, "debug/bird");
@@ -43,47 +44,42 @@ public class FowlPlayClient {
         }
     }
 
-    public static void registerEntityRenderers() {
+    public static void registerModelLayers() {
         EntityModelLayerRegistry.register(BlueJayEntityModel.MODEL_LAYER, BlueJayEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntityRenderer::new);
-
         EntityModelLayerRegistry.register(CardinalEntityModel.MODEL_LAYER, CardinalEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntityRenderer::new);
-
         EntityModelLayerRegistry.register(ChickadeeEntityModel.MODEL_LAYER, ChickadeeEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.CHICKADEE, ChickadeeEntityRenderer::new);
-
         EntityModelLayerRegistry.register(CrowEntityModel.MODEL_LAYER, CrowEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.CROW, CrowEntityRenderer::new);
-
         EntityModelLayerRegistry.register(DuckEntityModel.MODEL_LAYER, DuckEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.DUCK, DuckEntityRenderer::new);
-
         EntityModelLayerRegistry.register(GullEntityModel.MODEL_LAYER, GullEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.GULL, GullEntityRenderer::new);
-
         EntityModelLayerRegistry.register(HawkEntityModel.MODEL_LAYER, HawkEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.HAWK, HawkEntityRenderer::new);
-
         EntityModelLayerRegistry.register(PenguinEntityModel.MODEL_LAYER, PenguinEntityModel::getTexturedModelData);
         EntityModelLayerRegistry.register(BabyPenguinEntityModel.MODEL_LAYER, BabyPenguinEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
-
         EntityModelLayerRegistry.register(PigeonEntityModel.MODEL_LAYER, PigeonEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntityRenderer::new);
-
         EntityModelLayerRegistry.register(RavenEntityModel.MODEL_LAYER, RavenEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.RAVEN, RavenEntityRenderer::new);
-
         EntityModelLayerRegistry.register(RobinEntityModel.MODEL_LAYER, RobinEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
-
         EntityModelLayerRegistry.register(SparrowEntityModel.MODEL_LAYER, SparrowEntityModel::getTexturedModelData);
-        EntityRendererRegistry.register(FowlPlayEntityType.SPARROW, SparrowEntityRenderer::new);
 
         if(FowlPlayConfig.getInstance().customChickenModel) {
             EntityModelLayerRegistry.register(CustomChickenEntityModel.MODEL_LAYER, CustomChickenEntityModel::getTexturedModelData);
             EntityModelLayerRegistry.register(CustomBabyChickenEntityModel.MODEL_LAYER, CustomBabyChickenEntityModel::getTexturedModelData);
+        }
+    }
+
+    public static void registerEntityRenderers() {
+        EntityRendererRegistry.register(FowlPlayEntityType.BLUE_JAY, BlueJayEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.CARDINAL, CardinalEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.CHICKADEE, ChickadeeEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.CROW, CrowEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.DUCK, DuckEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.GULL, GullEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.HAWK, HawkEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.PIGEON, PigeonEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.RAVEN, RavenEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
+        EntityRendererRegistry.register(FowlPlayEntityType.SPARROW, SparrowEntityRenderer::new);
+
+        if(FowlPlayConfig.getInstance().customChickenModel) {
             EntityRendererRegistry.register(Suppliers.ofInstance(EntityType.CHICKEN), CustomChickenEntityRenderer::new);
         }
     }

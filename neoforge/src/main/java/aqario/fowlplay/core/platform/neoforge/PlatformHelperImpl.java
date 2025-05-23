@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class PlatformHelperImpl {
-    public static final Object2ObjectOpenHashMap<Item, RegistryKey<ItemGroup>> ITEM_TO_GROUPS = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<Supplier<Item>, RegistryKey<ItemGroup>> ITEM_TO_GROUPS = new Object2ObjectOpenHashMap<>();
     public static final DeferredRegister<ChickenVariant> CHICKEN_VARIANTS = DeferredRegister.create(
         FowlPlayRegistryKeys.CHICKEN_VARIANT,
         FowlPlay.ID
@@ -113,7 +113,6 @@ public class PlatformHelperImpl {
     }
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
-//        addItemToItemGroup(item, group);
         return ITEMS.register(id, item);
     }
 
@@ -151,7 +150,7 @@ public class PlatformHelperImpl {
         TRACKED_DATA_HANDLERS.register(id, () -> handler);
     }
 
-    public static void addItemToItemGroup(Item item, RegistryKey<ItemGroup> itemGroup) {
+    public static void addItemToItemGroup(Supplier<Item> item, RegistryKey<ItemGroup> itemGroup) {
         ITEM_TO_GROUPS.put(item, itemGroup);
     }
 }

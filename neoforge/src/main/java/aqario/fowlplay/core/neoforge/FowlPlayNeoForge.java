@@ -1,8 +1,9 @@
 package aqario.fowlplay.core.neoforge;
 
 import aqario.fowlplay.core.FowlPlay;
+import aqario.fowlplay.core.FowlPlayItems;
 import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -47,20 +48,32 @@ public final class FowlPlayNeoForge {
     }
 
     private static void onNewRegistry(NewRegistryEvent event) {
-        System.out.println("Fowl Play NeoForge register registries");
         FowlPlay.initRegistries();
         PlatformHelperImpl.REGISTRIES.forEach(event::register);
     }
 
     private static void onSetup(FMLCommonSetupEvent event) {
-        System.out.println("Fowl Play NeoForge setup");
     }
 
     private static void onAddItemGroupEntries(BuildCreativeModeTabContentsEvent event) {
-        PlatformHelperImpl.ITEM_TO_GROUPS.forEach(((item, group) -> {
-            if(event.getTabKey().equals(group)) {
-                event.add(item, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
-            }
-        }));
+//        PlatformHelperImpl.ITEM_TO_GROUPS.forEach(((item, group) -> {
+//            if(event.getTabKey() == group) {
+//                event.add(item.get());
+//            }
+//        }));
+        if(event.getTabKey() == ItemGroups.SPAWN_EGGS) {
+            event.add(FowlPlayItems.BLUE_JAY_SPAWN_EGG.get());
+            event.add(FowlPlayItems.CARDINAL_SPAWN_EGG.get());
+            event.add(FowlPlayItems.CHICKADEE_SPAWN_EGG.get());
+            event.add(FowlPlayItems.CROW_SPAWN_EGG.get());
+            event.add(FowlPlayItems.DUCK_SPAWN_EGG.get());
+            event.add(FowlPlayItems.GULL_SPAWN_EGG.get());
+            event.add(FowlPlayItems.HAWK_SPAWN_EGG.get());
+            event.add(FowlPlayItems.PENGUIN_SPAWN_EGG.get());
+            event.add(FowlPlayItems.PIGEON_SPAWN_EGG.get());
+            event.add(FowlPlayItems.RAVEN_SPAWN_EGG.get());
+            event.add(FowlPlayItems.ROBIN_SPAWN_EGG.get());
+            event.add(FowlPlayItems.SPARROW_SPAWN_EGG.get());
+        }
     }
 }

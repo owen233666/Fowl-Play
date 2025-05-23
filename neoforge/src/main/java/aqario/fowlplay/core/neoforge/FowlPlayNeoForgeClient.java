@@ -20,11 +20,14 @@ public class FowlPlayNeoForgeClient {
     }
 
     public static void onRegisterParticles(RegisterParticleProvidersEvent event) {
+        FowlPlayClient.registerParticleFactories();
     }
 
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        FowlPlayClient.registerEntityRenderers();
     }
 
     public static void onRegisterEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        FowlPlayClient.registerModelLayers();
     }
 }
