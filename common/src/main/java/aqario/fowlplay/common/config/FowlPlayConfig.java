@@ -111,7 +111,7 @@ public class FowlPlayConfig {
     // Cardinal
 
     @SerialEntry
-    public int cardinalSpawnWeight = 4;
+    public int cardinalSpawnWeight = 5;
     @SerialEntry
     public int cardinalMinGroupSize = 1;
     @SerialEntry
@@ -120,7 +120,7 @@ public class FowlPlayConfig {
     // Chickadee
 
     @SerialEntry
-    public int chickadeeSpawnWeight = 5;
+    public int chickadeeSpawnWeight = 4;
     @SerialEntry
     public int chickadeeMinGroupSize = 1;
     @SerialEntry
