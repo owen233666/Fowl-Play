@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
-    "PowderSnowBlockMixin"
+    "SoundCategoryMixin",
+    "SpawnGroupMixin"
   ],
   "client": [
   ],

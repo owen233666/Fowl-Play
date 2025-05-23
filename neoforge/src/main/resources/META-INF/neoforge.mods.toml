@@ -36,12 +36,12 @@ versionRange = "[${sbl_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.fowlplay]]
-modId = "yet_another_config_lib_v3"
-type = "required"
-versionRange = "[${yacl_version},)"
-ordering = "NONE"
-side = "CLIENT"
+#[[dependencies.fowlplay]]
+#modId = "yet_another_config_lib_v3"
+#type = "required"
+#versionRange = "[${yacl_version},)"
+#ordering = "NONE"
+#side = "CLIENT"
 
 [[mixins]]
 config = "fowlplay.mixins.json"

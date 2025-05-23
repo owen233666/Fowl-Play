@@ -3,6 +3,7 @@ package aqario.fowlplay.common.util;
 import aqario.fowlplay.common.entity.BirdEntity;
 import com.google.common.collect.ImmutableSet;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
+import dev.architectury.registry.level.entity.SpawnPlacementsRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.entity.*;
@@ -191,7 +192,7 @@ public class EntityTypeBuilder<T extends Entity> {
 
         if(type.getBaseClass().isAssignableFrom(MobEntity.class)) {
             if(this.spawnPredicate != null) {
-                SpawnRestriction.register((EntityType<MobEntity>) type, this.restrictionLocation, this.restrictionHeightmap, (SpawnRestriction.SpawnPredicate<MobEntity>) this.spawnPredicate);
+                SpawnPlacementsRegistry.register(() -> (EntityType<MobEntity>) type, this.restrictionLocation, this.restrictionHeightmap, (SpawnRestriction.SpawnPredicate<MobEntity>) this.spawnPredicate);
             }
         }
 

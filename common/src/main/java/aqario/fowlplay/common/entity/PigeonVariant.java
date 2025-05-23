@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import dev.architectury.registry.registries.DeferredRegister;
+import aqario.fowlplay.core.platform.PlatformHelper;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -11,10 +11,10 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 public record PigeonVariant(Identifier texture) {
-    public static final DeferredRegister<PigeonVariant> PIGEON_VARIANTS = DeferredRegister.create(
-        FowlPlay.ID,
-        FowlPlayRegistryKeys.PIGEON_VARIANT
-    );
+//    public static final DeferredRegister<PigeonVariant> PIGEON_VARIANTS = DeferredRegister.create(
+//        FowlPlay.ID,
+//        FowlPlayRegistryKeys.PIGEON_VARIANT
+//    );
     public static final PacketCodec<RegistryByteBuf, RegistryEntry<PigeonVariant>> PACKET_CODEC = PacketCodecs.registryEntry(FowlPlayRegistryKeys.PIGEON_VARIANT);
     public static final RegistryKey<PigeonVariant> BANDED = register("banded");
     public static final RegistryKey<PigeonVariant> CHECKERED = register("checkered");
@@ -25,11 +25,12 @@ public record PigeonVariant(Identifier texture) {
     private static RegistryKey<PigeonVariant> register(String id) {
         RegistryKey<PigeonVariant> key = RegistryKey.of(FowlPlayRegistryKeys.PIGEON_VARIANT, Identifier.of(FowlPlay.ID, id));
         Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/pigeon/" + key.getValue().getPath() + "_pigeon.png");
-        PIGEON_VARIANTS.register(id, () -> new PigeonVariant(texture));
+//        PIGEON_VARIANTS.register(id, () -> new PigeonVariant(texture));
+        PlatformHelper.registerVariant(id, key, () -> new PigeonVariant(texture));
         return key;
     }
 
     public static void init() {
-        PIGEON_VARIANTS.register();
+//        PIGEON_VARIANTS.register();
     }
 }

@@ -26,7 +26,9 @@ public abstract class LivingEntityMixin extends Entity {
     private float fowlplay$modifySlipperiness(Block block) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if(entity instanceof PenguinEntity penguin && penguin.isSliding()) {
-            return block.getDefaultState().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) ? 1.025F : block.getSlipperiness();
+            return block.getDefaultState().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
+                ? 1.025F
+                : block.getSlipperiness();
         }
         return block.getSlipperiness();
     }

@@ -1,4 +1,4 @@
-package aqario.fowlplay.mixin;
+package aqario.fowlplay.mixin.neoforge;
 
 import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
 import net.minecraft.sound.SoundCategory;

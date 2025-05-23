@@ -8,8 +8,6 @@
     "FenceGateBlockMixin",
     "HorizontalConnectingBlockMixin",
     "PowderSnowBlockMixin",
-    "SoundCategoryMixin",
-    "SpawnGroupMixin",
     "SpawnHelperMixin",
     "WallBlockMixin"
   ],

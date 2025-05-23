@@ -4,26 +4,26 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.util.EntityTypeBuilder;
 import aqario.fowlplay.common.world.gen.CustomSpawnLocations;
+import aqario.fowlplay.core.platform.PlatformHelper;
 import aqario.fowlplay.core.tags.FowlPlayBiomeTags;
 import dev.architectury.registry.level.biome.BiomeModifications;
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 
+import java.util.function.Supplier;
+
 public final class FowlPlayEntityType {
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
-        FowlPlay.ID,
-        RegistryKeys.ENTITY_TYPE
-    );
-    public static final RegistrySupplier<EntityType<BlueJayEntity>> BLUE_JAY = register("blue_jay",
+    //    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
+//        FowlPlay.ID,
+//        RegistryKeys.ENTITY_TYPE
+//    );
+    public static final Supplier<EntityType<BlueJayEntity>> BLUE_JAY = register("blue_jay",
         EntityTypeBuilder.create(
                 BlueJayEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -38,7 +38,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.475f)
     );
 
-    public static final RegistrySupplier<EntityType<CardinalEntity>> CARDINAL = register("cardinal",
+    public static final Supplier<EntityType<CardinalEntity>> CARDINAL = register("cardinal",
         EntityTypeBuilder.create(
                 CardinalEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -53,7 +53,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.475f)
     );
 
-    public static final RegistrySupplier<EntityType<ChickadeeEntity>> CHICKADEE = register("chickadee",
+    public static final Supplier<EntityType<ChickadeeEntity>> CHICKADEE = register("chickadee",
         EntityTypeBuilder.create(
                 ChickadeeEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -68,7 +68,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.4f)
     );
 
-    public static final RegistrySupplier<EntityType<CrowEntity>> CROW = register("crow",
+    public static final Supplier<EntityType<CrowEntity>> CROW = register("crow",
         EntityTypeBuilder.create(
                 CrowEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -83,7 +83,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.55f)
     );
 
-    public static final RegistrySupplier<EntityType<DuckEntity>> DUCK = register("duck",
+    public static final Supplier<EntityType<DuckEntity>> DUCK = register("duck",
         EntityTypeBuilder.create(
                 DuckEntity::new,
                 FowlPlaySpawnGroup.BIRD.spawnGroup
@@ -98,7 +98,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.7f)
     );
 
-    public static final RegistrySupplier<EntityType<GullEntity>> GULL = register("gull",
+    public static final Supplier<EntityType<GullEntity>> GULL = register("gull",
         EntityTypeBuilder.create(
                 GullEntity::new,
                 FowlPlaySpawnGroup.BIRD.spawnGroup
@@ -113,7 +113,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.7f)
     );
 
-    public static final RegistrySupplier<EntityType<HawkEntity>> HAWK = register("hawk",
+    public static final Supplier<EntityType<HawkEntity>> HAWK = register("hawk",
         EntityTypeBuilder.create(
                 HawkEntity::new,
                 FowlPlaySpawnGroup.BIRD.spawnGroup
@@ -128,7 +128,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.7f)
     );
 
-    public static final RegistrySupplier<EntityType<PenguinEntity>> PENGUIN = register("penguin",
+    public static final Supplier<EntityType<PenguinEntity>> PENGUIN = register("penguin",
         EntityTypeBuilder.create(
                 PenguinEntity::new,
                 SpawnGroup.CREATURE
@@ -144,7 +144,7 @@ public final class FowlPlayEntityType {
             .passengerAttachments(new Vec3d(0, 0.75, -0.1))
     );
 
-    public static final RegistrySupplier<EntityType<PigeonEntity>> PIGEON = register("pigeon",
+    public static final Supplier<EntityType<PigeonEntity>> PIGEON = register("pigeon",
         EntityTypeBuilder.create(
                 PigeonEntity::new,
                 FowlPlaySpawnGroup.BIRD.spawnGroup
@@ -159,7 +159,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.5f)
     );
 
-    public static final RegistrySupplier<EntityType<RavenEntity>> RAVEN = register("raven",
+    public static final Supplier<EntityType<RavenEntity>> RAVEN = register("raven",
         EntityTypeBuilder.create(
                 RavenEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -174,7 +174,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.7f)
     );
 
-    public static final RegistrySupplier<EntityType<RobinEntity>> ROBIN = register("robin",
+    public static final Supplier<EntityType<RobinEntity>> ROBIN = register("robin",
         EntityTypeBuilder.create(
                 RobinEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -189,7 +189,7 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.475f)
     );
 
-    public static final RegistrySupplier<EntityType<SparrowEntity>> SPARROW = register("sparrow",
+    public static final Supplier<EntityType<SparrowEntity>> SPARROW = register("sparrow",
         EntityTypeBuilder.create(
                 SparrowEntity::new,
                 FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
@@ -204,12 +204,13 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.4f)
     );
 
-    private static <T extends Entity> RegistrySupplier<EntityType<T>> register(String id, EntityTypeBuilder<T> builder) {
-        return ENTITY_TYPES.register(id, () -> builder.build(id));
+    private static <T extends Entity> Supplier<EntityType<T>> register(String id, EntityTypeBuilder<T> builder) {
+//        return ENTITY_TYPES.register(id, () -> builder.build(id));
+        return PlatformHelper.registerEntityType(id, () -> builder.build(id));
     }
 
     public static void init() {
-        ENTITY_TYPES.register();
+//        ENTITY_TYPES.register();
 
         // Spawn Weights
         addSpawn(
@@ -325,31 +326,31 @@ public final class FowlPlayEntityType {
     }
 
     // TODO: use biome property based spawning to more accurately reflect real life habitats
-    public static <T extends Entity> void addSpawn(TagKey<Biome> tag, SpawnGroup spawnGroup, RegistrySupplier<EntityType<T>> entityType, int weight, int minGroupSize, int maxGroupSize) {
-        entityType.listen(type -> BiomeModifications.addProperties(
+    public static <T extends Entity> void addSpawn(TagKey<Biome> tag, SpawnGroup spawnGroup, Supplier<EntityType<T>> type, int weight, int minGroupSize, int maxGroupSize) {
+        BiomeModifications.addProperties(
             context -> context.hasTag(tag),
             (context, mutable) -> mutable.getSpawnProperties().addSpawn(
                 spawnGroup,
                 new SpawnSettings.SpawnEntry(
-                    type,
+                    type.get(),
                     weight,
                     minGroupSize,
                     maxGroupSize
                 )
             )
-        ));
+        );
     }
 
-    public static <T extends Entity> void setSpawnCost(TagKey<Biome> tag, RegistrySupplier<EntityType<T>> entityType, double gravityLimit, double mass) {
-        entityType.listen(type -> BiomeModifications.addProperties(
+    public static <T extends Entity> void setSpawnCost(TagKey<Biome> tag, Supplier<EntityType<T>> type, double gravityLimit, double mass) {
+        BiomeModifications.addProperties(
             context -> context.hasTag(tag),
             (context, mutable) -> mutable.getSpawnProperties().setSpawnCost(
-                type,
+                type.get(),
                 new SpawnSettings.SpawnDensity(
                     gravityLimit,
                     mass
                 )
             )
-        ));
+        );
     }
 }

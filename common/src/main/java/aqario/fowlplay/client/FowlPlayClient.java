@@ -89,6 +89,6 @@ public class FowlPlayClient {
     }
 
     public static void registerParticleFactories() {
-        ParticleProviderRegistry.register(FowlPlayParticleTypes.SMALL_BUBBLE, SmallBubbleParticle.Factory::new);
+        ParticleProviderRegistry.register(FowlPlayParticleTypes.SMALL_BUBBLE.get(), SmallBubbleParticle.Factory::new);
     }
 }

@@ -19,14 +19,15 @@ public class FowlPlay {
         return Platform.isModLoaded("debugutils");
     }
 
+    public static void initRegistries() {
+        FowlPlayRegistryKeys.init();
+        FowlPlayRegistries.init();
+    }
+
     public static void init() {
         Mod mod = Platform.getMod(ID);
         LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
-
 //        FowlPlayConfig.load();
-
-        FowlPlayRegistryKeys.init();
-        FowlPlayRegistries.init();
 
         ChickenVariant.init();
         DuckVariant.init();
