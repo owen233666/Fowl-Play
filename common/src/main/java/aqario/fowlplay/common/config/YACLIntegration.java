@@ -1,12 +1,12 @@
 package aqario.fowlplay.common.config;
 
 import aqario.fowlplay.core.FowlPlay;
+import dev.architectury.platform.Platform;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -18,7 +18,7 @@ public class YACLIntegration {
     protected static final ConfigClassHandler<FowlPlayConfig> HANDLED_CONFIG = ConfigClassHandler.createBuilder(FowlPlayConfig.class)
         .id(Identifier.of(FowlPlay.ID, "config"))
         .serializer(config -> GsonConfigSerializerBuilder.create(config)
-            .setPath(FabricLoader.getInstance().getConfigDir().resolve(FowlPlay.ID + ".json5"))
+            .setPath(Platform.getConfigFolder().resolve(FowlPlay.ID + ".json5"))
             .setJson5(true)
             .build())
         .build();
@@ -314,7 +314,7 @@ public class YACLIntegration {
         OptionGroup.Builder builder = OptionGroup.createBuilder()
             .name(Text.translatable(entity));
 
-        if (getCallVolume != null && setCallVolume != null) {
+        if(getCallVolume != null && setCallVolume != null) {
             builder.option(createSoundOption(
                 entity,
                 "config.audio.generic.call",
@@ -325,7 +325,7 @@ public class YACLIntegration {
             ));
         }
 
-        if (getSongVolume != null && setSongVolume != null) {
+        if(getSongVolume != null && setSongVolume != null) {
             builder.option(createSoundOption(
                 entity,
                 "config.audio.generic.song",

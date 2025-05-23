@@ -84,7 +84,7 @@ public final class Birds {
     public static <T extends BirdEntity> void alertOthers(T bird, LivingEntity attacker) {
         getNearbyVisibleAdults(bird).forEach(other -> {
             if (attacker instanceof PlayerEntity) {
-                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, CANNOT_PICKUP_FOOD_TICKS);
+                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), true, CANNOT_PICKUP_FOOD_TICKS);
             }
             startAvoiding((BirdEntity) other, attacker);
         });
@@ -96,7 +96,7 @@ public final class Birds {
     }
 
     public static <T extends BirdEntity> List<? extends PassiveEntity> getNearbyVisibleAdults(T bird) {
-        return bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS).orElse(ImmutableList.of());
+        return bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get()).orElse(ImmutableList.of());
     }
 
     public static boolean isPlayerHoldingFood(BirdEntity bird, LivingEntity target) {

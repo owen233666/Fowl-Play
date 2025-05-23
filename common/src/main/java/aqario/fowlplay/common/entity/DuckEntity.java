@@ -219,7 +219,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_DUCK_CALL;
+        return FowlPlaySoundEvents.ENTITY_DUCK_CALL.get();
     }
 
     @Override
@@ -230,7 +230,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_DUCK_HURT;
+        return FowlPlaySoundEvents.ENTITY_DUCK_HURT.get();
     }
 
     @Override
@@ -318,9 +318,9 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -339,9 +339,9 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -358,7 +358,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                 ),
                 AvoidTask.forget()
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING);
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
 
     @SuppressWarnings("unchecked")
@@ -373,11 +373,11 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                new InvalidateMemory<DuckEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                new InvalidateMemory<DuckEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
                     .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")

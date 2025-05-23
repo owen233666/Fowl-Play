@@ -11,7 +11,6 @@ public class FowlPlayParticleTypes {
         FowlPlay.ID,
         RegistryKeys.PARTICLE_TYPE
     );
-
     public static final RegistrySupplier<SimpleParticleType> SMALL_BUBBLE = register("small_bubble", false);
 
     private static RegistrySupplier<SimpleParticleType> register(String name, boolean alwaysShow) {

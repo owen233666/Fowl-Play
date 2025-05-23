@@ -24,8 +24,8 @@ public class AttackedSensor<E extends BirdEntity> extends PredicateSensor<Damage
         MemoryModuleType.HURT_BY,
         MemoryModuleType.HURT_BY_ENTITY,
         MemoryModuleType.AVOID_TARGET,
-        FowlPlayMemoryModuleType.SEES_FOOD,
-        FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD
+        FowlPlayMemoryModuleType.SEES_FOOD.get(),
+        FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get()
     );
 
     public AttackedSensor() {
@@ -39,7 +39,7 @@ public class AttackedSensor<E extends BirdEntity> extends PredicateSensor<Damage
 
     @Override
     public SensorType<? extends ExtendedSensor<?>> type() {
-        return FowlPlaySensorType.ATTACKED;
+        return FowlPlaySensorType.ATTACKED.get();
     }
 
     @Override
@@ -69,9 +69,9 @@ public class AttackedSensor<E extends BirdEntity> extends PredicateSensor<Damage
 
     public static <T extends BirdEntity> void onAttacked(T bird, LivingEntity attacker) {
         Brain<?> brain = bird.getBrain();
-        BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD);
+        BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get());
         if (attacker instanceof PlayerEntity player) {
-            BrainUtils.setForgettableMemory(brain, FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, true, Birds.CANNOT_PICKUP_FOOD_TICKS);
+            BrainUtils.setForgettableMemory(brain, FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), true, Birds.CANNOT_PICKUP_FOOD_TICKS);
             if (bird instanceof TrustingBirdEntity trustingBird && trustingBird.trusts(player)) {
                 trustingBird.stopTrusting(player);
             }

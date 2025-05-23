@@ -100,10 +100,10 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         super.readCustomDataFromNbt(nbt);
         this.setFlying(nbt.getBoolean("flying"));
         if (this.isFlying()) {
-            this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
+            this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
         }
         else {
-            this.getBrain().forget(FowlPlayMemoryModuleType.IS_FLYING);
+            this.getBrain().forget(FowlPlayMemoryModuleType.IS_FLYING.get());
         }
     }
 
@@ -227,7 +227,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void startFlying() {
         this.setFlying(true);
         this.setNavigation(true);
-        this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
+        this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
     }
 
     public void stopFlying() {
@@ -235,7 +235,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.setNavigation(false);
         this.getNavigation().stop();
         Brain<?> brain = this.getBrain();
-        brain.forget(FowlPlayMemoryModuleType.IS_FLYING);
+        brain.forget(FowlPlayMemoryModuleType.IS_FLYING.get());
         brain.forget(MemoryModuleType.WALK_TARGET);
     }
 

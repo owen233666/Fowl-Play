@@ -10,7 +10,7 @@ architectury {
 
 allprojects {
     group = rootProject.maven_group
-    version = project.version
+    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
 }
 
 subprojects {
@@ -19,11 +19,11 @@ subprojects {
     apply plugin: 'maven-publish'
 
     loom {
-        accessWidenerPath = file("src/main/resources/fowlplay.accesswidener")
+        accessWidenerPath = file("src/main/resources/${project.archives_name}.accesswidener")
     }
 
     base {
-        archivesName = "$rootProject.version+$rootProject.minecraft_version"
+        archivesName = rootProject.archives_name
     }
 
     repositories {
@@ -34,6 +34,10 @@ subprojects {
         maven {
             name = 'Kotlin for Forge'
             url = 'https://thedarkcolour.github.io/KotlinForForge/'
+        }
+        maven {
+            name = "QuiltMC"
+            url = "https://maven.quiltmc.org/repository/release/"
         }
         maven {
             name = "modrinth"
@@ -60,7 +64,7 @@ subprojects {
 
     dependencies {
         // Minecraft
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        minecraft("com.mojang:minecraft:${rootProject.minecraft_version}")
     }
 
 //    fabricApi {

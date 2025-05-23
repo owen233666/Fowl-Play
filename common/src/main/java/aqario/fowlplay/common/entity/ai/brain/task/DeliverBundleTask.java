@@ -17,18 +17,18 @@ public class DeliverBundleTask {
     public static <E extends PigeonEntity> SingleTickBehaviour<E> run(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter) {
         return new SingleTickBehaviour<>(
             MemoryTest.builder(4)
-                .hasMemories(FowlPlayMemoryModuleType.RECIPIENT)
+                .hasMemories(FowlPlayMemoryModuleType.RECIPIENT.get())
                 .usesMemory(MemoryModuleType.LOOK_TARGET)
                 .usesMemory(MemoryModuleType.WALK_TARGET)
-                .usesMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET),
+                .usesMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET.get()),
             (bird, brain) -> {
-                PlayerEntity recipient = bird.getWorld().getPlayerByUuid(BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.RECIPIENT));
+                PlayerEntity recipient = bird.getWorld().getPlayerByUuid(BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.RECIPIENT.get()));
                 if (recipient != null && startPredicate.test(bird)) {
                     WalkTarget walkTarget = new WalkTarget(new EntityLookTarget(recipient, false), entitySpeedGetter.apply(bird), 0);
                     BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(recipient, true));
                     BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, walkTarget);
                     if (bird.getOwner() != null && bird.squaredDistanceTo(recipient) > 100 * 100 && bird.squaredDistanceTo(bird.getOwner()) > 16 * 16) {
-                        BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET, new TeleportTarget(recipient));
+                        BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), new TeleportTarget(recipient));
                     }
                     return true;
                 }

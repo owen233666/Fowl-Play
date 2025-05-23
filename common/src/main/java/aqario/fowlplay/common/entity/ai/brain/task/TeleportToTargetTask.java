@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TeleportToTargetTask extends ExtendedBehaviour<BirdEntity> {
     private static final MemoryTest MEMORIES = MemoryTest.builder(1)
-        .hasMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET);
+        .hasMemory(FowlPlayMemoryModuleType.TELEPORT_TARGET.get());
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
@@ -27,22 +27,22 @@ public class TeleportToTargetTask extends ExtendedBehaviour<BirdEntity> {
 
     @Override
     protected boolean shouldKeepRunning(BirdEntity entity) {
-        return BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET);
+        return BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET.get());
     }
 
     @Override
     protected void tick(BirdEntity entity) {
         Brain<?> brain = entity.getBrain();
         if (this.tryTeleport(entity, brain)) {
-            BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET);
+            BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get());
         }
     }
 
     private boolean tryTeleport(BirdEntity entity, Brain<?> brain) {
-        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET)) {
+        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get())) {
             return false;
         }
-        Entity target = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET).entity();
+        Entity target = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()).entity();
         BlockPos pos = target.getBlockPos();
 
         for (int i = 0; i < 10; i++) {

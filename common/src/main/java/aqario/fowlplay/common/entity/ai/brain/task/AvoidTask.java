@@ -21,7 +21,7 @@ public class AvoidTask {
     public static <E extends BirdEntity> SingleTickBehaviour<E> run(Predicate<E> predicate) {
         return new SingleTickBehaviour<>(
             List.of(
-                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT),
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.VALUE_PRESENT)
             ),
             (bird, brain) -> {
@@ -33,7 +33,7 @@ public class AvoidTask {
                     target,
                     bird.getFleeRange(target)
                 )) {
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_AVOIDING, Unit.INSTANCE);
+                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_AVOIDING.get(), Unit.INSTANCE);
                     return true;
                 }
                 return false;
@@ -49,7 +49,7 @@ public class AvoidTask {
         return new SingleTickBehaviour<>(
             List.of(
                 Pair.of(MemoryModuleType.AVOID_TARGET, MemoryModuleState.REGISTERED),
-                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_PRESENT)
+                Pair.of(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_PRESENT)
             ),
             (bird, brain) -> {
                 if (!predicate.test(bird)) {
@@ -62,7 +62,7 @@ public class AvoidTask {
                 )) {
                     return false;
                 }
-                BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.IS_AVOIDING);
+                BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.IS_AVOIDING.get());
                 return true;
             }
         );

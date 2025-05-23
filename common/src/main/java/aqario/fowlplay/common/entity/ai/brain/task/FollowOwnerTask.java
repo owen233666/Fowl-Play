@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
     private static final MemoryTest MEMORIES = MemoryTest.builder(3)
-        .usesMemories(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
+        .usesMemories(FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
     private LivingEntity owner;
     private final float speed;
     private int updateCountdownTicks;
@@ -78,7 +78,7 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
             this.updateCountdownTicks = 20;
             if (!pigeon.isLeashed() && !pigeon.hasVehicle()) {
                 if (pigeon.squaredDistanceTo(this.owner) >= 144.0) {
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET, new TeleportTarget(this.owner));
+                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), new TeleportTarget(this.owner));
                 }
                 else {
                     BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speed, 0));

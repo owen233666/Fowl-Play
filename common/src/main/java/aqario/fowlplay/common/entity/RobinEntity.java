@@ -164,13 +164,13 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_CALL;
+        return FowlPlaySoundEvents.ENTITY_ROBIN_CALL.get();
     }
 
     @Nullable
     @Override
     protected SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_SONG;
+        return FowlPlaySoundEvents.ENTITY_ROBIN_SONG.get();
     }
 
     @Override
@@ -196,7 +196,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_ROBIN_HURT;
+        return FowlPlaySoundEvents.ENTITY_ROBIN_HURT.get();
     }
 
     @Override
@@ -267,9 +267,9 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -285,9 +285,9 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -303,7 +303,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                 ),
                 AvoidTask.forget()
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING);
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
 
     @SuppressWarnings("unchecked")
@@ -318,11 +318,11 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                new InvalidateMemory<RobinEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                new InvalidateMemory<RobinEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
                     .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @Override

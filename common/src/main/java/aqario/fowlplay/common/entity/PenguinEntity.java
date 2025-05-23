@@ -583,7 +583,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_CALL : FowlPlaySoundEvents.ENTITY_PENGUIN_CALL;
+        return this.isBaby() ? FowlPlaySoundEvents.ENTITY_PENGUIN_BABY_CALL.get() : FowlPlaySoundEvents.ENTITY_PENGUIN_CALL.get();
     }
 
     @Override
@@ -593,12 +593,12 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
 
     @Override
     protected SoundEvent getSwimSound() {
-        return FowlPlaySoundEvents.ENTITY_PENGUIN_SWIM;
+        return FowlPlaySoundEvents.ENTITY_PENGUIN_SWIM.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_PENGUIN_HURT;
+        return FowlPlaySoundEvents.ENTITY_PENGUIN_HURT.get();
     }
 
     @Override
@@ -679,7 +679,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -704,7 +704,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(MemoryModuleType.IS_IN_WATER, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -720,10 +720,10 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                new InvalidateMemory<PenguinEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                new InvalidateMemory<PenguinEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
                     .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT);
     }
 
     @SuppressWarnings("unchecked")

@@ -17,12 +17,12 @@ import java.util.function.BiPredicate;
 public class NearbyAdultsSensor<E extends PassiveEntity> extends EntityFilteringSensor<List<? extends PassiveEntity>, E> {
     @Override
     public SensorType<? extends ExtendedSensor<?>> type() {
-        return FowlPlaySensorType.NEARBY_ADULTS;
+        return FowlPlaySensorType.NEARBY_ADULTS.get();
     }
 
     @Override
     protected MemoryModuleType<List<? extends PassiveEntity>> getMemory() {
-        return FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS;
+        return FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get();
     }
 
     @Override

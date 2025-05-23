@@ -140,7 +140,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
         if (!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS) && (hurtBy.isEmpty() || !hurtBy.get().equals(target))) {
             return false;
         }
-        Optional<List<? extends PassiveEntity>> nearbyAdults = Optional.ofNullable(BrainUtils.getMemory(this, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS));
+        Optional<List<? extends PassiveEntity>> nearbyAdults = Optional.ofNullable(BrainUtils.getMemory(this, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get()));
         return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 4).isPresent();
     }
 
@@ -178,7 +178,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_CROW_CALL;
+        return FowlPlaySoundEvents.ENTITY_CROW_CALL.get();
     }
 
     @Override
@@ -194,7 +194,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_CROW_HURT;
+        return FowlPlaySoundEvents.ENTITY_CROW_HURT.get();
     }
 
     @Override
@@ -270,9 +270,9 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -295,9 +295,9 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
@@ -314,7 +314,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 ),
                 AvoidTask.forget()
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING);
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
 
     @SuppressWarnings("unchecked")
@@ -329,11 +329,11 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                new InvalidateMemory<CrowEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                new InvalidateMemory<CrowEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
                     .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")

@@ -28,7 +28,7 @@ public class AttackTargetSensor<E extends BirdEntity> extends EntityFilteringSen
 
     @Override
     public SensorType<? extends ExtendedSensor<?>> type() {
-        return FowlPlaySensorType.ATTACK_TARGETS;
+        return FowlPlaySensorType.ATTACK_TARGETS.get();
     }
 
     @Override

@@ -19,14 +19,14 @@ public class PickupFoodTask {
         return new SingleTickBehaviour<>(
             List.of(
                 Pair.of(SBLMemoryTypes.NEARBY_ITEMS.get(), MemoryModuleState.VALUE_PRESENT),
-                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT),
-                Pair.of(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT),
+                Pair.of(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             ),
             (bird, brain) -> {
                 if (!predicate.test(bird)) {
                     return false;
                 }
-                BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD, true);
+                BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get(), true);
                 return true;
             }
         );

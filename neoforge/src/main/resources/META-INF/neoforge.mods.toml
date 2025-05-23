@@ -41,7 +41,7 @@ modId = "yet_another_config_lib_v3"
 type = "required"
 versionRange = "[${yacl_version},)"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"
 
 [[mixins]]
 config = "fowlplay.mixins.json"

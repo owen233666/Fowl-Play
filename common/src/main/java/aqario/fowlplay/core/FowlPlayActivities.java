@@ -10,7 +10,6 @@ public final class FowlPlayActivities {
         FowlPlay.ID,
         RegistryKeys.ACTIVITY
     );
-
     public static final RegistrySupplier<Activity> DELIVER = register("deliver");
     public static final RegistrySupplier<Activity> FLY = register("fly");
     public static final RegistrySupplier<Activity> FORAGE = register("forage");

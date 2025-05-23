@@ -329,13 +329,13 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_PIGEON_CALL;
+        return FowlPlaySoundEvents.ENTITY_PIGEON_CALL.get();
     }
 
     @Nullable
     @Override
     protected SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_PIGEON_SONG;
+        return FowlPlaySoundEvents.ENTITY_PIGEON_SONG.get();
     }
 
     @Override
@@ -441,10 +441,10 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -466,10 +466,10 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -482,7 +482,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 FlightControlTask.startFlying(PigeonEntity::shouldFlyToRecipient),
                 DeliverBundleTask.run(Birds.truePredicate(), pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.WALK_SPEED)
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT);
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT.get());
     }
 
     @SuppressWarnings("unchecked")
@@ -498,7 +498,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 ),
                 AvoidTask.forget()
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING);
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
 
     @SuppressWarnings("unchecked")
@@ -513,12 +513,12 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
-                new InvalidateMemory<PigeonEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD)
+                new InvalidateMemory<PigeonEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
                     .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING, MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.RECIPIENT.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @Override
@@ -543,7 +543,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
+        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT.get()).orElse(null);
         if(recipientUuid == null) {
             return false;
         }
@@ -555,7 +555,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     }
 
     private static boolean shouldStopFlyingToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT).orElse(null);
+        UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT.get()).orElse(null);
         if(recipientUuid == null) {
             return true;
         }

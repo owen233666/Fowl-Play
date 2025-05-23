@@ -27,7 +27,7 @@ public class AvoidTargetSensor<E extends BirdEntity> extends EntityFilteringSens
 
     @Override
     public SensorType<? extends ExtendedSensor<?>> type() {
-        return FowlPlaySensorType.AVOID_TARGETS;
+        return FowlPlaySensorType.AVOID_TARGETS.get();
     }
 
     @Override

@@ -145,8 +145,8 @@ public abstract class BirdEntity extends AnimalEntity {
             this.sendPickup(item, stack.getCount());
             item.discard();
             this.eatingTime = 0;
-            if (this.getBrain().isMemoryInState(FowlPlayMemoryModuleType.SEES_FOOD, MemoryModuleState.VALUE_PRESENT)) {
-                this.getBrain().forget(FowlPlayMemoryModuleType.SEES_FOOD);
+            if (this.getBrain().isMemoryInState(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)) {
+                this.getBrain().forget(FowlPlayMemoryModuleType.SEES_FOOD.get());
             }
         }
     }
@@ -363,7 +363,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public SoundEvent getEatSound(ItemStack stack) {
-        return FowlPlaySoundEvents.ENTITY_BIRD_EAT;
+        return FowlPlaySoundEvents.ENTITY_BIRD_EAT.get();
     }
 
     protected float getCallVolume() {

@@ -22,7 +22,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "aqario.fowlplay.core.FowlPlayFabric"
+      "aqario.fowlplay.core.fabric.FowlPlayFabric"
     ],
     "client": [
       "aqario.fowlplay.client.FowlPlayFabricClient"

@@ -50,7 +50,7 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
             return false;
         }
         Brain<?> brain = entity.getBrain();
-        if (brain.isMemoryInState(FowlPlayMemoryModuleType.TELEPORT_TARGET, MemoryModuleState.VALUE_PRESENT)) {
+        if (brain.isMemoryInState(FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), MemoryModuleState.VALUE_PRESENT)) {
             return false;
         }
         WalkTarget walkTarget = brain.getOptionalRegisteredMemory(MemoryModuleType.WALK_TARGET).get();

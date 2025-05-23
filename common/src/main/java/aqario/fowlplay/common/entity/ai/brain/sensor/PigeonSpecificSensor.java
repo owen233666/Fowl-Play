@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class PigeonSpecificSensor extends PredicateSensor<UUID, PigeonEntity> {
     private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(
-        FowlPlayMemoryModuleType.RECIPIENT
+        FowlPlayMemoryModuleType.RECIPIENT.get()
     );
 
     public PigeonSpecificSensor() {
@@ -34,16 +34,16 @@ public class PigeonSpecificSensor extends PredicateSensor<UUID, PigeonEntity> {
 
     @Override
     public SensorType<? extends ExtendedSensor<?>> type() {
-        return FowlPlaySensorType.PIGEON_SPECIFIC_SENSOR;
+        return FowlPlaySensorType.PIGEON_SPECIFIC_SENSOR.get();
     }
 
     @Override
     protected void sense(ServerWorld world, PigeonEntity pigeon) {
         if (this.predicate().test(null, pigeon)) {
-            BrainUtils.setMemory(pigeon, FowlPlayMemoryModuleType.RECIPIENT, pigeon.getRecipientUuid());
+            BrainUtils.setMemory(pigeon, FowlPlayMemoryModuleType.RECIPIENT.get(), pigeon.getRecipientUuid());
         }
         else {
-            BrainUtils.clearMemory(pigeon, FowlPlayMemoryModuleType.RECIPIENT);
+            BrainUtils.clearMemory(pigeon, FowlPlayMemoryModuleType.RECIPIENT.get());
         }
     }
 }

@@ -1,4 +1,4 @@
-package aqario.fowlplay.mixin;
+package aqario.fowlplay.mixin.neoforge;
 
 import aqario.fowlplay.common.entity.PenguinEntity;
 import net.minecraft.block.BlockState;

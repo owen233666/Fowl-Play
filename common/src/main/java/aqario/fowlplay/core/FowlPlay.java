@@ -1,12 +1,12 @@
 package aqario.fowlplay.core;
 
-import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
 import aqario.fowlplay.common.world.gen.PigeonSpawner;
 import aqario.fowlplay.common.world.gen.SparrowSpawner;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,20 +20,25 @@ public class FowlPlay {
     }
 
     public static void init() {
-        LOGGER.info("Loading Fowl Play");
-        FowlPlayConfig.load();
-        FowlPlayActivities.init();
-        FowlPlayEntityType.init();
+        Mod mod = Platform.getMod(ID);
+        LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
+
+//        FowlPlayConfig.load();
+
+        FowlPlayRegistryKeys.init();
+        FowlPlayRegistries.init();
+
         ChickenVariant.init();
         DuckVariant.init();
         GullVariant.init();
         PigeonVariant.init();
         SparrowVariant.init();
+
+        FowlPlayActivities.init();
+        FowlPlayEntityType.init();
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();
         FowlPlayParticleTypes.init();
-        FowlPlayRegistries.init();
-        FowlPlayRegistryKeys.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();

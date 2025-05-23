@@ -1,38 +1,43 @@
 package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKeys;
 
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
-    public static final SensorType<NearbyAdultsSensor<?>> NEARBY_ADULTS = register("nearby_adults",
+    public static final DeferredRegister<SensorType<?>> SENSOR_TYPES = DeferredRegister.create(
+        FowlPlay.ID,
+        RegistryKeys.SENSOR_TYPE
+    );
+    public static final RegistrySupplier<SensorType<NearbyAdultsSensor<?>>> NEARBY_ADULTS = register("nearby_adults",
         NearbyAdultsSensor::new
     );
-    public static final SensorType<TemptingPlayerSensor> TEMPTING_PLAYER = register("tempting_player",
+    public static final RegistrySupplier<SensorType<TemptingPlayerSensor>> TEMPTING_PLAYER = register("tempting_player",
         TemptingPlayerSensor::new
     );
-    public static final SensorType<AttackedSensor<?>> ATTACKED = register("attacked",
+    public static final RegistrySupplier<SensorType<AttackedSensor<?>>> ATTACKED = register("attacked",
         AttackedSensor::new
     );
-    public static final SensorType<AvoidTargetSensor<?>> AVOID_TARGETS = register("avoid_targets",
+    public static final RegistrySupplier<SensorType<AvoidTargetSensor<?>>> AVOID_TARGETS = register("avoid_targets",
         AvoidTargetSensor::new
     );
-    public static final SensorType<AttackTargetSensor<?>> ATTACK_TARGETS = register("attack_targets",
+    public static final RegistrySupplier<SensorType<AttackTargetSensor<?>>> ATTACK_TARGETS = register("attack_targets",
         AttackTargetSensor::new
     );
-    public static final SensorType<PigeonSpecificSensor> PIGEON_SPECIFIC_SENSOR = register("pigeon_specific_sensor",
+    public static final RegistrySupplier<SensorType<PigeonSpecificSensor>> PIGEON_SPECIFIC_SENSOR = register("pigeon_specific_sensor",
         PigeonSpecificSensor::new
     );
 
-    private static <U extends Sensor<?>> SensorType<U> register(String id, Supplier<U> factory) {
-        return Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), new SensorType<>(factory));
+    private static <U extends Sensor<?>> RegistrySupplier<SensorType<U>> register(String id, Supplier<U> factory) {
+        return SENSOR_TYPES.register(id, () -> new SensorType<>(factory));
     }
 
     public static void init() {
+        SENSOR_TYPES.register();
     }
 }

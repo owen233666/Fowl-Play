@@ -22,11 +22,11 @@ public class GuidedFlockTask extends MultiTickTask<FlyingBirdEntity> {
 
     public GuidedFlockTask(float separation, float separationRange) {
         super(ImmutableMap.of(
-            FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS,
+            FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get(),
             MemoryModuleState.VALUE_PRESENT,
-            FowlPlayMemoryModuleType.IS_AVOIDING,
+            FowlPlayMemoryModuleType.IS_AVOIDING.get(),
             MemoryModuleState.VALUE_ABSENT,
-            FowlPlayMemoryModuleType.SEES_FOOD,
+            FowlPlayMemoryModuleType.SEES_FOOD.get(),
             MemoryModuleState.VALUE_ABSENT
         ));
         this.separation = separation;
@@ -39,7 +39,7 @@ public class GuidedFlockTask extends MultiTickTask<FlyingBirdEntity> {
             return false;
         }
 
-        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)
+        this.nearbyBirds = bird.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())
             .get()
             .stream()
             .filter(entity -> entity.squaredDistanceTo(bird) < 64)

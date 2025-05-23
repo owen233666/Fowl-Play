@@ -23,11 +23,11 @@ public class FlightControlTask {
     public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> startFlying(Predicate<E> shouldRun) {
         return new SingleTickBehaviour<>(
             MemoryTest.builder(1)
-                .noMemory(FowlPlayMemoryModuleType.IS_FLYING),
+                .noMemory(FowlPlayMemoryModuleType.IS_FLYING.get()),
             (bird, brain) -> {
                 if (bird.canStartFlying() && shouldRun.test(bird)) {
                     bird.startFlying();
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
+                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
                     return true;
                 }
                 return false;
@@ -38,7 +38,7 @@ public class FlightControlTask {
     public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> stopFlying() {
         return new SingleTickBehaviour<>(
             MemoryTest.builder(2)
-                .hasMemory(FowlPlayMemoryModuleType.IS_FLYING)
+                .hasMemory(FowlPlayMemoryModuleType.IS_FLYING.get())
                 .usesMemory(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {
                 bird.stopFlying();
@@ -50,12 +50,12 @@ public class FlightControlTask {
     public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> stopFalling() {
         return new SingleTickBehaviour<>(
             List.of(
-                Pair.of(FowlPlayMemoryModuleType.IS_FLYING, MemoryModuleState.VALUE_ABSENT)
+                Pair.of(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             ),
             (bird, brain) -> {
                 if (bird.fallDistance > 1 && bird.canStartFlying()) {
                     bird.startFlying();
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING, Unit.INSTANCE);
+                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
                     return true;
                 }
                 return false;

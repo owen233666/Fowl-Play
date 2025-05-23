@@ -17,8 +17,8 @@ import java.util.List;
 
 public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
     private static final MemoryTest MEMORIES = MemoryTest.builder(3)
-        .hasMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)
-        .hasNoMemories(FowlPlayMemoryModuleType.IS_AVOIDING, FowlPlayMemoryModuleType.SEES_FOOD);
+        .hasMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())
+        .hasNoMemories(FowlPlayMemoryModuleType.IS_AVOIDING.get(), FowlPlayMemoryModuleType.SEES_FOOD.get());
     private static final int VIEW_RADIUS = 64;
     public final int minFlockSize;
     public final float coherence;
@@ -46,10 +46,10 @@ public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
             return false;
         }
         Brain<?> brain = bird.getBrain();
-        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS)) {
+        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())) {
             return false;
         }
-        this.nearbyBirds = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS);
+        this.nearbyBirds = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get());
         assert this.nearbyBirds != null;
         this.nearbyBirds.removeIf(entity -> entity.squaredDistanceTo(bird) > VIEW_RADIUS * VIEW_RADIUS);
 
