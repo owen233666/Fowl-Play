@@ -1,7 +1,6 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.network.RegistryByteBuf;
@@ -21,12 +20,8 @@ public record ChickenVariant(String id) {
     public static final RegistryKey<ChickenVariant> RED_JUNGLEFOWL = register("red_junglefowl");
 
     private static RegistryKey<ChickenVariant> register(String id) {
-        RegistryKey<ChickenVariant> key = RegistryKey.of(FowlPlayRegistryKeys.CHICKEN_VARIANT, Identifier.of(FowlPlay.ID, id));
-        System.out.println(FowlPlayRegistries.CHICKEN_VARIANT.getKey());
-        System.out.println("ROOT KEYKEYKEYKEY: " + FowlPlayRegistryKeys.CHICKEN_VARIANT);
-        System.out.println("KEYKEYKEYKEY: " + key);
         CHICKEN_VARIANTS.register(id, () -> new ChickenVariant(id));
-        return key;
+        return RegistryKey.of(FowlPlayRegistryKeys.CHICKEN_VARIANT, Identifier.of(FowlPlay.ID, id));
     }
 
     public static void init() {

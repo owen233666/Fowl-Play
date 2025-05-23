@@ -42,6 +42,7 @@ public class FowlPlay {
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();
+
         initSpawners();
     }
 
