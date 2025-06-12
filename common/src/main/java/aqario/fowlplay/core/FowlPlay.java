@@ -1,5 +1,6 @@
 package aqario.fowlplay.core;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.world.gen.GullSpawner;
 import aqario.fowlplay.common.world.gen.HawkSpawner;
@@ -20,15 +21,15 @@ public class FowlPlay {
     }
 
     public static void initRegistries() {
+        Mod mod = Platform.getMod(ID);
+        LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
+        FowlPlayConfig.load();
+
         FowlPlayRegistryKeys.init();
         FowlPlayRegistries.init();
     }
 
     public static void init() {
-        Mod mod = Platform.getMod(ID);
-        LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
-//        FowlPlayConfig.load();
-
         ChickenVariant.init();
         DuckVariant.init();
         GullVariant.init();
@@ -45,6 +46,8 @@ public class FowlPlay {
         FowlPlayTrackedDataHandlerRegistry.init();
 
         initSpawners();
+
+        System.out.println("doneinit");
     }
 
     private static void initSpawners() {

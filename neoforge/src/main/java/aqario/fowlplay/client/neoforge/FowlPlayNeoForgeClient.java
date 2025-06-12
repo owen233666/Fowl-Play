@@ -1,4 +1,4 @@
-package aqario.fowlplay.core.neoforge;
+package aqario.fowlplay.client.neoforge;
 
 import aqario.fowlplay.client.FowlPlayClient;
 import net.neoforged.bus.api.IEventBus;

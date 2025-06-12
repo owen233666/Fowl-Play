@@ -52,16 +52,19 @@ public class PlatformHelperImpl {
     }
 
     public static Supplier<Activity> registerActivity(String id, Supplier<Activity> activity) {
-        return () -> Registry.register(Registries.ACTIVITY, Identifier.of(FowlPlay.ID, id), activity.get());
+        Activity registry = Registry.register(Registries.ACTIVITY, Identifier.of(FowlPlay.ID, id), activity.get());
+        return () -> registry;
     }
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String id, Supplier<EntityType<T>> entityType) {
-        return () -> Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), entityType.get());
+        EntityType<T> registry = Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), entityType.get());
+        return () -> registry;
     }
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
         addItemToItemGroup(item.get(), group);
-        return () -> Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item.get());
+        Item registry = Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item.get());
+        return () -> registry;
     }
 
     public static <T extends MobEntity> Supplier<Item> registerSpawnEggItem(String id, Supplier<EntityType<T>> entityType, int backgroundColor, int highlightColor) {
@@ -69,19 +72,23 @@ public class PlatformHelperImpl {
     }
 
     public static <T> Supplier<MemoryModuleType<T>> registerMemoryModuleType(String id, Supplier<MemoryModuleType<T>> memoryModuleType) {
-        return () -> Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), memoryModuleType.get());
+        MemoryModuleType<T> registry = Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), memoryModuleType.get());
+        return () -> registry;
     }
 
     public static Supplier<SimpleParticleType> registerParticleType(String id, Supplier<SimpleParticleType> particleType) {
-        return () -> Registry.register(Registries.PARTICLE_TYPE, Identifier.of(FowlPlay.ID, id), particleType.get());
+        SimpleParticleType registry = Registry.register(Registries.PARTICLE_TYPE, Identifier.of(FowlPlay.ID, id), particleType.get());
+        return () -> registry;
     }
 
     public static <T extends Sensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<SensorType<T>> sensorType) {
-        return () -> Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), sensorType.get());
+        SensorType<T> registry = Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), sensorType.get());
+        return () -> registry;
     }
 
     public static Supplier<SoundEvent> registerSoundEvent(String id, Supplier<SoundEvent> soundEvent) {
-        return () -> Registry.register(Registries.SOUND_EVENT, Identifier.of(FowlPlay.ID, id), soundEvent.get());
+        SoundEvent registry = Registry.register(Registries.SOUND_EVENT, Identifier.of(FowlPlay.ID, id), soundEvent.get());
+        return () -> registry;
     }
 
     public static <T> Registry<T> registerRegistry(RegistryKey<Registry<T>> registryKey, boolean sync) {

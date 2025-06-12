@@ -1,5 +1,7 @@
 package aqario.fowlplay.core.neoforge;
 
+import aqario.fowlplay.client.neoforge.FowlPlayNeoForgeClient;
+import aqario.fowlplay.common.config.YACLIntegration;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayItems;
 import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
@@ -7,9 +9,11 @@ import net.minecraft.item.ItemGroups;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -42,9 +46,9 @@ public final class FowlPlayNeoForge {
         PlatformHelperImpl.SENSOR_TYPES.register(modBus);
         PlatformHelperImpl.SOUND_EVENTS.register(modBus);
         PlatformHelperImpl.TRACKED_DATA_HANDLERS.register(modBus);
-//        ModLoadingContext.get().getActiveContainer().registerExtensionPoint(
-//            IConfigScreenFactory.class, (client, parent) -> YACLIntegration.createScreen(parent)
-//        );
+        ModLoadingContext.get().getActiveContainer().registerExtensionPoint(
+            IConfigScreenFactory.class, (client, parent) -> YACLIntegration.createScreen(parent)
+        );
     }
 
     private static void onNewRegistry(NewRegistryEvent event) {
