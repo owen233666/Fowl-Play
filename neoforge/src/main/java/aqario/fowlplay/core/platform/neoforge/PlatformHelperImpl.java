@@ -113,7 +113,9 @@ public class PlatformHelperImpl {
     }
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
-        return ITEMS.register(id, item);
+        Supplier<Item> registry = ITEMS.register(id, item);
+//        addItemToItemGroup(registry, group);
+        return registry;
     }
 
     public static <T extends MobEntity> Supplier<Item> registerSpawnEggItem(String id, Supplier<EntityType<T>> entityType, int backgroundColor, int highlightColor) {

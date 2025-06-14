@@ -62,8 +62,8 @@ public class PlatformHelperImpl {
     }
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
-        addItemToItemGroup(item.get(), group);
         Item registry = Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item.get());
+        addItemToItemGroup(registry, group);
         return () -> registry;
     }
 

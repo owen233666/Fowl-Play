@@ -10,10 +10,6 @@ import net.minecraft.registry.RegistryKey;
 import java.util.function.Supplier;
 
 public final class FowlPlayItems {
-    //    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.ITEM
-//    );
     public static final Supplier<Item> BLUE_JAY_SPAWN_EGG = registerSpawnEgg(
         "blue_jay_spawn_egg",
         FowlPlayEntityType.BLUE_JAY,
@@ -96,6 +92,5 @@ public final class FowlPlayItems {
     }
 
     public static void init() {
-//        ITEMS.register();
     }
 }

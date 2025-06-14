@@ -14,10 +14,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public final class FowlPlayMemoryModuleType {
-//    public static final DeferredRegister<MemoryModuleType<?>> MEMORY_MODULE_TYPES = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.MEMORY_MODULE_TYPE
-//    );
     public static final Supplier<MemoryModuleType<List<? extends PassiveEntity>>> NEAREST_VISIBLE_ADULTS = register("nearest_visible_adults");
     public static final Supplier<MemoryModuleType<Boolean>> SEES_FOOD = register("sees_food", Codec.BOOL);
     public static final Supplier<MemoryModuleType<Boolean>> CANNOT_PICKUP_FOOD = register("cannot_eat_food", Codec.BOOL);
@@ -27,16 +23,13 @@ public final class FowlPlayMemoryModuleType {
     public static final Supplier<MemoryModuleType<UUID>> RECIPIENT = register("recipient", Uuids.INT_STREAM_CODEC);
 
     private static <U> Supplier<MemoryModuleType<U>> register(String id, Codec<U> codec) {
-//        return MEMORY_MODULE_TYPES.register(id, () -> new MemoryModuleType<>(Optional.of(codec)));
         return PlatformHelper.registerMemoryModuleType(id, () -> new MemoryModuleType<>(Optional.of(codec)));
     }
 
     private static <U> Supplier<MemoryModuleType<U>> register(String id) {
-//        return MEMORY_MODULE_TYPES.register(id, () -> new MemoryModuleType<>(Optional.empty()));
         return PlatformHelper.registerMemoryModuleType(id, () -> new MemoryModuleType<>(Optional.empty()));
     }
 
     public static void init() {
-//        MEMORY_MODULE_TYPES.register();
     }
 }

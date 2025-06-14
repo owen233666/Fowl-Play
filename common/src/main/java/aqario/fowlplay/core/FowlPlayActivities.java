@@ -6,10 +6,6 @@ import net.minecraft.entity.ai.brain.Activity;
 import java.util.function.Supplier;
 
 public final class FowlPlayActivities {
-//    public static final DeferredRegister<Activity> ACTIVITIES = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.ACTIVITY
-//    );
     public static final Supplier<Activity> DELIVER = register("deliver");
     public static final Supplier<Activity> FLY = register("fly");
     public static final Supplier<Activity> FORAGE = register("forage");
@@ -18,11 +14,9 @@ public final class FowlPlayActivities {
     public static final Supplier<Activity> SOAR = register("soar");
 
     private static Supplier<Activity> register(String id) {
-//        return ACTIVITIES.register(id, () -> new Activity(id));
         return PlatformHelper.registerActivity(id, () -> new Activity(id));
     }
 
     public static void init() {
-//        ACTIVITIES.register();
     }
 }

@@ -7,10 +7,6 @@ import net.minecraft.util.Identifier;
 import java.util.function.Supplier;
 
 public final class FowlPlaySoundEvents {
-    //    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.SOUND_EVENT
-//    );
     public static final Supplier<SoundEvent> ENTITY_BIRD_EAT = register("entity.bird.eat");
 
     public static final Supplier<SoundEvent> ENTITY_BLUE_JAY_CALL = register("entity.blue_jay.call");
@@ -57,11 +53,9 @@ public final class FowlPlaySoundEvents {
     public static final Supplier<SoundEvent> ENTITY_SPARROW_HURT = register("entity.sparrow.hurt");
 
     private static Supplier<SoundEvent> register(String id) {
-//        return SOUND_EVENTS.register(id, () -> SoundEvent.of(Identifier.of(FowlPlay.ID, id)));
         return PlatformHelper.registerSoundEvent(id, () -> SoundEvent.of(Identifier.of(FowlPlay.ID, id)));
     }
 
     public static void init() {
-//        SOUND_EVENTS.register();
     }
 }

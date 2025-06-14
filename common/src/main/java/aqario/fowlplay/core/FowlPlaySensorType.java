@@ -8,10 +8,6 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import java.util.function.Supplier;
 
 public final class FowlPlaySensorType {
-    //    public static final DeferredRegister<SensorType<?>> SENSOR_TYPES = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.SENSOR_TYPE
-//    );
     public static final Supplier<SensorType<NearbyAdultsSensor<?>>> NEARBY_ADULTS = register("nearby_adults",
         NearbyAdultsSensor::new
     );
@@ -32,11 +28,9 @@ public final class FowlPlaySensorType {
     );
 
     private static <U extends Sensor<?>> Supplier<SensorType<U>> register(String id, Supplier<U> factory) {
-//        return SENSOR_TYPES.register(id, () -> new SensorType<>(factory));
         return PlatformHelper.registerSensorType(id, () -> new SensorType<>(factory));
     }
 
     public static void init() {
-//        SENSOR_TYPES.register();
     }
 }

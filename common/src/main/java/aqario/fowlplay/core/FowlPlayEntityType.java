@@ -19,10 +19,6 @@ import net.minecraft.world.biome.SpawnSettings;
 import java.util.function.Supplier;
 
 public final class FowlPlayEntityType {
-    //    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
-//        FowlPlay.ID,
-//        RegistryKeys.ENTITY_TYPE
-//    );
     public static final Supplier<EntityType<BlueJayEntity>> BLUE_JAY = register("blue_jay",
         EntityTypeBuilder.create(
                 BlueJayEntity::new,
@@ -205,13 +201,10 @@ public final class FowlPlayEntityType {
     );
 
     private static <T extends Entity> Supplier<EntityType<T>> register(String id, EntityTypeBuilder<T> builder) {
-//        return ENTITY_TYPES.register(id, () -> builder.build(id));
         return PlatformHelper.registerEntityType(id, () -> builder.build(id));
     }
 
     public static void init() {
-//        ENTITY_TYPES.register();
-
         // Spawn Weights
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_BLUE_JAYS,
