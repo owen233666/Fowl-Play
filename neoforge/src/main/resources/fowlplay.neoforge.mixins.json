@@ -1,12 +1,14 @@
 {
   "required": true,
-  "package": "aqario.fowlplay.mixin",
+  "minVersion": "0.8",
+  "package": "aqario.fowlplay.mixin.neoforge",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockStateMixin",
     "ChickenEntityMixin",
     "FenceGateBlockMixin",
     "HorizontalConnectingBlockMixin",
+    "LivingEntityMixin",
     "PowderSnowBlockMixin",
     "SpawnHelperMixin",
     "WallBlockMixin"

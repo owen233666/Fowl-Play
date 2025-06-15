@@ -1,6 +1,6 @@
 package aqario.fowlplay.mixin.neoforge;
 
-import aqario.fowlplay.common.entity.FowlPlaySpawnGroup;
+import aqario.fowlplay.common.entity.CustomSpawnGroup;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.SpawnHelper;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SpawnHelperMixin {
     @Inject(method = "spawnEntitiesInChunk(Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/SpawnHelper$Checker;Lnet/minecraft/world/SpawnHelper$Runner;)V", at = @At("HEAD"), cancellable = true)
     private static void fowlplay$spawnEntitiesInChunk(SpawnGroup group, ServerWorld world, WorldChunk chunk, SpawnHelper.Checker checker, SpawnHelper.Runner runner, CallbackInfo ci) {
-        if (group == FowlPlaySpawnGroup.BIRD.spawnGroup && world.getLevelProperties().getTime() % 20L != 0L) {
+        if (group == CustomSpawnGroup.BIRDS.spawnGroup && world.getLevelProperties().getTime() % 20L != 0L) {
             ci.cancel();
         }
     }

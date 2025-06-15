@@ -44,4 +44,7 @@ side = "BOTH"
 #side = "CLIENT"
 
 [[mixins]]
-config = "fowlplay.mixins.json"
+config = "fowlplay.common.mixins.json"
+
+[[mixins]]
+config = "fowlplay.neoforge.mixins.json"

@@ -22,7 +22,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<BlueJayEntity>> BLUE_JAY = register("blue_jay",
         EntityTypeBuilder.create(
                 BlueJayEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(BlueJayEntity::createFlyingBirdAttributes)
             .spawnRestriction(
@@ -37,7 +37,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<CardinalEntity>> CARDINAL = register("cardinal",
         EntityTypeBuilder.create(
                 CardinalEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(CardinalEntity::createFlyingBirdAttributes)
             .spawnRestriction(
@@ -52,7 +52,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<ChickadeeEntity>> CHICKADEE = register("chickadee",
         EntityTypeBuilder.create(
                 ChickadeeEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(ChickadeeEntity::createFlyingBirdAttributes)
             .spawnRestriction(
@@ -67,7 +67,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<CrowEntity>> CROW = register("crow",
         EntityTypeBuilder.create(
                 CrowEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(CrowEntity::createCrowAttributes)
             .spawnRestriction(
@@ -82,7 +82,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<DuckEntity>> DUCK = register("duck",
         EntityTypeBuilder.create(
                 DuckEntity::new,
-                FowlPlaySpawnGroup.BIRD.spawnGroup
+                CustomSpawnGroup.BIRDS.spawnGroup
             )
             .defaultAttributes(DuckEntity::createDuckAttributes)
             .spawnRestriction(
@@ -97,7 +97,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<GullEntity>> GULL = register("gull",
         EntityTypeBuilder.create(
                 GullEntity::new,
-                FowlPlaySpawnGroup.BIRD.spawnGroup
+                CustomSpawnGroup.BIRDS.spawnGroup
             )
             .defaultAttributes(GullEntity::createGullAttributes)
             .spawnRestriction(
@@ -112,7 +112,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<HawkEntity>> HAWK = register("hawk",
         EntityTypeBuilder.create(
                 HawkEntity::new,
-                FowlPlaySpawnGroup.BIRD.spawnGroup
+                CustomSpawnGroup.BIRDS.spawnGroup
             )
             .defaultAttributes(HawkEntity::createHawkAttributes)
             .spawnRestriction(
@@ -143,7 +143,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<PigeonEntity>> PIGEON = register("pigeon",
         EntityTypeBuilder.create(
                 PigeonEntity::new,
-                FowlPlaySpawnGroup.BIRD.spawnGroup
+                CustomSpawnGroup.BIRDS.spawnGroup
             )
             .defaultAttributes(PigeonEntity::createPigeonAttributes)
             .spawnRestriction(
@@ -158,7 +158,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<RavenEntity>> RAVEN = register("raven",
         EntityTypeBuilder.create(
                 RavenEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(RavenEntity::createRavenAttributes)
             .spawnRestriction(
@@ -173,7 +173,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<RobinEntity>> ROBIN = register("robin",
         EntityTypeBuilder.create(
                 RobinEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(RobinEntity::createFlyingBirdAttributes)
             .spawnRestriction(
@@ -188,7 +188,7 @@ public final class FowlPlayEntityType {
     public static final Supplier<EntityType<SparrowEntity>> SPARROW = register("sparrow",
         EntityTypeBuilder.create(
                 SparrowEntity::new,
-                FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup
+                CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
             .defaultAttributes(SparrowEntity::createFlyingBirdAttributes)
             .spawnRestriction(
@@ -208,7 +208,7 @@ public final class FowlPlayEntityType {
         // Spawn Weights
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_BLUE_JAYS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.BLUE_JAY,
             FowlPlayConfig.getInstance().blueJaySpawnWeight,
             FowlPlayConfig.getInstance().blueJayMinGroupSize,
@@ -216,7 +216,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_CARDINALS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.CARDINAL,
             FowlPlayConfig.getInstance().cardinalSpawnWeight,
             FowlPlayConfig.getInstance().cardinalMinGroupSize,
@@ -224,7 +224,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_CHICKADEES,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.CHICKADEE,
             FowlPlayConfig.getInstance().chickadeeSpawnWeight,
             FowlPlayConfig.getInstance().chickadeeMinGroupSize,
@@ -232,7 +232,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_CROWS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.CROW,
             FowlPlayConfig.getInstance().crowSpawnWeight,
             FowlPlayConfig.getInstance().crowMinGroupSize,
@@ -240,7 +240,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_DUCKS,
-            FowlPlaySpawnGroup.BIRD.spawnGroup,
+            CustomSpawnGroup.BIRDS.spawnGroup,
             FowlPlayEntityType.DUCK,
             FowlPlayConfig.getInstance().duckSpawnWeight,
             FowlPlayConfig.getInstance().duckMinGroupSize,
@@ -248,7 +248,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_GULLS,
-            FowlPlaySpawnGroup.BIRD.spawnGroup,
+            CustomSpawnGroup.BIRDS.spawnGroup,
             FowlPlayEntityType.GULL,
             FowlPlayConfig.getInstance().gullSpawnWeight,
             FowlPlayConfig.getInstance().gullMinGroupSize,
@@ -272,7 +272,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_PIGEONS,
-            FowlPlaySpawnGroup.BIRD.spawnGroup,
+            CustomSpawnGroup.BIRDS.spawnGroup,
             FowlPlayEntityType.PIGEON,
             FowlPlayConfig.getInstance().pigeonSpawnWeight,
             FowlPlayConfig.getInstance().pigeonMinGroupSize,
@@ -280,7 +280,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_RAVENS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.RAVEN,
             FowlPlayConfig.getInstance().ravenSpawnWeight,
             FowlPlayConfig.getInstance().ravenMinGroupSize,
@@ -288,7 +288,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_ROBINS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.ROBIN,
             FowlPlayConfig.getInstance().robinSpawnWeight,
             FowlPlayConfig.getInstance().robinMinGroupSize,
@@ -296,7 +296,7 @@ public final class FowlPlayEntityType {
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_SPARROWS,
-            FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup,
+            CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup,
             FowlPlayEntityType.SPARROW,
             FowlPlayConfig.getInstance().sparrowSpawnWeight,
             FowlPlayConfig.getInstance().sparrowMinGroupSize,

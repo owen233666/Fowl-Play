@@ -52,7 +52,7 @@ public final class FowlPlayNeoForge {
     }
 
     private static void onNewRegistry(NewRegistryEvent event) {
-        FowlPlay.initRegistries();
+        FowlPlay.earlyInit();
         PlatformHelperImpl.REGISTRIES.forEach(event::register);
     }
 

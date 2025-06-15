@@ -4,9 +4,7 @@
   "package": "aqario.fowlplay.mixin.fabric",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "LivingEntityMixin",
-    "SoundCategoryMixin",
-    "SpawnGroupMixin"
+    "LivingEntityMixin"
   ],
   "client": [
   ],

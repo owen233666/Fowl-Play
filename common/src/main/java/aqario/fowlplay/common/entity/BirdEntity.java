@@ -3,7 +3,6 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.network.FowlPlayDebugInfoSender;
-import aqario.fowlplay.common.sound.FowlPlaySoundCategory;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -23,7 +22,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.DebugInfoSender;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
@@ -59,7 +57,7 @@ public abstract class BirdEntity extends AnimalEntity {
         this.setYaw(world.getRandom().nextFloat() * 360.0F);
         this.setBodyYaw(this.getYaw());
         this.setHeadYaw(this.getYaw());
-        if (this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup) {
+        if (this.getType().getSpawnGroup() == CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup) {
             this.setAmbient(true);
         }
         return super.initialize(world, difficulty, spawnReason, entityData);
@@ -78,7 +76,7 @@ public abstract class BirdEntity extends AnimalEntity {
             this.setAmbient(nbt.getBoolean("ambient"));
         }
         else {
-            this.setAmbient(this.getType().getSpawnGroup() == FowlPlaySpawnGroup.BIRD_AMBIENT.spawnGroup);
+            this.setAmbient(this.getType().getSpawnGroup() == CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup);
         }
     }
 
@@ -372,11 +370,6 @@ public abstract class BirdEntity extends AnimalEntity {
 
     protected float getSongVolume() {
         return 1.0F;
-    }
-
-    @Override
-    public SoundCategory getSoundCategory() {
-        return FowlPlaySoundCategory.BIRDS.soundCategory;
     }
 
     @Override

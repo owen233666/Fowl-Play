@@ -36,7 +36,8 @@
   },
   "accessWidener": "fowlplay.accesswidener",
   "mixins": [
-    "fowlplay.mixins.json"
+    "fowlplay.common.mixins.json",
+    "fowlplay.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",

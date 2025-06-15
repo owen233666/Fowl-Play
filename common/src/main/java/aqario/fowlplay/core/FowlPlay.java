@@ -20,7 +20,7 @@ public class FowlPlay {
         return Platform.isModLoaded("debugutils");
     }
 
-    public static void initRegistries() {
+    public static void earlyInit() {
         Mod mod = Platform.getMod(ID);
         LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
         FowlPlayConfig.load();
@@ -46,8 +46,6 @@ public class FowlPlay {
         FowlPlayTrackedDataHandlerRegistry.init();
 
         initSpawners();
-
-        System.out.println("doneinit");
     }
 
     private static void initSpawners() {
