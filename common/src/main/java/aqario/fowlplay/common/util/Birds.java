@@ -140,7 +140,7 @@ public final class Birds {
         if (attackTarget != null && attackTarget.isPresent() && attackTarget.get().equals(target)) {
             return false;
         }
-        return !bird.canAttack(target);
+        return !bird.shouldAttack(target);
     }
 
     public static boolean shouldAvoidAttacker(Brain<?> brain, LivingEntity attacker) {

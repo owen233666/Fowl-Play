@@ -76,7 +76,7 @@ public class AttackedSensor<E extends BirdEntity> extends PredicateSensor<Damage
                 trustingBird.stopTrusting(player);
             }
         }
-        if (attacker.getType() != bird.getType() && !bird.canAttack(attacker)) {
+        if (attacker.getType() != bird.getType() && !bird.shouldAttack(attacker)) {
             BrainUtils.setForgettableMemory(brain, MemoryModuleType.AVOID_TARGET, attacker, Birds.AVOID_TICKS);
             Birds.alertOthers(bird, attacker);
         }

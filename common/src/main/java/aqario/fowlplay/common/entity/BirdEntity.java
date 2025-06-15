@@ -166,7 +166,7 @@ public abstract class BirdEntity extends AnimalEntity {
         return false;
     }
 
-    public boolean canAttack(LivingEntity target) {
+    public boolean shouldAttack(LivingEntity target) {
         return false;
     }
 
@@ -184,7 +184,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public boolean canTarget(LivingEntity target) {
-        return super.canTarget(target) && (this.canAttack(target) || this.canHunt(target));
+        return super.canTarget(target) && (this.shouldAttack(target) || this.canHunt(target));
     }
 
     @Override

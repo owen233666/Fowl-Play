@@ -137,7 +137,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
     }
 
     @Override
-    public boolean canAttack(LivingEntity target) {
+    public boolean shouldAttack(LivingEntity target) {
         if (this.hasLowHealth()) {
             return false;
         }

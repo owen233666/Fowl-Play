@@ -34,7 +34,7 @@ public class AttackTargetSensor<E extends BirdEntity> extends EntityFilteringSen
     @Override
     protected BiPredicate<LivingEntity, E> predicate() {
         return (target, self) -> {
-            if (self.canAttack(target) && canAttack(self, target)) {
+            if (self.shouldAttack(target) && canAttack(self, target)) {
                 return true;
             }
             return self.canHunt(target) && canHunt(self, target);
