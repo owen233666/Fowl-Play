@@ -4,7 +4,6 @@
   "advancements.adventure.fly_penguin.title": "Лови волну",
   "advancements.adventure.fly_penguin.description": "Скатитесь с вершины сидя на пингвине",
   "config.title": "Конфигурация Fowl Play",
-  "config.info.require_yacl": "Yet Another Config Lib v3 необходим для конфигурации Fowl Play. Открыть страницу в браузере?",
   "config.info.restart": "Необходим перезапуск игры",
   "config.visual": "Отображение",
   "config.visual.customChickenModel": "Особая модель курицы",

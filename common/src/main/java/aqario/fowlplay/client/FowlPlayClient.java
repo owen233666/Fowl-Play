@@ -23,10 +23,6 @@ public class FowlPlayClient {
     public static boolean DEBUG_BIRD = false;
 
     public static void init() {
-//        registerModelLayers();
-//        registerEntityRenderers();
-//        registerParticleFactories();
-
         if(FowlPlay.isDebugUtilsLoaded()) {
             Identifier debugBirdId = Identifier.of(FowlPlay.ID, "debug/bird");
             RegisterDebugRenderers.registerCustomDebugRenderer(debugBirdId, BirdDebugRenderer.INSTANCE);

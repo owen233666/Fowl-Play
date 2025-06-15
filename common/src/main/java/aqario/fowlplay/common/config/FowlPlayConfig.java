@@ -6,9 +6,6 @@ public class FowlPlayConfig {
     public static FowlPlayConfig getInstance() {
         return YACLIntegration.HANDLED_CONFIG.instance();
     }
-//    public static FowlPlayConfig getInstance() {
-//        return new FowlPlayConfig();
-//    }
 
     public static void load() {
         YACLIntegration.HANDLED_CONFIG.load();

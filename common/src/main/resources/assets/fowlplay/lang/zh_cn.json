@@ -4,7 +4,6 @@
   "advancements.adventure.fly_penguin.title": "当企鹅飞起",
   "advancements.adventure.fly_penguin.description": "骑着企鹅跳下悬崖",
   "config.title": "Fowl Play 配置",
-  "config.info.require_yacl": "需要 Yet Another Config Lib v3 来配置 Fowl Play。您想打开下载链接吗？",
   "config.info.restart": "需要重启才能生效。",
   "config.visual": "视觉效果",
   "config.visual.customChickenModel": "自定义鸡模型",
