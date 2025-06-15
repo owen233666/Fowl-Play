@@ -114,6 +114,7 @@ public class PlatformHelperImpl {
         return ENTITY_TYPES.register(id, entityType);
     }
 
+    // TODO: Add items to group automatically
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
         Supplier<Item> registry = ITEMS.register(id, item);
 //        addItemToItemGroup(registry, group);
