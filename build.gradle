@@ -9,8 +9,10 @@ architectury {
 }
 
 allprojects {
+    def loader = project.findProperty("loom.platform") ?: "common"
+
     group = rootProject.maven_group
-    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+    version = "${rootProject.mod_version}+${rootProject.minecraft_version}-${loader}"
 }
 
 subprojects {
