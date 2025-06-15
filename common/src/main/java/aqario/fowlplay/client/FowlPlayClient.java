@@ -1,6 +1,5 @@
 package aqario.fowlplay.client;
 
-import aqario.fowlplay.client.particle.SmallBubbleParticle;
 import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.client.render.entity.*;
 import aqario.fowlplay.client.render.entity.model.*;
@@ -8,12 +7,10 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayEntityType;
-import aqario.fowlplay.core.FowlPlayParticleTypes;
 import com.google.common.base.Suppliers;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
-import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import io.github.flemmli97.debugutils.api.RegisterDebugRenderers;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -80,7 +77,9 @@ public class FowlPlayClient {
         }
     }
 
+    // TODO: Fix cross-platform particle registration
     public static void registerParticleFactories() {
-        ParticleProviderRegistry.register(FowlPlayParticleTypes.SMALL_BUBBLE.get(), SmallBubbleParticle.Factory::new);
+//        ParticleProviderRegistry.register(FowlPlayParticleTypes.SMALL_BUBBLE.get(), SmallBubbleParticle.Factory::new);
+//        PlatformHelper.registerParticleFactory(FowlPlayParticleTypes.SMALL_BUBBLE, SmallBubbleParticle.Factory::new);
     }
 }

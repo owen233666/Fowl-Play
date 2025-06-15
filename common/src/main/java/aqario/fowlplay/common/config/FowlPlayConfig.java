@@ -25,21 +25,21 @@ public class FowlPlayConfig {
     // Blue Jay
 
     @SerialEntry
-    public int blueJayCallVolume = 6;
+    public int blueJayCallVolume = 5;
 
     // Cardinal
 
     @SerialEntry
-    public int cardinalCallVolume = 3;
+    public int cardinalCallVolume = 1;
     @SerialEntry
-    public int cardinalSongVolume = 5;
+    public int cardinalSongVolume = 4;
 
     // Chickadee
 
     @SerialEntry
-    public int chickadeeCallVolume = 4;
+    public int chickadeeCallVolume = 2;
     @SerialEntry
-    public int chickadeeSongVolume = 4;
+    public int chickadeeSongVolume = 2;
 
     // Crow
 
@@ -49,31 +49,31 @@ public class FowlPlayConfig {
     // Duck
 
     @SerialEntry
-    public int duckCallVolume = 2;
+    public int duckCallVolume = 1;
 
     // Gull
 
     @SerialEntry
-    public int gullCallVolume = 4;
+    public int gullCallVolume = 2;
     @SerialEntry
-    public int gullSongVolume = 5;
+    public int gullSongVolume = 3;
 
     // Hawk
 
     @SerialEntry
-    public int hawkCallVolume = 7;
+    public int hawkCallVolume = 6;
 
     // Penguin
 
     @SerialEntry
-    public int penguinCallVolume = 4;
+    public int penguinCallVolume = 2;
 
     // Pigeon
 
     @SerialEntry
     public int pigeonCallVolume = 1;
     @SerialEntry
-    public int pigeonSongVolume = 4;
+    public int pigeonSongVolume = 3;
 
     // Raven
 
@@ -83,16 +83,16 @@ public class FowlPlayConfig {
     // Robin
 
     @SerialEntry
-    public int robinCallVolume = 3;
+    public int robinCallVolume = 2;
     @SerialEntry
-    public int robinSongVolume = 4;
+    public int robinSongVolume = 2;
 
     // Sparrow
 
     @SerialEntry
-    public int sparrowCallVolume = 3;
+    public int sparrowCallVolume = 2;
     @SerialEntry
-    public int sparrowSongVolume = 3;
+    public int sparrowSongVolume = 2;
 
     // Spawning
 
@@ -103,7 +103,7 @@ public class FowlPlayConfig {
     @SerialEntry
     public int blueJayMinGroupSize = 1;
     @SerialEntry
-    public int blueJayMaxGroupSize = 2;
+    public int blueJayMaxGroupSize = 1;
 
     // Cardinal
 
@@ -112,7 +112,7 @@ public class FowlPlayConfig {
     @SerialEntry
     public int cardinalMinGroupSize = 1;
     @SerialEntry
-    public int cardinalMaxGroupSize = 2;
+    public int cardinalMaxGroupSize = 1;
 
     // Chickadee
 
@@ -121,14 +121,14 @@ public class FowlPlayConfig {
     @SerialEntry
     public int chickadeeMinGroupSize = 1;
     @SerialEntry
-    public int chickadeeMaxGroupSize = 3;
+    public int chickadeeMaxGroupSize = 1;
 
     // Crow
 
     @SerialEntry
     public int crowSpawnWeight = 5;
     @SerialEntry
-    public int crowMinGroupSize = 3;
+    public int crowMinGroupSize = 1;
     @SerialEntry
     public int crowMaxGroupSize = 6;
 
@@ -137,16 +137,16 @@ public class FowlPlayConfig {
     @SerialEntry
     public int duckSpawnWeight = 4;
     @SerialEntry
-    public int duckMinGroupSize = 10;
+    public int duckMinGroupSize = 2;
     @SerialEntry
-    public int duckMaxGroupSize = 15;
+    public int duckMaxGroupSize = 10;
 
     // Gull
 
     @SerialEntry
     public int gullSpawnWeight = 5;
     @SerialEntry
-    public int gullMinGroupSize = 5;
+    public int gullMinGroupSize = 3;
     @SerialEntry
     public int gullMaxGroupSize = 12;
 
@@ -173,7 +173,7 @@ public class FowlPlayConfig {
     @SerialEntry
     public int pigeonSpawnWeight = 3;
     @SerialEntry
-    public int pigeonMinGroupSize = 2;
+    public int pigeonMinGroupSize = 1;
     @SerialEntry
     public int pigeonMaxGroupSize = 5;
 
@@ -193,14 +193,14 @@ public class FowlPlayConfig {
     @SerialEntry
     public int robinMinGroupSize = 1;
     @SerialEntry
-    public int robinMaxGroupSize = 3;
+    public int robinMaxGroupSize = 2;
 
     // Sparrow
 
     @SerialEntry
     public int sparrowSpawnWeight = 20;
     @SerialEntry
-    public int sparrowMinGroupSize = 3;
+    public int sparrowMinGroupSize = 2;
     @SerialEntry
     public int sparrowMaxGroupSize = 6;
 }

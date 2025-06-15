@@ -5,6 +5,7 @@ import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
@@ -16,6 +17,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
@@ -154,5 +156,8 @@ public class PlatformHelperImpl {
 
     public static void addItemToItemGroup(Supplier<Item> item, RegistryKey<ItemGroup> itemGroup) {
         ITEM_TO_GROUPS.put(item, itemGroup);
+    }
+
+    public static <T extends ParticleEffect> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleFactory<T> provider) {
     }
 }

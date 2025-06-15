@@ -1,6 +1,7 @@
 package aqario.fowlplay.core.platform;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
@@ -11,6 +12,8 @@ import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -76,6 +79,11 @@ public class PlatformHelper {
 
     @ExpectPlatform
     public static void addItemToItemGroup(Item item, RegistryKey<ItemGroup> itemGroup) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <T extends ParticleEffect> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleFactory<T> provider) {
         throw new AssertionError();
     }
 }

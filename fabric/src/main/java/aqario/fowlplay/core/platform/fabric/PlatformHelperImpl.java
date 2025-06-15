@@ -4,9 +4,11 @@ import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
@@ -20,6 +22,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.SpawnEggItem;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -107,5 +111,9 @@ public class PlatformHelperImpl {
         ItemGroupEvents.modifyEntriesEvent(itemGroup).register(entries ->
             entries.add(item)
         );
+    }
+
+    public static <T extends ParticleEffect> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleFactory<T> provider) {
+        ParticleFactoryRegistry.getInstance().register(supplier.get(), provider);
     }
 }

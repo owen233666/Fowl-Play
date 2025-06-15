@@ -74,6 +74,7 @@ public class SmallBubbleParticle extends SpriteBillboardParticle {
             this.spriteProvider = spriteProvider;
         }
 
+        @Override
         public Particle createParticle(SimpleParticleType simpleParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
             return new SmallBubbleParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
         }

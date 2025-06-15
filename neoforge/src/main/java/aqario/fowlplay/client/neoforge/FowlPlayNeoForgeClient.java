@@ -1,6 +1,8 @@
 package aqario.fowlplay.client.neoforge;
 
 import aqario.fowlplay.client.FowlPlayClient;
+import aqario.fowlplay.client.particle.SmallBubbleParticle;
+import aqario.fowlplay.core.FowlPlayParticleTypes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -20,7 +22,8 @@ public class FowlPlayNeoForgeClient {
     }
 
     public static void onRegisterParticles(RegisterParticleProvidersEvent event) {
-        FowlPlayClient.registerParticleFactories();
+//        FowlPlayClient.registerParticleFactories();
+        event.registerSpriteSet(FowlPlayParticleTypes.SMALL_BUBBLE.get(), SmallBubbleParticle.Factory::new);
     }
 
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
