@@ -40,8 +40,8 @@
     "fowlplay.fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${fabric_loader_version}",
     "minecraft": ">=1.21",
+    "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": ">=${fabric_api_version}",
     "smartbrainlib": ">=${sbl_version}",
     "yet_another_config_lib_v3": ">=${yacl_version}"
