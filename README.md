@@ -6,17 +6,7 @@ Fowl Play adds more birds to Minecraft, with realistic behaviours, sounds, and f
 
 <br/>
 
-## Important Information
-
-To play this mod on Forge / NeoForge, there is a **Sinytra Connector version**. Keep in mind that Fowl Play being loaded with Connector **can cause crashes** with some mods; it is not 100% stable.
-
-**If you're using the 1.21 Sinytra connector version**, mobs won't be able to move in water. To fix this, you will need to add [sinytra1343](https://github.com/unilock/sinytra1343/releases) as well.
-
-<details>
-<summary>How do I configure this mod?</summary>
-
-To configure Fowl Play, you need to install [Yet Another Config Library](https://modrinth.com/mod/yacl). You can also run the mod without it, it just won't generate the config.
-</details>
+## FAQ
 
 <details>
 <summary>Where can I find information about the birds?</summary>
