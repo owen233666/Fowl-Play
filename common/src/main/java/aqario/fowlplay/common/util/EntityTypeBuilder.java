@@ -34,9 +34,9 @@ public class EntityTypeBuilder<T extends Entity> {
     private EntityAttachments.Builder attachments = EntityAttachments.builder();
     private FeatureSet requiredFeatures;
     @Nullable
-    private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
-    private SpawnLocation restrictionLocation;
-    private Heightmap.Type restrictionHeightmap;
+    private Supplier<DefaultAttributeContainer.Builder> attributeBuilder;
+    private SpawnLocation location;
+    private Heightmap.Type heightmap;
     private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
 
     private EntityTypeBuilder(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup) {
@@ -147,14 +147,14 @@ public class EntityTypeBuilder<T extends Entity> {
         return this;
     }
 
-    public EntityTypeBuilder<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
-        this.defaultAttributeBuilder = defaultAttributeBuilder;
+    public EntityTypeBuilder<T> attributes(Supplier<DefaultAttributeContainer.Builder> attributeBuilder) {
+        this.attributeBuilder = attributeBuilder;
         return this;
     }
 
     public EntityTypeBuilder<T> spawnRestriction(SpawnLocation location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
-        this.restrictionLocation = location;
-        this.restrictionHeightmap = heightmap;
+        this.location = location;
+        this.heightmap = heightmap;
         this.spawnPredicate = spawnPredicate;
         return this;
     }
@@ -185,14 +185,14 @@ public class EntityTypeBuilder<T extends Entity> {
         );
 
         if(type.getBaseClass().isAssignableFrom(LivingEntity.class)) {
-            if(this.defaultAttributeBuilder != null) {
-                EntityAttributeRegistry.register(() -> (EntityType<? extends LivingEntity>) type, this.defaultAttributeBuilder);
+            if(this.attributeBuilder != null) {
+                EntityAttributeRegistry.register(() -> (EntityType<? extends LivingEntity>) type, this.attributeBuilder);
             }
         }
 
         if(type.getBaseClass().isAssignableFrom(MobEntity.class)) {
             if(this.spawnPredicate != null) {
-                SpawnPlacementsRegistry.register(() -> (EntityType<MobEntity>) type, this.restrictionLocation, this.restrictionHeightmap, (SpawnRestriction.SpawnPredicate<MobEntity>) this.spawnPredicate);
+                SpawnPlacementsRegistry.register(() -> (EntityType<MobEntity>) type, this.location, this.heightmap, (SpawnRestriction.SpawnPredicate<MobEntity>) this.spawnPredicate);
             }
         }
 

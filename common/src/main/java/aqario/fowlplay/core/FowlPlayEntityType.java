@@ -24,7 +24,7 @@ public final class FowlPlayEntityType {
                 BlueJayEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(BlueJayEntity::createFlyingBirdAttributes)
+            .attributes(BlueJayEntity::createFlyingBirdAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -39,7 +39,7 @@ public final class FowlPlayEntityType {
                 CardinalEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(CardinalEntity::createFlyingBirdAttributes)
+            .attributes(CardinalEntity::createFlyingBirdAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -54,7 +54,7 @@ public final class FowlPlayEntityType {
                 ChickadeeEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(ChickadeeEntity::createFlyingBirdAttributes)
+            .attributes(ChickadeeEntity::createFlyingBirdAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -69,7 +69,7 @@ public final class FowlPlayEntityType {
                 CrowEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(CrowEntity::createCrowAttributes)
+            .attributes(CrowEntity::createCrowAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -84,7 +84,7 @@ public final class FowlPlayEntityType {
                 DuckEntity::new,
                 CustomSpawnGroup.BIRDS.spawnGroup
             )
-            .defaultAttributes(DuckEntity::createDuckAttributes)
+            .attributes(DuckEntity::createDuckAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.AQUATIC,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
@@ -99,7 +99,7 @@ public final class FowlPlayEntityType {
                 GullEntity::new,
                 CustomSpawnGroup.BIRDS.spawnGroup
             )
-            .defaultAttributes(GullEntity::createGullAttributes)
+            .attributes(GullEntity::createGullAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.SEMIAQUATIC,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
@@ -114,7 +114,7 @@ public final class FowlPlayEntityType {
                 HawkEntity::new,
                 CustomSpawnGroup.BIRDS.spawnGroup
             )
-            .defaultAttributes(HawkEntity::createHawkAttributes)
+            .attributes(HawkEntity::createHawkAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -129,7 +129,7 @@ public final class FowlPlayEntityType {
                 PenguinEntity::new,
                 SpawnGroup.CREATURE
             )
-            .defaultAttributes(PenguinEntity::createPenguinAttributes)
+            .attributes(PenguinEntity::createPenguinAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.SEMIAQUATIC,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
@@ -145,7 +145,7 @@ public final class FowlPlayEntityType {
                 PigeonEntity::new,
                 CustomSpawnGroup.BIRDS.spawnGroup
             )
-            .defaultAttributes(PigeonEntity::createPigeonAttributes)
+            .attributes(PigeonEntity::createPigeonAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -160,7 +160,7 @@ public final class FowlPlayEntityType {
                 RavenEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(RavenEntity::createRavenAttributes)
+            .attributes(RavenEntity::createRavenAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -175,7 +175,7 @@ public final class FowlPlayEntityType {
                 RobinEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(RobinEntity::createFlyingBirdAttributes)
+            .attributes(RobinEntity::createFlyingBirdAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -190,7 +190,7 @@ public final class FowlPlayEntityType {
                 SparrowEntity::new,
                 CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup
             )
-            .defaultAttributes(SparrowEntity::createFlyingBirdAttributes)
+            .attributes(SparrowEntity::createFlyingBirdAttributes)
             .spawnRestriction(
                 CustomSpawnLocations.GROUND,
                 Heightmap.Type.MOTION_BLOCKING,
@@ -304,12 +304,12 @@ public final class FowlPlayEntityType {
         );
 
         // Spawn Costs
-//        setSpawnCost(
-//            FowlPlayBiomeTags.SPAWNS_DUCKS,
-//            FowlPlayEntityType.DUCK,
-//            1,
-//            0.07
-//        );
+        setSpawnCost(
+            FowlPlayBiomeTags.SPAWNS_DUCKS,
+            FowlPlayEntityType.DUCK,
+            0.8,
+            0.1
+        );
         setSpawnCost(
             FowlPlayBiomeTags.SPAWNS_GULLS,
             FowlPlayEntityType.GULL,
@@ -319,6 +319,7 @@ public final class FowlPlayEntityType {
     }
 
     // TODO: use biome property based spawning to more accurately reflect real life habitats
+    // doesn't work on neoforge apparently
     public static <T extends Entity> void addSpawn(TagKey<Biome> tag, SpawnGroup spawnGroup, Supplier<EntityType<T>> type, int weight, int minGroupSize, int maxGroupSize) {
         BiomeModifications.addProperties(
             context -> context.hasTag(tag),
