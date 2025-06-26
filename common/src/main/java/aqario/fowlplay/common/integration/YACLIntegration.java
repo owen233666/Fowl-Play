@@ -1,5 +1,6 @@
-package aqario.fowlplay.common.config;
+package aqario.fowlplay.common.integration;
 
+import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.core.FowlPlay;
 import dev.architectury.platform.Platform;
 import dev.isxander.yacl3.api.*;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class YACLIntegration {
-    protected static final ConfigClassHandler<FowlPlayConfig> HANDLED_CONFIG = ConfigClassHandler.createBuilder(FowlPlayConfig.class)
+    public static final ConfigClassHandler<FowlPlayConfig> HANDLED_CONFIG = ConfigClassHandler.createBuilder(FowlPlayConfig.class)
         .id(Identifier.of(FowlPlay.ID, "config"))
         .serializer(config -> GsonConfigSerializerBuilder.create(config)
             .setPath(Platform.getConfigFolder().resolve(FowlPlay.ID + ".json5"))

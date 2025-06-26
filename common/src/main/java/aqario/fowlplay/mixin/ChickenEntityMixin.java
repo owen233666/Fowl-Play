@@ -30,7 +30,7 @@ import java.util.Optional;
 public abstract class ChickenEntityMixin extends AnimalEntity implements VariantHolder<RegistryEntry<ChickenVariant>>, ChickenAnimationStates {
     @Unique
     private static final TrackedData<RegistryEntry<ChickenVariant>> fowlplay$VARIANT = DataTracker.registerData(
-        ChickenEntityMixin.class,
+        ChickenEntity.class,
         FowlPlayTrackedDataHandlerRegistry.CHICKEN_VARIANT
     );
     @Unique

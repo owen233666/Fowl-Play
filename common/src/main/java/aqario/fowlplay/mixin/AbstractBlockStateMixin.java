@@ -22,13 +22,14 @@ public class AbstractBlockStateMixin {
     private void fowlplay$changeLeavesCollisionShape(BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
         //noinspection ConstantConditions
         BlockState self = (BlockState) (Object) this;
-        if (self.getBlock() instanceof LeavesBlock) {
-            if (context instanceof EntityShapeContext entityContext
-                && entityContext.isAbove(LEAVES_SHAPE, pos, true)
-            ) {
-                Entity entity = entityContext.getEntity();
-                if (entity != null && Birds.notFlightless(entity)) {
+        if(self.getBlock() instanceof LeavesBlock && context instanceof EntityShapeContext entityContext) {
+            Entity entity = entityContext.getEntity();
+            if(entity != null && Birds.notFlightless(entity)) {
+                if(entityContext.isAbove(LEAVES_SHAPE, pos, true)) {
                     cir.setReturnValue(LEAVES_SHAPE);
+                }
+                else {
+                    cir.setReturnValue(VoxelShapes.empty());
                 }
             }
         }

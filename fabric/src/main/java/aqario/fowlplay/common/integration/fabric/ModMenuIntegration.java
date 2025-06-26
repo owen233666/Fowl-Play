@@ -1,6 +1,6 @@
-package aqario.fowlplay.common.compat;
+package aqario.fowlplay.common.integration.fabric;
 
-import aqario.fowlplay.common.config.YACLIntegration;
+import aqario.fowlplay.common.integration.YACLIntegration;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
