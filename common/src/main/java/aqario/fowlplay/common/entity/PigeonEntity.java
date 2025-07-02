@@ -40,7 +40,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -283,20 +282,26 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     }
 
     @Override
-    public void tick() {
-        if(this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
-            this.flappingState.setRunning(this.isFlying(), this.age);
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
-            this.sittingState.setRunning(this.isInSittingPose(), this.age);
-        }
-
-        super.tick();
+    public void updateAnimations() {
+        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn() && !this.isInSittingPose(), this.age);
+        this.flappingState.setRunning(this.isFlying(), this.age);
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+        this.sittingState.setRunning(this.isInSittingPose(), this.age);
     }
 
     @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
+    protected boolean isFlappingWings() {
+        return this.isFlying();
+    }
+
+    @Override
+    public float getFlapVolume() {
+        return 0.65f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 0.9f;
     }
 
     @Nullable

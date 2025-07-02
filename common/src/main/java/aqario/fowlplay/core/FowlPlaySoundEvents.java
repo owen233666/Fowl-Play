@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 public final class FowlPlaySoundEvents {
     public static final Supplier<SoundEvent> ENTITY_BIRD_EAT = register("entity.bird.eat");
+    public static final Supplier<SoundEvent> ENTITY_BIRD_FLAP = register("entity.bird.flap");
 
     public static final Supplier<SoundEvent> ENTITY_BLUE_JAY_CALL = register("entity.blue_jay.call");
     public static final Supplier<SoundEvent> ENTITY_BLUE_JAY_HURT = register("entity.blue_jay.hurt");

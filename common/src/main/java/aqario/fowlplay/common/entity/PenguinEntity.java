@@ -86,6 +86,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
     private static final int STANDING_TRANSITION_TICKS = (int) (1.0F * 20);
     private static final long LAST_POSE_CHANGE_TICKS = 0L;
     public static final TrackedData<Long> LAST_POSE_TICK = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.LONG);
+    private static final int SWIM_PARTICLE_COUNT = 20;
     private boolean isAquaticMoveControl;
     public final AnimationState standingState = new AnimationState();
     public final AnimationState slidingState = new AnimationState();
@@ -272,7 +273,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
 
     private void addSwimParticles() {
         Vec3d velocity = this.getRotationVector().negate().multiply(0.5);
-        for(int i = 0; i < 25; i++) {
+        for(int i = 0; i < SWIM_PARTICLE_COUNT; i++) {
             this.getWorld().addParticle(
                 FowlPlayParticleTypes.SMALL_BUBBLE.get(),
                 this.getX() + (this.random.nextFloat() * 0.75F - 0.375F),

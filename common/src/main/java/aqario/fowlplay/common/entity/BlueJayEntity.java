@@ -93,14 +93,25 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
     }
 
     @Override
-    public void tick() {
-        if (this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flappingState.setRunning(this.isFlying(), this.age);
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
-        }
+    protected void updateAnimations() {
+        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+        this.flappingState.setRunning(this.isFlying(), this.age);
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+    }
 
-        super.tick();
+    @Override
+    protected boolean isFlappingWings() {
+        return this.isFlying();
+    }
+
+    @Override
+    public float getFlapVolume() {
+        return 0.5f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 1.0f;
     }
 
     @Override

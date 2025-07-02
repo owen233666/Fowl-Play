@@ -32,7 +32,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -133,11 +132,11 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
 
     @Override
     public boolean shouldAttack(LivingEntity target) {
-        if (this.hasLowHealth()) {
+        if(this.hasLowHealth()) {
             return false;
         }
         Optional<LivingEntity> hurtBy = Optional.ofNullable(BrainUtils.getMemory(this, MemoryModuleType.HURT_BY_ENTITY));
-        if (!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS) && (hurtBy.isEmpty() || !hurtBy.get().equals(target))) {
+        if(!target.getType().isIn(FowlPlayEntityTypeTags.CROW_ATTACK_TARGETS) && (hurtBy.isEmpty() || !hurtBy.get().equals(target))) {
             return false;
         }
         Optional<List<? extends PassiveEntity>> nearbyAdults = Optional.ofNullable(BrainUtils.getMemory(this, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get()));
@@ -150,24 +149,30 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
     }
 
     @Override
-    public void tick() {
-        if (this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flappingState.setRunning(this.isFlying(), this.age);
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
-        }
+    public void updateAnimations() {
+        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+        this.flappingState.setRunning(this.isFlying(), this.age);
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+    }
 
-        super.tick();
+    @Override
+    protected boolean isFlappingWings() {
+        return this.isFlying();
+    }
+
+    @Override
+    public float getFlapVolume() {
+        return 0.65f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 0.9f;
     }
 
     @Override
     public float getWaterline() {
         return 0.5F;
-    }
-
-    @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
     }
 
     @Override
@@ -378,7 +383,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
         Brain<?> brain = this.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
         this.tickBrain(this);
-        if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
+        if(activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
             brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
         super.mobTick();

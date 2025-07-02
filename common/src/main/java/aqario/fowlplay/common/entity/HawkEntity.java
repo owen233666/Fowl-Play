@@ -34,7 +34,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -154,7 +153,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
 
     @Override
     public boolean shouldAttack(LivingEntity target) {
-        if (this.hasLowHealth()) {
+        if(this.hasLowHealth()) {
             return false;
         }
         Optional<LivingEntity> hurtBy = this.getBrain().getOptionalRegisteredMemory(MemoryModuleType.HURT_BY_ENTITY);
@@ -167,31 +166,27 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
     }
 
     @Override
-    public void tick() {
-        if (this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.glidingState.setRunning(this.isFlying(), this.age);
-            if (this.isFlying()) {
-                if (this.timeSinceLastFlap > this.getFlapFrequency()) {
-                    this.timeSinceLastFlap = 0;
-                    this.flapTime++;
-                }
-                else if (this.isFlapping()) {
-                    this.flapTime++;
-                }
-                else {
-                    this.timeSinceLastFlap++;
-                    this.flapTime = 0;
-                }
+    public void updateAnimations() {
+        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+        this.glidingState.setRunning(this.isFlying(), this.age);
+        if(this.isFlying()) {
+            if(this.timeSinceLastFlap > this.getFlapFrequency()) {
+                this.timeSinceLastFlap = 0;
+                this.flapTime++;
+            }
+            else if(this.isFlapping()) {
+                this.flapTime++;
             }
             else {
-                this.timeSinceLastFlap = this.getFlapFrequency();
+                this.timeSinceLastFlap++;
                 this.flapTime = 0;
             }
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
         }
-
-        super.tick();
+        else {
+            this.timeSinceLastFlap = this.getFlapFrequency();
+            this.flapTime = 0;
+        }
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
     }
 
     private boolean isFlapping() {
@@ -199,13 +194,23 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
     }
 
     @Override
-    public float getWaterline() {
-        return 0.5F;
+    protected boolean isFlappingWings() {
+        return this.isFlying();
     }
 
     @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
+    public float getFlapVolume() {
+        return 0.8f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 0.6f;
+    }
+
+    @Override
+    public float getWaterline() {
+        return 0.5F;
     }
 
     @Override
@@ -414,7 +419,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
         Brain<?> brain = this.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
         this.tickBrain(this);
-        if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
+        if(activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
             brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
         super.mobTick();

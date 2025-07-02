@@ -36,7 +36,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
@@ -196,19 +195,25 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     }
 
     @Override
-    public void tick() {
-        if (this.getWorld().isClient()) {
-            this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.flappingState.setRunning(this.isFlying(), this.age);
-            this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
-        }
-
-        super.tick();
+    public void updateAnimations() {
+        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
+        this.flappingState.setRunning(this.isFlying(), this.age);
+        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
     }
 
     @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
+    protected boolean isFlappingWings() {
+        return this.isFlying();
+    }
+
+    @Override
+    public float getFlapVolume() {
+        return 0.8f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 0.6f;
     }
 
     @Override
@@ -422,7 +427,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
         Brain<?> brain = this.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
         this.tickBrain(this);
-        if (activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
+        if(activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
             brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
         super.mobTick();

@@ -27,7 +27,6 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -179,13 +178,23 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
     }
 
     @Override
-    public float getWaterline() {
-        return 0.45F;
+    protected boolean isFlappingWings() {
+        return this.isFlying() && this.flapTime >= 0 && this.flapTime < FLAP_DURATION;
     }
 
     @Override
-    protected void addFlapEffects() {
-        this.playSound(SoundEvents.ENTITY_PARROT_FLY, 0.15f, 1.0f);
+    public float getFlapVolume() {
+        return 0.5f;
+    }
+
+    @Override
+    public float getFlapPitch() {
+        return 1.0f;
+    }
+
+    @Override
+    public float getWaterline() {
+        return 0.45F;
     }
 
     @Override
