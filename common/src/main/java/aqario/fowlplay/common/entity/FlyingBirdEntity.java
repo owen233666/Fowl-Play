@@ -55,7 +55,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return BirdEntity.createBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.28f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25f);
+            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.235f);
     }
 
     @SuppressWarnings("unused")

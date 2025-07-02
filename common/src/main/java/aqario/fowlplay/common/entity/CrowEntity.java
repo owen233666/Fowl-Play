@@ -288,14 +288,14 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
             .behaviours(
                 new SetAttackTarget<CrowEntity>()
                     .attackPredicate(Birds::canAttack),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED),
+                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.FLY_SPEED),
+                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
                         1
                     ),
                     Pair.of(
-                        TargetlessFlyTask.create(Birds.FLY_SPEED, 24, 16),
+                        TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -314,7 +314,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true
                 ),
                 AvoidTask.forget()
@@ -330,7 +330,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 FlightControlTask.startFlying(Birds::canPickupFood),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
@@ -350,7 +350,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 new InvalidateAttackTarget<>(),
                 FlightControlTask.startFlying(),
                 new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.FLY_SPEED),
+                    .speedMod((entity, target) -> Birds.WALK_SPEED),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<CrowEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))

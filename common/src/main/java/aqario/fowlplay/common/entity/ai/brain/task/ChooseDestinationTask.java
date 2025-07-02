@@ -53,7 +53,7 @@ public class ChooseDestinationTask {
                 }
                 float speed;
                 if (bird instanceof FlyingBirdEntity flyingBird && flyingBird.isFlying()) {
-                    speed = Birds.FLY_SPEED;
+                    speed = Birds.WALK_SPEED;
                 }
                 else if (bird.isInsideWaterOrBubbleColumn()) {
                     speed = Birds.SWIM_SPEED;

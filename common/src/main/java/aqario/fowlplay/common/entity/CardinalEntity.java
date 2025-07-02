@@ -230,10 +230,10 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.FLY_SPEED),
+                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.FLY_SPEED),
+                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -251,7 +251,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                 FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true
                 ),
                 AvoidTask.forget()
@@ -267,7 +267,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                 FlightControlTask.startFlying(Birds::canPickupFood),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),

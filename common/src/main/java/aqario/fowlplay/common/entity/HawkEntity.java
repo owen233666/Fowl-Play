@@ -327,11 +327,11 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                     .attackPredicate(Birds::canAttack),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.FLY_SPEED),
+                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
                         5
                     ),
                     Pair.of(
-                        TargetlessFlyTask.create(Birds.FLY_SPEED, 24, 16),
+                        TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -350,7 +350,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true
                 ),
                 AvoidTask.forget()
@@ -366,7 +366,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 FlightControlTask.startFlying(Birds::canPickupFood),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
@@ -386,7 +386,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 new InvalidateAttackTarget<>(),
                 FlightControlTask.startFlying(),
                 new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.FLY_SPEED),
+                    .speedMod((entity, target) -> Birds.WALK_SPEED),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<HawkEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))

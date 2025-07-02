@@ -466,7 +466,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 ),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.FLY_SPEED),
+                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -485,7 +485,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 FlightControlTask.<PigeonEntity>stopFlying()
                     .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
                 FlightControlTask.startFlying(PigeonEntity::shouldFlyToRecipient),
-                DeliverBundleTask.run(Birds.truePredicate(), pigeon -> pigeon.isFlying() ? Birds.FLY_SPEED : Birds.WALK_SPEED)
+                DeliverBundleTask.run(Birds.truePredicate(), pigeon -> Birds.WALK_SPEED)
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT.get());
     }
@@ -498,7 +498,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 FlightControlTask.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true
                 ),
                 AvoidTask.forget()
@@ -514,7 +514,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 FlightControlTask.startFlying(pigeon -> !pigeon.isTamed() && Birds.canPickupFood(pigeon)),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
-                    entity -> entity.isFlying() ? Birds.FLY_SPEED : Birds.RUN_SPEED,
+                    entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 ),
