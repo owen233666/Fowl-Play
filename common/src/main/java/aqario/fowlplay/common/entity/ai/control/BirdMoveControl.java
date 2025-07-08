@@ -52,6 +52,7 @@ public class BirdMoveControl extends MoveControl {
 
         // speed
         float speed = (float) (/*this.speed * */flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED);
+//        speed *= (float) Math.min(squaredDistance / 25, 1);
         flyingBird.setMovementSpeed(speed);
         double horizontalDistance = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 

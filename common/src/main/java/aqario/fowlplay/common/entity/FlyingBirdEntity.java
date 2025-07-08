@@ -15,7 +15,6 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -34,6 +33,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -163,7 +163,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected EntityNavigation getLandNavigation() {
-        return new MobNavigation(this, this.getWorld());
+        return new SmoothGroundNavigation(this, this.getWorld());
     }
 
     protected FlightNavigation getFlightNavigation() {

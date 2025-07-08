@@ -288,7 +288,13 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
             .behaviours(
                 new SetAttackTarget<CrowEntity>()
                     .attackPredicate(Birds::canAttack),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+                new LeaderlessFlockTask(
+                    3,
+                    0.03f,
+                    0.6f,
+                    0.05f,
+                    3f
+                ),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.perch(Birds.WALK_SPEED),
