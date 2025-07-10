@@ -2,10 +2,9 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
+import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +14,6 @@ import net.minecraft.util.math.Vec3d;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,11 +29,10 @@ public class TargetlessFlyTask {
 
     private static SingleTickBehaviour<FlyingBirdEntity> create(float speed, Function<FlyingBirdEntity, Vec3d> targetGetter, Predicate<FlyingBirdEntity> predicate) {
         return new SingleTickBehaviour<>(
-            List.of(
-                Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT)
-            ),
+            MemoryList.create(1)
+                .absent(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {
-                if (!predicate.test(bird)) {
+                if(!predicate.test(bird)) {
                     return false;
                 }
                 Optional<Vec3d> target = Optional.ofNullable(targetGetter.apply(bird));
@@ -50,7 +47,7 @@ public class TargetlessFlyTask {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutable2 = new BlockPos.Mutable();
 
-        for (BlockPos targetPos : BlockPos.iterate(
+        for(BlockPos targetPos : BlockPos.iterate(
             MathHelper.floor(entity.getX() - 12.0),
             MathHelper.floor(entity.getY() + 4.0),
             MathHelper.floor(entity.getZ() - 12.0),
@@ -58,10 +55,10 @@ public class TargetlessFlyTask {
             MathHelper.floor(entity.getY() + 20.0),
             MathHelper.floor(entity.getZ() + 12.0)
         )) {
-            if (!entityPos.equals(targetPos)) {
+            if(!entityPos.equals(targetPos)) {
                 BlockState state = entity.getWorld().getBlockState(mutable2.set(targetPos, Direction.DOWN));
                 boolean validBlock = state.isIn(FowlPlayBlockTags.PERCHES);
-                if (validBlock && entity.getWorld().isAir(targetPos)
+                if(validBlock && entity.getWorld().isAir(targetPos)
                     && (entity.getBoundingBox().getLengthY() <= 1
                     || entity.getWorld().isAir(mutable.set(targetPos, Direction.UP)))
                 ) {

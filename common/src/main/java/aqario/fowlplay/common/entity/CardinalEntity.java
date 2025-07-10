@@ -45,7 +45,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyItemsSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -163,12 +162,12 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
             new NearbyItemsSensor<>(),
-            new NearbyAdultSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
             new AttackedSensor<CardinalEntity>()
                 .setScanRate(bird -> 10),
-            new AvoidTargetSensor<>()
+            new AvoidTargetSensor<CardinalEntity>()
+                .setScanRate(bird -> 2)
         );
     }
 
@@ -179,10 +178,11 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
             .priority(0)
             .behaviours(
                 new FloatToSurfaceOfFluid<>(),
-                FlightControlTask.stopFalling(),
+                FlightTasks.stopFalling(),
                 new Panic<>(),
-                AvoidTask.run(),
-                PickupFoodTask.run(Birds::canPickupFood),
+                AvoidTasks.avoid(),
+                new PickupFoodTask<>()
+                    .startCondition(Birds::canPickupFood),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -197,7 +197,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
             .behaviours(
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
-                FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F),
+                SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
                 SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
@@ -215,7 +215,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                         4
                     ),
                     Pair.of(
-                        FlightControlTask.startFlying(entity -> entity.getRandom().nextFloat() < 0.3F),
+                        FlightTasks.startFlying(entity -> entity.getRandom().nextFloat() < 0.3F),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -248,13 +248,13 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         return new BrainActivityGroup<CardinalEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightControlTask.startFlying(),
+                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
                 ),
-                AvoidTask.forget()
+                AvoidTasks.forget()
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -264,7 +264,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-                FlightControlTask.startFlying(Birds::canPickupFood),
+                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

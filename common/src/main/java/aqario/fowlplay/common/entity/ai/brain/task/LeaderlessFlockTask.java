@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.Brain;
@@ -10,16 +11,20 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
 public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
-    private static final MemoryTest MEMORIES = MemoryTest.builder(3)
-        .hasMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())
-        .hasNoMemories(FowlPlayMemoryModuleType.IS_AVOIDING.get(), FowlPlayMemoryModuleType.SEES_FOOD.get());
-    private static final int VIEW_RADIUS = 64;
+    private static final MemoryList MEMORIES = MemoryList.create(3)
+        .present(
+            FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get()
+        )
+        .absent(
+            FowlPlayMemoryModuleType.IS_AVOIDING.get(),
+            FowlPlayMemoryModuleType.SEES_FOOD.get()
+        );
+    private static final int VIEW_RADIUS = 24;
     public final int minFlockSize;
     public final float coherence;
     public final float alignment;
@@ -42,16 +47,16 @@ public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
 
     @Override
     protected boolean shouldRun(ServerWorld world, FlyingBirdEntity bird) {
-        if (!bird.isFlying()) {
+        if(!bird.isFlying()) {
             return false;
         }
         Brain<?> brain = bird.getBrain();
-        if (!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())) {
+        if(!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())) {
             return false;
         }
         this.nearbyBirds = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get());
-        assert this.nearbyBirds != null;
-        this.nearbyBirds.removeIf(entity -> entity.squaredDistanceTo(bird) > VIEW_RADIUS * VIEW_RADIUS);
+        // noinspection ConstantConditions
+        this.nearbyBirds.removeIf(entity -> !entity.isInRange(bird, VIEW_RADIUS));
 
         return this.nearbyBirds.size() > this.minFlockSize;
     }
@@ -72,8 +77,8 @@ public class LeaderlessFlockTask extends ExtendedBehaviour<FlyingBirdEntity> {
         Vec3d alignment = Vec3d.ZERO;
         Vec3d cohesion = Vec3d.ZERO;
 
-        for (PassiveEntity entity : this.nearbyBirds) {
-            if (entity.getPos().subtract(bird.getPos()).length() < this.separationRange) {
+        for(PassiveEntity entity : this.nearbyBirds) {
+            if(entity.getPos().subtract(bird.getPos()).length() < this.separationRange) {
                 separation = separation.subtract(entity.getPos().subtract(bird.getPos()));
             }
             alignment = alignment.add(entity.getVelocity());

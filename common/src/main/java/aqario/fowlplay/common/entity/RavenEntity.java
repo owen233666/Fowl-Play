@@ -55,7 +55,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyItemsSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -219,13 +218,14 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
             new NearbyItemsSensor<>(),
-            new NearbyAdultSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
             new AttackedSensor<RavenEntity>()
                 .setScanRate(bird -> 10),
-            new AvoidTargetSensor<>(),
-            new AttackTargetSensor<>()
+            new AvoidTargetSensor<RavenEntity>()
+                .setScanRate(bird -> 2),
+            new AttackTargetSensor<RavenEntity>()
+                .setScanRate(bird -> 2)
         );
     }
 
@@ -237,10 +237,11 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 new FloatToSurfaceOfFluid<>()
                     .riseChance(0.5F),
-                FlightControlTask.stopFalling(),
+                FlightTasks.stopFalling(),
                 new Panic<>(),
-                AvoidTask.run(),
-                PickupFoodTask.run(Birds::canPickupFood),
+                AvoidTasks.avoid(),
+                new PickupFoodTask<>()
+                    .startCondition(Birds::canPickupFood),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -255,7 +256,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
-                FindLookTargetTask.create(Birds::isPlayerHoldingFood, 32.0F),
+                SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
                 new SetAttackTarget<RavenEntity>()
                     .attackPredicate(Birds::canAttack),
                 SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
@@ -275,7 +276,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
                         4
                     ),
                     Pair.of(
-                        FlightControlTask.startFlying()
+                        FlightTasks.startFlying()
                             .startCondition(entity -> entity.isInsideWaterOrBubbleColumn() || entity.getRandom().nextFloat() < 0.3F),
                         1
                     )
@@ -317,13 +318,13 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
         return new BrainActivityGroup<RavenEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightControlTask.startFlying(),
+                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
                 ),
-                AvoidTask.forget()
+                AvoidTasks.forget()
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -333,7 +334,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
         return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-                FlightControlTask.startFlying(Birds::canPickupFood),
+                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestWantedItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
@@ -354,7 +355,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .priority(10)
             .behaviours(
                 new InvalidateAttackTarget<>(),
-                FlightControlTask.startFlying(),
+                FlightTasks.startFlying(),
                 new SetWalkTargetToAttackTarget<>()
                     .speedMod((entity, target) -> Birds.WALK_SPEED),
                 new AnimatableMeleeAttack<>(0),

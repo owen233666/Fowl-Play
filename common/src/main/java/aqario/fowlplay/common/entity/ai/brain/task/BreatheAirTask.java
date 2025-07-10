@@ -48,14 +48,14 @@ public class BreatheAirTask extends MultiTickTask<BirdEntity> {
         );
         BlockPos blockPos = null;
 
-        for (BlockPos blockPos2 : iterable) {
-            if (this.isAirPos(bird.getWorld(), blockPos2)) {
+        for(BlockPos blockPos2 : iterable) {
+            if(this.isAirPos(bird.getWorld(), blockPos2)) {
                 blockPos = blockPos2;
                 break;
             }
         }
 
-        if (blockPos == null) {
+        if(blockPos == null) {
             blockPos = BlockPos.ofFloored(bird.getX(), bird.getY() + 8.0, bird.getZ());
         }
 

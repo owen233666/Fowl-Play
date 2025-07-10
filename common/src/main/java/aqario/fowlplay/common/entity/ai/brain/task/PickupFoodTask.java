@@ -1,34 +1,35 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
-import java.util.function.Predicate;
 
-public class PickupFoodTask {
-    public static <E extends BirdEntity> SingleTickBehaviour<E> run() {
-        return run(bird -> true);
+// probably doesn't need to be a task, but it is for now
+public class PickupFoodTask<E extends BirdEntity> extends ExtendedBehaviour<E> {
+    private static final MemoryList MEMORIES = MemoryList.create(3)
+        .present(
+            SBLMemoryTypes.NEARBY_ITEMS.get()
+        )
+        .absent(
+            FowlPlayMemoryModuleType.SEES_FOOD.get(),
+            FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get()
+        );
+
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
+        return MEMORIES;
     }
 
-    public static <E extends BirdEntity> SingleTickBehaviour<E> run(Predicate<E> predicate) {
-        return new SingleTickBehaviour<>(
-            List.of(
-                Pair.of(SBLMemoryTypes.NEARBY_ITEMS.get(), MemoryModuleState.VALUE_PRESENT),
-                Pair.of(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT),
-                Pair.of(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            ),
-            (bird, brain) -> {
-                if (!predicate.test(bird)) {
-                    return false;
-                }
-                BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get(), true);
-                return true;
-            }
-        );
+    @Override
+    protected void tick(E entity) {
+        BrainUtils.setMemory(entity, FowlPlayMemoryModuleType.SEES_FOOD.get(), true);
     }
 }
