@@ -56,7 +56,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Panic;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
@@ -404,14 +403,16 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     .riseChance(0.5F),
                 FlightTasks.stopFalling(),
                 new TeleportToTargetTask(),
-                new Panic<>(),
+//                new Panic<>(),
                 new FollowOwnerTask(Birds.WALK_SPEED, 5, 10),
-                AvoidTasks.avoid(),
+//                AvoidTasks.avoid(),
                 new PickupFoodTask<PigeonEntity>()
                     .startCondition(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
+                    .startCondition(entity -> !BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()))
+                    .stopIf(entity -> BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()))
             );
     }
 
@@ -500,8 +501,8 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                ),
-                AvoidTasks.forget()
+                )/*,
+                AvoidTasks.forget()*/
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }

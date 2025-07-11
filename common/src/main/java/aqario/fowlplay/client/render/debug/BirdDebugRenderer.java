@@ -26,7 +26,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
     @Nullable
     private UUID targetedEntity;
 
-    protected BirdDebugRenderer() {
+    private BirdDebugRenderer() {
         this.client = MinecraftClient.getInstance();
     }
 

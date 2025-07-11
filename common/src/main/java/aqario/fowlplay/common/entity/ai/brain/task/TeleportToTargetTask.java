@@ -42,6 +42,7 @@ public class TeleportToTargetTask extends ExtendedBehaviour<BirdEntity> {
         if(!BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get())) {
             return false;
         }
+        // noinspection ConstantConditions
         Entity target = BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()).entity();
         BlockPos pos = target.getBlockPos();
 

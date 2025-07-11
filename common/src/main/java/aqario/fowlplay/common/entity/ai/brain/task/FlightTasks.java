@@ -4,8 +4,6 @@ import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.util.Unit;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.function.Predicate;
 
@@ -24,7 +22,6 @@ public class FlightTasks {
             (bird, brain) -> {
                 if(bird.canStartFlying() && shouldRun.test(bird)) {
                     bird.startFlying();
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
                     return true;
                 }
                 return false;
@@ -51,7 +48,6 @@ public class FlightTasks {
             (bird, brain) -> {
                 if(bird.fallDistance > 1 && bird.canStartFlying()) {
                     bird.startFlying();
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
                     return true;
                 }
                 return false;

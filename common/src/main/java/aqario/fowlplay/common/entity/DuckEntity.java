@@ -50,7 +50,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Panic;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -280,8 +279,8 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             .priority(0)
             .behaviours(
                 FlightTasks.stopFalling(),
-                new Panic<>(),
-                AvoidTasks.avoid(),
+//                new Panic<>(),
+//                AvoidTasks.avoid(),
                 new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
@@ -360,8 +359,8 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                ),
-                AvoidTasks.forget()
+                )/*,
+                AvoidTasks.forget()*/
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
