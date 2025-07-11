@@ -269,8 +269,7 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
                 FlightTasks.stopFalling(),
                 new Panic<>(),
                 AvoidTasks.avoid(),
-                new PickupFoodTask<>()
-                    .startCondition(Birds::canPickupFood),
+                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()

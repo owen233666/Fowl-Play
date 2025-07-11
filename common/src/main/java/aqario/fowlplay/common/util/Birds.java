@@ -28,7 +28,6 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * A utility class for birds.
@@ -44,10 +43,6 @@ public final class Birds {
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
-
-    public static <E> Predicate<E> truePredicate() {
-        return e -> true;
-    }
 
     public static boolean shouldFlyToTarget(FlyingBirdEntity bird, Vec3d target) {
         return bird.getPos().squaredDistanceTo(target) > WALK_RANGE * WALK_RANGE;
@@ -109,7 +104,7 @@ public final class Birds {
             return false;
         }
         List<ItemEntity> foodItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
-        assert foodItems != null;
+        // noinspection ConstantConditions
         if (foodItems.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
             return false;
         }

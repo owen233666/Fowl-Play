@@ -408,7 +408,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 new FollowOwnerTask(Birds.WALK_SPEED, 5, 10),
                 AvoidTasks.avoid(),
                 new PickupFoodTask<PigeonEntity>()
-                    .startCondition(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null && Birds.canPickupFood(pigeon)),
+                    .startCondition(pigeon -> !pigeon.isSitting() && pigeon.getRecipientUuid() == null),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()

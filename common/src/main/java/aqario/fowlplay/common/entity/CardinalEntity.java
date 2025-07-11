@@ -181,8 +181,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                 FlightTasks.stopFalling(),
                 new Panic<>(),
                 AvoidTasks.avoid(),
-                new PickupFoodTask<>()
-                    .startCondition(Birds::canPickupFood),
+                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()

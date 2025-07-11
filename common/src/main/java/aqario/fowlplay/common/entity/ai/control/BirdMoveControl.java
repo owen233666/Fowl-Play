@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
 public class BirdMoveControl extends MoveControl {
-    private final BirdEntity bird;
+    protected final BirdEntity bird;
 
     public BirdMoveControl(BirdEntity bird) {
         super(bird);

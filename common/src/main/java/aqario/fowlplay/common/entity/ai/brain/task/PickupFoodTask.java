@@ -1,11 +1,13 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.server.world.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -29,7 +31,12 @@ public class PickupFoodTask<E extends BirdEntity> extends ExtendedBehaviour<E> {
     }
 
     @Override
-    protected void tick(E entity) {
+    protected boolean shouldRun(ServerWorld level, E entity) {
+        return Birds.canPickupFood(entity);
+    }
+
+    @Override
+    protected void start(E entity) {
         BrainUtils.setMemory(entity, FowlPlayMemoryModuleType.SEES_FOOD.get(), true);
     }
 }

@@ -1,6 +1,5 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -13,7 +12,6 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -47,7 +45,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
-        this.moveControl = this.getBirdMoveControl();
         this.setNavigation(false);
     }
 
@@ -158,10 +155,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return tickDelta == 1.0F ? this.visualRoll : MathHelper.lerp(tickDelta, this.prevRoll, this.visualRoll);
     }
 
-    protected MoveControl getBirdMoveControl() {
-        return new BirdMoveControl(this);
-    }
-
     protected EntityNavigation getLandNavigation() {
         return new SmoothGroundNavigation(this, this.getWorld());
     }
@@ -189,7 +182,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void setNavigation(boolean isFlying) {
         if(isFlying) {
             this.navigation = this.getFlightNavigation();
-//            this.navigation = new SmoothFlyingPathNavigation(this, this.getWorld());
             this.isFlightNavigation = true;
         }
         else {

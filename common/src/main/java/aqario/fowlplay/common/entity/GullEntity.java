@@ -92,7 +92,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
     }
 
     @Override
-    protected MoveControl getBirdMoveControl() {
+    protected MoveControl createMoveControl() {
         return new BirdFloatMoveControl(this);
     }
 
@@ -290,8 +290,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                 FlightTasks.stopFalling(),
                 new Panic<>(),
                 AvoidTasks.avoid(),
-                new PickupFoodTask<>()
-                    .startCondition(Birds::canPickupFood),
+                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
