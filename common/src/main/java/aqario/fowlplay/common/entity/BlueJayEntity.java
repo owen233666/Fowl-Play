@@ -217,7 +217,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
         return new BrainActivityGroup<BlueJayEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+//                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.perch(Birds.WALK_SPEED),

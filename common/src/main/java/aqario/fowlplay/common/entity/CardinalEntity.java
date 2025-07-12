@@ -228,7 +228,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+//                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.perch(Birds.WALK_SPEED),

@@ -78,16 +78,13 @@ public final class Birds {
 
     public static <T extends BirdEntity> void alertOthers(T bird, LivingEntity attacker) {
         getNearbyVisibleAdults(bird).forEach(other -> {
-            if (attacker instanceof PlayerEntity) {
-                other.getBrain().remember(FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), true, CANNOT_PICKUP_FOOD_TICKS);
+            Brain<?> brain = other.getBrain();
+            if(attacker instanceof PlayerEntity) {
+                BrainUtils.setForgettableMemory(brain, FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get(), true, CANNOT_PICKUP_FOOD_TICKS);
             }
-            startAvoiding((BirdEntity) other, attacker);
+            BrainUtils.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+            BrainUtils.setForgettableMemory(brain, MemoryModuleType.AVOID_TARGET, attacker, AVOID_TICKS);
         });
-    }
-
-    public static <T extends BirdEntity> void startAvoiding(T bird, LivingEntity target) {
-        bird.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        bird.getBrain().remember(MemoryModuleType.AVOID_TARGET, target, AVOID_TICKS);
     }
 
     public static <T extends BirdEntity> List<? extends PassiveEntity> getNearbyVisibleAdults(T bird) {
@@ -100,16 +97,16 @@ public final class Birds {
 
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
-        if (!BrainUtils.hasMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get())) {
+        if(!BrainUtils.hasMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get())) {
             return false;
         }
         List<ItemEntity> foodItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
         // noinspection ConstantConditions
-        if (foodItems.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
+        if(foodItems.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
             return false;
         }
         Optional<LivingTargetCache> visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
-        if (visibleMobs == null || visibleMobs.isEmpty()) {
+        if(visibleMobs == null || visibleMobs.isEmpty()) {
             return false;
         }
         List<LivingEntity> avoidTargets = visibleMobs.get().stream(entity -> true)
@@ -122,29 +119,25 @@ public final class Birds {
 
     public static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
         Brain<?> brain = bird.getBrain();
-        if (!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
+        if(!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
             return false;
         }
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
+        if(!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
             return false;
         }
-        if (target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {
+        if(target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {
             return false;
         }
         Optional<LivingEntity> attackTarget = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET);
-        if (attackTarget != null && attackTarget.isPresent() && attackTarget.get().equals(target)) {
+        if(attackTarget != null && attackTarget.isPresent() && attackTarget.get().equals(target)) {
             return false;
         }
         return !bird.shouldAttack(target);
     }
 
     public static boolean shouldAvoidAttacker(Brain<?> brain, LivingEntity attacker) {
-        Optional<LivingEntity> hurtBy = brain.getOptionalMemory(MemoryModuleType.HURT_BY_ENTITY);
-        return hurtBy != null && hurtBy.isPresent() && hurtBy.get().equals(attacker);
-    }
-
-    public static Optional<? extends LivingEntity> getAttackTarget(BirdEntity bird) {
-        return LookTargetUtil.hasBreedTarget(bird) ? Optional.empty() : bird.getBrain().getOptionalRegisteredMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+        LivingEntity hurtBy = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+        return hurtBy != null && hurtBy.equals(attacker);
     }
 
     public static boolean canAttack(BirdEntity bird) {

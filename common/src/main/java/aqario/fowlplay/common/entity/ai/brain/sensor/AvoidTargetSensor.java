@@ -46,9 +46,14 @@ public class AvoidTargetSensor<E extends BirdEntity> extends EntityFilteringSens
 
     @Override
     protected void sense(ServerWorld level, E bird) {
-        LivingEntity result = this.testForEntity(bird);
-        BrainUtils.setMemory(bird, this.getMemory(), result);
-        if(result != null && result.isInRange(bird, bird.getFleeRange(result))) {
+        LivingEntity avoidTarget = this.testForEntity(bird);
+        if(avoidTarget != null) {
+            BrainUtils.setMemory(bird, this.getMemory(), avoidTarget);
+        }
+        else {
+            BrainUtils.clearMemory(bird, this.getMemory());
+        }
+        if(avoidTarget != null && avoidTarget.isInRange(bird, bird.getFleeRange(avoidTarget))) {
             BrainUtils.setMemory(bird, FowlPlayMemoryModuleType.IS_AVOIDING.get(), Unit.INSTANCE);
         }
         else {

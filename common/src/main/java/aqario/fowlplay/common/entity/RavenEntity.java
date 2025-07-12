@@ -293,14 +293,17 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 new SetAttackTarget<RavenEntity>()
                     .attackPredicate(Birds::canAttack),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.perch(Birds.WALK_SPEED),
-                        1
+                        2
                     ),
                     Pair.of(
                         TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
+                        2
+                    ),
+                    Pair.of(
+                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

@@ -335,7 +335,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             .behaviours(
                 new SetAttackTarget<DuckEntity>()
                     .attackPredicate(Birds::canAttack),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+//                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),

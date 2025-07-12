@@ -343,7 +343,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
             .behaviours(
                 new SetAttackTarget<GullEntity>()
                     .attackPredicate(Birds::canAttack),
-//                GoToClosestEntityTask.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
+//                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
