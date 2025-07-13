@@ -355,7 +355,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return null;
+        return FowlPlaySoundEvents.ENTITY_PIGEON_HURT.get();
     }
 
     @Override
@@ -423,7 +423,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     Pair.of(
                         new SetRandomWalkTarget<PigeonEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
-                            .setRadius(16, 8)
+                            .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
                     ),
@@ -434,10 +434,6 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     ),
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
-                        1
-                    ),
-                    Pair.of(
-                        FlightTasks.<PigeonEntity>startFlying(entity -> !entity.isSitting() && entity.getRandom().nextFloat() < 0.1F),
                         1
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -480,7 +476,8 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
             .behaviours(
                 FlightTasks.<PigeonEntity>stopFlying()
                     .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
-                FlightTasks.startFlying(PigeonEntity::shouldFlyToRecipient),
+                FlightTasks.<PigeonEntity>startFlying()
+                    .startCondition(PigeonEntity::shouldFlyToRecipient),
                 DeliverBundleTask.run(pigeon -> Birds.WALK_SPEED)
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT.get());
@@ -507,7 +504,6 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
             .priority(10)
             .behaviours(
                 new SequentialBehaviour<PigeonEntity>(
-                    FlightTasks.startFlying(pigeon -> !pigeon.isTamed() && Birds.canPickupFood(pigeon)),
                     GoToNearestItemTask.create(
                         Birds::canPickupFood,
                         entity -> Birds.RUN_SPEED,

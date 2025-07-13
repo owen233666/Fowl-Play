@@ -41,6 +41,7 @@ public final class FowlPlaySoundEvents {
 
     public static final Supplier<SoundEvent> ENTITY_PIGEON_CALL = register("entity.pigeon.call");
     public static final Supplier<SoundEvent> ENTITY_PIGEON_SONG = register("entity.pigeon.song");
+    public static final Supplier<SoundEvent> ENTITY_PIGEON_HURT = register("entity.pigeon.hurt");
 
     public static final Supplier<SoundEvent> ENTITY_RAVEN_CALL = register("entity.raven.call");
     public static final Supplier<SoundEvent> ENTITY_RAVEN_HURT = register("entity.raven.hurt");

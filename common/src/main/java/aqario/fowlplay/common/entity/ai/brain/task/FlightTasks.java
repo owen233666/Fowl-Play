@@ -5,22 +5,16 @@ import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 
-import java.util.function.Predicate;
-
 /**
  * A collection of tasks that control the flying behavior of birds.
  */
 public class FlightTasks {
     public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> startFlying() {
-        return startFlying(bird -> true);
-    }
-
-    public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> startFlying(Predicate<E> shouldRun) {
         return new SingleTickBehaviour<>(
             MemoryList.create(1)
                 .absent(FowlPlayMemoryModuleType.IS_FLYING.get()),
             (bird, brain) -> {
-                if(bird.canStartFlying() && shouldRun.test(bird)) {
+                if(bird.canStartFlying()) {
                     bird.startFlying();
                     return true;
                 }

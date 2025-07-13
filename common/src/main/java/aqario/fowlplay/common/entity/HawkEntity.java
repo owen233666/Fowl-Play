@@ -288,7 +288,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                     Pair.of(
                         new SetRandomWalkTarget<HawkEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
-                            .setRadius(16, 8)
+                            .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
                     ),
@@ -296,12 +296,12 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                         new Idle<HawkEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
                         4
-                    ),
+                    )/*,
                     Pair.of(
                         FlightTasks.startFlying()
                             .startCondition(entity -> entity.isInsideWaterOrBubbleColumn() || entity.getRandom().nextFloat() < 0.3F),
                         1
-                    )
+                    )*/
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
@@ -354,7 +354,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
         return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(Birds::canPickupFood),
+//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

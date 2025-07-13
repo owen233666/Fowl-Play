@@ -15,6 +15,7 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -38,14 +40,28 @@ public final class Birds {
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
-    public static final int WALK_RANGE = 16;
+    public static final SquareRadius WALK_RANGE = new SquareRadius(16, 8);
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
     public static boolean shouldFlyToTarget(FlyingBirdEntity bird, Vec3d target) {
-        return bird.getPos().squaredDistanceTo(target) > WALK_RANGE * WALK_RANGE;
+        Vec3d pos = bird.getPos();
+        double dx = target.x - pos.x;
+        double dy = target.y - pos.y;
+        double dz = target.z - pos.z;
+        double dxz2 = dx * dx + dz * dz;
+        double dy2 = dy * dy;
+        double xzRadius = WALK_RANGE.xzRadius();
+        double yRadius = WALK_RANGE.yRadius();
+        return dxz2 > xzRadius * xzRadius || dy2 > yRadius * yRadius;
+    }
+
+    public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
+        if(bird.canStartFlying() && Birds.shouldFlyToTarget(bird, path.getTarget().toCenterPos())) {
+            bird.startFlying();
+        }
     }
 
     // angle is in radians

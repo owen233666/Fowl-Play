@@ -32,6 +32,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -245,6 +246,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return this.dataTracker.get(FLYING);
     }
 
+    @VisibleForTesting
     public void setFlying(boolean flying) {
         this.dataTracker.set(FLYING, flying);
     }

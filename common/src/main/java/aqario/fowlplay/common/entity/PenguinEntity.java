@@ -645,7 +645,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     Pair.of(
                         new SetRandomWalkTarget<PenguinEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
-                            .setRadius(16, 8)
+                            .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         2
                     ),

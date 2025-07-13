@@ -298,7 +298,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     Pair.of(
                         new SetRandomWalkTarget<DuckEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
-                            .setRadius(16, 8)
+                            .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
                     ),
@@ -310,12 +310,12 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
                         1
-                    ),
+                    )/*,
                     Pair.of(
                         FlightTasks.startFlying()
                             .startCondition(entity -> entity.getRandom().nextFloat() < 0.1F),
                         1
-                    )
+                    )*/
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
@@ -364,7 +364,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
         return new BrainActivityGroup<DuckEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(Birds::canPickupFood),
+//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

@@ -210,6 +210,14 @@
     ],
     "subtitle": "subtitles.entity.pigeon.call"
   },
+  "entity.pigeon.hurt": {
+    "sounds": [
+      "fowlplay:mob/pigeon/call1",
+      "fowlplay:mob/pigeon/call2",
+      "fowlplay:mob/pigeon/call3"
+    ],
+    "subtitle": "subtitles.entity.pigeon.hurt"
+  },
   "entity.pigeon.song": {
     "sounds": [
       "fowlplay:mob/pigeon/song1"
