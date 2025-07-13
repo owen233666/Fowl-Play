@@ -1,10 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AttackTargetSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
+import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayActivities;
@@ -52,7 +49,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttack
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyItemsSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -210,15 +206,15 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
         return ObjectArrayList.of(
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
-            new NearbyItemsSensor<>(),
+            new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
             new AttackedSensor<CrowEntity>()
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<CrowEntity>()
-                .setScanRate(bird -> 2),
+                .setScanRate(bird -> 10),
             new AttackTargetSensor<CrowEntity>()
-                .setScanRate(bird -> 2)
+                .setScanRate(bird -> 10)
         );
     }
 
@@ -233,7 +229,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 FlightTasks.stopFalling(),
 //                new Panic<>(),
 //                AvoidTasks.avoid(),
-                new PickupFoodTask<>(),
+//                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -338,9 +334,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
-                ),
-                new InvalidateMemory<CrowEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
-                    .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
+                )
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);

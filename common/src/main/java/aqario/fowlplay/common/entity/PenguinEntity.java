@@ -1,10 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AttackTargetSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
-import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
+import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
 import aqario.fowlplay.common.util.Birds;
@@ -72,7 +69,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.navigation.SmoothAmphibiousPathNavigation;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyItemsSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.ItemTemptingSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -601,7 +597,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
         return ObjectArrayList.of(
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
-            new NearbyItemsSensor<>(),
+            new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new ItemTemptingSensor<PenguinEntity>()
                 .temptedWith((entity, stack) -> this.getFood().test(stack)),
@@ -609,9 +605,9 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
             new AttackedSensor<PenguinEntity>()
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<PenguinEntity>()
-                .setScanRate(bird -> 2),
+                .setScanRate(bird -> 10),
             new AttackTargetSensor<PenguinEntity>()
-                .setScanRate(bird -> 2)
+                .setScanRate(bird -> 10)
         );
     }
 
@@ -623,7 +619,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
             .behaviours(
                 new BreatheAirTask(Birds.WALK_SPEED),
 //                new Panic<>(),
-                new PickupFoodTask<>(),
+//                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -728,9 +724,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     entity -> Birds.RUN_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
-                ),
-                new InvalidateMemory<PenguinEntity, Boolean>(FowlPlayMemoryModuleType.SEES_FOOD.get())
-                    .invalidateIf((entity, memory) -> !Birds.canPickupFood(entity))
+                )
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);

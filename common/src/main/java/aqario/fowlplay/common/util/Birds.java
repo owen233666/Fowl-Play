@@ -97,6 +97,9 @@ public final class Birds {
 
     public static boolean canPickupFood(BirdEntity bird) {
         Brain<?> brain = bird.getBrain();
+        if(BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.CANNOT_PICKUP_FOOD.get())) {
+            return false;
+        }
         if(!BrainUtils.hasMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get())) {
             return false;
         }
