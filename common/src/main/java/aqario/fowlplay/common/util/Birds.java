@@ -122,10 +122,7 @@ public final class Birds {
 
     public static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
         Brain<?> brain = bird.getBrain();
-        if(!bird.shouldAvoid(target) && !shouldAvoidAttacker(brain, target)) {
-            return false;
-        }
-        if(!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) {
+        if(!(bird.shouldAvoid(target) && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) && !shouldAvoidAttacker(brain, target)) {
             return false;
         }
         if(target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {

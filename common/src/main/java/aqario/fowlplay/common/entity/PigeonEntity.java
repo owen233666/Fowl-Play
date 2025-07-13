@@ -3,6 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
+import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -17,7 +18,6 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -180,11 +180,11 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
 
     @Override
     protected EntityNavigation getLandNavigation() {
-        MobNavigation mobNavigation = new MobNavigation(this, this.getWorld());
-        mobNavigation.setCanPathThroughDoors(false);
-        mobNavigation.setCanEnterOpenDoors(true);
-        mobNavigation.setCanSwim(false);
-        return mobNavigation;
+        GroundNavigation navigation = new GroundNavigation(this, this.getWorld());
+        navigation.setCanPathThroughDoors(false);
+        navigation.setCanEnterOpenDoors(true);
+        navigation.setCanSwim(false);
+        return navigation;
     }
 
     @Override

@@ -114,7 +114,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
         MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
     ) {
         if (birdData.path() != null) {
-            PathfindingDebugRenderer.drawPath(matrices, vertexConsumers, birdData.path(), 0.5F, false, false, cameraX, cameraY, cameraZ);
+            PathfindingDebugRenderer.drawPath(matrices, vertexConsumers, birdData.path(), 0.1F, false, false, cameraX, cameraY, cameraZ);
         }
     }
 

@@ -17,8 +17,8 @@ import net.tslat.smartbrainlib.api.core.navigation.ExtendedNavigator;
 import org.jetbrains.annotations.Nullable;
 
 public class FlightNavigation extends MobNavigation implements ExtendedNavigator {
-    private static final int NODE_DISTANCE = 4;
-    private static final int NODE_RADIUS = 4;
+    private static final int NODE_DISTANCE = 3;
+    private static final float NODE_REACH_RADIUS = 2;
     private final FlyingBirdEntity bird;
 
     public FlightNavigation(FlyingBirdEntity bird, World world) {
@@ -42,8 +42,21 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
         this.nodeMaker = new BirdPathNodeMaker();
         this.nodeMaker.setCanEnterOpenDoors(true);
 
-//        return new PathNodeNavigator(this.nodeMaker, maxVisitedNodes);
         return this.createSmoothPathFinder(this.nodeMaker, maxVisitedNodes);
+    }
+
+    @Override
+    public @Nullable Path patchPath(@Nullable Path path) {
+        Path newPath = ExtendedNavigator.super.patchPath(path);
+        if(newPath == null) {
+            return null;
+        }
+        // noinspection ConstantConditions
+        Path.DebugNodeInfo debugNodeInfo = path.getDebugNodeInfos();
+        if(debugNodeInfo != null) {
+            newPath.setDebugInfo(debugNodeInfo.openSet(), debugNodeInfo.closedSet(), debugNodeInfo.targetNodes());
+        }
+        return newPath;
     }
 
     @Override
@@ -95,10 +108,12 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
                 this.continueFollowingPath();
             }
             else if(this.currentPath != null && !this.currentPath.isFinished()) {
-                Vec3d vec3d = this.currentPath.getNodePosition(this.entity);
-                if(this.entity.getBlockX() == MathHelper.floor(vec3d.x)
-                    && this.entity.getBlockY() == MathHelper.floor(vec3d.y)
-                    && this.entity.getBlockZ() == MathHelper.floor(vec3d.z)) {
+                Vec3d pos = this.getPos();
+                Vec3d nodePos = this.currentPath.getNodePosition(this.entity);
+                if(pos.y > nodePos.y
+                    && !this.entity.isOnGround()
+                    && MathHelper.floor(pos.x) == MathHelper.floor(nodePos.x)
+                    && MathHelper.floor(pos.z) == MathHelper.floor(nodePos.z)) {
                     this.currentPath.next();
                 }
             }
@@ -112,15 +127,23 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
     }
 
     @Override
+    public Vec3d getEntityPosAtNode(int nodeIndex) {
+        MobEntity mob = this.getMob();
+        Path path = this.getCurrentPath();
+        double lateralOffset = MathHelper.floor(mob.getWidth() + 1.0F) / 2.0F;
+        return Vec3d.of(path.getNodePos(nodeIndex)).add(lateralOffset, 0.5F, lateralOffset);
+    }
+
+    @Override
     protected void continueFollowingPath() {
         final Vec3d safeSurfacePos = this.getPos();
         final int shortcutNode = this.getClosestVerticalTraversal(MathHelper.floor(safeSurfacePos.y));
         this.nodeReachProximity = this.entity.getWidth() > 0.75f ? this.entity.getWidth() / 2f : 0.75f - this.entity.getWidth() / 2f;
 
 //        if (!this.attemptShortcut(shortcutNode, safeSurfacePos)) {
-            if (this.isCloseToNextNode(NODE_RADIUS)/* || this.isAboutToTraverseVertically() && this.isCloseToNextNode(this.getNodeReachProximity())*/) {
-                this.currentPath.setCurrentNodeIndex(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE);
-            }
+        if(this.isCloseToNextNode(NODE_REACH_RADIUS)/* || this.isAboutToTraverseVertically() && this.isCloseToNextNode(this.getNodeReachProximity())*/) {
+            this.currentPath.setCurrentNodeIndex(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE);
+        }
 //        }
 
         this.checkTimeouts(safeSurfacePos);
@@ -136,9 +159,10 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
     protected int getClosestVerticalTraversal(int safeSurfaceHeight) {
         final int nodesLength = this.currentPath.getLength();
 
-        for (int nodeIndex = this.currentPath.getCurrentNodeIndex(); nodeIndex < nodesLength; nodeIndex++) {
-            if (this.currentPath.getNode(nodeIndex).y != safeSurfaceHeight)
+        for(int nodeIndex = this.currentPath.getCurrentNodeIndex(); nodeIndex < nodesLength; nodeIndex++) {
+            if(this.currentPath.getNode(nodeIndex).y != safeSurfaceHeight) {
                 return nodeIndex;
+            }
         }
 
         return nodesLength;

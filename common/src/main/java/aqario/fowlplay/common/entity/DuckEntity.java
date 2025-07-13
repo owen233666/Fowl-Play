@@ -4,6 +4,7 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
+import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -18,7 +19,6 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.pathing.AmphibiousSwimNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -103,7 +103,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
 
     @Override
     protected EntityNavigation getLandNavigation() {
-        return new AmphibiousSwimNavigation(this, this.getWorld());
+        return new AmphibiousNavigation(this, this.getWorld());
     }
 
     @Override

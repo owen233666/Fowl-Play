@@ -4,6 +4,7 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
+import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayBiomeTags;
@@ -67,7 +68,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAtt
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothAmphibiousPathNavigation;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.ItemTemptingSensor;
@@ -85,7 +85,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
     private static final int STANDING_TRANSITION_TICKS = (int) (1.0F * 20);
     private static final long LAST_POSE_CHANGE_TICKS = 0L;
     public static final TrackedData<Long> LAST_POSE_TICK = DataTracker.registerData(PenguinEntity.class, TrackedDataHandlerRegistry.LONG);
-    private static final int SWIM_PARTICLE_COUNT = 20;
+    private static final int SWIM_PARTICLE_COUNT = 15;
     public final AnimationState standingState = new AnimationState();
     public final AnimationState slidingState = new AnimationState();
     public final AnimationState slidingTransitionState = new AnimationState();
@@ -130,7 +130,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
 
     @Override
     protected EntityNavigation createNavigation(World world) {
-        return new SmoothAmphibiousPathNavigation(this, world);
+        return new AmphibiousNavigation(this, this.getWorld());
     }
 
     @Nullable

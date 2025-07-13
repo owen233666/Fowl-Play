@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
+import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
@@ -31,7 +32,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -156,7 +156,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     protected EntityNavigation getLandNavigation() {
-        return new SmoothGroundNavigation(this, this.getWorld());
+        return new GroundNavigation(this, this.getWorld());
     }
 
     protected FlightNavigation getFlightNavigation() {
