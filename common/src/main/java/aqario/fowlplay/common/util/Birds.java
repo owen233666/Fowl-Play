@@ -108,11 +108,11 @@ public final class Birds {
         if(foodItems.isEmpty() || bird.getFood().test(bird.getMainHandStack())) {
             return false;
         }
-        Optional<LivingTargetCache> visibleMobs = brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
-        if(visibleMobs == null || visibleMobs.isEmpty()) {
+        LivingTargetCache visibleMobs = BrainUtils.getMemory(brain, MemoryModuleType.VISIBLE_MOBS);
+        if(visibleMobs == null) {
             return false;
         }
-        List<LivingEntity> avoidTargets = visibleMobs.get().stream(entity -> true)
+        List<LivingEntity> avoidTargets = visibleMobs.stream(entity -> true)
             .filter(entity -> shouldAvoid(bird, entity))
             .filter(entity -> entity.isInRange(foodItems.getFirst(), bird.getFleeRange(entity)))
             .toList();

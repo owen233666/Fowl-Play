@@ -10,6 +10,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Unit;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
@@ -44,7 +45,7 @@ public class NearbyFoodSensor<E extends BirdEntity> extends PredicateSensor<Item
         BrainUtils.setMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get(), nearbyItems);
 
         if(Birds.canPickupFood(bird)) {
-            BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get(), true);
+            BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get(), Unit.INSTANCE);
         }
         else {
             BrainUtils.clearMemory(brain, FowlPlayMemoryModuleType.SEES_FOOD.get());
