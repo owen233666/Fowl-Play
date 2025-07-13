@@ -227,9 +227,6 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 new FloatToSurfaceOfFluid<>()
                     .riseChance(0.5F),
                 FlightTasks.stopFalling(),
-//                new Panic<>(),
-//                AvoidTasks.avoid(),
-//                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -247,7 +244,6 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
                 new SetAttackTarget<CrowEntity>()
                     .attackPredicate(Birds::canAttack),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
@@ -262,6 +258,10 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                         new Idle<CrowEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
                         4
+                    ),
+                    Pair.of(
+                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                        1
                     ),
                     Pair.of(
                         FlightTasks.startFlying()
@@ -317,8 +317,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                )/*,
-                AvoidTasks.forget()*/
+                )
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -329,7 +328,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
             .priority(10)
             .behaviours(
                 FlightTasks.startFlying(Birds::canPickupFood),
-                GoToNearestWantedItemTask.create(
+                GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
                     true,

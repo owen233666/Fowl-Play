@@ -265,9 +265,6 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 new FloatToSurfaceOfFluid<>()
                     .riseChance(0.5F),
                 FlightTasks.stopFalling(),
-//                new Panic<>(),
-//                AvoidTasks.avoid(),
-//                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -347,8 +344,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                )/*,
-                AvoidTasks.forget()*/
+                )
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -359,7 +355,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
             .priority(10)
             .behaviours(
                 FlightTasks.startFlying(Birds::canPickupFood),
-                GoToNearestWantedItemTask.create(
+                GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
                     true,

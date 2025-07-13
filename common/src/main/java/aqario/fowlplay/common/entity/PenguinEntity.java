@@ -617,9 +617,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
         return new BrainActivityGroup<PenguinEntity>(Activity.CORE)
             .priority(0)
             .behaviours(
-                new BreatheAirTask(Birds.WALK_SPEED),
-//                new Panic<>(),
-//                new PickupFoodTask<>(),
+                new BreatheAirTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -659,6 +657,10 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                         new Idle<PenguinEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(400, 800)),
                         5
+                    ),
+                    Pair.of(
+                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                        1
                     ),
                     Pair.of(
                         PenguinSpecificTasks.goToWater(),
@@ -707,8 +709,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                )/*,
-                AvoidTasks.forget()*/
+                )
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -719,7 +720,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
             .priority(10)
             .behaviours(
                 SlideTasks.startSliding(),
-                GoToNearestWantedItemTask.create(
+                GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
                     true,

@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.common.util.MemoryList;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class SetWalkTargetToClosestAdult {
-    public static SingleTickBehaviour<BirdEntity> create(UniformIntProvider executionRange, float speed) {
-        return create(executionRange, entity -> speed);
+    public static SingleTickBehaviour<BirdEntity> create(UniformIntProvider executionRange) {
+        return create(executionRange, entity -> Birds.WALK_SPEED);
     }
 
     @SuppressWarnings("unchecked")

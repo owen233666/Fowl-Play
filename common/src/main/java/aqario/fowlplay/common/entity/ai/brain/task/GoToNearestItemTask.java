@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 /**
  * Improved {@link net.minecraft.entity.ai.brain.task.WalkToNearestVisibleWantedItemTask WalkToNearestVisibleWantedItemTask} with a speedGetter
  */
-public class GoToNearestWantedItemTask {
+public class GoToNearestItemTask {
     public static <E extends BirdEntity> SingleTickBehaviour<E> create(Predicate<E> startPredicate, Function<E, Float> entitySpeedGetter, boolean requiresWalkTarget, int radius) {
         return new SingleTickBehaviour<>(
             MemoryList.create(4)

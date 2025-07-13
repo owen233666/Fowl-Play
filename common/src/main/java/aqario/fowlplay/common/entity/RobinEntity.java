@@ -229,9 +229,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
             .behaviours(
                 new FloatToSurfaceOfFluid<>(),
                 FlightTasks.stopFalling(),
-//                new Panic<>(),
-//                AvoidTasks.avoid(),
-//                new PickupFoodTask<>(),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -247,7 +244,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
@@ -262,6 +258,10 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                         new Idle<RobinEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
                         4
+                    ),
+                    Pair.of(
+                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                        1
                     ),
                     Pair.of(
                         FlightTasks.startFlying(entity -> entity.getRandom().nextFloat() < 0.2F),
@@ -279,7 +279,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
         return new BrainActivityGroup<RobinEntity>(FowlPlayActivities.FLY.get())
             .priority(10)
             .behaviours(
-//                SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE, Birds.WALK_SPEED),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.perch(Birds.WALK_SPEED),
@@ -302,8 +301,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
                     true
-                )/*,
-                AvoidTasks.forget()*/
+                )
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
     }
@@ -314,7 +312,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
             .priority(10)
             .behaviours(
                 FlightTasks.startFlying(Birds::canPickupFood),
-                GoToNearestWantedItemTask.create(
+                GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
                     true,

@@ -8,10 +8,12 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.*;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
     private static final MemoryList MEMORIES = MemoryList.create(3)
@@ -21,15 +23,24 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
             MemoryModuleType.WALK_TARGET
         );
     private LivingEntity owner;
-    private final float speed;
     private int updateCountdownTicks;
-    private final float maxDistance;
-    private final float minDistance;
+    protected Function<PigeonEntity, Float> speedModifier = (entity) -> 1f;
+    protected UniformIntProvider range = UniformIntProvider.create(5, 10);
 
-    public FollowOwnerTask(float speed, float minDistance, float maxDistance) {
-        this.speed = speed;
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
+    public FollowOwnerTask speedModifier(float modifier) {
+        return this.speedModifier(entity -> modifier);
+    }
+
+    public FollowOwnerTask speedModifier(Function<PigeonEntity, Float> function) {
+        this.speedModifier = function;
+
+        return this;
+    }
+
+    public FollowOwnerTask range(int min, int max) {
+        this.range = UniformIntProvider.create(min, max);
+
+        return this;
     }
 
     @Override
@@ -49,7 +60,7 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
         if(pigeon.isSitting()) {
             return false;
         }
-        if(pigeon.squaredDistanceTo(owner) < this.minDistance * this.minDistance) {
+        if(pigeon.squaredDistanceTo(owner) < this.range.getMin() * this.range.getMin()) {
             return false;
         }
         if(pigeon.getRecipientUuid() != null) {
@@ -71,7 +82,7 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
             return false;
         }
 
-        return pigeon.squaredDistanceTo(this.owner) > this.maxDistance * this.maxDistance;
+        return pigeon.squaredDistanceTo(this.owner) > this.range.getMax() * this.range.getMax();
     }
 
     @Override
@@ -85,7 +96,7 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
                     BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), new TeleportTarget(this.owner));
                 }
                 else {
-                    BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speed, 0));
+                    BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speedModifier.apply(pigeon), 0));
                 }
             }
         }
