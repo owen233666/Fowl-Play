@@ -68,10 +68,13 @@ public final class Birds {
     }
 
     public static boolean shouldFlyFromAvoidTarget(FlyingBirdEntity bird) {
-        if(!BrainUtils.hasMemory(bird, MemoryModuleType.AVOID_TARGET)) {
+        Brain<?> brain = bird.getBrain();
+        if(!BrainUtils.hasMemory(brain, MemoryModuleType.AVOID_TARGET)
+            || !BrainUtils.hasMemory(brain, FowlPlayMemoryModuleType.IS_AVOIDING.get())
+        ) {
             return false;
         }
-        LivingEntity target = BrainUtils.getMemory(bird, MemoryModuleType.AVOID_TARGET);
+        LivingEntity target = BrainUtils.getMemory(brain, MemoryModuleType.AVOID_TARGET);
         // noinspection ConstantConditions
         if((target.isSprinting() && !target.isSpectator()) || target.hasVehicle()) {
             return true;
