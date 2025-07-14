@@ -233,7 +233,6 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
         return new BrainActivityGroup<BlueJayEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
@@ -248,7 +247,6 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
         return new BrainActivityGroup<BlueJayEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

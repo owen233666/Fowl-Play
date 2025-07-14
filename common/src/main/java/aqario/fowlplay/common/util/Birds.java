@@ -41,12 +41,21 @@ public final class Birds {
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
     public static final SquareRadius WALK_RANGE = new SquareRadius(16, 8);
+    public static final SquareRadius FLY_AVOID_RANGE = new SquareRadius(6, 6);
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
-    public static final UniformIntProvider FOLLOW_ADULT_RANGE = UniformIntProvider.create(5, 16);
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
 
-    public static boolean shouldFlyToTarget(FlyingBirdEntity bird, Vec3d target) {
+    public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
+        // noinspection ConstantConditions
+        if(bird.canStartFlying()
+            && (shouldFlyToDestination(bird, path.getTarget().toCenterPos()) || shouldFlyFromAvoidTarget(bird))
+        ) {
+            bird.startFlying();
+        }
+    }
+
+    public static boolean shouldFlyToDestination(FlyingBirdEntity bird, Vec3d target) {
         Vec3d pos = bird.getPos();
         double dx = target.x - pos.x;
         double dy = target.y - pos.y;
@@ -58,10 +67,25 @@ public final class Birds {
         return dxz2 > xzRadius * xzRadius || dy2 > yRadius * yRadius;
     }
 
-    public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
-        if(bird.canStartFlying() && Birds.shouldFlyToTarget(bird, path.getTarget().toCenterPos())) {
-            bird.startFlying();
+    public static boolean shouldFlyFromAvoidTarget(FlyingBirdEntity bird) {
+        if(!BrainUtils.hasMemory(bird, MemoryModuleType.AVOID_TARGET)) {
+            return false;
         }
+        LivingEntity target = BrainUtils.getMemory(bird, MemoryModuleType.AVOID_TARGET);
+        // noinspection ConstantConditions
+        if((target.isSprinting() && !target.isSpectator()) || target.hasVehicle()) {
+            return true;
+        }
+        Vec3d pos = bird.getPos();
+        Vec3d targetPos = target.getPos();
+        double dx = targetPos.x - pos.x;
+        double dy = targetPos.y - pos.y;
+        double dz = targetPos.z - pos.z;
+        double dxz2 = dx * dx + dz * dz;
+        double dy2 = dy * dy;
+        double xzRadius = FLY_AVOID_RANGE.xzRadius();
+        double yRadius = FLY_AVOID_RANGE.yRadius();
+        return dxz2 <= xzRadius * xzRadius && dy2 <= yRadius * yRadius;
     }
 
     // angle is in radians

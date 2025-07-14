@@ -296,7 +296,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
         return new BrainActivityGroup<RobinEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
@@ -311,7 +310,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
         return new BrainActivityGroup<RobinEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

@@ -339,7 +339,6 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
         return new BrainActivityGroup<SparrowEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
@@ -354,7 +353,6 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
         return new BrainActivityGroup<SparrowEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,

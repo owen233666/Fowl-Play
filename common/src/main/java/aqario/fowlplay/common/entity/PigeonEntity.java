@@ -488,7 +488,6 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
         return new BrainActivityGroup<PigeonEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,

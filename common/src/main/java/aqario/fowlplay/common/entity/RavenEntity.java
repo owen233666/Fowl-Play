@@ -315,7 +315,6 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
         return new BrainActivityGroup<RavenEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
-                FlightTasks.startFlying(),
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
                     entity -> Birds.RUN_SPEED,
@@ -330,7 +329,6 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
         return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.PICK_UP.get())
             .priority(10)
             .behaviours(
-//                FlightTasks.startFlying(Birds::canPickupFood),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
                     entity -> Birds.RUN_SPEED,
