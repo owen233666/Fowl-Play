@@ -262,12 +262,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
                         1
-                    )/*,
-                    Pair.of(
-                        FlightTasks.startFlying()
-                            .startCondition(entity -> entity.isInsideWaterOrBubbleColumn() || entity.getRandom().nextFloat() < 0.3F),
-                        1
-                    )*/
+                    )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)

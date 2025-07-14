@@ -296,12 +296,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                         new Idle<HawkEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
                         4
-                    )/*,
-                    Pair.of(
-                        FlightTasks.startFlying()
-                            .startCondition(entity -> entity.isInsideWaterOrBubbleColumn() || entity.getRandom().nextFloat() < 0.3F),
-                        1
-                    )*/
+                    )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)

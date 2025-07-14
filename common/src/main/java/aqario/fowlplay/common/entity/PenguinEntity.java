@@ -660,7 +660,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     ),
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
-                        1
+                        2
                     ),
                     Pair.of(
                         PenguinSpecificTasks.goToWater(),
@@ -689,7 +689,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                         5
                     ),
                     Pair.of(
-                        PenguinSpecificTasks.swim(Birds.WALK_SPEED),
+                        PenguinSpecificTasks.swim(),
                         2
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

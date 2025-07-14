@@ -298,11 +298,7 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
                         1
-                    )/*,
-                    Pair.of(
-                        FlightTasks.startFlying(entity -> entity.getRandom().nextFloat() < 0.2F),
-                        1
-                    )*/
+                    )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)

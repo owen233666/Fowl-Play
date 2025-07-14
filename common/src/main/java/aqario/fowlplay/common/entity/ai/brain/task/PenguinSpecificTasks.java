@@ -37,11 +37,11 @@ public class PenguinSpecificTasks {
 
     private static final int[][] SWIM_DISTANCES = new int[][]{{31, 15}};
 
-    public static SingleTickBehaviour<PenguinEntity> swim(float speed) {
-        return swim(speed, PenguinSpecificTasks::findSwimTargetPos, Entity::isInsideWaterOrBubbleColumn);
+    public static SingleTickBehaviour<PenguinEntity> swim() {
+        return swim(PenguinSpecificTasks::findSwimTargetPos, Entity::isInsideWaterOrBubbleColumn);
     }
 
-    private static SingleTickBehaviour<PenguinEntity> swim(float speed, Function<PenguinEntity, Vec3d> targetGetter, Predicate<PenguinEntity> predicate) {
+    private static SingleTickBehaviour<PenguinEntity> swim(Function<PenguinEntity, Vec3d> targetGetter, Predicate<PenguinEntity> predicate) {
         return new SingleTickBehaviour<>(
             MemoryList.create(1)
                 .absent(MemoryModuleType.WALK_TARGET),
@@ -50,7 +50,7 @@ public class PenguinSpecificTasks {
                     return false;
                 }
                 Optional<Vec3d> optional = Optional.ofNullable(targetGetter.apply(bird));
-                BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, optional.map(vec3d -> new WalkTarget(vec3d, speed, 0)).orElse(null));
+                BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, optional.map(vec3d -> new WalkTarget(vec3d, 1.0f, 0)).orElse(null));
                 return true;
             }
         );
