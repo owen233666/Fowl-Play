@@ -168,7 +168,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 this.timeSinceLastFlap = 0;
                 this.flapTime++;
             }
-            else if(this.isFlapping()) {
+            else if(this.isCurrentlyFlapping()) {
                 this.flapTime++;
             }
             else {
@@ -183,7 +183,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
         this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
     }
 
-    private boolean isFlapping() {
+    private boolean isCurrentlyFlapping() {
         return this.flapTime > 0 && this.flapTime < 60;
     }
 
