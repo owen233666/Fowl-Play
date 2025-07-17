@@ -43,6 +43,7 @@ public final class FowlPlayNeoForge {
         PlatformHelperImpl.SENSOR_TYPES.register(modBus);
         PlatformHelperImpl.SOUND_EVENTS.register(modBus);
         PlatformHelperImpl.TRACKED_DATA_HANDLERS.register(modBus);
+        FowlPlayBiomeModifiers.BIOME_MODIFIER_SERIALIZERS.register(modBus);
     }
 
     private static void onNewRegistry(NewRegistryEvent event) {

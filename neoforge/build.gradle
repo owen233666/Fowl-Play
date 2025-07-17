@@ -37,7 +37,9 @@ dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
     // Architectury
-    modImplementation("dev.architectury:architectury-neoforge:${rootProject.architectury_version}")
+    modImplementation("dev.architectury:architectury-neoforge:${rootProject.architectury_version}") {
+        transitive = false
+    }
 
     // Debug Utils
     modImplementation("io.github.flemmli97:debugutils:${project.debugutils_version}-neoforge") {
@@ -45,7 +47,9 @@ dependencies {
     }
 
     // Smart Brain Lib
-    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${project.minecraft_version}:${project.sbl_version}")
+    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${project.minecraft_version}:${project.sbl_version}") {
+        transitive = false
+    }
 
     // Yet Another Config Lib
     modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-neoforge")
