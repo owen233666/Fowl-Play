@@ -2,6 +2,7 @@ package aqario.fowlplay.client.render.debug;
 
 import aqario.fowlplay.client.FowlPlayClient;
 import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,10 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class BirdDebugRenderer implements DebugRenderer.Renderer {
     public static final BirdDebugRenderer INSTANCE = new BirdDebugRenderer();
@@ -37,6 +35,10 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     public void addBird(DebugBirdCustomPayload.BirdData birdData) {
         this.birds.put(birdData.uuid(), birdData);
+    }
+
+    private boolean isTargeted(DebugBirdCustomPayload.BirdData birdData) {
+        return Objects.equals(this.targetedEntity, birdData.uuid());
     }
 
     @Override
@@ -79,10 +81,13 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
     private void drawBirdData(
         MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
     ) {
+        boolean targeted = this.isTargeted(birdData);
         int i = 0;
         drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.name(), -1, 0.03F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "trusting: " + Arrays.toString(birdData.trusting().toArray()), -3355444, 0.02F);
+        i++;
+        drawString(matrices, vertexConsumers, birdData.pos(), i, "perched: " + birdData.perched(), -1, 0.02F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "ambient: " + birdData.ambient(), -1, 0.02F);
         i++;
@@ -105,6 +110,27 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
         if (!birdData.inventory().isEmpty()) {
             drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.inventory(), -98404, 0.02F);
+        }
+
+        if (targeted) {
+            for (String string : birdData.runningTasks()) {
+                drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711681, 0.02F);
+                i++;
+            }
+        }
+
+        if (targeted) {
+            for (String string : birdData.possibleActivities()) {
+                drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711936, 0.02F);
+                i++;
+            }
+        }
+
+        if (targeted) {
+            for (String string : Lists.reverse(birdData.memories())) {
+                drawString(matrices, vertexConsumers, birdData.pos(), i, string, -3355444, 0.02F);
+                i++;
+            }
         }
 
         this.drawPath(matrices, vertexConsumers, birdData, cameraX, cameraY, cameraZ);

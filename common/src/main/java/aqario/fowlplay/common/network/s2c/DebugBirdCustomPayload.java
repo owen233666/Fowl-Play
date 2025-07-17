@@ -7,10 +7,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload {
@@ -48,7 +51,13 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         String inventory,
         @Nullable Path path,
         List<String> trusting,
-        boolean ambient
+        boolean ambient,
+        boolean perched,
+        List<String> possibleActivities,
+        List<String> runningTasks,
+        List<String> memories,
+        Set<BlockPos> pois,
+        Set<BlockPos> potentialPois
     ) {
         public BirdData(PacketByteBuf buf) {
             this(
@@ -63,7 +72,13 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
                 buf.readString(),
                 buf.readNullable(Path::fromBuf),
                 buf.readList(PacketByteBuf::readString),
-                buf.readBoolean()
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readList(PacketByteBuf::readString),
+                buf.readList(PacketByteBuf::readString),
+                buf.readList(PacketByteBuf::readString),
+                buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC),
+                buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC)
             );
         }
 
@@ -80,6 +95,12 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
             buf.writeNullable(this.path, (bufx, path) -> path.toBuf(bufx));
             buf.writeCollection(this.trusting, PacketByteBuf::writeString);
             buf.writeBoolean(this.ambient);
+            buf.writeBoolean(this.perched);
+            buf.writeCollection(this.possibleActivities, PacketByteBuf::writeString);
+            buf.writeCollection(this.runningTasks, PacketByteBuf::writeString);
+            buf.writeCollection(this.memories, PacketByteBuf::writeString);
+            buf.writeCollection(this.pois, BlockPos.PACKET_CODEC);
+            buf.writeCollection(this.potentialPois, BlockPos.PACKET_CODEC);
         }
     }
 }

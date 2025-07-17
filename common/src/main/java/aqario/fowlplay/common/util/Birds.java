@@ -192,7 +192,7 @@ public final class Birds {
     }
 
     public static boolean isPerched(BirdEntity entity) {
-        return entity.getWorld().getBlockState(entity.getBlockPos()).isIn(FowlPlayBlockTags.PERCHES)
-            || entity.getWorld().getBlockState(entity.getBlockPos().down()).isIn(FowlPlayBlockTags.PERCHES);
+        return /*entity.getWorld().getBlockState(entity.getBlockPos()).isIn(FowlPlayBlockTags.PERCHES)
+            || */entity.getWorld().getBlockState(entity.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PERCHES);
     }
 }
