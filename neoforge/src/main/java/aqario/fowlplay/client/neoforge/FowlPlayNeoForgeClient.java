@@ -4,6 +4,9 @@ import aqario.fowlplay.client.FowlPlayClient;
 import aqario.fowlplay.client.particle.SmallBubbleParticle;
 import aqario.fowlplay.common.integration.YACLIntegration;
 import aqario.fowlplay.core.FowlPlayParticleTypes;
+import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.entity.Entity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,11 +35,18 @@ public class FowlPlayNeoForgeClient {
         event.registerSpriteSet(FowlPlayParticleTypes.SMALL_BUBBLE.get(), SmallBubbleParticle.Factory::new);
     }
 
+    @SuppressWarnings("unchecked")
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         FowlPlayClient.registerEntityRenderers();
+        PlatformHelperImpl.ENTITY_RENDERERS.forEach(pair ->
+            event.registerEntityRenderer(pair.getFirst().get(), (EntityRendererFactory<Entity>) pair.getSecond())
+        );
     }
 
     public static void onRegisterEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         FowlPlayClient.registerModelLayers();
+        PlatformHelperImpl.MODEL_LAYERS.forEach(pair ->
+            event.registerLayerDefinition(pair.getFirst(), pair.getSecond())
+        );
     }
 }

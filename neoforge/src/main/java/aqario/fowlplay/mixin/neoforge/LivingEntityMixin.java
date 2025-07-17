@@ -7,14 +7,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -24,14 +22,16 @@ public abstract class LivingEntityMixin extends Entity {
         super(variant, world);
     }
 
-    @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getFriction(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)F"))
-    private float fowlplay$modifySlipperiness(BlockState state, WorldView world, BlockPos blockPos, Entity entity) {
+    @ModifyVariable(method = "travel", at = @At("STORE"), ordinal = 0)
+    private float fowlplay$modifySlipperiness(float slipperiness) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        BlockState state = this.getWorld().getBlockState(this.getVelocityAffectingPos());
         if(entity instanceof PenguinEntity penguin && penguin.isSliding()) {
-            return state.isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || world.getBlockState(this.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
+            return state.isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
                 ? 1.025F
-                : state.getFriction(world, blockPos, entity);
+                : slipperiness;
         }
-        return state.getFriction(world, blockPos, entity);
+        return slipperiness;
     }
 
     @Inject(method = "getOffGroundSpeed", at = @At("RETURN"), cancellable = true)

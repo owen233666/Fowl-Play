@@ -3,9 +3,13 @@ package aqario.fowlplay.core.platform.neoforge;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
@@ -86,6 +90,8 @@ public class PlatformHelperImpl {
         NeoForgeRegistries.ENTITY_DATA_SERIALIZERS,
         FowlPlay.ID
     );
+    public static final ObjectArrayList<Pair<EntityModelLayer, Supplier<TexturedModelData>>> MODEL_LAYERS = new ObjectArrayList<>();
+    public static final ObjectArrayList<Pair<Supplier<EntityType<?>>, EntityRendererFactory<?>>> ENTITY_RENDERERS = new ObjectArrayList<>();
 
     @SuppressWarnings("unchecked")
     public static <T> void registerVariant(String id, RegistryKey<T> key, Supplier<T> variant) {
@@ -157,6 +163,15 @@ public class PlatformHelperImpl {
 
     public static void addItemToItemGroup(Supplier<Item> item, RegistryKey<ItemGroup> itemGroup) {
         ITEM_TO_GROUPS.put(item, itemGroup);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererFactory<T> provider) {
+        ENTITY_RENDERERS.add(Pair.of((Supplier<EntityType<?>>) (Supplier<?>) type, provider));
+    }
+
+    public static void registerModelLayer(EntityModelLayer location, Supplier<TexturedModelData> definition) {
+        MODEL_LAYERS.add(Pair.of(location, definition));
     }
 
     public static <T extends ParticleEffect> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleFactory<T> provider) {
