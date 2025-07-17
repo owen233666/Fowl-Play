@@ -18,20 +18,20 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(LivingEntity.class)
+@Mixin(value = LivingEntity.class, priority = 1001)
 public abstract class LivingEntityMixin extends Entity {
     public LivingEntityMixin(EntityType<?> variant, World world) {
         super(variant, world);
     }
 
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getFriction(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)F"))
-    private float fowlplay$modifySlipperiness(BlockState state, WorldView worldView, BlockPos blockPos, Entity entity) {
+    private float fowlplay$modifySlipperiness(BlockState state, WorldView world, BlockPos blockPos, Entity entity) {
         if(entity instanceof PenguinEntity penguin && penguin.isSliding()) {
-            return state.isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || this.getBlockStateAtPos().isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
+            return state.isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON) || world.getBlockState(this.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PENGUINS_SLIDE_ON)
                 ? 1.025F
-                : state.getFriction(worldView, blockPos, entity);
+                : state.getFriction(world, blockPos, entity);
         }
-        return state.getFriction(worldView, blockPos, entity);
+        return state.getFriction(world, blockPos, entity);
     }
 
     @Inject(method = "getOffGroundSpeed", at = @At("RETURN"), cancellable = true)
