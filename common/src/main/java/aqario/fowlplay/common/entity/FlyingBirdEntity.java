@@ -2,7 +2,6 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
 import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -23,7 +22,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -98,12 +96,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setFlying(nbt.getBoolean("flying"));
-        if(this.isFlying()) {
-            this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
-        }
-        else {
-            this.getBrain().forget(FowlPlayMemoryModuleType.IS_FLYING.get());
-        }
     }
 
     @Override
@@ -230,7 +222,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public void startFlying() {
         this.setFlying(true);
         this.setNavigation(true);
-        this.getBrain().remember(FowlPlayMemoryModuleType.IS_FLYING.get(), Unit.INSTANCE);
     }
 
     public void stopFlying() {
@@ -238,7 +229,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.setNavigation(false);
         this.getNavigation().stop();
         Brain<?> brain = this.getBrain();
-        brain.forget(FowlPlayMemoryModuleType.IS_FLYING.get());
         brain.forget(MemoryModuleType.WALK_TARGET);
     }
 

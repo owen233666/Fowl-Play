@@ -275,6 +275,8 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             .priority(0)
             .behaviours(
                 FlightTasks.stopFalling(),
+                new SetAttackTarget<DuckEntity>()
+                    .attackPredicate(Birds::canAttack),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -290,10 +292,14 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetAttackTarget<DuckEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<DuckEntity>()
@@ -313,27 +319,6 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends DuckEntity> getFlyTasks() {
-        return new BrainActivityGroup<DuckEntity>(FowlPlayActivities.FLY.get())
-            .priority(10)
-            .behaviours(
-                new SetAttackTarget<DuckEntity>()
-                    .attackPredicate(Birds::canAttack),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        TargetlessFlyTask.create(),
-                        1
-                    )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
@@ -389,7 +374,6 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Override
     public Map<Activity, BrainActivityGroup<? extends DuckEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends DuckEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -398,11 +382,10 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
+            Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            Activity.FIGHT
+            Activity.IDLE
         );
     }
 

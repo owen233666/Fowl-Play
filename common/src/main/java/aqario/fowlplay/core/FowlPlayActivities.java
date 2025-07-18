@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 public final class FowlPlayActivities {
     public static final Supplier<Activity> DELIVER = register("deliver");
-    public static final Supplier<Activity> FLY = register("fly");
     public static final Supplier<Activity> FORAGE = register("forage");
     public static final Supplier<Activity> PERCH = register("perch");
     public static final Supplier<Activity> PICK_UP = register("pick_up");

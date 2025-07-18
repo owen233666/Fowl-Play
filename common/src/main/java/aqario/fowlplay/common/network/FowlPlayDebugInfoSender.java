@@ -94,61 +94,72 @@ public class FowlPlayDebugInfoSender {
     private static List<String> getMemoryDescriptions(LivingEntity entity, long gameTime) {
         Map<MemoryModuleType<?>, Optional<? extends Memory<?>>> map = entity.getBrain().getMemories();
         List<String> list = Lists.newArrayList();
-        for (Map.Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>> entry : map.entrySet()) {
+        for(Map.Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>> entry : map.entrySet()) {
             MemoryModuleType<?> memoryModuleType = entry.getKey();
             Optional<? extends Memory<?>> optional = entry.getValue();
-            String string;
-            if (optional.isPresent()) {
+            String value;
+            if(optional.isPresent()) {
                 Memory<?> expirableValue = optional.get();
                 Object object = expirableValue.getValue();
-                if (memoryModuleType == MemoryModuleType.HEARD_BELL_TIME) {
+                if(memoryModuleType == MemoryModuleType.HEARD_BELL_TIME) {
                     long l = gameTime - (Long) object;
-                    string = l + " ticks ago";
-                } else if (expirableValue.isTimed()) {
-                    String desc = getShortDescription((ServerWorld) entity.getWorld(), object);
-                    string = desc + " (ttl: " + expirableValue.getExpiry() + ")";
-                } else {
-                    string = getShortDescription((ServerWorld) entity.getWorld(), object);
+                    value = l + " ticks ago";
                 }
-            } else {
-                string = "-";
+                else if(expirableValue.isTimed()) {
+                    String desc = getMemoryValueDescription((ServerWorld) entity.getWorld(), object);
+                    value = desc + " (ttl: " + expirableValue.getExpiry() + ")";
+                }
+                else {
+                    value = getMemoryValueDescription((ServerWorld) entity.getWorld(), object);
+                }
             }
-            String id = Registries.MEMORY_MODULE_TYPE.getId(memoryModuleType).getPath();
-            list.add(id + ": " + string);
+            else {
+                value = "-";
+            }
+            String memory = Registries.MEMORY_MODULE_TYPE.getId(memoryModuleType).getPath();
+            list.add(memory + ": " + value);
         }
         list.sort(String::compareTo);
         return list;
     }
 
-    private static String getShortDescription(ServerWorld level, @Nullable Object object) {
-        if (object == null) {
-            return "-";
-        } else if (object instanceof UUID) {
-            return getShortDescription(level, level.getEntity((UUID) object));
-        } else {
-            Entity entity;
-            if (object instanceof LivingEntity) {
-                entity = (Entity) object;
+    private static String getMemoryValueDescription(ServerWorld world, @Nullable Object object) {
+        switch(object) {
+            case null -> {
+                return "-";
+            }
+            case UUID uuid -> {
+                return getMemoryValueDescription(world, world.getEntity(uuid));
+            }
+            case LivingEntity entity -> {
                 return NameGenerator.name(entity);
-            } else if (object instanceof Nameable) {
-                return ((Nameable) object).getName().getString();
-            } else if (object instanceof WalkTarget) {
-                return getShortDescription(level, ((WalkTarget) object).getLookTarget());
-            } else if (object instanceof EntityLookTarget) {
-                return getShortDescription(level, ((EntityLookTarget) object).getEntity());
-            } else if (object instanceof GlobalPos) {
-                return getShortDescription(level, ((GlobalPos) object).pos());
-            } else if (object instanceof BlockPosLookTarget) {
-                return getShortDescription(level, ((BlockPosLookTarget) object).getBlockPos());
-            } else if (object instanceof DamageSource) {
-                entity = ((DamageSource) object).getAttacker();
-                return entity == null ? object.toString() : getShortDescription(level, entity);
-            } else if (!(object instanceof Collection<?> iterable)) {
-                return object.toString();
-            } else {
+            }
+            case Nameable nameable -> {
+                return nameable.getName().getString();
+            }
+            case WalkTarget walkTarget -> {
+                return getMemoryValueDescription(world, walkTarget.getLookTarget());
+            }
+            case EntityLookTarget entityLookTarget -> {
+                return getMemoryValueDescription(world, entityLookTarget.getEntity());
+            }
+            case GlobalPos globalPos -> {
+                return getMemoryValueDescription(world, globalPos.pos());
+            }
+            case BlockPosLookTarget blockPosLookTarget -> {
+                return getMemoryValueDescription(world, blockPosLookTarget.getBlockPos());
+            }
+            case DamageSource damageSource -> {
+                Entity entity = damageSource.getAttacker();
+                return entity == null ? object.toString() : getMemoryValueDescription(world, entity);
+            }
+            case Collection<?> iterable -> {
                 List<String> list = Lists.newArrayList();
-                iterable.forEach(o -> list.add(getShortDescription(level, o)));
+                iterable.forEach(o -> list.add(getMemoryValueDescription(world, o)));
                 return list.toString();
+            }
+            default -> {
+                return object.toString();
             }
         }
     }

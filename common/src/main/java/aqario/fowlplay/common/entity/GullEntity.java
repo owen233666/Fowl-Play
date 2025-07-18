@@ -283,6 +283,8 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
             .priority(0)
             .behaviours(
                 FlightTasks.stopFalling(),
+                new SetAttackTarget<GullEntity>()
+                    .attackPredicate(Birds::canAttack),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -298,10 +300,14 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetAttackTarget<GullEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<GullEntity>()
@@ -321,19 +327,16 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends GullEntity> getFlyTasks() {
-        return new BrainActivityGroup<GullEntity>(FowlPlayActivities.FLY.get())
+    public BrainActivityGroup<? extends GullEntity> getSoarTasks() {
+        return new BrainActivityGroup<GullEntity>(FowlPlayActivities.SOAR.get())
             .priority(10)
             .behaviours(
-                new SetAttackTarget<GullEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         TargetlessFlyTask.create(),
@@ -341,7 +344,6 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
@@ -397,7 +399,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
     @Override
     public Map<Activity, BrainActivityGroup<? extends GullEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends GullEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.SOAR.get(), this.getSoarTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -406,11 +408,11 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
+            Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            Activity.FIGHT
+            FowlPlayActivities.SOAR.get(),
+            Activity.IDLE
         );
     }
 
