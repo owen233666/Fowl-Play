@@ -196,6 +196,12 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
                         new SetRandomWalkTarget<CardinalEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
@@ -213,24 +219,29 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends CardinalEntity> getFlyTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FLY.get())
+    public BrainActivityGroup<? extends CardinalEntity> getPerchTasks() {
+        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PERCH.get())
             .priority(10)
             .behaviours(
+                TargetlessFlyTask.perch()
+                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
+                        new Idle<CardinalEntity>()
+                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                        8
+                    ),
+                    Pair.of(
+                        TargetlessFlyTask.perch(),
                         1
                     )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+                ).startCondition(Birds::isPerched)
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
@@ -268,7 +279,7 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
     @Override
     public Map<Activity, BrainActivityGroup<? extends CardinalEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends CardinalEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -277,10 +288,10 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP.get()
+            FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.PERCH.get(),
+            Activity.IDLE
         );
     }
 

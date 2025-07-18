@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.debug.PathfindingDebugRenderer;
+import net.minecraft.client.render.debug.VillageDebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +44,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double cameraX, double cameraY, double cameraZ) {
-        if (!FowlPlayClient.DEBUG_BIRD) {
+        if(!FowlPlayClient.DEBUG_BIRD) {
             return;
         }
         this.removeRemovedBirds();
@@ -53,6 +54,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     private void removeRemovedBirds() {
         this.birds.entrySet().removeIf(entry -> {
+            // noinspection ConstantConditions
             Entity entity = this.client.world.getEntityById(entry.getValue().entityId());
             return entity == null || entity.isRemoved();
         });
@@ -64,6 +66,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     private boolean isClose(DebugBirdCustomPayload.BirdData birdData) {
         PlayerEntity playerEntity = this.client.player;
+        // noinspection ConstantConditions
         BlockPos playerPos = BlockPos.ofFloored(playerEntity.getX(), birdData.pos().getY(), playerEntity.getZ());
         BlockPos brainPos = BlockPos.ofFloored(birdData.pos());
         // ignores y
@@ -72,7 +75,7 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
 
     private void draw(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double x, double y, double z) {
         this.birds.values().forEach(brain -> {
-            if (this.isClose(brain)) {
+            if(this.isClose(brain)) {
                 this.drawBirdData(matrices, vertexConsumers, brain, x, y, z);
             }
         });
@@ -108,26 +111,22 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
         );
         i++;
 
-        if (!birdData.inventory().isEmpty()) {
+        if(!birdData.inventory().isEmpty()) {
             drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.inventory(), -98404, 0.02F);
         }
 
-        if (targeted) {
-            for (String string : birdData.runningTasks()) {
-                drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711681, 0.02F);
-                i++;
-            }
+        for(String string : birdData.runningTasks()) {
+            drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711681, 0.02F);
+            i++;
         }
 
-        if (targeted) {
-            for (String string : birdData.possibleActivities()) {
-                drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711936, 0.02F);
-                i++;
-            }
+        for(String string : birdData.possibleActivities()) {
+            drawString(matrices, vertexConsumers, birdData.pos(), i, string, -16711936, 0.02F);
+            i++;
         }
 
-        if (targeted) {
-            for (String string : Lists.reverse(birdData.memories())) {
+        if(targeted) {
+            for(String string : Lists.reverse(birdData.memories())) {
                 drawString(matrices, vertexConsumers, birdData.pos(), i, string, -3355444, 0.02F);
                 i++;
             }
@@ -139,9 +138,15 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
     private void drawPath(
         MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
     ) {
-        if (birdData.path() != null) {
+        if(birdData.path() != null) {
             PathfindingDebugRenderer.drawPath(matrices, vertexConsumers, birdData.path(), 0.1F, false, false, cameraX, cameraY, cameraZ);
         }
+    }
+
+    private static void drawString(
+        MatrixStack matrices, VertexConsumerProvider vertexConsumers, String string, VillageDebugRenderer.PointOfInterest pointOfInterest, int offsetY, int color
+    ) {
+        drawString(matrices, vertexConsumers, string, pointOfInterest.pos, offsetY, color);
     }
 
     private static void drawString(MatrixStack matrices, VertexConsumerProvider vertexConsumers, String string, BlockPos pos, int offsetY, int color) {

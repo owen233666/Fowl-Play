@@ -233,6 +233,8 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
                 new FloatToSurfaceOfFluid<>()
                     .riseChance(0.5F),
                 FlightTasks.stopFalling(),
+                new SetAttackTarget<RavenEntity>()
+                    .attackPredicate(Birds::canAttack),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -248,10 +250,14 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetAttackTarget<RavenEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<RavenEntity>()
@@ -271,35 +277,55 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends RavenEntity> getFlyTasks() {
-        return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.FLY.get())
+    public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
+        return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.PERCH.get())
             .priority(10)
             .behaviours(
-                new SetAttackTarget<RavenEntity>()
-                    .attackPredicate(Birds::canAttack),
+                TargetlessFlyTask.perch()
+                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
-                        2
+                        new Idle<RavenEntity>()
+                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                        8
                     ),
                     Pair.of(
-                        TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
-                        2
+                        TargetlessFlyTask.perch(),
+                        1
+                    )
+                ).startCondition(Birds::isPerched)
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends RavenEntity> getSoarTasks() {
+        return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.SOAR.get())
+            .priority(10)
+            .behaviours(
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.perch(),
+                        1
+                    ),
+                    Pair.of(
+                        TargetlessFlyTask.create(),
+                        5
                     ),
                     Pair.of(
                         SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
-                        1
+                        2
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
@@ -355,7 +381,8 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
     @Override
     public Map<Activity, BrainActivityGroup<? extends RavenEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends RavenEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
+        taskList.put(FowlPlayActivities.SOAR.get(), this.getSoarTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -364,11 +391,12 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
+            Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            Activity.FIGHT
+            FowlPlayActivities.PERCH.get(),
+            FowlPlayActivities.SOAR.get(),
+            Activity.IDLE
         );
     }
 

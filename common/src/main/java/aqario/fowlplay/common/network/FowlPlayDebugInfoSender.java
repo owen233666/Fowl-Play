@@ -22,11 +22,13 @@ import net.minecraft.util.NameGenerator;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class FowlPlayDebugInfoSender {
+    @SuppressWarnings("deprecation")
     public static void sendBirdDebugData(BirdEntity bird) {
         if(!FowlPlay.isDebugUtilsLoaded()) {
             return;
@@ -42,8 +44,8 @@ public class FowlPlayDebugInfoSender {
         if(bird instanceof InventoryOwner inventoryOwner) {
             inventory = inventoryOwner.getInventory().isEmpty() ? "" : inventoryOwner.getInventory().toString();
         }
-        if(brain.hasMemoryModule(MemoryModuleType.PATH)) {
-            path = brain.getOptionalRegisteredMemory(MemoryModuleType.PATH).get();
+        if(BrainUtils.hasMemory(brain, MemoryModuleType.PATH)) {
+            path = BrainUtils.getMemory(brain, MemoryModuleType.PATH);
         }
         List<String> trusting = new ArrayList<>();
         if(bird instanceof TrustingBirdEntity trustingBird) {

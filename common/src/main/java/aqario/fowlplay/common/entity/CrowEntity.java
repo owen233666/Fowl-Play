@@ -227,6 +227,8 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 new FloatToSurfaceOfFluid<>()
                     .riseChance(0.5F),
                 FlightTasks.stopFalling(),
+                new SetAttackTarget<CrowEntity>()
+                    .attackPredicate(Birds::canAttack),
                 new LookAtTarget<>()
                     .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
                 new MoveToWalkTarget<>()
@@ -242,10 +244,14 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                 new BreedWithPartner<>(),
                 new FollowParent<>(),
                 SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetAttackTarget<CrowEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new SetRandomLookTarget<>()
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<CrowEntity>()
@@ -265,19 +271,16 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends CrowEntity> getFlyTasks() {
-        return new BrainActivityGroup<CrowEntity>(FowlPlayActivities.FLY.get())
+    public BrainActivityGroup<? extends CrowEntity> getPerchTasks() {
+        return new BrainActivityGroup<CrowEntity>(FowlPlayActivities.PERCH.get())
             .priority(10)
             .behaviours(
-                new SetAttackTarget<CrowEntity>()
-                    .attackPredicate(Birds::canAttack),
                 new LeaderlessFlockTask(
                     3,
                     0.03f,
@@ -285,21 +288,22 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
                     0.05f,
                     3f
                 ),
+                TargetlessFlyTask.perch()
+                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
-                        1
+                        new Idle<CrowEntity>()
+                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                        8
                     ),
                     Pair.of(
-                        TargetlessFlyTask.create(Birds.WALK_SPEED, 24, 16),
+                        TargetlessFlyTask.perch(),
                         1
                     )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+                ).startCondition(Birds::isPerched)
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -352,7 +356,7 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
     @Override
     public Map<Activity, BrainActivityGroup<? extends CrowEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends CrowEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -361,11 +365,11 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
+            Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            Activity.FIGHT
+            FowlPlayActivities.PERCH.get(),
+            Activity.IDLE
         );
     }
 

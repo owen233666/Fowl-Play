@@ -112,24 +112,24 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
     @Override
     protected void updateAnimations() {
         // on land
-        if (!this.isFlying() && !this.isInsideWaterOrBubbleColumn()) {
-            if (this.random.nextInt(1000) < this.idleAnimationChance++ && !this.isMoving()) {
+        if(!this.isFlying() && !this.isInsideWaterOrBubbleColumn()) {
+            if(this.random.nextInt(1000) < this.idleAnimationChance++ && !this.isMoving()) {
                 this.resetIdleAnimationDelay();
                 this.standingState.stop();
                 this.preeningState.stop();
                 this.scratchingState.stop();
-                if (this.getRandom().nextFloat() < 0.75f) {
+                if(this.getRandom().nextFloat() < 0.75f) {
                     this.preeningState.start(this.age);
                 }
                 else {
                     this.scratchingState.start(this.age);
                 }
             }
-            else if (this.isMoving()) {
+            else if(this.isMoving()) {
                 this.preeningState.stop();
                 this.scratchingState.stop();
             }
-            if (!(this.preeningState.isRunning() || this.scratchingState.isRunning())) {
+            if(!(this.preeningState.isRunning() || this.scratchingState.isRunning())) {
                 this.standingState.startIfNotRunning(this.age);
             }
             else {
@@ -142,12 +142,12 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
             this.scratchingState.stop();
         }
         // flying
-        if (this.isFlying()) {
-            if (this.timeSinceLastFlap >= this.getFlapFrequency()) {
+        if(this.isFlying()) {
+            if(this.timeSinceLastFlap >= this.getFlapFrequency()) {
                 this.timeSinceLastFlap = 0;
                 this.flapTime++;
             }
-            else if (this.flapTime >= 0 && this.flapTime < FLAP_DURATION) {
+            else if(this.flapTime >= 0 && this.flapTime < FLAP_DURATION) {
                 this.flapTime++;
                 this.glidingState.stop();
                 this.flappingState.startIfNotRunning(this.age);
@@ -284,6 +284,12 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
                         new SetRandomWalkTarget<SparrowEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
@@ -301,14 +307,13 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends SparrowEntity> getFlyTasks() {
-        return new BrainActivityGroup<SparrowEntity>(FowlPlayActivities.FLY.get())
+    public BrainActivityGroup<? extends SparrowEntity> getPerchTasks() {
+        return new BrainActivityGroup<SparrowEntity>(FowlPlayActivities.PERCH.get())
             .priority(10)
             .behaviours(
                 new LeaderlessFlockTask(
@@ -318,14 +323,20 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
                     0.05f,
                     3f
                 ),
+                TargetlessFlyTask.perch()
+                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
+                        new Idle<SparrowEntity>()
+                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                        8
+                    ),
+                    Pair.of(
+                        TargetlessFlyTask.perch(),
                         1
                     )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+                ).startCondition(Birds::isPerched)
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
@@ -363,7 +374,7 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
     @Override
     public Map<Activity, BrainActivityGroup<? extends SparrowEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends SparrowEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -372,10 +383,10 @@ public class SparrowEntity extends FlyingBirdEntity implements SmartBrainOwner<S
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP.get()
+            FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.PERCH.get(),
+            Activity.IDLE
         );
     }
 

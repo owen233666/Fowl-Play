@@ -185,6 +185,12 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
+                        TargetlessFlyTask.create(),
+                        1
+                    )
+                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
                         new SetRandomWalkTarget<BlueJayEntity>()
                             .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
@@ -202,7 +208,6 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
                     )
                 ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
@@ -212,33 +217,20 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
         return new BrainActivityGroup<BlueJayEntity>(FowlPlayActivities.PERCH.get())
             .priority(10)
             .behaviours(
-                TargetlessFlyTask.perch(Birds.WALK_SPEED)
-                    .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                TargetlessFlyTask.perch()
+                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new Idle<BlueJayEntity>()
                             .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                        8
+                    ),
+                    Pair.of(
+                        TargetlessFlyTask.perch(),
                         1
                     )
                 ).startCondition(Birds::isPerched)
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends BlueJayEntity> getFlyTasks() {
-        return new BrainActivityGroup<BlueJayEntity>(FowlPlayActivities.FLY.get())
-            .priority(10)
-            .behaviours(
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        TargetlessFlyTask.perch(Birds.WALK_SPEED),
-                        1
-                    )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_FLYING.get(), MemoryModuleState.VALUE_PRESENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
@@ -276,7 +268,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
     @Override
     public Map<Activity, BrainActivityGroup<? extends BlueJayEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends BlueJayEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FLY.get(), this.getFlyTasks());
+        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -285,10 +277,10 @@ public class BlueJayEntity extends FlyingBirdEntity implements SmartBrainOwner<B
     @Override
     public List<Activity> getActivityPriorities() {
         return ObjectArrayList.of(
-            Activity.IDLE,
-            FowlPlayActivities.FLY.get(),
             Activity.AVOID,
-            FowlPlayActivities.PICK_UP.get()
+            FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.PERCH.get(),
+            Activity.IDLE
         );
     }
 
