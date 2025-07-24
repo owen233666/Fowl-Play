@@ -35,8 +35,8 @@ import java.util.Optional;
  * A utility class for birds.
  */
 public final class Birds {
-    public static final float WALK_SPEED = 1.0F;
-    public static final float RUN_SPEED = 1.4F;
+    public static final float NORMAL_SPEED = 1.0F;
+    public static final float FAST_SPEED = 1.4F;
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;

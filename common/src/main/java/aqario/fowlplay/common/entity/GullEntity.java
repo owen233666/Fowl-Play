@@ -311,7 +311,6 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<GullEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -356,7 +355,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -370,7 +369,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -387,8 +386,7 @@ public class GullEntity extends TrustingBirdEntity implements SmartBrainOwner<Gu
             .behaviours(
                 new InvalidateAttackTarget<>(),
                 FlightTasks.startFlying(),
-                new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.WALK_SPEED),
+                new SetWalkTargetToAttackTarget<>(),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<GullEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf(GullEntity::shouldStopHunting)

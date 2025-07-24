@@ -639,7 +639,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                     .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
                 new OneRandomBehaviour<>(
                     Pair.of(
-                        GoToLandTask.create(32, Birds.WALK_SPEED),
+                        GoToLandTask.create(32),
                         5
                     ),
                     Pair.of(
@@ -684,7 +684,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -699,7 +699,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                 SlideTasks.startSliding(),
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -717,7 +717,7 @@ public class PenguinEntity extends BirdEntity implements SmartBrainOwner<Penguin
                 new InvalidateAttackTarget<>(),
                 SlideTasks.startSliding(),
                 new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.RUN_SPEED),
+                    .speedMod((entity, target) -> Birds.FAST_SPEED),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<PenguinEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))

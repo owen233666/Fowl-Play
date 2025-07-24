@@ -255,7 +255,6 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<RobinEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -270,6 +269,20 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
                         1
                     )
                 ).startCondition(entity -> !entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends RobinEntity> getForageTasks() {
+        return new BrainActivityGroup<RobinEntity>(FowlPlayActivities.FORAGE.get())
+            .priority(10)
+            .behaviours(
+                new SetRandomWalkTarget<RobinEntity>()
+                    .setRadius(32, 16),
+                new Idle<RobinEntity>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
@@ -305,7 +318,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -319,7 +332,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -331,6 +344,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
     @Override
     public Map<Activity, BrainActivityGroup<? extends RobinEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends RobinEntity>> taskList = new Object2ObjectOpenHashMap<>();
+        taskList.put(FowlPlayActivities.FORAGE.get(), this.getForageTasks());
         taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
@@ -342,6 +356,7 @@ public class RobinEntity extends FlyingBirdEntity implements SmartBrainOwner<Rob
         return ObjectArrayList.of(
             Activity.AVOID,
             FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
             Activity.IDLE
         );

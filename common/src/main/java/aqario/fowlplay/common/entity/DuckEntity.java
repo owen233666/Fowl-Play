@@ -303,7 +303,6 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<DuckEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -325,13 +324,27 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     }
 
     @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends DuckEntity> getForageTasks() {
+        return new BrainActivityGroup<DuckEntity>(FowlPlayActivities.FORAGE.get())
+            .priority(10)
+            .behaviours(
+                new SetRandomWalkTarget<DuckEntity>()
+                    .setRadius(32, 16),
+                new Idle<DuckEntity>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends DuckEntity> getAvoidTasks() {
         return new BrainActivityGroup<DuckEntity>(Activity.AVOID)
             .priority(10)
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -345,7 +358,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -362,8 +375,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             .behaviours(
                 new InvalidateAttackTarget<>(),
                 FlightTasks.startFlying(),
-                new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.WALK_SPEED),
+                new SetWalkTargetToAttackTarget<>(),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<DuckEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
@@ -374,6 +386,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Override
     public Map<Activity, BrainActivityGroup<? extends DuckEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends DuckEntity>> taskList = new Object2ObjectOpenHashMap<>();
+        taskList.put(FowlPlayActivities.FORAGE.get(), this.getForageTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
         return taskList;
@@ -385,6 +398,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             Activity.AVOID,
             Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.FORAGE.get(),
             Activity.IDLE
         );
     }

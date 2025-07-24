@@ -428,7 +428,6 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<PigeonEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -488,7 +487,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                     .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
                 FlightTasks.<PigeonEntity>startFlying()
                     .startCondition(PigeonEntity::shouldFlyToRecipient),
-                DeliverBundleTask.run(pigeon -> Birds.WALK_SPEED)
+                DeliverBundleTask.run()
             )
             .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.RECIPIENT.get());
     }
@@ -500,7 +499,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -515,7 +514,7 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
                 new SequentialBehaviour<PigeonEntity>(
                     GoToNearestItemTask.create(
                         Birds::canPickupFood,
-                        entity -> Birds.RUN_SPEED,
+                        entity -> Birds.FAST_SPEED,
                         true,
                         Birds.ITEM_PICK_UP_RANGE
                     )

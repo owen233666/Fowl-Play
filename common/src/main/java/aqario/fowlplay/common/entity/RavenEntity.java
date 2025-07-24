@@ -261,7 +261,6 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<RavenEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -280,6 +279,20 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends RavenEntity> getForageTasks() {
+        return new BrainActivityGroup<RavenEntity>(FowlPlayActivities.FORAGE.get())
+            .priority(10)
+            .behaviours(
+                new SetRandomWalkTarget<RavenEntity>()
+                    .setRadius(32, 16),
+                new Idle<RavenEntity>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -338,7 +351,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -352,7 +365,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -369,8 +382,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             .behaviours(
                 new InvalidateAttackTarget<>(),
                 FlightTasks.startFlying(),
-                new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.WALK_SPEED),
+                new SetWalkTargetToAttackTarget<>(),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<RavenEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
@@ -381,6 +393,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
     @Override
     public Map<Activity, BrainActivityGroup<? extends RavenEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends RavenEntity>> taskList = new Object2ObjectOpenHashMap<>();
+        taskList.put(FowlPlayActivities.FORAGE.get(), this.getForageTasks());
         taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(FowlPlayActivities.SOAR.get(), this.getSoarTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
@@ -394,6 +407,7 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             Activity.AVOID,
             Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
             FowlPlayActivities.SOAR.get(),
             Activity.IDLE

@@ -219,7 +219,6 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<ChickadeeEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -234,6 +233,20 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
                         1
                     )
                 ).startCondition(entity -> !entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            )
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
+            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public BrainActivityGroup<? extends ChickadeeEntity> getForageTasks() {
+        return new BrainActivityGroup<ChickadeeEntity>(FowlPlayActivities.FORAGE.get())
+            .priority(10)
+            .behaviours(
+                new SetRandomWalkTarget<ChickadeeEntity>()
+                    .setRadius(32, 16),
+                new Idle<ChickadeeEntity>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
@@ -269,7 +282,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -283,7 +296,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -295,6 +308,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
     @Override
     public Map<Activity, BrainActivityGroup<? extends ChickadeeEntity>> getAdditionalTasks() {
         Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends ChickadeeEntity>> taskList = new Object2ObjectOpenHashMap<>();
+        taskList.put(FowlPlayActivities.FORAGE.get(), this.getForageTasks());
         taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
         taskList.put(Activity.AVOID, this.getAvoidTasks());
         taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
@@ -306,6 +320,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements SmartBrainOwner
         return ObjectArrayList.of(
             Activity.AVOID,
             FowlPlayActivities.PICK_UP.get(),
+            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
             Activity.IDLE
         );

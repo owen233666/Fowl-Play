@@ -293,7 +293,6 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
                 new OneRandomBehaviour<>(
                     Pair.of(
                         new SetRandomWalkTarget<HawkEntity>()
-                            .speedModifier((entity, target) -> Birds.WALK_SPEED)
                             .setRadius(24, 12)
                             .startCondition(Predicate.not(Birds::isPerched)),
                         4
@@ -366,7 +365,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
             .behaviours(
                 MoveAwayFromTargetTask.entity(
                     MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true
                 )
             )
@@ -380,7 +379,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
             .behaviours(
                 GoToNearestItemTask.create(
                     Birds::canPickupFood,
-                    entity -> Birds.RUN_SPEED,
+                    entity -> Birds.FAST_SPEED,
                     true,
                     Birds.ITEM_PICK_UP_RANGE
                 )
@@ -397,8 +396,7 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
             .behaviours(
                 new InvalidateAttackTarget<>(),
                 FlightTasks.startFlying(),
-                new SetWalkTargetToAttackTarget<>()
-                    .speedMod((entity, target) -> Birds.WALK_SPEED),
+                new SetWalkTargetToAttackTarget<>(),
                 new AnimatableMeleeAttack<>(0),
                 new InvalidateMemory<HawkEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                     .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
