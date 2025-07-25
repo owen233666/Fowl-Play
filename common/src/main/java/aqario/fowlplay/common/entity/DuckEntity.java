@@ -332,6 +332,7 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
                     .setRadius(32, 16),
                 new Idle<DuckEntity>()
                     .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+                    .startCondition(entity -> !entity.isFlying())
             )
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
             .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
@@ -398,8 +399,8 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
             Activity.AVOID,
             Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.FORAGE.get(),
-            Activity.IDLE
+            Activity.IDLE,
+            FowlPlayActivities.FORAGE.get()
         );
     }
 

@@ -304,8 +304,8 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         return ObjectArrayList.of(
             Activity.AVOID,
             FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
+            FowlPlayActivities.FORAGE.get(),
             Activity.IDLE
         );
     }

@@ -381,8 +381,8 @@ public class CrowEntity extends TrustingBirdEntity implements SmartBrainOwner<Cr
             Activity.AVOID,
             Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
+            FowlPlayActivities.FORAGE.get(),
             Activity.IDLE
         );
     }

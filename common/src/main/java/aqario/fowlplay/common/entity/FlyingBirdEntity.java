@@ -54,24 +54,36 @@ public abstract class FlyingBirdEntity extends BirdEntity {
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.235f);
     }
 
+    private static boolean hasSkyAccess(WorldAccess world, BlockPos pos) {
+        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY();
+    }
+
+    private static boolean isMidairSpawn(WorldAccess world, BlockPos pos) {
+        return world.getTopY(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()) <= pos.getY() - 32
+            && world.getBlockState(pos.down()).isAir();
+    }
+
     @SuppressWarnings("unused")
     public static boolean canSpawnPasserines(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY()
-            && world.getBlockState(pos.down()).getBlock() instanceof LeavesBlock
-            && world.getBlockState(pos.down()).get(Properties.DISTANCE_1_7) < 7;
+        return hasSkyAccess(world, pos)
+            && ((world.getBlockState(pos.down()).getBlock() instanceof LeavesBlock
+            && world.getBlockState(pos.down()).get(Properties.DISTANCE_1_7) < 7)
+            || isMidairSpawn(world, pos));
     }
 
     @SuppressWarnings("unused")
     public static boolean canSpawnShorebirds(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY()
+        return hasSkyAccess(world, pos)
             && (world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.SHOREBIRDS_SPAWNABLE_ON)
-            || world.getFluidState(pos.down()).isIn(FluidTags.WATER));
+            || world.getFluidState(pos.down()).isIn(FluidTags.WATER)
+            || isMidairSpawn(world, pos));
     }
 
     @SuppressWarnings("unused")
     public static boolean canSpawnWaterfowl(EntityType<? extends BirdEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) <= pos.getY()
-            && world.getFluidState(pos.down()).isIn(FluidTags.WATER);
+        return hasSkyAccess(world, pos)
+            && (world.getFluidState(pos.down()).isIn(FluidTags.WATER)
+            || isMidairSpawn(world, pos));
     }
 
     @Override

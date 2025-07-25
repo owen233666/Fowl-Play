@@ -407,8 +407,8 @@ public class RavenEntity extends TrustingBirdEntity implements SmartBrainOwner<R
             Activity.AVOID,
             Activity.FIGHT,
             FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.PERCH.get(),
+            FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.SOAR.get(),
             Activity.IDLE
         );
