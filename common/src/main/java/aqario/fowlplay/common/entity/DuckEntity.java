@@ -58,6 +58,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -235,6 +236,11 @@ public class DuckEntity extends TrustingBirdEntity implements SmartBrainOwner<Du
     @Override
     public float getWaterline() {
         return 0.35F;
+    }
+
+    @Override
+    public SquareRadius getWalkRange() {
+        return new SquareRadius(24, 12);
     }
 
     @Override

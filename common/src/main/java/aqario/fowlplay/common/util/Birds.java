@@ -40,7 +40,6 @@ public final class Birds {
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
-    public static final SquareRadius WALK_RANGE = new SquareRadius(16, 8);
     public static final SquareRadius FLY_AVOID_RANGE = new SquareRadius(6, 6);
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
@@ -63,8 +62,8 @@ public final class Birds {
         double dz = target.z - pos.z;
         double dxz2 = dx * dx + dz * dz;
         double dy2 = dy * dy;
-        double xzRadius = WALK_RANGE.xzRadius();
-        double yRadius = WALK_RANGE.yRadius();
+        double xzRadius = bird.getWalkRange().xzRadius();
+        double yRadius = bird.getWalkRange().yRadius();
         return dxz2 > xzRadius * xzRadius || dy2 > yRadius * yRadius;
     }
 

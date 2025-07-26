@@ -30,6 +30,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
@@ -120,6 +121,11 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public abstract float getFlapVolume();
 
     public abstract float getFlapPitch();
+
+    // range where the bird prefers walking over flying
+    public SquareRadius getWalkRange() {
+        return new SquareRadius(16, 8);
+    }
 
     @Override
     public void tick() {
