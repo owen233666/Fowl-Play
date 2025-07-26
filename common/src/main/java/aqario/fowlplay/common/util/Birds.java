@@ -49,7 +49,8 @@ public final class Birds {
     public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
         // noinspection ConstantConditions
         if(bird.canStartFlying()
-            && (shouldFlyToDestination(bird, path.getTarget().toCenterPos()) || shouldFlyFromAvoidTarget(bird))
+            && (shouldFlyToDestination(bird, path.getTarget().toCenterPos()) && !(bird.getType().isIn(FowlPlayEntityTypeTags.WATERBIRDS) && bird.isInsideWaterOrBubbleColumn())
+            || shouldFlyFromAvoidTarget(bird))
         ) {
             bird.startFlying();
         }
