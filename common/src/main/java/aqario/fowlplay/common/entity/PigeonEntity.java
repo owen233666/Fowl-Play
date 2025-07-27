@@ -99,19 +99,19 @@ public class PigeonEntity extends TameableBirdEntity implements SmartBrainOwner<
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         float f = world.getRandom().nextFloat();
-        if(f < 0.5f) {
+        if(f < 0.5f) { // 50% chance for banded
             FowlPlayRegistries.PIGEON_VARIANT.getEntry(PigeonVariant.BANDED).ifPresent(this::setVariant);
         }
-        else if(f < 0.75f) {
+        else if(f < 0.75f) { // 25% chance for checkered
             FowlPlayRegistries.PIGEON_VARIANT.getEntry(PigeonVariant.CHECKERED).ifPresent(this::setVariant);
         }
-        else if(f < 0.9f) {
+        else if(f < 0.95f) { // 20% chance for gray
             FowlPlayRegistries.PIGEON_VARIANT.getEntry(PigeonVariant.GRAY).ifPresent(this::setVariant);
         }
-        else if(f < 0.975f) {
+        else if(f < 0.99f) { // 4% chance for rusty
             FowlPlayRegistries.PIGEON_VARIANT.getEntry(PigeonVariant.RUSTY).ifPresent(this::setVariant);
         }
-        else {
+        else { // 1% chance for white
             FowlPlayRegistries.PIGEON_VARIANT.getEntry(PigeonVariant.WHITE).ifPresent(this::setVariant);
         }
         return super.initialize(world, difficulty, spawnReason, entityData);
