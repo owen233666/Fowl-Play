@@ -3,6 +3,7 @@ package aqario.fowlplay.core.platform.neoforge;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import aqario.fowlplay.core.platform.PlatformHelper;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.data.TrackedDataHandler;
@@ -77,6 +79,10 @@ public class PlatformHelperImpl {
         Registries.PARTICLE_TYPE,
         FowlPlay.ID
     );
+    public static final DeferredRegister<Schedule> SCHEDULES = DeferredRegister.create(
+        Registries.SCHEDULE,
+        FowlPlay.ID
+    );
     public static final DeferredRegister<SensorType<?>> SENSOR_TYPES = DeferredRegister.create(
         Registries.SENSOR_TYPE,
         FowlPlay.ID
@@ -123,7 +129,7 @@ public class PlatformHelperImpl {
     // TODO: Add items to group automatically
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
         Supplier<Item> registry = ITEMS.register(id, item);
-//        addItemToItemGroup(registry, group);
+        PlatformHelper.addItemToItemGroup(registry, group);
         return registry;
     }
 
@@ -137,6 +143,10 @@ public class PlatformHelperImpl {
 
     public static Supplier<SimpleParticleType> registerParticleType(String id, Supplier<SimpleParticleType> particleType) {
         return PARTICLE_TYPES.register(id, particleType);
+    }
+
+    public static Supplier<Schedule> registerSchedule(String id, Supplier<Schedule> schedule) {
+        return SCHEDULES.register(id, schedule);
     }
 
     public static <T extends Sensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<SensorType<T>> sensorType) {
