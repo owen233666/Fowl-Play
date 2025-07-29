@@ -7,6 +7,24 @@ architectury {
     neoForge()
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    neoForge {
+        runs {
+            all {}
+
+            data {
+                data()
+                programArgs("--all", "--mod", "${project.mod_id}")
+                programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
+                programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
+                all {}
+            }
+        }
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -53,9 +71,7 @@ dependencies {
     modRuntimeOnly("maven.modrinth:nbt-autocomplete:${project.nbt_autocomplete_version}-neoforge,1.21.1")
 
     // Smart Brain Lib
-    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${project.minecraft_version}:${project.sbl_version}") {
-        transitive = false
-    }
+    modImplementation("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${project.minecraft_version}:${project.sbl_version}")
 
     // Suggestion Tweaker
     modRuntimeOnly("maven.modrinth:suggestion-tweaker:${project.suggestion_tweaker_version}+neoforge")
@@ -68,12 +84,18 @@ dependencies {
 }
 
 shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+    archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set(null)
+    atAccessWideners.add("${mod_id}.accesswidener")
 }
 
 def generatedResources = file("src/generated")
@@ -81,15 +103,5 @@ def generatedResources = file("src/generated")
 sourceSets {
     main {
         resources.srcDir generatedResources
-    }
-}
-
-loom {
-    runs {
-        data {
-            data()
-            programArgs "--all", "--mod", "${project.archives_name}"
-            programArgs "--output", generatedResources.absolutePath
-        }
     }
 }
