@@ -1,26 +1,22 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayActivities;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
@@ -29,7 +25,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -40,7 +35,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFl
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -49,10 +43,8 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
-public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<CardinalEntity> {
+public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<CardinalEntity> {
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
     public final AnimationState flappingState = new AnimationState();
@@ -169,144 +161,76 @@ public class CardinalEntity extends FlyingBirdEntity implements SmartBrainOwner<
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends CardinalEntity> getCoreTasks() {
-        return new BrainActivityGroup<CardinalEntity>(Activity.CORE)
-            .priority(0)
-            .behaviours(
-                new FloatToSurfaceOfFluid<>(),
-                FlightTasks.stopFalling(),
-                new LookAtTarget<>()
-                    .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
-                new MoveToWalkTarget<>()
-            );
+        return BirdBrain.coreActivity(
+            new FloatToSurfaceOfFluid<>(),
+            FlightTasks.stopFalling(),
+            new LookAtTarget<>()
+                .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+            new MoveToWalkTarget<>()
+        );
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public BrainActivityGroup<? extends CardinalEntity> getAvoidTasks() {
+        return BirdBrain.avoidActivity(
+            MoveAwayFromTargetTask.entity(
+                MemoryModuleType.AVOID_TARGET,
+                entity -> Birds.FAST_SPEED,
+                true
+            )
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends CardinalEntity> getForageTasks() {
+        return BirdBrain.forageActivity(
+            new SetRandomWalkTarget<>()
+                .setRadius(32, 16),
+            new Idle<>()
+                .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+        );
+    }
+
     @Override
     public BrainActivityGroup<? extends CardinalEntity> getIdleTasks() {
-        return new BrainActivityGroup<CardinalEntity>(Activity.IDLE)
-            .priority(10)
-            .behaviours(
-                new BreedWithPartner<>(),
-                new FollowParent<>(),
-                SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetRandomLookTarget<>()
-                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        TargetlessFlyTask.create(),
-                        1
-                    )
-                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        new SetRandomWalkTarget<CardinalEntity>()
-                            .setRadius(24, 12)
-                            .startCondition(Predicate.not(Birds::isPerched)),
-                        4
-                    ),
-                    Pair.of(
-                        new Idle<CardinalEntity>()
-                            .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
-                        4
-                    ),
-                    Pair.of(
-                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
-                        1
-                    )
-                ).startCondition(entity -> !entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
+        return BirdBrain.idleActivity(
+            new BreedWithPartner<>(),
+            new FollowParent<>(),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            new LookAroundTask<>()
+        );
     }
 
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends CardinalEntity> getForageTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.FORAGE.get())
-            .priority(10)
-            .behaviours(
-                new SetRandomWalkTarget<CardinalEntity>()
-                    .setRadius(32, 16),
-                new Idle<CardinalEntity>()
-                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
+    @Override
     public BrainActivityGroup<? extends CardinalEntity> getPerchTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PERCH.get())
-            .priority(10)
-            .behaviours(
-                TargetlessFlyTask.perch()
-                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        new Idle<CardinalEntity>()
-                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                        8
-                    ),
-                    Pair.of(
-                        TargetlessFlyTask.perch(),
-                        1
-                    )
-                ).startCondition(Birds::isPerched)
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends CardinalEntity> getAvoidTasks() {
-        return new BrainActivityGroup<CardinalEntity>(Activity.AVOID)
-            .priority(10)
-            .behaviours(
-                MoveAwayFromTargetTask.entity(
-                    MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.FAST_SPEED,
-                    true
+        return BirdBrain.perchActivity(
+            TargetlessFlyTask.perch()
+                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+            new OneRandomBehaviour<>(
+                Pair.of(
+                    new Idle<>()
+                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                    8
+                ),
+                Pair.of(
+                    TargetlessFlyTask.perch(),
+                    1
                 )
-            )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
+            ).startCondition(Birds::isPerched)
+        );
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public BrainActivityGroup<? extends CardinalEntity> getPickupFoodTasks() {
-        return new BrainActivityGroup<CardinalEntity>(FowlPlayActivities.PICK_UP.get())
-            .priority(10)
-            .behaviours(
-                GoToNearestItemTask.create(
-                    Birds::canPickupFood,
-                    entity -> Birds.FAST_SPEED,
-                    true,
-                    Birds.ITEM_PICK_UP_RANGE
-                )
+        return BirdBrain.pickupFoodActivity(
+            GoToNearestItemTask.create(
+                Birds::canPickupFood,
+                entity -> Birds.FAST_SPEED,
+                true,
+                Birds.ITEM_PICK_UP_RANGE
             )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @Override
-    public Map<Activity, BrainActivityGroup<? extends CardinalEntity>> getAdditionalTasks() {
-        Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends CardinalEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.FORAGE.get(), this.getForageTasks());
-        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
-        taskList.put(Activity.AVOID, this.getAvoidTasks());
-        taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
-        return taskList;
-    }
-
-    @Override
-    public List<Activity> getActivityPriorities() {
-        return ObjectArrayList.of(
-            Activity.AVOID,
-            FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.PERCH.get(),
-            FowlPlayActivities.FORAGE.get(),
-            Activity.IDLE
         );
     }
 

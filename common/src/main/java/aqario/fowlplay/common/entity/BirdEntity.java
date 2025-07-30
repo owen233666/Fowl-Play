@@ -388,7 +388,7 @@ public abstract class BirdEntity extends AnimalEntity {
 
     @Override
     public int getMaxHeadRotation() {
-        return 90;
+        return 135;
     }
 
     protected MoveControl createMoveControl() {

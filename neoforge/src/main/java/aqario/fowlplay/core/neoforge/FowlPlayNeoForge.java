@@ -11,15 +11,12 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 @Mod(FowlPlay.ID)
 public final class FowlPlayNeoForge {
     public FowlPlayNeoForge(ModContainer mod, IEventBus modBus) {
-        IEventBus bus = NeoForge.EVENT_BUS;
-
         FowlPlay.init();
 
         if(FMLEnvironment.dist == Dist.CLIENT) {

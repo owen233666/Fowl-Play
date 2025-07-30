@@ -1,23 +1,20 @@
 package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
+import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayActivities;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -33,7 +30,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -45,11 +41,9 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -58,11 +52,9 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<HawkEntity> {
+public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
     public final AnimationState floatingState = new AnimationState();
@@ -256,173 +248,101 @@ public class HawkEntity extends TrustingBirdEntity implements SmartBrainOwner<Ha
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends HawkEntity> getCoreTasks() {
-        return new BrainActivityGroup<HawkEntity>(Activity.CORE)
-            .priority(0)
-            .behaviours(
-                new FloatToSurfaceOfFluid<>()
-                    .riseChance(0.5F),
-                FlightTasks.stopFalling(),
-                new SetAttackTarget<HawkEntity>()
-                    .attackPredicate(Birds::canAttack),
-                new LookAtTarget<>()
-                    .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
-                new MoveToWalkTarget<>()
-            );
+        return BirdBrain.coreActivity(
+            new FloatToSurfaceOfFluid<>()
+                .riseChance(0.5F),
+            FlightTasks.stopFalling(),
+            new SetAttackTarget<HawkEntity>()
+                .attackPredicate(Birds::canAttack),
+            new LookAtTarget<>()
+                .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+            new MoveToWalkTarget<>()
+        );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public BrainActivityGroup<? extends HawkEntity> getIdleTasks() {
-        return new BrainActivityGroup<HawkEntity>(Activity.IDLE)
-            .priority(10)
-            .behaviours(
-                new BreedWithPartner<>(),
-                new FollowParent<>(),
-                SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-                new SetRandomLookTarget<>()
-                    .lookTime(entity -> entity.getRandom().nextBetween(150, 250)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        TargetlessFlyTask.create(),
-                        1
-                    )
-                ).startCondition(entity -> entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        new SetRandomWalkTarget<HawkEntity>()
-                            .setRadius(24, 12)
-                            .startCondition(Predicate.not(Birds::isPerched)),
-                        4
-                    ),
-                    Pair.of(
-                        new Idle<HawkEntity>()
-                            .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
-                        4
-                    )
-                ).startCondition(entity -> !entity.isFlying() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
-        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.PERCH.get())
-            .priority(10)
-            .behaviours(
-                TargetlessFlyTask.perch()
-                    .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        new Idle<HawkEntity>()
-                            .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                        8
-                    ),
-                    Pair.of(
-                        TargetlessFlyTask.perch(),
-                        1
-                    )
-                ).startCondition(Birds::isPerched)
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
-        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.SOAR.get())
-            .priority(10)
-            .behaviours(
-                new OneRandomBehaviour<>(
-                    Pair.of(
-                        TargetlessFlyTask.perch(),
-                        1
-                    ),
-                    Pair.of(
-                        TargetlessFlyTask.create(),
-                        5
-                    ),
-                    Pair.of(
-                        SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
-                        2
-                    )
-                ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
     public BrainActivityGroup<? extends HawkEntity> getAvoidTasks() {
-        return new BrainActivityGroup<HawkEntity>(Activity.AVOID)
-            .priority(10)
-            .behaviours(
-                MoveAwayFromTargetTask.entity(
-                    MemoryModuleType.AVOID_TARGET,
-                    entity -> Birds.FAST_SPEED,
-                    true
-                )
+        return BirdBrain.avoidActivity(
+            MoveAwayFromTargetTask.entity(
+                MemoryModuleType.AVOID_TARGET,
+                entity -> Birds.FAST_SPEED,
+                true
             )
-            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.IS_AVOIDING.get());
+        );
     }
 
-    @SuppressWarnings("unchecked")
-    public BrainActivityGroup<? extends HawkEntity> getPickupFoodTasks() {
-        return new BrainActivityGroup<HawkEntity>(FowlPlayActivities.PICK_UP.get())
-            .priority(10)
-            .behaviours(
-                GoToNearestItemTask.create(
-                    Birds::canPickupFood,
-                    entity -> Birds.FAST_SPEED,
-                    true,
-                    Birds.ITEM_PICK_UP_RANGE
-                )
-            )
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT);
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends HawkEntity> getFightTasks() {
-        return new BrainActivityGroup<HawkEntity>(Activity.FIGHT)
-            .priority(10)
-            .behaviours(
-                new InvalidateAttackTarget<>(),
-                FlightTasks.startFlying(),
-                new SetWalkTargetToAttackTarget<>(),
-                new AnimatableMeleeAttack<>(0),
-                new InvalidateMemory<HawkEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
-                    .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
+        return BirdBrain.fightActivity(
+            new InvalidateAttackTarget<>(),
+            FlightTasks.startFlying(),
+            new SetWalkTargetToAttackTarget<>(),
+            new AnimatableMeleeAttack<>(0),
+            new InvalidateMemory<HawkEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
+                .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends HawkEntity> getIdleTasks() {
+        return BirdBrain.idleActivity(
+            new BreedWithPartner<>(),
+            new FollowParent<>(),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            new LookAroundTask<>()
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
+        return BirdBrain.perchActivity(
+            TargetlessFlyTask.perch()
+                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+            new OneRandomBehaviour<>(
+                Pair.of(
+                    new Idle<>()
+                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
+                    8
+                ),
+                Pair.of(
+                    TargetlessFlyTask.perch(),
+                    1
+                )
+            ).startCondition(Birds::isPerched)
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends HawkEntity> getPickupFoodTasks() {
+        return BirdBrain.pickupFoodActivity(
+            GoToNearestItemTask.create(
+                Birds::canPickupFood,
+                entity -> Birds.FAST_SPEED,
+                true,
+                Birds.ITEM_PICK_UP_RANGE
             )
-            .requireAndWipeMemoriesOnUse(MemoryModuleType.ATTACK_TARGET);
+        );
     }
 
     @Override
-    public Map<Activity, BrainActivityGroup<? extends HawkEntity>> getAdditionalTasks() {
-        Object2ObjectOpenHashMap<Activity, BrainActivityGroup<? extends HawkEntity>> taskList = new Object2ObjectOpenHashMap<>();
-        taskList.put(FowlPlayActivities.PERCH.get(), this.getPerchTasks());
-        taskList.put(FowlPlayActivities.SOAR.get(), this.getSoarTasks());
-        taskList.put(Activity.AVOID, this.getAvoidTasks());
-        taskList.put(FowlPlayActivities.PICK_UP.get(), this.getPickupFoodTasks());
-        return taskList;
-    }
-
-    @Override
-    public List<Activity> getActivityPriorities() {
-        return ObjectArrayList.of(
-            Activity.AVOID,
-            Activity.FIGHT,
-            FowlPlayActivities.PICK_UP.get(),
-            FowlPlayActivities.PERCH.get(),
-            FowlPlayActivities.SOAR.get(),
-            Activity.IDLE
+    public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
+        return BirdBrain.soarActivity(
+            new OneRandomBehaviour<>(
+                Pair.of(
+                    TargetlessFlyTask.perch(),
+                    1
+                ),
+                Pair.of(
+                    TargetlessFlyTask.create(),
+                    5
+                ),
+                Pair.of(
+                    SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    2
+                )
+            ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }
 
