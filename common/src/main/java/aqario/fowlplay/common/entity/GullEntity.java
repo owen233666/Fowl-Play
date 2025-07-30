@@ -46,6 +46,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
@@ -332,6 +333,13 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
                 true,
                 Birds.ITEM_PICK_UP_RANGE
             )
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GullEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
         );
     }
 

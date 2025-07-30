@@ -39,6 +39,7 @@ public class FowlPlay {
         FowlPlayItems.init();
         FowlPlayMemoryModuleType.init();
         FowlPlayParticleTypes.init();
+        FowlPlaySchedules.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
         FowlPlayTrackedDataHandlerRegistry.init();

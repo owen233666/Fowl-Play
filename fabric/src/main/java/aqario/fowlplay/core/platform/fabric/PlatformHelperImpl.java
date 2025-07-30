@@ -19,7 +19,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.data.TrackedDataHandler;
@@ -38,6 +37,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -92,8 +92,8 @@ public class PlatformHelperImpl {
         return () -> registry;
     }
 
-    public static Supplier<Schedule> registerSchedule(String id, Supplier<Schedule> schedule) {
-        Schedule registry = Registry.register(Registries.SCHEDULE, Identifier.of(FowlPlay.ID, id), schedule.get());
+    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
+        SmartBrainSchedule registry = Registry.register(Registries.SCHEDULE, Identifier.of(FowlPlay.ID, id), schedule.get());
         return () -> registry;
     }
 

@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.NameGenerator;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
@@ -63,6 +64,7 @@ public class FowlPlayDebugInfoSender {
         List<String> activities = brain.getPossibleActivities().stream().map(Activity::getId).toList();
         List<String> behaviors = brain.getRunningTasks().stream().map(Task::getName).toList();
         List<String> memories = getMemoryDescriptions(bird, bird.getWorld().getTime());
+        String schedule = Optional.ofNullable(Registries.SCHEDULE.getId(brain.getSchedule())).map(Identifier::getPath).orElse(null);
         Set<BlockPos> pois = Set.of();
         Set<BlockPos> potentialPois = Set.of();
 
@@ -83,6 +85,7 @@ public class FowlPlayDebugInfoSender {
             activities,
             behaviors,
             memories,
+            schedule,
             pois,
             potentialPois
         );

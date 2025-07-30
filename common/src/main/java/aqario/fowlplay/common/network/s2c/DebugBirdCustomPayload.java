@@ -56,6 +56,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         List<String> possibleActivities,
         List<String> runningTasks,
         List<String> memories,
+        @Nullable String schedule,
         Set<BlockPos> pois,
         Set<BlockPos> potentialPois
     ) {
@@ -77,6 +78,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
                 buf.readList(PacketByteBuf::readString),
                 buf.readList(PacketByteBuf::readString),
                 buf.readList(PacketByteBuf::readString),
+                buf.readNullable(PacketByteBuf::readString),
                 buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC),
                 buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC)
             );
@@ -99,6 +101,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
             buf.writeCollection(this.possibleActivities, PacketByteBuf::writeString);
             buf.writeCollection(this.runningTasks, PacketByteBuf::writeString);
             buf.writeCollection(this.memories, PacketByteBuf::writeString);
+            buf.writeNullable(this.schedule, PacketByteBuf::writeString);
             buf.writeCollection(this.pois, BlockPos.PACKET_CODEC);
             buf.writeCollection(this.potentialPois, BlockPos.PACKET_CODEC);
         }

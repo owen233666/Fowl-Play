@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -36,6 +35,10 @@ public interface BirdBrain<E extends BirdEntity & BirdBrain<E>> extends SmartBra
     }
 
     default BrainActivityGroup<? extends E> getPickupFoodTasks() {
+        return BrainActivityGroup.empty();
+    }
+
+    default BrainActivityGroup<? extends E> getRestTasks() {
         return BrainActivityGroup.empty();
     }
 
@@ -68,42 +71,33 @@ public interface BirdBrain<E extends BirdEntity & BirdBrain<E>> extends SmartBra
 
     @SafeVarargs
     static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> forageActivity(MultiTickTask<? super T>... behaviours) {
-        return new BrainActivityGroup<T>(FowlPlayActivities.FORAGE.get()).priority(10).behaviours(behaviours)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+        return new BrainActivityGroup<T>(FowlPlayActivities.FORAGE.get()).priority(10).behaviours(behaviours);
     }
 
     @SafeVarargs
     static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleActivity(MultiTickTask<? super T>... behaviours) {
-        return new BrainActivityGroup<T>(Activity.IDLE).priority(10).behaviours(behaviours)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+        return new BrainActivityGroup<T>(Activity.IDLE).priority(10).behaviours(behaviours);
     }
 
     @SafeVarargs
     static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> perchActivity(MultiTickTask<? super T>... behaviours) {
-        return new BrainActivityGroup<T>(FowlPlayActivities.PERCH.get()).priority(10).behaviours(behaviours)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+        return new BrainActivityGroup<T>(FowlPlayActivities.PERCH.get()).priority(10).behaviours(behaviours);
     }
 
     @SafeVarargs
     static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> pickupFoodActivity(MultiTickTask<? super T>... behaviours) {
-        return new BrainActivityGroup<T>(FowlPlayActivities.PERCH.get()).priority(10).behaviours(behaviours)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+        return new BrainActivityGroup<T>(FowlPlayActivities.PICK_UP.get()).priority(10).behaviours(behaviours)
+            .requireAndWipeMemoriesOnUse(FowlPlayMemoryModuleType.SEES_FOOD.get());
+    }
+
+    @SafeVarargs
+    static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> restActivity(MultiTickTask<? super T>... behaviours) {
+        return new BrainActivityGroup<T>(Activity.REST).priority(10).behaviours(behaviours);
     }
 
     @SafeVarargs
     static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> soarActivity(MultiTickTask<? super T>... behaviours) {
-        return new BrainActivityGroup<T>(FowlPlayActivities.SOAR.get()).priority(10).behaviours(behaviours)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryModuleState.VALUE_PRESENT)
-            .onlyStartWithMemoryStatus(FowlPlayMemoryModuleType.IS_AVOIDING.get(), MemoryModuleState.VALUE_ABSENT)
-            .onlyStartWithMemoryStatus(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT);
+        return new BrainActivityGroup<T>(FowlPlayActivities.SOAR.get()).priority(10).behaviours(behaviours);
     }
 
     @Override
@@ -132,6 +126,9 @@ public interface BirdBrain<E extends BirdEntity & BirdBrain<E>> extends SmartBra
             taskList.put(FowlPlayActivities.PERCH.get(), activityGroup);
         }
         // idle is already handled
+        if(!(activityGroup = this.getRestTasks()).getBehaviours().isEmpty()) {
+            taskList.put(Activity.REST, activityGroup);
+        }
 
         return taskList;
     }
@@ -146,7 +143,8 @@ public interface BirdBrain<E extends BirdEntity & BirdBrain<E>> extends SmartBra
             FowlPlayActivities.FORAGE.get(),
             FowlPlayActivities.SOAR.get(),
             FowlPlayActivities.PERCH.get(),
-            Activity.IDLE
+            Activity.IDLE,
+            Activity.REST
         );
     }
 

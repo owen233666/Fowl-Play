@@ -485,6 +485,13 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         );
     }
 
+    @Override
+    public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
+        );
+    }
+
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
         UUID recipientUuid = pigeon.getBrain().getOptionalRegisteredMemory(FowlPlayMemoryModuleType.RECIPIENT.get()).orElse(null);
         if(recipientUuid == null) {

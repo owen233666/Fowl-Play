@@ -338,6 +338,13 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     }
 
     @Override
+    public BrainActivityGroup<? extends DuckEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
+        );
+    }
+
+    @Override
     protected void mobTick() {
         Brain<?> brain = this.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);

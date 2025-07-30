@@ -327,6 +327,13 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
+    public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
+        );
+    }
+
+    @Override
     public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(

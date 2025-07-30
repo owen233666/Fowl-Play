@@ -34,6 +34,7 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegistryBuilder;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -145,7 +146,7 @@ public class PlatformHelperImpl {
         return PARTICLE_TYPES.register(id, particleType);
     }
 
-    public static Supplier<Schedule> registerSchedule(String id, Supplier<Schedule> schedule) {
+    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
         return SCHEDULES.register(id, schedule);
     }
 

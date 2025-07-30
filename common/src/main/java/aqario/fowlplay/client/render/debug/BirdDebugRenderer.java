@@ -125,6 +125,11 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
             i++;
         }
 
+        if(birdData.schedule() != null) {
+            drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.schedule(), -23296, 0.02F);
+            i++;
+        }
+
         if(targeted) {
             for(String string : Lists.reverse(birdData.memories())) {
                 drawString(matrices, vertexConsumers, birdData.pos(), i, string, -3355444, 0.02F);

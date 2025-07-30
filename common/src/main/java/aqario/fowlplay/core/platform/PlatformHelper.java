@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.data.TrackedDataHandler;
@@ -22,6 +21,7 @@ import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundEvent;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -62,7 +62,7 @@ public class PlatformHelper {
     }
 
     @ExpectPlatform
-    public static Supplier<Schedule> registerSchedule(String id, Supplier<Schedule> schedule) {
+    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
         throw new AssertionError();
     }
 

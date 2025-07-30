@@ -703,6 +703,13 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     }
 
     @Override
+    public BrainActivityGroup<? extends PenguinEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
+        );
+    }
+
+    @Override
     protected void mobTick() {
         Brain<?> brain = this.getBrain();
         Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);

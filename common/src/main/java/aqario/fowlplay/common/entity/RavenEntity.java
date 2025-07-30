@@ -5,7 +5,9 @@ import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
+import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -44,6 +46,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarge
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -307,6 +310,13 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     @Override
+    public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
+        return BirdBrain.restActivity(
+            new Idle<>()
+        );
+    }
+
+    @Override
     public BrainActivityGroup<? extends RavenEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
@@ -324,6 +334,17 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
+    }
+
+    @Nullable
+    @Override
+    public SmartBrainSchedule getSchedule() {
+        return FowlPlaySchedules.FORAGER.get();
+    }
+
+    @Override
+    public Activity getDefaultActivity() {
+        return FowlPlayActivities.PERCH.get();
     }
 
     @Override
