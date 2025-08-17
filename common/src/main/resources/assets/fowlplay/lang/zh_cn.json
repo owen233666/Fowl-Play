@@ -1,7 +1,7 @@
 {
   "advancements.adventure.damage_flying_bird.title": "鹰眼",
-  "advancements.adventure.damage_flying_bird.description": "射击一只飞行中的鸟",
-  "advancements.adventure.fly_penguin.title": "当企鹅飞起",
+  "advancements.adventure.damage_flying_bird.description": "射落一只飞行中的鸟",
+  "advancements.adventure.fly_penguin.title": "企鹅飞起之时",
   "advancements.adventure.fly_penguin.description": "骑着企鹅跳下悬崖",
   "config.title": "Fowl Play 配置",
   "config.info.restart": "需要重启Minecraft以生效配置更改",
