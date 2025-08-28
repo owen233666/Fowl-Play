@@ -455,7 +455,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 0.05f,
                 3f
             ),
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -464,7 +464,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)

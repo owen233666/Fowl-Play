@@ -195,7 +195,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     @Override
     public BrainActivityGroup<? extends BlueJayEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -204,10 +204,12 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 

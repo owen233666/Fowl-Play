@@ -93,7 +93,7 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
 
     @Nullable
     public Path findPathTo(BlockPos target, int distance) {
-        return this.findPathTo(ImmutableSet.of(target), 32, false, distance);
+        return this.findPathTo(ImmutableSet.of(target), 48, false, distance);
     }
 
     @Override
@@ -142,7 +142,13 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
 
 //        if (!this.attemptShortcut(shortcutNode, safeSurfacePos)) {
         if(this.isCloseToNextNode(NODE_REACH_RADIUS)/* || this.isAboutToTraverseVertically() && this.isCloseToNextNode(this.getNodeReachProximity())*/) {
-            this.currentPath.setCurrentNodeIndex(this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE);
+            int nextNodeIndex = this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE;
+            if(this.currentPath.getCurrentNodeIndex() < this.currentPath.getLength() - 1 && nextNodeIndex >= this.currentPath.getLength()) {
+                this.currentPath.setCurrentNodeIndex(this.currentPath.getLength() - 1);
+            }
+            else {
+                this.currentPath.setCurrentNodeIndex(nextNodeIndex);
+            }
         }
 //        }
 

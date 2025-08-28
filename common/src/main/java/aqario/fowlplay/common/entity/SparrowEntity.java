@@ -305,7 +305,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
                 0.05f,
                 3f
             ),
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -314,7 +314,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)

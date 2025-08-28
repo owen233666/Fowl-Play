@@ -262,7 +262,7 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     @Override
     public BrainActivityGroup<? extends RobinEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -271,7 +271,7 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)

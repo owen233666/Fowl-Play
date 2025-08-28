@@ -33,8 +33,17 @@ public class BirdMoveControl extends MoveControl {
     }
 
     private void tickFlying() {
-        FlyingBirdEntity flyingBird = (FlyingBirdEntity) this.bird;
         this.state = State.MOVE_TO;
+        FlyingBirdEntity flyingBird = (FlyingBirdEntity) this.bird;
+
+//        if(flyingBird.getNavigation().getCurrentPath() == null) {
+//            return;
+//        }
+//        BlockPos start = flyingBird.getNavigation().getCurrentPath().getNodePos(0);
+//        BlockPos destination = flyingBird.getNavigation().getCurrentPath().getTarget();
+//        if(start == null || destination == null) {
+//            return;
+//        }
 
         // distance to target
         Vec3d distance = new Vec3d(this.targetX - flyingBird.getX(), this.targetY - flyingBird.getY(), this.targetZ - flyingBird.getZ());
@@ -51,8 +60,11 @@ public class BirdMoveControl extends MoveControl {
         flyingBird.headYaw = flyingBird.getYaw();
 
         // speed
-        float speed = (float) (/*this.speed * */flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED);
-//        speed *= (float) Math.min(squaredDistance / 25, 1);
+        float speed = (float) flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
+//        double dist = Math.sqrt(flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination)));
+//        double totalDist = Math.sqrt(start.getSquaredDistance(destination)) + 2;
+//        System.out.println((totalDist - dist) + " / " + totalDist + " -> " + ease(1 - dist / totalDist));
+//        speed *= (float) ease(1 - dist / totalDist);
         flyingBird.setMovementSpeed(speed);
         double horizontalDistance = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 
@@ -68,6 +80,10 @@ public class BirdMoveControl extends MoveControl {
         float y = MathHelper.sin(flyingBird.getPitch() * (float) (Math.PI / 180.0));
         flyingBird.forwardSpeed = x * speed;
         flyingBird.upwardSpeed = -y * speed;
+    }
+
+    private static double ease(double x) {
+        return MathHelper.clamp(Math.sin(Math.PI * x) * 2, 0.2, 1);
     }
 
     private void tickWalking() {

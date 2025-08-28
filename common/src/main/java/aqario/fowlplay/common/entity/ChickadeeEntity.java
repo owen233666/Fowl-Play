@@ -226,7 +226,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     @Override
     public BrainActivityGroup<? extends ChickadeeEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -235,7 +235,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)

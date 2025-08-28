@@ -210,7 +210,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     @Override
     public BrainActivityGroup<? extends CardinalEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -219,7 +219,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)

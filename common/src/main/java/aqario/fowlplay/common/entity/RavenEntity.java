@@ -281,7 +281,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            TargetlessFlyTask.perch()
+            new PerchTask<>()
                 .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -290,7 +290,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                     8
                 ),
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 )
             ).startCondition(Birds::isPerched)
@@ -321,11 +321,11 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    TargetlessFlyTask.perch(),
+                    new PerchTask<>(),
                     1
                 ),
                 Pair.of(
-                    TargetlessFlyTask.create(),
+                    new TargetlessFlyTask<>(),
                     5
                 ),
                 Pair.of(

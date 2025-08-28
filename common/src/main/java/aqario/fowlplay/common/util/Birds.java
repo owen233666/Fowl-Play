@@ -192,6 +192,6 @@ public final class Birds {
     }
 
     public static boolean isPerched(BirdEntity entity) {
-        return entity.getWorld().getBlockState(entity.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PERCHES);
+        return entity.isOnGround() && entity.getWorld().getBlockState(entity.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PERCHES);
     }
 }

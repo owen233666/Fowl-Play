@@ -348,7 +348,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    TargetlessFlyTask.create(),
+                    new TargetlessFlyTask<>(),
                     1
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

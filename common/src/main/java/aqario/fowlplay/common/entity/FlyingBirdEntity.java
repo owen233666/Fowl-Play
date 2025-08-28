@@ -13,6 +13,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -46,6 +47,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
         this.setNavigation(false);
+        this.setPathfindingPenalty(PathNodeType.LEAVES, 0.0f);
     }
 
     public static DefaultAttributeContainer.Builder createFlyingBirdAttributes() {
@@ -203,7 +205,10 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     public float getPathfindingFavor(BlockPos pos, WorldView world) {
-        return this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 1.0F : 0.0F;
+        int perchBias = this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 2 : 1;
+        // birds prefer higher altitudes
+        float bias = (float) (Math.log(pos.getY()) + world.getTopY(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()));
+        return bias/* * perchBias*/;
     }
 
     @Override
