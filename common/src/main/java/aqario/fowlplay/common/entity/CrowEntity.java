@@ -211,8 +211,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<CrowEntity>()
                 .setScanRate(bird -> 10),
-            new AttackTargetSensor<CrowEntity>()
-                .setScanRate(bird -> 10)
+            new AttackTargetSensor<>()
         );
     }
 
@@ -284,7 +283,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
                 3f
             ),
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -316,7 +315,10 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public BrainActivityGroup<? extends CrowEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<CrowEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

@@ -53,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
     public final AnimationState standingState = new AnimationState();
@@ -243,8 +244,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<HawkEntity>()
                 .setScanRate(bird -> 10),
-            new AttackTargetSensor<HawkEntity>()
-                .setScanRate(bird -> 10)
+            new AttackTargetSensor<>()
         );
     }
 
@@ -299,7 +299,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -310,7 +310,9 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -329,7 +331,10 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<HawkEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

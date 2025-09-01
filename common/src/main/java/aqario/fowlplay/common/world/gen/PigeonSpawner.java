@@ -17,7 +17,7 @@ import net.minecraft.world.spawner.SpecialSpawner;
 import java.util.List;
 
 public class PigeonSpawner implements SpecialSpawner {
-    private static final int SPAWN_COOLDOWN = 1200;
+    private static final int SPAWN_COOLDOWN = 3600;
     private static final int MAX_PIGEONS = 6;
     private int ticksUntilNextSpawn;
 

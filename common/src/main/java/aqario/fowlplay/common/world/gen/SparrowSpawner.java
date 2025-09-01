@@ -18,7 +18,7 @@ import net.minecraft.world.spawner.SpecialSpawner;
 import java.util.List;
 
 public class SparrowSpawner implements SpecialSpawner {
-    private static final int SPAWN_COOLDOWN = 600;
+    private static final int SPAWN_COOLDOWN = 2400;
     private static final int MAX_SPARROWS = 12;
     private int ticksUntilNextSpawn;
 

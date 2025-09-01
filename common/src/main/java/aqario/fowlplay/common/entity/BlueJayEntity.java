@@ -228,7 +228,10 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     @Override
     public BrainActivityGroup<? extends BlueJayEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<BlueJayEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

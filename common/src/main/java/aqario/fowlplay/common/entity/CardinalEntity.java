@@ -43,10 +43,10 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<CardinalEntity> {
     public final AnimationState standingState = new AnimationState();
@@ -211,7 +211,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     public BrainActivityGroup<? extends CardinalEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -222,7 +222,9 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -241,7 +243,10 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     @Override
     public BrainActivityGroup<? extends CardinalEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<CardinalEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

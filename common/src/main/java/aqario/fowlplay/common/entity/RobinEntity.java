@@ -49,10 +49,10 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEntity>, VariantHolder<RobinEntity.Variant> {
     private static final TrackedData<String> VARIANT = DataTracker.registerData(RobinEntity.class, TrackedDataHandlerRegistry.STRING);
@@ -263,7 +263,7 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     public BrainActivityGroup<? extends RobinEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -274,7 +274,9 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -293,7 +295,10 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     @Override
     public BrainActivityGroup<? extends RobinEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<RobinEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

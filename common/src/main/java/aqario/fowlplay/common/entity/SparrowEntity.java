@@ -44,10 +44,10 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<SparrowEntity>, Flocking {
     public final AnimationState standingState = new AnimationState();
@@ -306,7 +306,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
                 3f
             ),
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -317,7 +317,9 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -336,7 +338,10 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
     @Override
     public BrainActivityGroup<? extends SparrowEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<SparrowEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

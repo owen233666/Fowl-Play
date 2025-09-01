@@ -56,6 +56,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEntity> {
     public final AnimationState standingState = new AnimationState();
@@ -216,8 +217,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<RavenEntity>()
                 .setScanRate(bird -> 10),
-            new AttackTargetSensor<RavenEntity>()
-                .setScanRate(bird -> 10)
+            new AttackTargetSensor<>()
         );
     }
 
@@ -282,7 +282,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -293,7 +293,9 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -312,7 +314,10 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<RavenEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

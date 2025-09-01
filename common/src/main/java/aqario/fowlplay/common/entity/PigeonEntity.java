@@ -13,6 +13,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -53,6 +54,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -63,6 +65,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class PigeonEntity extends TameableBirdEntity implements BirdBrain<PigeonEntity>, VariantHolder<RegistryEntry<PigeonVariant>>, Flocking {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(
@@ -393,7 +396,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             new AvoidTargetSensor<PigeonEntity>()
                 .setScanRate(bird -> 10),
             new PigeonSpecificSensor()
-                .setScanRate(bird -> 10)
         );
     }
 
@@ -456,7 +458,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 3f
             ),
             new PerchTask<>()
-                .startCondition(entity -> !Birds.isPerched(entity) && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
+                .startCondition(Predicate.not(Birds::isPerched)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new Idle<>()
@@ -467,7 +469,9 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                     new PerchTask<>(),
                     1
                 )
-            ).startCondition(Birds::isPerched)
+            )
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
@@ -488,8 +492,22 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<PigeonEntity>()
+                .startCondition(Birds::isPerched)
         );
+    }
+
+    @Nullable
+    @Override
+    public SmartBrainSchedule getSchedule() {
+        return FowlPlaySchedules.FORAGER.get();
+    }
+
+    @Override
+    public Activity getDefaultActivity() {
+        return FowlPlayActivities.PERCH.get();
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {

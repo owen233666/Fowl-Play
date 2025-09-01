@@ -63,6 +63,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEntity>, VariantHolder<RegistryEntry<GullVariant>> {
     private static final TrackedData<RegistryEntry<GullVariant>> VARIANT = DataTracker.registerData(
@@ -274,8 +275,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
                 .setScanRate(bird -> 10),
             new AvoidTargetSensor<GullEntity>()
                 .setScanRate(bird -> 10),
-            new AttackTargetSensor<GullEntity>()
-                .setScanRate(bird -> 10)
+            new AttackTargetSensor<>()
         );
     }
 
@@ -339,7 +339,10 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new Idle<>()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<GullEntity>()
+                .startCondition(Birds::isPerched)
         );
     }
 

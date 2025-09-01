@@ -26,6 +26,7 @@ public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> 
         return MEMORIES;
     }
 
+    // TODO: there should be a fallback for finding a ground location if no perches are found
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
