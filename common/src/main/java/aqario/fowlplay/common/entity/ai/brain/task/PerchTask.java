@@ -32,7 +32,7 @@ public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> 
         Optional<Vec3d> target = Optional.ofNullable(
             Optional.ofNullable(
                 FlightTargeting.findPerch(entity, HORIZONTAL_RANGE, VERTICAL_RANGE)
-            ).orElse(FlightTargeting.findSolid(entity, HORIZONTAL_RANGE, VERTICAL_RANGE))
+            ).orElse(/*FlightTargeting.findSolid(entity, HORIZONTAL_RANGE, VERTICAL_RANGE)*/ null)
         );
         BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, target.map((vec3d) ->
             new WalkTarget(vec3d, 1.0f, 0)).orElse(null)

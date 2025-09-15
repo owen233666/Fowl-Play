@@ -343,10 +343,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    new PerchTask<>(),
-                    1
-                ),
-                Pair.of(
                     new TargetlessFlyTask<>(),
                     5
                 ),

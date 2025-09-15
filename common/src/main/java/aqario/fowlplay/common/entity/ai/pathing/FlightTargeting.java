@@ -142,11 +142,12 @@ public class FlightTargeting {
 
     @Nullable
     public static BlockPos validatePerch(PathAwareEntity entity, BlockPos pos) {
-        pos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos -> NavigationConditions.isSolidAt(entity, currentPos));
+        pos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
+            NavigationConditions.isSolidAt(entity, currentPos) && !entity.getWorld().getBlockState(currentPos).isIn(FowlPlayBlockTags.PERCHES));
         return !NavigationConditions.isWaterAt(entity, pos)
             && !NavigationConditions.hasPathfindingPenalty(entity, pos)
-            && entity.getWorld().getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES)
-            ? pos.down()
+            && entity.getWorld().getBlockState(pos).isIn(FowlPlayBlockTags.PERCHES)
+            ? pos
             : null;
     }
 

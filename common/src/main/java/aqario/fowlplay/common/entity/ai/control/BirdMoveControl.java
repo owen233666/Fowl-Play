@@ -17,6 +17,7 @@ import net.minecraft.util.shape.VoxelShape;
 
 public class BirdMoveControl extends MoveControl {
     protected final BirdEntity bird;
+    private static final double DECELERATE_DISTANCE = 3.0;
 
     public BirdMoveControl(BirdEntity bird) {
         super(bird);
@@ -55,17 +56,15 @@ public class BirdMoveControl extends MoveControl {
         // speed
         float speed = (float) flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
         Path currentPath;
-        BlockPos start;
         BlockPos destination;
         if((currentPath = flyingBird.getNavigation().getCurrentPath()) != null
-            && (start = currentPath.getNodePos(0)) != null
             && (destination = currentPath.getTarget()) != null
-            && flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES)
+            && (flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES))
         ) {
-            double dist = Math.sqrt(flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination)));
-            double totalDist = Math.sqrt(start.getSquaredDistance(destination)) + 2;
-//            System.out.println((totalDist - dist) + " / " + totalDist + " -> " + ease(1 - dist / totalDist));
-            speed *= (float) ease(1 - dist / totalDist);
+            double dist = flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination));
+            if(dist < DECELERATE_DISTANCE * DECELERATE_DISTANCE) {
+                speed *= (float) ease(dist);
+            }
         }
         flyingBird.setMovementSpeed(speed);
         double horizontalDistance = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
@@ -85,7 +84,7 @@ public class BirdMoveControl extends MoveControl {
     }
 
     private static double ease(double x) {
-        return MathHelper.clamp(Math.sin(Math.PI * x) * 2, 0.2, 1);
+        return Math.max(1 / (DECELERATE_DISTANCE * DECELERATE_DISTANCE) * x, 0.25);
     }
 
     private void tickWalking() {

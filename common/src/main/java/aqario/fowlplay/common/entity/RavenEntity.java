@@ -326,10 +326,6 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    new PerchTask<>(),
-                    1
-                ),
-                Pair.of(
                     new TargetlessFlyTask<>(),
                     5
                 ),
