@@ -44,7 +44,6 @@
   "item.fowlplay.raven_spawn_egg" : "渡鴉 生怪蛋" ,
   "item.fowlplay.robin_spawn_egg" : "知更鳥 生怪蛋" ,
   "item.fowlplay.sparrow_spawn_egg" : "麻雀 生怪蛋" ,
-  "soundCategory.birds" : "鳥類" ,
   "subtitles.entity.bird.eat" : "鳥食" ,
   "subtitles.entity.bird.flap" : "翅膀拍打" ,
   "subtitles.entity.blue_jay.call" : "藍松鴉叫聲" ,
@@ -91,6 +90,6 @@
   "tag.item.fowlplay.raven_food" : "渡鴉食物" ,
   "tag.item.fowlplay.robin_food" : "知更鳥食物" ,
   "tag.item.fowlplay.sparrow_food" : "麻雀食物" ,
-  "text.betterf3.line.bird_ambient" : "環境鳥鳴" ,
-  "text.betterf3.line.bird" : "鳥類"
+  "text.betterf3.line.ambient_birds" : "環境鳥鳴" ,
+  "text.betterf3.line.birds" : "鳥類"
 }
