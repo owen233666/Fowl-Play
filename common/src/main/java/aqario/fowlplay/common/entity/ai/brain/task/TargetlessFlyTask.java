@@ -28,6 +28,8 @@ public class TargetlessFlyTask<E extends FlyingBirdEntity> extends ExtendedBehav
     @Override
     protected void start(E entity) {
         Optional<Vec3d> target = Optional.ofNullable(FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE));
-        BrainUtils.setMemory(entity.getBrain(), MemoryModuleType.WALK_TARGET, target.map((vec3d) -> new WalkTarget(vec3d, 1.0f, 0)).orElse(null));
+        BrainUtils.setMemory(entity.getBrain(), MemoryModuleType.WALK_TARGET, target.map((vec3d) ->
+            new WalkTarget(vec3d, 1.0f, 0)).orElse(null)
+        );
     }
 }

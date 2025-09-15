@@ -26,12 +26,16 @@ public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> 
         return MEMORIES;
     }
 
-    // TODO: there should be a fallback for finding a ground location if no perches are found
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Optional<Vec3d> target = Optional.ofNullable(FlightTargeting.findPerch(entity, HORIZONTAL_RANGE, VERTICAL_RANGE));
-        BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, target.map((vec3d) -> new WalkTarget(vec3d, 1.0f, 0))
-            .orElse(null));
+        Optional<Vec3d> target = Optional.ofNullable(
+            Optional.ofNullable(
+                FlightTargeting.findPerch(entity, HORIZONTAL_RANGE, VERTICAL_RANGE)
+            ).orElse(FlightTargeting.findSolid(entity, HORIZONTAL_RANGE, VERTICAL_RANGE))
+        );
+        BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, target.map((vec3d) ->
+            new WalkTarget(vec3d, 1.0f, 0)).orElse(null)
+        );
     }
 }

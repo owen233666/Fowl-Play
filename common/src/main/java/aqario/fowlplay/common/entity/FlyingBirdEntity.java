@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
 import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
+import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -131,6 +132,12 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     public void tick() {
+        // stop movement when perched
+//        if(this.isLogicalSideForUpdatingMovement()) {
+//            if(Birds.isNotFlightless(this) && Birds.isPerched(this)) {
+//                this.setVelocity(new Vec3d(0, this.getVelocity().y, 0));
+//            }
+//        }
         super.tick();
         if(!this.getWorld().isClient) {
             if(this.isFlying()) {
@@ -253,6 +260,10 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.getNavigation().stop();
         Brain<?> brain = this.getBrain();
         brain.forget(MemoryModuleType.WALK_TARGET);
+        if(Birds.isNotFlightless(this) && Birds.isPerched(this)) {
+            this.setVelocity(Vec3d.ZERO);
+            this.getNavigation().stop();
+        }
     }
 
     public boolean isFlying() {

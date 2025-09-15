@@ -24,7 +24,7 @@ public class AbstractBlockStateMixin {
         BlockState self = (BlockState) (Object) this;
         if(self.getBlock() instanceof LeavesBlock && context instanceof EntityShapeContext entityContext) {
             Entity entity = entityContext.getEntity();
-            if(entity != null && Birds.notFlightless(entity)) {
+            if(entity != null && Birds.isNotFlightless(entity)) {
                 if(entityContext.isAbove(LEAVES_SHAPE, pos, true)) {
                     cir.setReturnValue(LEAVES_SHAPE);
                 }

@@ -3,8 +3,10 @@ package aqario.fowlplay.common.entity.ai.control;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
@@ -36,15 +38,6 @@ public class BirdMoveControl extends MoveControl {
         this.state = State.MOVE_TO;
         FlyingBirdEntity flyingBird = (FlyingBirdEntity) this.bird;
 
-//        if(flyingBird.getNavigation().getCurrentPath() == null) {
-//            return;
-//        }
-//        BlockPos start = flyingBird.getNavigation().getCurrentPath().getNodePos(0);
-//        BlockPos destination = flyingBird.getNavigation().getCurrentPath().getTarget();
-//        if(start == null || destination == null) {
-//            return;
-//        }
-
         // distance to target
         Vec3d distance = new Vec3d(this.targetX - flyingBird.getX(), this.targetY - flyingBird.getY(), this.targetZ - flyingBird.getZ());
         double squaredDistance = distance.lengthSquared();
@@ -61,10 +54,19 @@ public class BirdMoveControl extends MoveControl {
 
         // speed
         float speed = (float) flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
-//        double dist = Math.sqrt(flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination)));
-//        double totalDist = Math.sqrt(start.getSquaredDistance(destination)) + 2;
-//        System.out.println((totalDist - dist) + " / " + totalDist + " -> " + ease(1 - dist / totalDist));
-//        speed *= (float) ease(1 - dist / totalDist);
+        Path currentPath;
+        BlockPos start;
+        BlockPos destination;
+        if((currentPath = flyingBird.getNavigation().getCurrentPath()) != null
+            && (start = currentPath.getNodePos(0)) != null
+            && (destination = currentPath.getTarget()) != null
+            && flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES)
+        ) {
+            double dist = Math.sqrt(flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination)));
+            double totalDist = Math.sqrt(start.getSquaredDistance(destination)) + 2;
+//            System.out.println((totalDist - dist) + " / " + totalDist + " -> " + ease(1 - dist / totalDist));
+            speed *= (float) ease(1 - dist / totalDist);
+        }
         flyingBird.setMovementSpeed(speed);
         double horizontalDistance = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 

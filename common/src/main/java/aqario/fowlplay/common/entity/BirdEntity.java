@@ -178,7 +178,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     public int getFleeRange(LivingEntity target) {
-        return Birds.notFlightless(target) ? 32 : 16;
+        return Birds.isNotFlightless(target) ? 32 : 16;
     }
 
     public boolean hasLowHealth() {

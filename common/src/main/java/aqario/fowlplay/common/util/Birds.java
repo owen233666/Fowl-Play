@@ -114,7 +114,7 @@ public final class Birds {
         return isWithinAngle(lookVec, targetVec, angle);
     }
 
-    public static boolean notFlightless(Entity entity) {
+    public static boolean isNotFlightless(Entity entity) {
         return entity.getType().isIn(FowlPlayEntityTypeTags.BIRDS)
             && !entity.getType().isIn(FowlPlayEntityTypeTags.FLIGHTLESS);
     }
@@ -192,6 +192,8 @@ public final class Birds {
     }
 
     public static boolean isPerched(BirdEntity entity) {
-        return entity.isOnGround() && entity.getWorld().getBlockState(entity.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PERCHES);
+        return entity.isOnGround()
+            && (!(entity instanceof FlyingBirdEntity bird) || !bird.isFlying())
+            && entity.getWorld().getBlockState(entity.getVelocityAffectingPos()).isIn(FowlPlayBlockTags.PERCHES);
     }
 }

@@ -4,6 +4,7 @@ import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.entity.ai.FuzzyPositions;
 import net.minecraft.entity.ai.NavigationConditions;
+import net.minecraft.entity.ai.NoPenaltySolidTargeting;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -12,6 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.ToDoubleFunction;
 
 public class FlightTargeting {
+    // TODO: if findsolid fails, it should instead find a random position that is below the entity's current position
+    @Nullable
+    public static Vec3d findSolid(PathAwareEntity entity, int horizontalRange, int verticalRange) {
+        Vec3d direction = entity.getRotationVec(1);
+        return NoPenaltySolidTargeting.find(entity, horizontalRange, verticalRange, -2, direction.x, direction.z, Math.PI);
+    }
+
     @Nullable
     public static Vec3d findPerch(PathAwareEntity entity, int horizontalRange, int verticalRange) {
         return findPerch(entity, horizontalRange, verticalRange, entity::getPathfindingFavor);
@@ -138,7 +146,7 @@ public class FlightTargeting {
         return !NavigationConditions.isWaterAt(entity, pos)
             && !NavigationConditions.hasPathfindingPenalty(entity, pos)
             && entity.getWorld().getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES)
-            ? pos
+            ? pos.down()
             : null;
     }
 

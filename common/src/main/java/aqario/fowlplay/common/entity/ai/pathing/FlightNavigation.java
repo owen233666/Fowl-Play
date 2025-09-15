@@ -159,6 +159,9 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
     public boolean isCloseToNextNode(float distance) {
         final Vec3d nextNodePos = this.getEntityPosAtNode(this.getCurrentPath().getCurrentNodeIndex());
 
+        if(this.currentPath.getCurrentNodeIndex() + 1 >= this.currentPath.getLength()) {
+            return this.getPos().isInRange(nextNodePos, 0.5);
+        }
         return this.getPos().isInRange(nextNodePos, distance);
     }
 
