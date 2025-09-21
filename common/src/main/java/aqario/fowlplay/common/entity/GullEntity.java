@@ -92,12 +92,17 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
 
     @Override
     public int getMaxPitchChange() {
-        return 15;
+        return 18;
     }
 
     @Override
     public int getMaxYawChange() {
-        return 15;
+        return 18;
+    }
+
+    @Override
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(24, 32);
     }
 
     @Override

@@ -85,6 +85,11 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return 18;
     }
 
+    @Override
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(24, 32);
+    }
+
     @Nullable
     @Override
     public LivingEntity getTarget() {

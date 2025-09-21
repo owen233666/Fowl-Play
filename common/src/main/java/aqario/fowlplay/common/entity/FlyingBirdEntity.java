@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
-import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;
@@ -210,12 +210,31 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         }
     }
 
+    // min and max flying height relative to ground level
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(5, 10);
+    }
+
     @Override
     public float getPathfindingFavor(BlockPos pos, WorldView world) {
-        int perchBias = this.getType().isIn(FowlPlayEntityTypeTags.PASSERINES) && world.getBlockState(pos.down()).isIn(FowlPlayBlockTags.PERCHES) ? 2 : 1;
-        // birds prefer higher altitudes
-        float bias = (float) (Math.log(pos.getY()) + world.getTopY(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()));
-        return bias/* * perchBias*/;
+        if(!this.isFlying()) {
+            return super.getPathfindingFavor(pos, world);
+        }
+        // birds prefer to fly within a certain height range above ground level
+        return magicFunction(
+            pos.getY() - world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()),
+            this.getFlyHeightRange()
+        );
+    }
+
+    private static float magicFunction(float posY, Pair<Integer, Integer> flyHeightRange) {
+        if(posY < flyHeightRange.getFirst()) {
+            return posY - flyHeightRange.getFirst();
+        }
+        if(posY > flyHeightRange.getSecond()) {
+            return flyHeightRange.getSecond() - posY;
+        }
+        return 0;
     }
 
     @Override
@@ -287,6 +306,12 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     protected void playCombinationStepSounds(BlockState primaryState, BlockState secondaryState) {
     }
 
+    @Override
+    protected boolean canSing() {
+        return Birds.isPerched(this) && super.canSing();
+    }
+
+    // TODO: the wings should flap faster based on positive vertical (maybe horizontal) acceleration, not velocity
     @Override
     public void updateLimbs(boolean flutter) {
         float yDelta = (float) (this.getY() - this.prevY);

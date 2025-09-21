@@ -120,8 +120,8 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
             }
             if(this.currentPath != null
                 && this.currentPath.isFinished()
-                && this.currentPath.getTarget() != null
-                && this.bird.getWorld().getBlockState(this.currentPath.getTarget()).isIn(FowlPlayBlockTags.PERCHES)
+                && this.getTargetPos() != null
+                && this.bird.getWorld().getBlockState(this.getTargetPos()).isIn(FowlPlayBlockTags.PERCHES)
             ) {
                 this.bird.stopFlying();
             }

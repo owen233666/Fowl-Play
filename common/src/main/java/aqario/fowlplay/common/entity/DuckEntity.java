@@ -13,6 +13,7 @@ import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Activity;
@@ -90,12 +91,17 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     public int getMaxPitchChange() {
-        return 15;
+        return 18;
     }
 
     @Override
     public int getMaxYawChange() {
-        return 15;
+        return 18;
+    }
+
+    @Override
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(18, 24);
     }
 
     @Override

@@ -294,7 +294,7 @@ public abstract class BirdEntity extends AnimalEntity {
     }
 
     protected boolean canCall() {
-        return this.getWorld().isDay() || this.random.nextFloat() < 0.05F;
+        return this.getWorld().isDay();
     }
 
     protected boolean canSing() {

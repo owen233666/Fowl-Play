@@ -6,7 +6,6 @@ import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
@@ -55,15 +54,13 @@ public class BirdMoveControl extends MoveControl {
 
         // speed
         float speed = (float) flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
-        Path currentPath;
         BlockPos destination;
-        if((currentPath = flyingBird.getNavigation().getCurrentPath()) != null
-            && (destination = currentPath.getTarget()) != null
-            && (flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES))
+        if((destination = flyingBird.getNavigation().getTargetPos()) != null
+            && flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES)
         ) {
             double dist = flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination));
             if(dist < DECELERATE_DISTANCE * DECELERATE_DISTANCE) {
-                speed *= (float) ease(dist);
+                speed *= (float) decelerate(dist);
             }
         }
         flyingBird.setMovementSpeed(speed);
@@ -83,7 +80,7 @@ public class BirdMoveControl extends MoveControl {
         flyingBird.upwardSpeed = -y * speed;
     }
 
-    private static double ease(double x) {
+    private static double decelerate(double x) {
         return Math.max(1 / (DECELERATE_DISTANCE * DECELERATE_DISTANCE) * x, 0.25);
     }
 

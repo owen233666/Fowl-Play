@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.brain.task;
 
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import com.google.common.collect.ImmutableMap;
@@ -8,7 +9,6 @@ import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -138,7 +138,7 @@ public class WalkToTargetTask extends MultiTickTask<MobEntity> {
         }
 
         Vec3d target = FlightTargeting.findTo(
-            (PathAwareEntity) entity,
+            (FlyingBirdEntity) entity,
             32,
             16,
             Vec3d.ofBottomCenter(targetPos)

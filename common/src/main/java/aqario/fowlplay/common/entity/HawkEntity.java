@@ -82,12 +82,17 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
 
     @Override
     public int getMaxPitchChange() {
-        return 15;
+        return 18;
     }
 
     @Override
     public int getMaxYawChange() {
-        return 15;
+        return 18;
+    }
+
+    @Override
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(40, 48);
     }
 
     @Nullable
