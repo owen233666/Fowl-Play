@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.World;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -44,6 +45,11 @@ public final class Birds {
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);
+
+    public static boolean isDaytime(BirdEntity entity) {
+        World world = entity.getWorld();
+        return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12000 || world.getTimeOfDay() > 23000);
+    }
 
     public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
         // noinspection ConstantConditions
