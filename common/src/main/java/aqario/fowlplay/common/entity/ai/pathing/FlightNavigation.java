@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.pathing;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.core.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.util.Birds;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.BirdPathNodeMaker;
@@ -121,7 +121,7 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
             if(this.currentPath != null
                 && this.currentPath.isFinished()
                 && this.getTargetPos() != null
-                && this.bird.getWorld().getBlockState(this.getTargetPos()).isIn(FowlPlayBlockTags.PERCHES)
+                && Birds.shouldLandAtDestination(this.bird, this.getTargetPos())
             ) {
                 this.bird.stopFlying();
             }

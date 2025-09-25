@@ -51,6 +51,13 @@ public final class Birds {
         return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12000 || world.getTimeOfDay() > 23000);
     }
 
+    public static boolean shouldLandAtDestination(FlyingBirdEntity bird, BlockPos destination) {
+//        return bird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES);
+        World world = bird.getWorld();
+        return !world.getBlockState(destination).isAir()
+            || !world.getBlockState(destination.down()).isAir();
+    }
+
     public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
         // noinspection ConstantConditions
         if(bird.canStartFlying()

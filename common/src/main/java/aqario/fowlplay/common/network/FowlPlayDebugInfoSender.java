@@ -161,6 +161,11 @@ public class FowlPlayDebugInfoSender {
                 iterable.forEach(o -> list.add(getMemoryValueDescription(world, o)));
                 return list.toString();
             }
+            case LivingTargetCache cache -> {
+                List<String> list = Lists.newArrayList();
+                cache.entities.forEach(o -> list.add(getMemoryValueDescription(world, o)));
+                return list.toString();
+            }
             default -> {
                 return object.toString();
             }

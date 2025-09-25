@@ -162,6 +162,11 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     @Override
+    public Pair<Integer, Integer> getFlyHeightRange() {
+        return Pair.of(10, 12);
+    }
+
+    @Override
     public float getWaterline() {
         return 0.45F;
     }

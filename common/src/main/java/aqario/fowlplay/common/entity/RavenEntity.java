@@ -14,6 +14,7 @@ import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
@@ -34,6 +35,7 @@ import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.SequentialBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
@@ -263,13 +265,31 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         );
     }
 
+    // TODO: walk target should be on the ground
     @Override
     public BrainActivityGroup<? extends RavenEntity> getForageTasks() {
         return BirdBrain.forageActivity(
+            new SequentialBehaviour<>(
+                new Idle<>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
+                new OneRandomBehaviour<>(
+                    Pair.of(
+                        new Idle<>()
+                            .runFor(entity -> entity.getRandom().nextBetween(100, 300)),
+                        2
+                    ),
+                    Pair.of(
+                        new SetRandomWalkTarget<>()
+                            .setRadius(32, 16),
+                        1
+                    )
+                )
+            )
+                .startCondition(Entity::isOnGround),
             new SetRandomWalkTarget<>()
-                .setRadius(32, 16),
-            new Idle<>()
-                .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+                .setRadius(32, 16)
+                .startCondition(Predicate.not(Entity::isOnGround))
+                .stopIf(Entity::isOnGround)
         );
     }
 

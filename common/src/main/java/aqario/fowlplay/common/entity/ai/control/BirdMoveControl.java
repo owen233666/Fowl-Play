@@ -3,7 +3,6 @@ package aqario.fowlplay.common.entity.ai.control;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -36,48 +35,49 @@ public class BirdMoveControl extends MoveControl {
 
     private void tickFlying() {
         this.state = State.MOVE_TO;
-        FlyingBirdEntity flyingBird = (FlyingBirdEntity) this.bird;
+        FlyingBirdEntity bird = (FlyingBirdEntity) this.bird;
 
         // distance to target
-        Vec3d distance = new Vec3d(this.targetX - flyingBird.getX(), this.targetY - flyingBird.getY(), this.targetZ - flyingBird.getZ());
+        Vec3d distance = new Vec3d(this.targetX - bird.getX(), this.targetY - bird.getY(), this.targetZ - bird.getZ());
         double squaredDistance = distance.lengthSquared();
         if(squaredDistance < 2.5000003E-7F) {
-            flyingBird.setForwardSpeed(0.0F);
+            bird.setForwardSpeed(0.0F);
             return;
         }
 
         // yaw
         float yaw = (float) (MathHelper.atan2(distance.z, distance.x) * 180.0F / (float) Math.PI) - 90.0F;
-        flyingBird.setYaw(this.wrapDegrees(flyingBird.getYaw(), yaw, flyingBird.getMaxYawChange()));
-        flyingBird.bodyYaw = flyingBird.getYaw();
-        flyingBird.headYaw = flyingBird.getYaw();
+        bird.setYaw(this.wrapDegrees(bird.getYaw(), yaw, bird.getMaxYawChange()));
+        bird.bodyYaw = bird.getYaw();
+        bird.headYaw = bird.getYaw();
 
         // speed
-        float speed = (float) flyingBird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
+        float speed = (float) bird.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED) * Birds.FLY_SPEED;
         BlockPos destination;
-        if((destination = flyingBird.getNavigation().getTargetPos()) != null
-            && flyingBird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES)
+        // decelerate when landing
+        if((destination = bird.getNavigation().getTargetPos()) != null
+            && Birds.shouldLandAtDestination(bird, destination)
         ) {
-            double dist = flyingBird.squaredDistanceTo(Vec3d.ofBottomCenter(destination));
+            double dist = bird.squaredDistanceTo(Vec3d.ofBottomCenter(destination));
             if(dist < DECELERATE_DISTANCE * DECELERATE_DISTANCE) {
                 speed *= (float) decelerate(dist);
             }
         }
-        flyingBird.setMovementSpeed(speed);
+        bird.setMovementSpeed(speed);
         double horizontalDistance = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
 
         // pitch
         if(Math.abs(distance.y) > 1.0E-5F || Math.abs(horizontalDistance) > 1.0E-5F) {
             float pitch = -(float) (MathHelper.atan2(distance.y, horizontalDistance) * 180.0F / Math.PI);
-            pitch = MathHelper.clamp(MathHelper.wrapDegrees(pitch), -flyingBird.getMaxLookPitchChange(), flyingBird.getMaxLookPitchChange());
-            flyingBird.setPitch(this.wrapDegrees(flyingBird.getPitch(), pitch, flyingBird.getMaxPitchChange()));
+            pitch = MathHelper.clamp(MathHelper.wrapDegrees(pitch), -bird.getMaxLookPitchChange(), bird.getMaxLookPitchChange());
+            bird.setPitch(this.wrapDegrees(bird.getPitch(), pitch, bird.getMaxPitchChange()));
         }
 
         // pitch to movement
-        float x = MathHelper.cos(flyingBird.getPitch() * (float) (Math.PI / 180.0));
-        float y = MathHelper.sin(flyingBird.getPitch() * (float) (Math.PI / 180.0));
-        flyingBird.forwardSpeed = x * speed;
-        flyingBird.upwardSpeed = -y * speed;
+        float x = MathHelper.cos(bird.getPitch() * (float) (Math.PI / 180.0));
+        float y = MathHelper.sin(bird.getPitch() * (float) (Math.PI / 180.0));
+        bird.forwardSpeed = x * speed;
+        bird.upwardSpeed = -y * speed;
     }
 
     private static double decelerate(double x) {
