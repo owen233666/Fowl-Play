@@ -1,81 +1,28 @@
-name: "Publish Branch"
+name: "Publish"
 
 on:
-    workflow_call:
+    workflow_dispatch:
         inputs:
+            branches:
+                description: "Branches"
+                required: true
+                default: "['arch-1.20.1', 'arch-1.21.1']"
+                type: string
             platform:
                 description: "Platforms"
                 required: true
-                type: string
-            branch:
-                description: "Branches"
-                required: true
+                default: "['fabric', 'forge', 'neoforge']"
                 type: string
 
 jobs:
     publish:
-        runs-on: ubuntu-latest
-        name: "Publish ${{ inputs.branch }} ${{ matrix.platform }}"
-        timeout-minutes: 30
-        permissions:
-            contents: write
+        name: "Publish"
         strategy:
-            max-parallel: 2
             fail-fast: false
             matrix:
-                platform: ${{ fromJson(inputs.platform) }}
-
-        steps:
-            -   name: "Checkout repository"
-                uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0
-
-            -   name: "Setup Java"
-                uses: actions/setup-java@v4
-                with:
-                    java-version: 21
-                    distribution: temurin
-
-            -   name: "Setup Gradle"
-                uses: gradle/actions/setup-gradle@v4
-                with:
-                    cache-read-only: true
-                    gradle-version: wrapper
-
-            -   name: "Parse Gradle properties"
-                id: gradle-properties
-                run: ./.github/scripts/parse-gradle-properties.sh
-
-            -   name: "Build"
-                run: ./gradlew ${{ matrix.platform }}:build
-
-            -   name: "Publish ${{ matrix.platform }}"
-                uses: Kir-Antipov/mc-publish@v3.3.0
-                with:
-                    curseforge-id: ${{ vars.CURSEFORGE_ID }}
-                    curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-                    modrinth-featured: true
-                    modrinth-id: ${{ vars.MODRINTH_ID }}
-                    modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-                    name: Fowl Play ${{ steps.gradle-properties.outputs.MOD_VERSION }}
-                    version: ${{ steps.gradle-properties.outputs.MOD_VERSION }}+${{ steps.gradle-properties.outputs.MINECRAFT_VERSION }}-${{ matrix.platform }}
-                    loaders: ${{ join(matrix.platform, ' ') }}
-                    game-versions: |
-                        ${{ steps.gradle-properties.outputs.MINECRAFT_VERSION }}
-                    changelog-file: CHANGELOG.*
-                    files: |
-                        ${{ matrix.platform }}/build/libs/!(*-@(dev|dev-shadow|sources|javadoc)).jar
-    clear-cache:
-        needs: publish
-        runs-on: ubuntu-latest
-        name: "Clear cache"
-        timeout-minutes: 60
-        steps:
-            -   uses: MyAlbum/purge-cache@v2
-                with:
-                    accessed: true
-                    created: true
-                    max-age: 21600
+                branch: ${{ fromJson(inputs.branches) }}
+        uses: ./.github/workflows/publish-branch.yml
+        with:
+            branch: ${{ matrix.branch }}
+            platform: ${{ inputs.platform }}
+        secrets: inherit
