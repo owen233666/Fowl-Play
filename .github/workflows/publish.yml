@@ -1,4 +1,4 @@
-name: "Publish - 1.21.1"
+name: "Publish Branch"
 
 on:
     workflow_call:
