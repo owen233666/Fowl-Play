@@ -13,6 +13,10 @@ public class FowlPlayRegistries {
         .create(FowlPlayRegistryKeys.DUCK_VARIANT)
         .sync()
         .buildAndRegister();
+    public static final Registry<GooseVariant> GOOSE_VARIANT = RegistryBuilder
+        .create(FowlPlayRegistryKeys.GOOSE_VARIANT)
+        .sync()
+        .buildAndRegister();
     public static final Registry<GullVariant> GULL_VARIANT = RegistryBuilder
         .create(FowlPlayRegistryKeys.GULL_VARIANT)
         .sync()

@@ -29,6 +29,7 @@ public final class FowlPlayNeoForge {
 
         PlatformHelperImpl.CHICKEN_VARIANTS.register(modBus);
         PlatformHelperImpl.DUCK_VARIANTS.register(modBus);
+        PlatformHelperImpl.GOOSE_VARIANTS.register(modBus);
         PlatformHelperImpl.GULL_VARIANTS.register(modBus);
         PlatformHelperImpl.PIGEON_VARIANTS.register(modBus);
         PlatformHelperImpl.SPARROW_VARIANTS.register(modBus);
@@ -63,6 +64,7 @@ public final class FowlPlayNeoForge {
             event.add(FowlPlayItems.CHICKADEE_SPAWN_EGG.get());
             event.add(FowlPlayItems.CROW_SPAWN_EGG.get());
             event.add(FowlPlayItems.DUCK_SPAWN_EGG.get());
+            event.add(FowlPlayItems.GOOSE_SPAWN_EGG.get());
             event.add(FowlPlayItems.GULL_SPAWN_EGG.get());
             event.add(FowlPlayItems.HAWK_SPAWN_EGG.get());
             event.add(FowlPlayItems.PENGUIN_SPAWN_EGG.get());

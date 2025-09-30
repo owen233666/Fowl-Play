@@ -40,6 +40,12 @@ public final class FowlPlayItems {
         0xA58C7C,
         0x1D7F3C
     );
+    public static final Supplier<Item> GOOSE_SPAWN_EGG = registerSpawnEgg(
+        "goose_spawn_egg",
+        FowlPlayEntityType.GOOSE,
+        0xeaedf0,
+        0xffd850
+    );
     public static final Supplier<Item> GULL_SPAWN_EGG = registerSpawnEgg(
         "gull_spawn_egg",
         FowlPlayEntityType.GULL,

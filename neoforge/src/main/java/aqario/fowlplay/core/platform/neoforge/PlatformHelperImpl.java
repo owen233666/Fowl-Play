@@ -49,6 +49,10 @@ public class PlatformHelperImpl {
         FowlPlayRegistryKeys.DUCK_VARIANT,
         FowlPlay.ID
     );
+    public static final DeferredRegister<GooseVariant> GOOSE_VARIANTS = DeferredRegister.create(
+        FowlPlayRegistryKeys.GOOSE_VARIANT,
+        FowlPlay.ID
+    );
     public static final DeferredRegister<GullVariant> GULL_VARIANTS = DeferredRegister.create(
         FowlPlayRegistryKeys.GULL_VARIANT,
         FowlPlay.ID
@@ -107,6 +111,9 @@ public class PlatformHelperImpl {
         }
         else if(key.isOf(FowlPlayRegistryKeys.DUCK_VARIANT)) {
             DUCK_VARIANTS.register(id, (Supplier<DuckVariant>) variant);
+        }
+        else if(key.isOf(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
+            GOOSE_VARIANTS.register(id, (Supplier<GooseVariant>) variant);
         }
         else if(key.isOf(FowlPlayRegistryKeys.GULL_VARIANT)) {
             GULL_VARIANTS.register(id, (Supplier<GullVariant>) variant);

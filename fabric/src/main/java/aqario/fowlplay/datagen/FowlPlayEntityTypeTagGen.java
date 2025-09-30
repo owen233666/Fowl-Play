@@ -61,12 +61,14 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
         // Waterbirds
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.WATERBIRDS)
             .add(FowlPlayEntityType.DUCK.get())
+            .add(FowlPlayEntityType.GOOSE.get())
             .add(FowlPlayEntityType.GULL.get())
             .add(FowlPlayEntityType.PENGUIN.get());
 
         // Waterfowl
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.WATERFOWL)
-            .add(FowlPlayEntityType.DUCK.get());
+            .add(FowlPlayEntityType.DUCK.get())
+            .add(FowlPlayEntityType.GOOSE.get());
 
         // Entities to avoid
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS)
@@ -82,6 +84,9 @@ public class FowlPlayEntityTypeTagGen extends FabricTagProvider.EntityTypeTagPro
             .add(EntityType.PLAYER)
             .add(FowlPlayEntityType.HAWK.get());
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.DUCK_AVOIDS)
+            .add(EntityType.PLAYER)
+            .add(FowlPlayEntityType.HAWK.get());
+        this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.GOOSE_AVOIDS)
             .add(EntityType.PLAYER)
             .add(FowlPlayEntityType.HAWK.get());
         this.getOrCreateTagBuilder(FowlPlayEntityTypeTags.GULL_AVOIDS)

@@ -94,6 +94,21 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.7f)
     );
 
+    public static final Supplier<EntityType<GooseEntity>> GOOSE = register("goose",
+        EntityTypeBuilder.create(
+                GooseEntity::new,
+                CustomSpawnGroup.BIRDS.spawnGroup
+            )
+            .attributes(GooseEntity::createGooseAttributes)
+            .spawnRestriction(
+                CustomSpawnLocations.AQUATIC,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                FlyingBirdEntity::canSpawnWaterfowl
+            )
+            .dimensions(0.8f, 1.0f)
+            .eyeHeight(0.9f)
+    );
+
     public static final Supplier<EntityType<GullEntity>> GULL = register("gull",
         EntityTypeBuilder.create(
                 GullEntity::new,

@@ -51,6 +51,9 @@ public class PlatformHelperImpl {
         else if(key.isOf(FowlPlayRegistryKeys.DUCK_VARIANT)) {
             Registry.register(FowlPlayRegistries.DUCK_VARIANT, (RegistryKey<DuckVariant>) key, (DuckVariant) variant.get());
         }
+        else if(key.isOf(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
+            Registry.register(FowlPlayRegistries.GOOSE_VARIANT, (RegistryKey<GooseVariant>) key, (GooseVariant) variant.get());
+        }
         else if(key.isOf(FowlPlayRegistryKeys.GULL_VARIANT)) {
             Registry.register(FowlPlayRegistries.GULL_VARIANT, (RegistryKey<GullVariant>) key, (GullVariant) variant.get());
         }

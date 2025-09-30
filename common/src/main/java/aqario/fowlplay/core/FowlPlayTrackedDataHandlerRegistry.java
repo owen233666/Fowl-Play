@@ -19,6 +19,10 @@ public final class FowlPlayTrackedDataHandlerRegistry {
         "duck_variant",
         TrackedDataHandler.create(DuckVariant.PACKET_CODEC)
     );
+    public static final TrackedDataHandler<RegistryEntry<GooseVariant>> GOOSE_VARIANT = register(
+        "goose_variant",
+        TrackedDataHandler.create(GooseVariant.PACKET_CODEC)
+    );
     public static final TrackedDataHandler<RegistryEntry<GullVariant>> GULL_VARIANT = register(
         "gull_variant",
         TrackedDataHandler.create(GullVariant.PACKET_CODEC)
