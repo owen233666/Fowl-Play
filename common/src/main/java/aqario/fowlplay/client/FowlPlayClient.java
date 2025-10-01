@@ -42,6 +42,7 @@ public class FowlPlayClient {
         PlatformHelper.registerModelLayer(ChickadeeEntityModel.MODEL_LAYER, ChickadeeEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(CrowEntityModel.MODEL_LAYER, CrowEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(DuckEntityModel.MODEL_LAYER, DuckEntityModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(GooseEntityModel.MODEL_LAYER, GooseEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(GullEntityModel.MODEL_LAYER, GullEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(HawkEntityModel.MODEL_LAYER, HawkEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(PenguinEntityModel.MODEL_LAYER, PenguinEntityModel::getTexturedModelData);
@@ -63,6 +64,7 @@ public class FowlPlayClient {
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CHICKADEE, ChickadeeEntityRenderer::new);
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CROW, CrowEntityRenderer::new);
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.DUCK, DuckEntityRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GOOSE, GooseEntityRenderer::new);
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GULL, GullEntityRenderer::new);
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.HAWK, HawkEntityRenderer::new);
         PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
