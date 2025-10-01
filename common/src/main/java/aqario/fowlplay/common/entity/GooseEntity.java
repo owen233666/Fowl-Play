@@ -28,12 +28,15 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
@@ -68,6 +71,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         GooseEntity.class,
         FowlPlayTrackedDataHandlerRegistry.GOOSE_VARIANT
     );
+    private static final String AGGRESSIVE_KEY = "aggressive";
+    private boolean aggressive;
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
     public final AnimationState flappingState = new AnimationState();
@@ -159,6 +164,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putString("variant", this.getVariant().getKey().orElse(GooseVariant.WHITE).getValue().toString());
+        if(this.aggressive) {
+            nbt.putBoolean(AGGRESSIVE_KEY, true);
+        }
     }
 
     @Override
@@ -168,6 +176,13 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             .map(variant -> RegistryKey.of(FowlPlayRegistryKeys.GOOSE_VARIANT, variant))
             .flatMap(FowlPlayRegistries.GOOSE_VARIANT::getEntry)
             .ifPresent(this::setVariant);
+        if(nbt.contains(AGGRESSIVE_KEY, NbtElement.NUMBER_TYPE)) {
+            this.aggressive = nbt.getBoolean(AGGRESSIVE_KEY);
+        }
+    }
+
+    public boolean isAggressive() {
+        return this.aggressive;
     }
 
     @Override
@@ -187,6 +202,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public boolean shouldAttack(LivingEntity target) {
+        if(this.isAggressive()) {
+            return target instanceof PlayerEntity;
+        }
         if(this.hasLowHealth()) {
             return false;
         }
@@ -203,6 +221,14 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
         this.flappingState.setRunning(this.isFlying(), this.age);
         this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+    }
+
+    @Override
+    public void setCustomName(@Nullable Text name) {
+        super.setCustomName(name);
+        if(!this.aggressive && name != null && name.getString().equalsIgnoreCase("untitled")) {
+            this.aggressive = true;
+        }
     }
 
     @Override
