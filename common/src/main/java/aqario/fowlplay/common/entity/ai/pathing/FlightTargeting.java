@@ -22,12 +22,12 @@ public class FlightTargeting {
 
     @Nullable
     public static Vec3d findGround(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
-        Vec3d direction = new Vec3d(0, -1, 0);
         boolean bl = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
-        return FuzzyPositions.guessBest(
-            () -> NoPenaltySolidTargeting.tryMake(entity, horizontalRange, verticalRange, -2, direction.x, direction.z, Math.PI, bl),
+        Vec3d target = FuzzyPositions.guessBest(
+            () -> NoPenaltySolidTargeting.tryMake(entity, horizontalRange, verticalRange, -2, 0, 0, Math.PI, bl),
             pos -> 0
         );
+        return target == null || target.y > entity.getY() ? null : target;
     }
 
     @Nullable
@@ -40,7 +40,7 @@ public class FlightTargeting {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
         Vec3d direction = entity.getRotationVec(1);
         return FuzzyPositions.guessBest(() -> {
-            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, Math.PI);
+            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, Math.PI * 2);
             if(blockPos == null) {
                 return null;
             }

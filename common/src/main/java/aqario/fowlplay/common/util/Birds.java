@@ -52,7 +52,6 @@ public final class Birds {
     }
 
     public static boolean shouldLandAtDestination(FlyingBirdEntity bird, BlockPos destination) {
-//        return bird.getWorld().getBlockState(destination).isIn(FowlPlayBlockTags.PERCHES);
         World world = bird.getWorld();
         return !world.getBlockState(destination).isAir()
             || !world.getBlockState(destination.down()).isAir();
@@ -181,7 +180,7 @@ public final class Birds {
 
     public static boolean shouldAvoid(BirdEntity bird, LivingEntity target) {
         Brain<?> brain = bird.getBrain();
-        if(!(bird.shouldAvoid(target) && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) && !shouldAvoidAttacker(brain, target)) {
+        if(!(bird.shouldAvoid(target) && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(target)) && !wasHurtBy(bird, target)) {
             return false;
         }
         if(target instanceof PlayerEntity player && bird instanceof TrustingBirdEntity trusting && trusting.trusts(player)) {
@@ -194,9 +193,9 @@ public final class Birds {
         return !bird.shouldAttack(target);
     }
 
-    public static boolean shouldAvoidAttacker(Brain<?> brain, LivingEntity attacker) {
-        LivingEntity hurtBy = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
-        return hurtBy != null && hurtBy.equals(attacker);
+    public static boolean wasHurtBy(BirdEntity bird, LivingEntity entity) {
+        LivingEntity hurtBy = BrainUtils.getMemory(bird, MemoryModuleType.HURT_BY_ENTITY);
+        return hurtBy != null && hurtBy.equals(entity);
     }
 
     public static boolean canAttack(BirdEntity bird) {

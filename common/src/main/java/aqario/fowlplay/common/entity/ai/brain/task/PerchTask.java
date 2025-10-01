@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
-    public static final SquareRadius PERCH_RANGE = new SquareRadius(24, 32);
+    public static final SquareRadius PERCH_RANGE = new SquareRadius(32, 32);
     public static final SquareRadius GROUND_RANGE = new SquareRadius(8, 64);
 
     @Override

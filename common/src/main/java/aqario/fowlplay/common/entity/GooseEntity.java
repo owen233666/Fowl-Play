@@ -16,7 +16,6 @@ import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
@@ -128,7 +127,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public static DefaultAttributeContainer.Builder createGooseAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0f)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.5f)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.22f)
             .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.5f);
@@ -184,6 +183,14 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     public Ingredient getFood() {
         return Ingredient.fromTag(FowlPlayItemTags.GOOSE_FOOD);
+    }
+
+    @Override
+    public boolean shouldAttack(LivingEntity target) {
+        if(this.hasLowHealth()) {
+            return false;
+        }
+        return Birds.wasHurtBy(this, target);
     }
 
     @Override
@@ -313,6 +320,13 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getForageTasks() {
         return BirdBrain.forageActivity(
+            new LeaderlessFlockTask(
+                5,
+                0.04f,
+                0.6f,
+                0.06f,
+                3f
+            ),
             new SetRandomWalkTarget<>()
                 .setRadius(32, 16),
             new Idle<GooseEntity>()
@@ -355,12 +369,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     protected void mobTick() {
-        Brain<?> brain = this.getBrain();
-        Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
         this.tickBrain(this);
-        if(activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
-            brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
-        }
         super.mobTick();
     }
 }
