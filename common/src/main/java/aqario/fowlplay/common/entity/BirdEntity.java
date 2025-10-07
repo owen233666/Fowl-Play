@@ -122,6 +122,10 @@ public abstract class BirdEntity extends AnimalEntity {
         return this.getFood().test(stack) && !this.getFood().test(heldStack);
     }
 
+    public boolean shouldDropBeakItem(ItemStack stack) {
+        return !stack.isEmpty() && !this.getFood().test(stack);
+    }
+
     private void dropWithoutDelay(ItemStack stack, Entity thrower) {
         ItemEntity item = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), stack);
         if(thrower != null) {
@@ -219,7 +223,7 @@ public abstract class BirdEntity extends AnimalEntity {
                     this.getWorld().sendEntityStatus(this, EntityStatuses.CREATE_EATING_PARTICLES);
                 }
             }
-            else if(!stack.isEmpty() && !this.getFood().test(stack)) {
+            else if(this.shouldDropBeakItem(stack)) {
                 if(this.random.nextFloat() < 0.1f) {
                     this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
                     this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);

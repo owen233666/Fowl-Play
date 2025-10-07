@@ -29,6 +29,8 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.recipe.Ingredient;
@@ -133,7 +135,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return FlyingBirdEntity.createFlyingBirdAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0f)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.5f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23f)
             .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.22f)
             .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
@@ -147,7 +149,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-        builder.add(VARIANT, FowlPlayRegistries.GOOSE_VARIANT.entryOf(GooseVariant.WHITE));
+        builder.add(VARIANT, FowlPlayRegistries.GOOSE_VARIANT.entryOf(GooseVariant.GREYLAG));
     }
 
     @Override
@@ -163,7 +165,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        nbt.putString("variant", this.getVariant().getKey().orElse(GooseVariant.WHITE).getValue().toString());
+        nbt.putString("variant", this.getVariant().getKey().orElse(GooseVariant.GREYLAG).getValue().toString());
         if(this.aggressive) {
             nbt.putBoolean(AGGRESSIVE_KEY, true);
         }
@@ -196,6 +198,16 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return null;
     }
 
+    @Override
+    public boolean canPickupItem(ItemStack stack) {
+        return super.canPickupItem(stack) || (this.isAggressive() && stack.getItem() instanceof SwordItem);
+    }
+
+    @Override
+    public boolean shouldDropBeakItem(ItemStack stack) {
+        return super.shouldDropBeakItem(stack) && !(this.isAggressive() && stack.getItem() instanceof SwordItem);
+    }
+
     public Ingredient getFood() {
         return Ingredient.fromTag(FowlPlayItemTags.GOOSE_FOOD);
     }
@@ -213,7 +225,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().isIn(FowlPlayEntityTypeTags.GOOSE_AVOIDS);
+        return entity.getType().isIn(FowlPlayEntityTypeTags.GOOSE_AVOIDS) && !this.isAggressive();
     }
 
     @Override
@@ -335,8 +347,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public BrainActivityGroup<? extends GooseEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
-            FlightTasks.startFlying(),
-            new SetWalkTargetToAttackTarget<>(),
+            new SetWalkTargetToAttackTarget<>()
+                .speedMod((entity, target) -> Birds.FAST_SPEED),
             new AnimatableMeleeAttack<>(0),
             new InvalidateMemory<GooseEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                 .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))

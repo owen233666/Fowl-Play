@@ -43,6 +43,7 @@ public class FowlPlayClient {
         PlatformHelper.registerModelLayer(CrowEntityModel.MODEL_LAYER, CrowEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(DuckEntityModel.MODEL_LAYER, DuckEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(GooseEntityModel.MODEL_LAYER, GooseEntityModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(DomesticGooseEntityModel.MODEL_LAYER, DomesticGooseEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(GullEntityModel.MODEL_LAYER, GullEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(HawkEntityModel.MODEL_LAYER, HawkEntityModel::getTexturedModelData);
         PlatformHelper.registerModelLayer(PenguinEntityModel.MODEL_LAYER, PenguinEntityModel::getTexturedModelData);

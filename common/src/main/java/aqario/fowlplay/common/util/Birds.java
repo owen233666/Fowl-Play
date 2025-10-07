@@ -57,6 +57,7 @@ public final class Birds {
             || !world.getBlockState(destination.down()).isAir();
     }
 
+    // TODO: birds like ducks and geese should prefer to walk, only flying when absolutely necessary
     public static void tryFlyingAlongPath(FlyingBirdEntity bird, Path path) {
         // noinspection ConstantConditions
         if(bird.canStartFlying()
