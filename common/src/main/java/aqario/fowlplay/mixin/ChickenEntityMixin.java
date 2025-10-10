@@ -46,14 +46,12 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        if(spawnReason == SpawnReason.BREEDING) {
-            FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.WHITE).ifPresent(this::setVariant);
-        }
-        else if(spawnReason == SpawnReason.CHUNK_GENERATION) {
-            FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.RED_JUNGLEFOWL).ifPresent(this::setVariant);
-        }
-        else {
-            FowlPlayRegistries.CHICKEN_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
+        switch(spawnReason) {
+            case BREEDING ->
+                FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.WHITE).ifPresent(this::setVariant);
+            case CHUNK_GENERATION ->
+                FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.RED_JUNGLEFOWL).ifPresent(this::setVariant);
+            default -> FowlPlayRegistries.CHICKEN_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         }
         return super.initialize(world, difficulty, spawnReason, entityData);
     }

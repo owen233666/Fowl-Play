@@ -13,6 +13,7 @@ import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
+import aqario.fowlplay.core.tags.FowlPlayVariantTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.*;
@@ -117,7 +118,18 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        FowlPlayRegistries.GOOSE_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
+        switch(spawnReason) {
+            case BREEDING ->
+                FowlPlayRegistries.GOOSE_VARIANT.getRandomEntry(FowlPlayVariantTags.Goose.DOMESTIC, world.getRandom())
+                    .ifPresent(this::setVariant);
+
+            case CHUNK_GENERATION, NATURAL ->
+                FowlPlayRegistries.GOOSE_VARIANT.getRandomEntry(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
+                    .ifPresent(this::setVariant);
+
+            default -> FowlPlayRegistries.GOOSE_VARIANT.getRandom(world.getRandom())
+                .ifPresent(this::setVariant);
+        }
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
