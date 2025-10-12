@@ -54,7 +54,9 @@ public final class Birds {
     public static boolean shouldLandAtDestination(FlyingBirdEntity bird, BlockPos destination) {
         World world = bird.getWorld();
         return !world.getBlockState(destination).isAir()
-            || !world.getBlockState(destination.down()).isAir();
+            || !world.getBlockState(destination.down()).isAir()
+            || !world.getFluidState(destination).isEmpty()
+            || !world.getFluidState(destination.down()).isEmpty();
     }
 
     // TODO: birds like ducks and geese should prefer to walk, only flying when absolutely necessary

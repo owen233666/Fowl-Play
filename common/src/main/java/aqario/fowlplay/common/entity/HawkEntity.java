@@ -5,6 +5,7 @@ import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -44,6 +45,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -303,21 +305,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new Idle<>()
-                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                    8
-                ),
-                Pair.of(
-                    new PerchTask<>(),
-                    1
-                )
-            )
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.tryPerch()
         );
     }
 
@@ -357,6 +345,12 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
+    }
+
+    @Nullable
+    @Override
+    public SmartBrainSchedule getSchedule() {
+        return FowlPlaySchedules.RAPTOR.get();
     }
 
     @Override

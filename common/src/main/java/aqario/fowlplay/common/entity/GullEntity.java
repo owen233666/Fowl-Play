@@ -7,10 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayRegistries;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import aqario.fowlplay.core.FowlPlaySoundEvents;
-import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
@@ -46,13 +43,13 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -63,7 +60,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEntity>, VariantHolder<RegistryEntry<GullVariant>> {
     private static final TrackedData<RegistryEntry<GullVariant>> VARIANT = DataTracker.registerData(
@@ -344,15 +340,13 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new Idle<GullEntity>()
-                .startCondition(Birds::isPerched)
+            CompositeTasks.setWaterWalkTarget(),
+            CompositeTasks.idleIfInWater()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends GullEntity> getSoarTasks() {
+    public BrainActivityGroup<GullEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -361,6 +355,12 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
+    }
+
+    @Nullable
+    @Override
+    public SmartBrainSchedule getSchedule() {
+        return FowlPlaySchedules.SEABIRD.get();
     }
 
     @Override

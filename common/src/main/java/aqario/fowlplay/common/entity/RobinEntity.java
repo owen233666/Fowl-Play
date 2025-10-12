@@ -13,7 +13,6 @@ import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
@@ -43,7 +42,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
@@ -242,10 +240,10 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     @Override
     public BrainActivityGroup<? extends RobinEntity> getForageTasks() {
         return BirdBrain.forageActivity(
-            new SetRandomWalkTarget<>()
-                .setRadius(32, 16),
-            new Idle<>()
-                .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+            new OneRandomBehaviour<>(
+                CompositeTasks.tryForage(),
+                CompositeTasks.tryPerch()
+            )
         );
     }
 
@@ -262,21 +260,7 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     @Override
     public BrainActivityGroup<? extends RobinEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new Idle<>()
-                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                    8
-                ),
-                Pair.of(
-                    new PerchTask<>(),
-                    1
-                )
-            )
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.tryPerch()
         );
     }
 

@@ -306,21 +306,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new Idle<>()
-                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                    8
-                ),
-                Pair.of(
-                    new PerchTask<>(),
-                    1
-                )
-            )
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.tryPerch()
         );
     }
 

@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * A collection of preconfigured or composite tasks for penguins.
+ */
 public class PenguinSpecificTasks {
     @SuppressWarnings("unchecked")
     public static ExtendedBehaviour<PenguinEntity> goToWater() {

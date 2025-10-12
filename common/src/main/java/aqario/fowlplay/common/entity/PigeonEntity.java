@@ -47,7 +47,6 @@ import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
@@ -462,21 +461,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 0.05f,
                 3f
             ),
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new Idle<>()
-                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                    8
-                ),
-                Pair.of(
-                    new PerchTask<>(),
-                    1
-                )
-            )
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.tryPerch()
         );
     }
 

@@ -42,7 +42,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
@@ -260,10 +259,10 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public BrainActivityGroup<? extends CrowEntity> getForageTasks() {
         return BirdBrain.forageActivity(
-            new SetRandomWalkTarget<>()
-                .setRadius(32, 16),
-            new Idle<>()
-                .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+            new OneRandomBehaviour<>(
+                CompositeTasks.tryForage(),
+                CompositeTasks.tryPerch()
+            )
         );
     }
 
@@ -287,21 +286,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
                 0.05f,
                 3f
             ),
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new Idle<>()
-                        .runFor(entity -> entity.getRandom().nextBetween(300, 1000)),
-                    8
-                ),
-                Pair.of(
-                    new PerchTask<>(),
-                    1
-                )
-            )
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.tryPerch()
         );
     }
 

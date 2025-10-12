@@ -7,10 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayRegistries;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import aqario.fowlplay.core.FowlPlaySoundEvents;
-import aqario.fowlplay.core.FowlPlayTrackedDataHandlerRegistry;
+import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import aqario.fowlplay.core.tags.FowlPlayVariantTags;
@@ -47,6 +44,7 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
@@ -54,10 +52,11 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -67,7 +66,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEntity>, VariantHolder<RegistryEntry<GooseVariant>>, Flocking {
     private static final TrackedData<RegistryEntry<GooseVariant>> VARIANT = DataTracker.registerData(
@@ -377,8 +375,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
                 0.06f,
                 3f
             ),
-            new SetRandomWalkTarget<>()
-                .setRadius(32, 16),
+            CompositeTasks.setWaterfowlForagingTarget(),
             new Idle<GooseEntity>()
                 .runFor(entity -> entity.getRandom().nextBetween(100, 300))
                 .startCondition(entity -> !entity.isFlying())
@@ -391,7 +388,14 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new BreedWithPartner<>(),
             new FollowParent<>(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
+            new LookAroundTask<>(),
+            new OneRandomBehaviour<>(
+                new SetRandomSwimTarget<>()
+                    .setRadius(24, 8),
+                new Idle<GooseEntity>()
+                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+                    .startCondition(entity -> !entity.isFlying())
+            )
         );
     }
 
@@ -410,11 +414,15 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new Idle<GooseEntity>()
-                .startCondition(Birds::isPerched)
+            CompositeTasks.setWaterWalkTarget(),
+            CompositeTasks.idleIfInWater()
         );
+    }
+
+    @Nullable
+    @Override
+    public SmartBrainSchedule getSchedule() {
+        return FowlPlaySchedules.WATERFOWL.get();
     }
 
     @Override
