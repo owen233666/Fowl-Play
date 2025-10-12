@@ -8,6 +8,7 @@ _IMPORTANT: This is an early beta. While there shouldn't be any game breaking bu
     - Geese variants are split into two categories: domestic and wild
     - Wild variants can only be found in naturally spawned geese
     - Domestic variants are obtained through breeding
+    - Geese with the name "untitled" will attack any player they see
 
 - Optimize bird perch pathfinding
 

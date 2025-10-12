@@ -32,18 +32,19 @@ You can talk about the mod in my [GitHub Discussions](https://github.com/aqariio
 
 #### Birds:
 
-- Penguin (Emperor penguin)
-- Gull (Herring gull, ring-billed gull)
-- Robin (American robin)
-- Pigeon (Rock pigeon)
-- Cardinal (Northern cardinal)
-- Blue Jay
-- Old world Sparrow (House sparrow)
-- Chickadee (Black-capped chickadee)
-- Raven (Common raven)
-- Duck (Mallard duck)
-- Hawk (Red-tailed hawk)
-- Crows (American crow, carrion crow)
+- Penguins (Emperor penguin)
+- Gulls (Herring gull, ring-billed gull)
+- Robins (American robin)
+- Pigeons (Rock pigeon — with various colour and pattern variants)
+- Cardinals (Northern cardinal)
+- Blue Jays
+- Old world Sparrows (House sparrow)
+- Chickadees (Black-capped chickadee)
+- Ravens (Common raven)
+- Ducks (Mallard duck)
+- Hawks (Red-tailed hawk)
+- Crows (American/carrion crow)
+- Geese (Greylag goose, canada goose, emden goose, chinese goose)
 
 #### Other:
 
@@ -54,7 +55,6 @@ You can talk about the mod in my [GitHub Discussions](https://github.com/aqariio
 - Old world Vultures (Griffon vulture, lappet-faced vulture)
 - Ostriches (Common ostrich)
 - Owls (Great horned owl, snowy owl, barn owl)
-- Geese (Domestic goose, Canada goose)
 - Eagles (Bald eagle, golden eagle)
 - Woodpeckers (Downy woodpecker, pileated woodpecker, yellow-bellied sapsucker)
 - Falcons (Peregrine falcon, gyrfalcon, American kestrel)
