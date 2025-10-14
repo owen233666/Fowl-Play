@@ -295,11 +295,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            MoveAwayFromTargetTask.entity(
-                MemoryModuleType.AVOID_TARGET,
-                entity -> Birds.FAST_SPEED,
-                true
-            )
+            CompositeTasks.setAvoidEntityWalkTarget()
         );
     }
 
@@ -328,12 +324,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            GoToNearestItemTask.create(
-                Birds::canPickupFood,
-                entity -> Birds.FAST_SPEED,
-                true,
-                Birds.ITEM_PICK_UP_RANGE
-            )
+            CompositeTasks.setNearestFoodWalkTarget()
         );
     }
 

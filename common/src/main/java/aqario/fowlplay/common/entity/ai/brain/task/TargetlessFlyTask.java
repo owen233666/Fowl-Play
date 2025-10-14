@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
@@ -12,7 +13,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TargetlessFlyTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
@@ -27,9 +27,13 @@ public class TargetlessFlyTask<E extends FlyingBirdEntity> extends ExtendedBehav
 
     @Override
     protected void start(E entity) {
-        Optional<Vec3d> target = Optional.ofNullable(FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE));
-        BrainUtils.setMemory(entity.getBrain(), MemoryModuleType.WALK_TARGET, target.map((vec3d) ->
-            new WalkTarget(vec3d, 1.0f, 0)).orElse(null)
-        );
+        Brain<?> brain = entity.getBrain();
+        Vec3d target = FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE);
+        if(target == null) {
+            BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+        }
+        else {
+            BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target, 1.0f, 0));
+        }
     }
 }

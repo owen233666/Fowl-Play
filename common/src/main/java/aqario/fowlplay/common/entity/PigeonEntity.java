@@ -15,7 +15,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -46,10 +45,9 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
@@ -64,7 +62,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class PigeonEntity extends TameableBirdEntity implements BirdBrain<PigeonEntity>, VariantHolder<RegistryEntry<PigeonVariant>>, Flocking {
     private static final TrackedData<Optional<UUID>> RECIPIENT = DataTracker.registerData(
@@ -422,11 +419,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            MoveAwayFromTargetTask.entity(
-                MemoryModuleType.AVOID_TARGET,
-                entity -> Birds.FAST_SPEED,
-                true
-            )
+            CompositeTasks.setAvoidEntityWalkTarget()
         );
     }
 
@@ -438,6 +431,16 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             FlightTasks.<PigeonEntity>startFlying()
                 .startCondition(PigeonEntity::shouldFlyToRecipient),
             DeliverBundleTask.run()
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends PigeonEntity> getForageTasks() {
+        return BirdBrain.forageActivity(
+            new OneRandomBehaviour<>(
+                CompositeTasks.tryForage(),
+                CompositeTasks.tryPerch()
+            )
         );
     }
 
@@ -468,24 +471,15 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            new AllApplicableBehaviours<PigeonEntity>(
-                GoToNearestItemTask.create(
-                    Birds::canPickupFood,
-                    entity -> Birds.FAST_SPEED,
-                    true,
-                    Birds.ITEM_PICK_UP_RANGE
-                )
-            ).startCondition(pigeon -> !pigeon.isSitting())
+            CompositeTasks.<PigeonEntity>setNearestFoodWalkTarget()
+                .startCondition(pigeon -> !pigeon.isSitting())
         );
     }
 
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new PerchTask<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
-            new Idle<PigeonEntity>()
-                .startCondition(Birds::isPerched)
+            CompositeTasks.findPerchAndIdle()
         );
     }
 

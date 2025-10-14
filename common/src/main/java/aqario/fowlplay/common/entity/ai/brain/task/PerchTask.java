@@ -14,7 +14,6 @@ import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
@@ -30,8 +29,12 @@ public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> 
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Optional<Vec3d> target = Optional.ofNullable(FlightTargeting.findPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE));
-        BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, target.map(vec3d -> new WalkTarget(vec3d, 1.0f, 0))
-            .orElse(null));
+        Vec3d target = FlightTargeting.findPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE);
+        if(target == null) {
+            BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+        }
+        else {
+            BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target, 1.0f, 0));
+        }
     }
 }

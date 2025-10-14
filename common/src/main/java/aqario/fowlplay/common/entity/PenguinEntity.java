@@ -623,11 +623,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Override
     public BrainActivityGroup<? extends PenguinEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            MoveAwayFromTargetTask.entity(
-                MemoryModuleType.AVOID_TARGET,
-                entity -> Birds.FAST_SPEED,
-                true
-            )
+            CompositeTasks.setAvoidEntityWalkTarget()
         );
     }
 
@@ -693,12 +689,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     public BrainActivityGroup<? extends PenguinEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
             SlideTasks.startSliding(),
-            GoToNearestItemTask.create(
-                Birds::canPickupFood,
-                entity -> Birds.FAST_SPEED,
-                true,
-                Birds.ITEM_PICK_UP_RANGE
-            )
+            CompositeTasks.setNearestFoodWalkTarget()
         );
     }
 
