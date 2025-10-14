@@ -187,6 +187,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         return navigation;
     }
 
+    // TODO: instead of affecting the pitch and yaw change directly, it should affect the steepness of its path
     public int getMaxPitchChange() {
         return 20;
     }

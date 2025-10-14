@@ -47,7 +47,7 @@ public class BirdMoveControl extends MoveControl {
 
         // yaw
         float yaw = (float) (MathHelper.atan2(distance.z, distance.x) * 180.0F / (float) Math.PI) - 90.0F;
-        bird.setYaw(this.wrapDegrees(bird.getYaw(), yaw, bird.getMaxYawChange()));
+        bird.setYaw(this.wrapDegrees(bird.getYaw(), yaw, /*bird.getMaxYawChange()*/25));
         bird.bodyYaw = bird.getYaw();
         bird.headYaw = bird.getYaw();
 
@@ -70,7 +70,7 @@ public class BirdMoveControl extends MoveControl {
         if(Math.abs(distance.y) > 1.0E-5F || Math.abs(horizontalDistance) > 1.0E-5F) {
             float pitch = -(float) (MathHelper.atan2(distance.y, horizontalDistance) * 180.0F / Math.PI);
             pitch = MathHelper.clamp(MathHelper.wrapDegrees(pitch), -bird.getMaxLookPitchChange(), bird.getMaxLookPitchChange());
-            bird.setPitch(this.wrapDegrees(bird.getPitch(), pitch, bird.getMaxPitchChange()));
+            bird.setPitch(this.wrapDegrees(bird.getPitch(), pitch, /*bird.getMaxPitchChange()*/25));
         }
 
         // pitch to movement

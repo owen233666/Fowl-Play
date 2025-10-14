@@ -14,7 +14,7 @@ public class FowlPlaySchedules {
         .activityAt(8000, FowlPlayActivities.FORAGE.get())
         .activityAt(11000, FowlPlayActivities.PERCH.get())
         .activityAt(12000, Activity.REST)
-        .activityAt(22500, FowlPlayActivities.PERCH.get())
+        .activityAt(23000, FowlPlayActivities.PERCH.get())
     );
     public static final Supplier<SmartBrainSchedule> RAPTOR = register("raptor", new SmartBrainSchedule()
         .activityAt(0, FowlPlayActivities.PERCH.get())
@@ -23,7 +23,7 @@ public class FowlPlaySchedules {
         .activityAt(8000, FowlPlayActivities.SOAR.get())
         .activityAt(11000, FowlPlayActivities.PERCH.get())
         .activityAt(12000, Activity.REST)
-        .activityAt(22500, FowlPlayActivities.PERCH.get())
+        .activityAt(23000, FowlPlayActivities.PERCH.get())
     );
     public static final Supplier<SmartBrainSchedule> SEABIRD = register("seabird", new SmartBrainSchedule()
         .activityAt(0, Activity.IDLE)
@@ -32,7 +32,7 @@ public class FowlPlaySchedules {
         .activityAt(8000, FowlPlayActivities.SOAR.get())
         .activityAt(11000, Activity.IDLE)
         .activityAt(12000, Activity.REST)
-        .activityAt(22500, Activity.IDLE)
+        .activityAt(23000, Activity.IDLE)
     );
     public static final Supplier<SmartBrainSchedule> WATERFOWL = register("waterfowl", new SmartBrainSchedule()
         .activityAt(0, Activity.IDLE)
@@ -41,7 +41,7 @@ public class FowlPlaySchedules {
         .activityAt(8000, FowlPlayActivities.FORAGE.get())
         .activityAt(11000, Activity.IDLE)
         .activityAt(12000, Activity.REST)
-        .activityAt(22500, Activity.IDLE)
+        .activityAt(23000, Activity.IDLE)
     );
 
     private static Supplier<SmartBrainSchedule> register(String id, SmartBrainSchedule schedule) {

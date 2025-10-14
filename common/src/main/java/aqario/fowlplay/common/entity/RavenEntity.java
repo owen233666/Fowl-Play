@@ -37,6 +37,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
@@ -54,6 +55,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEntity> {
     public final AnimationState standingState = new AnimationState();
@@ -256,12 +258,13 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         );
     }
 
-    // TODO: walk target should be on the ground
     @Override
     public BrainActivityGroup<? extends RavenEntity> getForageTasks() {
         return BirdBrain.forageActivity(
-            CompositeTasks.tryForage(),
-            CompositeTasks.tryPerch()
+            new OneRandomBehaviour<>(
+                CompositeTasks.tryForage(),
+                CompositeTasks.tryPerch()
+            )
         );
     }
 
@@ -292,13 +295,19 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.findPerchAndIdle()
+            new PerchTask<>()
+                .startCondition(Predicate.not(Birds::isPerched)),
+            new Idle<FlyingBirdEntity>()
+                .startCondition(Birds::isPerched)
+                .stopIf(Predicate.not(Birds::isPerched))
         );
     }
 
     @Override
     public BrainActivityGroup<? extends RavenEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
+            FlightTasks.startFlying()
+                .startCondition(Predicate.not(FlyingBirdEntity::isFlying)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new TargetlessFlyTask<>(),

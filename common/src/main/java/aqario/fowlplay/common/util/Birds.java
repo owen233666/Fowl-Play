@@ -48,7 +48,7 @@ public final class Birds {
 
     public static boolean isDaytime(BirdEntity entity) {
         World world = entity.getWorld();
-        return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12000 || world.getTimeOfDay() > 22500);
+        return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12000 || world.getTimeOfDay() > 23000);
     }
 
     public static boolean shouldLandAtDestination(FlyingBirdEntity bird, BlockPos destination) {
