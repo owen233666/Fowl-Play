@@ -6,7 +6,10 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
+import aqario.fowlplay.common.entity.ai.brain.task.CompositeTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.PerchTask;
+import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlaySchedules;
@@ -30,10 +33,8 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
@@ -167,6 +168,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightTasks.stopFalling(),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -187,16 +189,6 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
                 CompositeTasks.tryForage(),
                 CompositeTasks.tryPerch()
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends CardinalEntity> getIdleTasks() {
-        return BirdBrain.idleActivity(
-            new BreedWithPartner<>(),
-            new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
         );
     }
 

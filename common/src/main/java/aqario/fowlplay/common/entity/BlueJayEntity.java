@@ -6,7 +6,10 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
+import aqario.fowlplay.common.entity.ai.brain.task.CompositeTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.PerchTask;
+import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlaySchedules;
@@ -154,6 +157,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightTasks.stopFalling(),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -174,14 +178,6 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
                 CompositeTasks.tryForage(),
                 CompositeTasks.tryPerch()
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getIdleTasks() {
-        return BirdBrain.idleActivity(
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
         );
     }
 

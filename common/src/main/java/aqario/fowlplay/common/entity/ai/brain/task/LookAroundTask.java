@@ -26,7 +26,7 @@ public class LookAroundTask<E extends MobEntity> extends ExtendedBehaviour<E> {
     private long timeUntilNextLook = 0L;
 
     public LookAroundTask() {
-        this.runtimeProvider = entity -> entity.getRandom().nextInt(40) + 20;
+        this.runtimeProvider = entity -> entity.getRandom().nextBetween(20, 60);
     }
 
     public LookAroundTask<E> lookChance(FloatProvider chance) {

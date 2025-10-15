@@ -58,8 +58,11 @@ public class CompositeTasks {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryPerch() {
         return new OneRandomBehaviour<>(
             Pair.of(
-                new Idle<E>()
-                    .runFor(entity -> entity.getRandom().nextBetween(300, 1000))
+                new OneRandomBehaviour<E>(
+                    new LookAroundTask<>(),
+                    new Idle<>()
+                )
+                    .runFor(entity -> entity.getRandom().nextBetween(30, 100))
                     .startCondition(Birds::isPerched)
                     .stopIf(Predicate.not(Birds::isPerched)),
                 8
@@ -74,8 +77,11 @@ public class CompositeTasks {
     public static <E extends BirdEntity> ExtendedBehaviour<E> tryForage() {
         return new OneRandomBehaviour<>(
             Pair.of(
-                new Idle<>()
-                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+                new OneRandomBehaviour<>(
+                    new LookAroundTask<>(),
+                    new Idle<>()
+                )
+                    .runFor(entity -> entity.getRandom().nextBetween(30, 100))
                     .startCondition(Entity::isOnGround)
                     .stopIf(Predicate.not(Entity::isOnGround)),
                 2

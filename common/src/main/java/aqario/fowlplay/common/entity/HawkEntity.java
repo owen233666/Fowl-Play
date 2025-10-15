@@ -36,11 +36,9 @@ import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -263,6 +261,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
             FlightTasks.stopFalling(),
             new SetAttackTarget<HawkEntity>()
                 .attackPredicate(Birds::canAttack),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -285,16 +284,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
             new AnimatableMeleeAttack<>(0),
             new InvalidateMemory<HawkEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                 .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends HawkEntity> getIdleTasks() {
-        return BirdBrain.idleActivity(
-            new BreedWithPartner<>(),
-            new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
         );
     }
 

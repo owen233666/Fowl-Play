@@ -36,11 +36,9 @@ import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -233,6 +231,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
             FlightTasks.stopFalling(),
             new SetAttackTarget<RavenEntity>()
                 .attackPredicate(Birds::canAttack),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -265,16 +264,6 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                 CompositeTasks.tryForage(),
                 CompositeTasks.tryPerch()
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends RavenEntity> getIdleTasks() {
-        return BirdBrain.idleActivity(
-            new BreedWithPartner<>(),
-            new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
         );
     }
 

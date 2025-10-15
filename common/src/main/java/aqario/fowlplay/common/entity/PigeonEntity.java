@@ -47,10 +47,8 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
@@ -410,6 +408,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             FlightTasks.stopFalling(),
             new TeleportToTargetTask(),
             new FollowOwnerTask(),
+            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -443,16 +442,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 CompositeTasks.tryForage(),
                 CompositeTasks.tryPerch()
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends PigeonEntity> getIdleTasks() {
-        return BirdBrain.idleActivity(
-            new BreedWithPartner<>(),
-            new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
         );
     }
 
