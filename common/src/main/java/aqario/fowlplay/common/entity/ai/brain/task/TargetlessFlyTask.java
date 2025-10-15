@@ -28,7 +28,7 @@ public class TargetlessFlyTask<E extends FlyingBirdEntity> extends ExtendedBehav
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Vec3d target = FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE);
+        Vec3d target = FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE, entity::getFlyingPathfindingFavor);
         if(target == null) {
             BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
         }

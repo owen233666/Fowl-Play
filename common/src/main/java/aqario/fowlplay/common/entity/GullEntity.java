@@ -60,7 +60,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEntity>, VariantHolder<RegistryEntry<GullVariant>> {
     private static final TrackedData<RegistryEntry<GullVariant>> VARIANT = DataTracker.registerData(
@@ -340,8 +339,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<GullEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            FlightTasks.startFlying()
-                .startCondition(Predicate.not(FlyingBirdEntity::isFlying)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new TargetlessFlyTask<>(),

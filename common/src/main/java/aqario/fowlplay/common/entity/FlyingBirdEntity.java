@@ -221,6 +221,14 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if(!this.isFlying()) {
             return super.getPathfindingFavor(pos, world);
         }
+        return this.getFlyingPathfindingFavor(pos, world);
+    }
+
+    public float getFlyingPathfindingFavor(BlockPos pos) {
+        return this.getFlyingPathfindingFavor(pos, this.getWorld());
+    }
+
+    public float getFlyingPathfindingFavor(BlockPos pos, WorldView world) {
         // birds prefer to fly within a certain height range above ground level
         return magicFunction(
             pos.getY() - world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()),

@@ -295,8 +295,6 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            FlightTasks.startFlying()
-                .startCondition(Predicate.not(FlyingBirdEntity::isFlying)),
             new OneRandomBehaviour<>(
                 Pair.of(
                     new TargetlessFlyTask<>(),
