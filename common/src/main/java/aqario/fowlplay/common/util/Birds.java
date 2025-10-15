@@ -14,7 +14,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -199,14 +198,6 @@ public final class Birds {
     public static boolean wasHurtBy(BirdEntity bird, LivingEntity entity) {
         LivingEntity hurtBy = BrainUtils.getMemory(bird, MemoryModuleType.HURT_BY_ENTITY);
         return hurtBy != null && hurtBy.equals(entity);
-    }
-
-    public static boolean canAttack(BirdEntity bird) {
-        return !bird.isInsideWaterOrBubbleColumn() && !LookTargetUtil.hasBreedTarget(bird);
-    }
-
-    public static boolean canAquaticAttack(BirdEntity bird) {
-        return !LookTargetUtil.hasBreedTarget(bird);
     }
 
     public static boolean isPerched(BirdEntity entity) {

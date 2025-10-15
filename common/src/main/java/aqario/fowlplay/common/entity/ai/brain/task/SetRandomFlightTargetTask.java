@@ -10,16 +10,15 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.util.math.Vec3d;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
-public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
+public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
-    public static final SquareRadius PERCH_RANGE = new SquareRadius(32, 32);
-    public static final SquareRadius GROUND_RANGE = new SquareRadius(8, 64);
+    private static final int HORIZONTAL_RANGE = 32;
+    private static final int VERTICAL_RANGE = 16;
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
@@ -29,7 +28,7 @@ public class PerchTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> 
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Vec3d target = FlightTargeting.findPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE);
+        Vec3d target = FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE, entity::getFlyingPathfindingFavor);
         if(target == null) {
             BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
         }

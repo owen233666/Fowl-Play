@@ -16,7 +16,6 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -39,11 +38,9 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -284,10 +281,9 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     public BrainActivityGroup<? extends GullEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             FlightTasks.stopFalling(),
-            new SetAttackTarget<GullEntity>()
-                .attackPredicate(Birds::canAttack),
+            new SetAttackTarget<>(),
             new LookAtTarget<>()
-                .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+                .runForBetween(45, 90),
             new MoveToWalkTarget<>()
         );
     }
@@ -306,8 +302,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             FlightTasks.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
             new AnimatableMeleeAttack<>(0),
-            new InvalidateMemory<GullEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
-                .invalidateIf(GullEntity::shouldStopHunting)
+            CompositeTasks.forgetUnderwaterAttackTarget()
         );
     }
 
@@ -318,6 +313,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             new FollowParent<>(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAroundTask<>()
+                .lookChance(0.02f)
         );
     }
 
@@ -339,12 +335,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<GullEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new TargetlessFlyTask<>(),
-                    1
-                )
-            ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            new SetRandomFlightTargetTask<>()
+                .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }
 
@@ -363,9 +355,5 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
         super.mobTick();
-    }
-
-    private static boolean shouldStopHunting(GullEntity gull, LivingEntity target) {
-        return gull.isInsideWaterOrBubbleColumn() || LookTargetUtil.hasBreedTarget(gull);
     }
 }

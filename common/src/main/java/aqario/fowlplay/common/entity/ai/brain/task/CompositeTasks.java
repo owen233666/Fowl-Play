@@ -5,11 +5,13 @@ import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.Birds;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.util.math.BlockPos;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 
@@ -33,26 +35,36 @@ public class CompositeTasks {
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
-        return GoToNearestItemTask.create(
-            Birds::canPickupFood,
-            entity -> Birds.FAST_SPEED,
-            true,
-            Birds.ITEM_PICK_UP_RANGE
-        );
+        return new SetItemWalkTargetTask<E>()
+            .speedModifier(Birds.FAST_SPEED)
+            .radius(Birds.ITEM_PICK_UP_RANGE)
+            .startCondition(Birds::canPickupFood);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {
-        return MoveAwayFromTargetTask.entity(
-            MemoryModuleType.AVOID_TARGET,
-            entity -> Birds.FAST_SPEED,
-            true
-        );
+        return new SetWalkTargetAwayFromTask<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::getPos)
+            .speedModifier(Birds.FAST_SPEED);
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfPerched() {
+        return new Idle<E>()
+            .noTimeout()
+            .startCondition(Birds::isPerched)
+            .stopIf(Predicate.not(Birds::isPerched));
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> idleIfInWater() {
         return new Idle<E>()
+            .noTimeout()
             .startCondition(Entity::isInsideWaterOrBubbleColumn)
             .stopIf(Predicate.not(Entity::isInsideWaterOrBubbleColumn));
+    }
+
+    public static <E extends BirdEntity> ExtendedBehaviour<E> forgetUnderwaterAttackTarget() {
+        return new InvalidateMemory<E, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
+            .invalidateIf(((entity, target) ->
+                entity.isInsideWaterOrBubbleColumn() && target.isSubmergedInWater() && target.getPos().y < entity.getPos().y
+            ));
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryPerch() {
@@ -61,14 +73,15 @@ public class CompositeTasks {
                 new OneRandomBehaviour<E>(
                     new LookAroundTask<>(),
                     new Idle<>()
+                        .runForBetween(100, 200)
                 )
-                    .runFor(entity -> entity.getRandom().nextBetween(30, 100))
+                    .runForBetween(30, 100)
                     .startCondition(Birds::isPerched)
                     .stopIf(Predicate.not(Birds::isPerched)),
                 8
             ),
             Pair.of(
-                new PerchTask<>(),
+                new SetPerchWalkTargetTask<>(),
                 1
             )
         );
@@ -80,8 +93,9 @@ public class CompositeTasks {
                 new OneRandomBehaviour<>(
                     new LookAroundTask<>(),
                     new Idle<>()
+                        .runForBetween(100, 200)
                 )
-                    .runFor(entity -> entity.getRandom().nextBetween(30, 100))
+                    .runForBetween(30, 100)
                     .startCondition(Entity::isOnGround)
                     .stopIf(Predicate.not(Entity::isOnGround)),
                 2

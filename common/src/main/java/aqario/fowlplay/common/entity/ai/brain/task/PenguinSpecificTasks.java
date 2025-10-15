@@ -31,7 +31,7 @@ public class PenguinSpecificTasks {
                 1
             ),
             Pair.of(
-                GoToWaterTask.create(32),
+                SetWaterWalkTargetTask.create(32),
                 2
             )
         ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN));

@@ -20,16 +20,16 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class BreatheAirTask<E extends BirdEntity> extends ExtendedBehaviour<E> {
+public class SetAirTargetTask<E extends BirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .registered(MemoryModuleType.WALK_TARGET);
     protected BiFunction<E, Vec3d, Float> speedModifier = (entity, targetPos) -> 1f;
 
-    public BreatheAirTask<E> speedModifier(float modifier) {
+    public SetAirTargetTask<E> speedModifier(float modifier) {
         return this.speedModifier((entity, targetPos) -> modifier);
     }
 
-    public BreatheAirTask<E> speedModifier(BiFunction<E, Vec3d, Float> function) {
+    public SetAirTargetTask<E> speedModifier(BiFunction<E, Vec3d, Float> function) {
         this.speedModifier = function;
 
         return this;

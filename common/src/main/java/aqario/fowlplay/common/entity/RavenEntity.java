@@ -19,7 +19,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -36,8 +35,6 @@ import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -229,11 +226,10 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
             FlightTasks.stopFalling(),
-            new SetAttackTarget<RavenEntity>()
-                .attackPredicate(Birds::canAttack),
+            new SetAttackTarget<>(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
-                .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+                .runForBetween(45, 90),
             new MoveToWalkTarget<>()
         );
     }
@@ -251,9 +247,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
             new InvalidateAttackTarget<>(),
             FlightTasks.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
-            new AnimatableMeleeAttack<>(0),
-            new InvalidateMemory<RavenEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
-                .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
+            new AnimatableMeleeAttack<>(0)
         );
     }
 
@@ -284,11 +278,9 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new PerchTask<>()
+            new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            new Idle<FlyingBirdEntity>()
-                .startCondition(Birds::isPerched)
-                .stopIf(Predicate.not(Birds::isPerched))
+            CompositeTasks.idleIfPerched()
         );
     }
 
@@ -297,11 +289,11 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    new TargetlessFlyTask<>(),
+                    new SetRandomFlightTargetTask<>(),
                     5
                 ),
                 Pair.of(
-                    SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTargetTask.create(Birds.STAY_NEAR_ENTITY_RANGE),
                     2
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

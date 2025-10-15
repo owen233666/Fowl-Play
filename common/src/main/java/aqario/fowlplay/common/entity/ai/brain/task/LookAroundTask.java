@@ -22,11 +22,15 @@ public class LookAroundTask<E extends MobEntity> extends ExtendedBehaviour<E> {
             MemoryModuleType.WALK_TARGET
         );
 
-    protected FloatProvider runChance = ConstantFloatProvider.create(0.02f);
+    protected FloatProvider runChance = ConstantFloatProvider.create(1f);
     private long timeUntilNextLook = 0L;
 
     public LookAroundTask() {
         this.runtimeProvider = entity -> entity.getRandom().nextBetween(20, 60);
+    }
+
+    public LookAroundTask<E> lookChance(float chance) {
+        return this.lookChance(ConstantFloatProvider.create(chance));
     }
 
     public LookAroundTask<E> lookChance(FloatProvider chance) {

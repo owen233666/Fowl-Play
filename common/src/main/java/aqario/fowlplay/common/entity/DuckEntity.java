@@ -19,7 +19,6 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LookTargetUtil;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -47,7 +46,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeA
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
@@ -64,6 +62,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEntity>, VariantHolder<RegistryEntry<DuckVariant>>, Flocking {
     private static final TrackedData<RegistryEntry<DuckVariant>> VARIANT = DataTracker.registerData(
@@ -280,10 +279,9 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     public BrainActivityGroup<? extends DuckEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             FlightTasks.stopFalling(),
-            new SetAttackTarget<DuckEntity>()
-                .attackPredicate(Birds::canAttack),
+            new SetAttackTarget<>(),
             new LookAtTarget<>()
-                .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
+                .runForBetween(45, 90),
             new MoveToWalkTarget<>()
         );
     }
@@ -301,19 +299,25 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new InvalidateAttackTarget<>(),
             FlightTasks.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
-            new AnimatableMeleeAttack<>(0),
-            new InvalidateMemory<DuckEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
-                .invalidateIf((entity, memory) -> LookTargetUtil.hasBreedTarget(entity))
+            new AnimatableMeleeAttack<>(0)
         );
     }
 
     @Override
     public BrainActivityGroup<? extends DuckEntity> getForageTasks() {
         return BirdBrain.forageActivity(
-            CompositeTasks.setWaterfowlForagingTarget(),
-            new Idle<DuckEntity>()
-                .runFor(entity -> entity.getRandom().nextBetween(100, 300))
-                .startCondition(entity -> !entity.isFlying())
+            new OneRandomBehaviour<>(
+                Pair.of(
+                    CompositeTasks.setWaterfowlForagingTarget(),
+                    1
+                ),
+                Pair.of(
+                    new Idle<FlyingBirdEntity>()
+                        .runForBetween(100, 300)
+                        .startCondition(Predicate.not(FlyingBirdEntity::isFlying)),
+                    2
+                )
+            )
         );
     }
 
@@ -323,12 +327,13 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new BreedWithPartner<>(),
             new FollowParent<>(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>(),
+            new LookAroundTask<>()
+                .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 new SetRandomSwimTarget<>()
                     .setRadius(24, 8),
                 new Idle<DuckEntity>()
-                    .runFor(entity -> entity.getRandom().nextBetween(100, 300))
+                    .runForBetween(100, 300)
                     .startCondition(entity -> !entity.isFlying())
             )
         );

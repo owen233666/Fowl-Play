@@ -15,7 +15,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import java.util.List;
 import java.util.function.Function;
 
-public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
+public class SetOwnerTeleportTargetTask extends ExtendedBehaviour<PigeonEntity> {
     private static final MemoryList MEMORIES = MemoryList.create(3)
         .registered(
             FowlPlayMemoryModuleType.TELEPORT_TARGET.get(),
@@ -27,17 +27,17 @@ public class FollowOwnerTask extends ExtendedBehaviour<PigeonEntity> {
     protected Function<PigeonEntity, Float> speedModifier = (entity) -> 1f;
     protected UniformIntProvider range = UniformIntProvider.create(5, 10);
 
-    public FollowOwnerTask speedModifier(float modifier) {
+    public SetOwnerTeleportTargetTask speedModifier(float modifier) {
         return this.speedModifier(entity -> modifier);
     }
 
-    public FollowOwnerTask speedModifier(Function<PigeonEntity, Float> function) {
+    public SetOwnerTeleportTargetTask speedModifier(Function<PigeonEntity, Float> function) {
         this.speedModifier = function;
 
         return this;
     }
 
-    public FollowOwnerTask range(int min, int max) {
+    public SetOwnerTeleportTargetTask range(int min, int max) {
         this.range = UniformIntProvider.create(min, max);
 
         return this;

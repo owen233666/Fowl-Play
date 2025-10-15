@@ -611,9 +611,8 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Override
     public BrainActivityGroup<? extends PenguinEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            new BreatheAirTask<>(),
-            new SetAttackTarget<PenguinEntity>()
-                .attackPredicate(Birds::canAquaticAttack),
+            new SetAirTargetTask<>(),
+            new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
             new MoveToWalkTarget<>()
@@ -647,10 +646,11 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
             new FollowParent<>(),
             SetEntityLookTargetTask.create(EntityType.PLAYER),
             new FollowTemptation<>(),
-            new LookAroundTask<>(),
+            new LookAroundTask<>()
+                .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 Pair.of(
-                    GoToLandTask.create(32),
+                    SetLandWalkTargetTask.create(32),
                     5
                 ),
                 Pair.of(
@@ -674,7 +674,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                     5
                 ),
                 Pair.of(
-                    SetWalkTargetToClosestAdult.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTargetTask.create(Birds.STAY_NEAR_ENTITY_RANGE),
                     2
                 ),
                 Pair.of(
