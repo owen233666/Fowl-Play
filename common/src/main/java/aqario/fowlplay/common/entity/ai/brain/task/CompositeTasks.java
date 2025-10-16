@@ -28,16 +28,19 @@ public class CompositeTasks {
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setWaterWalkTarget() {
-        return new SetRandomWalkTarget<E>()
-            .dontAvoidWater()
-            .walkTargetPredicate((entity, target) -> target != null && entity.getWorld().isWater(BlockPos.ofFloored(target).down()))
+        return new SetRandomSwimTarget<E>()
+            .setRadius(64, 32)
+            .swimTargetPredicate((entity, target) ->
+                target != null
+                    && entity.getWorld().isWater(BlockPos.ofFloored(target).down())
+            )
             .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn));
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
         return new SetItemWalkTargetTask<E>()
-            .speedModifier(Birds.FAST_SPEED)
             .radius(Birds.ITEM_PICK_UP_RANGE)
+            .speedModifier(Birds.FAST_SPEED)
             .startCondition(Birds::canPickupFood);
     }
 

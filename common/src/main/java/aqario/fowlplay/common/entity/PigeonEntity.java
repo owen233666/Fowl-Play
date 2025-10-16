@@ -406,7 +406,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 .riseChance(0.5F),
             FlightTasks.stopFalling(),
             new TeleportToTargetTask(),
-            new SetOwnerTeleportTargetTask(),
+            new SetOwnerTargetTask(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

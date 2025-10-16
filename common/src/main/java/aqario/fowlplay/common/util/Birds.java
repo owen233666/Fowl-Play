@@ -35,7 +35,6 @@ import java.util.Optional;
  * A utility class for birds.
  */
 public final class Birds {
-    public static final float NORMAL_SPEED = 1.0F;
     public static final float FAST_SPEED = 1.4F;
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
@@ -47,7 +46,7 @@ public final class Birds {
 
     public static boolean isDaytime(BirdEntity entity) {
         World world = entity.getWorld();
-        return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12000 || world.getTimeOfDay() > 23000);
+        return !world.getDimension().hasFixedTime() && (world.getTimeOfDay() < 12500 || world.getTimeOfDay() > 23000);
     }
 
     public static boolean shouldLandAtDestination(FlyingBirdEntity bird, BlockPos destination) {
