@@ -14,6 +14,7 @@ public record GooseVariant(Identifier texture, boolean domestic) {
     public static final PacketCodec<RegistryByteBuf, RegistryEntry<GooseVariant>> PACKET_CODEC = PacketCodecs.registryEntry(FowlPlayRegistryKeys.GOOSE_VARIANT);
     public static final RegistryKey<GooseVariant> GREYLAG = register("greylag", false);
     public static final RegistryKey<GooseVariant> CANADA = register("canada", false);
+    public static final RegistryKey<GooseVariant> SWAN = register("swan", false);
     public static final RegistryKey<GooseVariant> EMDEN = register("emden", true);
     public static final RegistryKey<GooseVariant> CHINESE = register("chinese", true);
 

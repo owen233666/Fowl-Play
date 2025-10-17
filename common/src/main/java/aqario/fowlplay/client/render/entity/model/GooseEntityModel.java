@@ -1,10 +1,12 @@
 package aqario.fowlplay.client.render.entity.model;
 
+import aqario.fowlplay.client.render.entity.animation.DomesticGooseAnimations;
 import aqario.fowlplay.client.render.entity.animation.GooseAnimations;
 import aqario.fowlplay.common.entity.GooseEntity;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.animation.Animation;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -34,24 +36,24 @@ public class GooseEntityModel extends FlyingBirdEntityModel<GooseEntity> {
 
         torso.addChild("cube_r1", ModelPartBuilder.create().uv(16, 16).cuboid(-0.5F, -3.0F, -0.5F, 5.0F, 5.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(-2.0F, -3.0F, 3.0F, 0.0873F, 0.0F, 0.0F));
 
-        body.addChild("left_wing", ModelPartBuilder.create().uv(1, 24).cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 11.0F, new Dilation(0.0F)), ModelTransform.of(2.5F, -5.5F, 0.0F, -0.0873F, 0.0F, 0.0F));
+        body.addChild("left_wing", ModelPartBuilder.create().uv(1, 24).cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 11.0F, new Dilation(0.0F)), ModelTransform.of(2.5F, -5.5F, -0.5F, -0.0873F, 0.0F, 0.0F));
 
-        body.addChild("right_wing", ModelPartBuilder.create().uv(1, 24).mirrored().cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 11.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.5F, -5.5F, 0.0F, -0.0873F, 0.0F, 0.0F));
+        body.addChild("right_wing", ModelPartBuilder.create().uv(1, 24).mirrored().cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 11.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.5F, -5.5F, -0.5F, -0.0873F, 0.0F, 0.0F));
 
-        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(23, 0).cuboid(-1.0F, -0.1F, -1.0F, 10.0F, 1.0F, 9.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -6.0F, -2.0F, -0.0873F, 0.0F, 0.0F));
 
-        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(24, 9).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, -0.1F, -1.0F));
+        left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(24, 10).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(9.0F, -0.1F, -1.0F));
 
-        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-8.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -5.0F, -1.0F, -0.3491F, 0.0F, 0.0F));
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(23, 0).mirrored().cuboid(-9.0F, -0.1F, -1.0F, 10.0F, 1.0F, 9.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -6.0F, -2.0F, -0.0873F, 0.0F, 0.0F));
 
-        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(24, 9).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, -0.1F, -1.0F));
+        right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(24, 10).mirrored().cuboid(-11.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, -0.1F, -1.0F));
 
-        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(34, 17).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 2.0F, 2.0F, new Dilation(0.0F))
-            .uv(40, 17).cuboid(-1.0F, -1.002F, 1.75F, 2.0F, 0.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -3.25F, 6.0F, -0.0436F, 0.0F, 0.0F));
+        ModelPartData tail = body.addChild("tail", ModelPartBuilder.create().uv(34, 18).cuboid(-1.5F, -1.0F, 1.0F, 3.0F, 2.0F, 2.0F, new Dilation(0.0F))
+            .uv(40, 18).cuboid(-1.0F, -1.002F, 1.75F, 2.0F, 0.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -3.25F, 6.0F, -0.0436F, 0.0F, 0.0F));
 
-        tail.addChild("cube_r2", ModelPartBuilder.create().uv(41, 17).cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, -1.0F, 2.0F, 0.0F, -0.5236F, 0.0F));
+        tail.addChild("cube_r2", ModelPartBuilder.create().uv(41, 18).cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(-0.5F, -1.0F, 2.0F, 0.0F, -0.5236F, 0.0F));
 
-        tail.addChild("cube_r3", ModelPartBuilder.create().uv(41, 17).mirrored().cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 2.0F, 0.0F, 0.5236F, 0.0F));
+        tail.addChild("cube_r3", ModelPartBuilder.create().uv(41, 18).mirrored().cuboid(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(0.5F, -1.0F, 2.0F, 0.0F, 0.5236F, 0.0F));
 
         root.addChild("left_leg", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5F, -1.0F, 0.0F, 1.0F, 5.0F, 0.0F, new Dilation(0.0F))
             .uv(-1, 0).mirrored().cuboid(-1.5F, 4.0F, -3.0F, 3.0F, 0.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(2.25F, 1.0F, 2.5F));
@@ -95,13 +97,20 @@ public class GooseEntityModel extends FlyingBirdEntityModel<GooseEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
+        boolean domestic = goose.getVariant().value().domestic();
+        final Animation walkingAnimation = domestic ? DomesticGooseAnimations.WALKING : GooseAnimations.WALKING;
+        final Animation standingAnimation = domestic ? DomesticGooseAnimations.STANDING : GooseAnimations.STANDING;
+        final Animation swimmingAnimation = domestic ? DomesticGooseAnimations.SWIMMING : GooseAnimations.SWIMMING;
+        final Animation glidingAnimation = domestic ? DomesticGooseAnimations.GLIDING : GooseAnimations.GLIDING;
+        final Animation flappingAnimation = domestic ? DomesticGooseAnimations.FLAPPING : GooseAnimations.FLAPPING;
+
         if(!goose.isFlying() && !goose.isInsideWaterOrBubbleColumn()) {
-            this.animateMovement(GooseAnimations.WALKING, limbAngle, limbDistance, 3F, 3F);
+            this.animateMovement(walkingAnimation, limbAngle, limbDistance, 3F, 3F);
         }
-        this.updateAnimation(goose.standingState, GooseAnimations.STANDING, ageInTicks);
-        this.updateAnimation(goose.floatingState, GooseAnimations.FLOATING, ageInTicks);
-        this.updateAnimation(goose.glidingState, GooseAnimations.GLIDING, ageInTicks);
-        this.updateAnimation(goose.flappingState, GooseAnimations.FLAPPING, ageInTicks);
+        this.updateAnimation(goose.standingState, standingAnimation, ageInTicks);
+        this.updateAnimation(goose.floatingState, swimmingAnimation, ageInTicks);
+        this.updateAnimation(goose.glidingState, glidingAnimation, ageInTicks);
+        this.updateAnimation(goose.flappingState, flappingAnimation, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
