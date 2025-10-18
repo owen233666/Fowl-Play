@@ -31,6 +31,9 @@ jobs:
                 id: gradle-properties
                 run: ./.github/scripts/parse-gradle-properties.sh
 
+            -   name: "Parse changelog"
+                run: ./.github/scripts/parse-changelog.sh ${{ steps.gradle-properties.outputs.MOD_VERSION }}
+
             -   name: "Setup Java"
                 uses: actions/setup-java@v4
                 with:
@@ -92,6 +95,9 @@ jobs:
                 id: gradle-properties
                 run: ./.github/scripts/parse-gradle-properties.sh
 
+            -   name: "Parse changelog"
+                run: ./.github/scripts/parse-changelog.sh ${{ steps.gradle-properties.outputs.MOD_VERSION }}
+
             -   name: "Run build"
                 run: ./gradlew ${{ matrix.platform }}:build
 
@@ -110,9 +116,6 @@ jobs:
                     loaders: ${{ join(matrix.loaders, ' ') }}
                     game-versions: |
                         ${{ steps.gradle-properties.outputs.MINECRAFT_VERSION }}
-                    changelog-file: CHANGELOG.*
+                    changelog-file: RELEASE_CHANGELOG.md
                     files: |
                         ${{ matrix.platform }}/build/libs/!(*-@(dev|dev-shadow|sources|javadoc)).jar
-
-                    retry-attempts: 6
-                    retry-delay: 30000
