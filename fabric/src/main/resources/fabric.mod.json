@@ -47,5 +47,13 @@
     "architectury": ">=${architectury_version}",
     "smartbrainlib": ">=${sbl_version}",
     "yet_another_config_lib_v3": ">=${yacl_version}"
+  },
+  "custom": {
+    "mc-publish": {
+      "dependencies": [
+        "architectury-api(required)",
+        "yacl(required)"
+      ]
+    }
   }
 }

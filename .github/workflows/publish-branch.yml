@@ -114,7 +114,6 @@ jobs:
                     curseforge-id: ${{ vars.CURSEFORGE_ID }}
                     curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-                    modrinth-featured: true
                     modrinth-id: ${{ vars.MODRINTH_ID }}
                     modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
@@ -123,10 +122,6 @@ jobs:
                     loaders: ${{ join(matrix.loaders, ' ') }}
                     game-versions: |
                         ${{ steps.gradle-properties.outputs.MINECRAFT_VERSION }}
-                    dependencies: |
-                        architectury-api(required)
-                        smartbrainlib(required)
-                        yacl(required)
                     changelog-file: RELEASE_CHANGELOG.md
                     files: |
                         ${{ matrix.platform }}/build/libs/!(*-@(dev|dev-shadow|sources|javadoc)).jar

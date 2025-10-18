@@ -55,3 +55,9 @@ config = "fowlplay.common.mixins.json"
 
 [[mixins]]
 config = "fowlplay.neoforge.mixins.json"
+
+[mc-publish]
+dependencies = [
+    "architectury-api(recommended)",
+    "yacl(recommended)",
+]
