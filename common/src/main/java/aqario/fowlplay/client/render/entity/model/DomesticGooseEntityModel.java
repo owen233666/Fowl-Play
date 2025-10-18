@@ -35,11 +35,11 @@ public class DomesticGooseEntityModel extends GooseEntityModel {
 
         body.addChild("right_wing", ModelPartBuilder.create().uv(1, 24).mirrored().cuboid(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 11.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.5F, -6.0F, -1.0F, -0.1745F, 0.0F, 0.0F));
 
-        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(1.5F, -7.0F, -1.0F, -0.2618F, 0.0F, 0.0F));
+        ModelPartData left_wing_open = body.addChild("left_wing_open", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(2.5F, -7.0F, -1.0F, -0.2618F, 0.0F, 0.0F));
 
         left_wing_open.addChild("left_wing_outer", ModelPartBuilder.create().uv(24, 9).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)), ModelTransform.pivot(8.0F, -0.1F, -1.0F));
 
-        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-8.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-1.5F, -7.0F, -1.0F, -0.2618F, 0.0F, 0.0F));
+        ModelPartData right_wing_open = body.addChild("right_wing_open", ModelPartBuilder.create().uv(24, 0).mirrored().cuboid(-8.0F, -0.1F, -1.0F, 9.0F, 1.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-2.5F, -7.0F, -1.0F, -0.2618F, 0.0F, 0.0F));
 
         right_wing_open.addChild("right_wing_outer", ModelPartBuilder.create().uv(24, 9).mirrored().cuboid(-10.0F, 0.0F, 0.0F, 10.0F, 0.0F, 8.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-8.0F, -0.1F, -1.0F));
 
