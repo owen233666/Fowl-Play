@@ -59,7 +59,8 @@ jobs:
                     name: built-jars-${{ inputs.branch }}
                     if-no-files-found: error
                     path: |
-                        ./**/build/libs/*[0-9].jar
+                        !./common/**
+                        ./**/build/libs/!(*-@(dev|dev-shadow|sources|javadoc)).jar
 
             -   name: "Generate matrix for publishing"
                 id: gen-matrix
