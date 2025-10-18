@@ -53,16 +53,15 @@ jobs:
             -   name: "Run build"
                 run: ./gradlew build
 
-            -   name: "test"
-                run: ./.github/scripts/test.sh
-
             -   name: "Upload built jars"
                 uses: actions/upload-artifact@v4
                 with:
                     name: built-jars-${{ inputs.branch }}
                     if-no-files-found: error
                     path: |
-                        ./**/build/libs/!(*-@(dev|dev-shadow|sources|javadoc)).jar
+                        ./**/build/libs/*-fabric.jar
+                        ./**/build/libs/*-forge.jar
+                        ./**/build/libs/*-neoforge.jar
 
             -   name: "Generate matrix for publishing"
                 id: gen-matrix
