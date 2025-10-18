@@ -1,5 +1,6 @@
 package aqario.fowlplay.core.platform;
 
+import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.particle.ParticleFactory;
@@ -21,7 +22,6 @@ import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundEvent;
-import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -62,7 +62,7 @@ public class PlatformHelper {
     }
 
     @ExpectPlatform
-    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
+    public static Supplier<ExtendedSchedule> registerSchedule(String id, Supplier<ExtendedSchedule> schedule) {
         throw new AssertionError();
     }
 

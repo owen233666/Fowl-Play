@@ -1,6 +1,7 @@
 package aqario.fowlplay.core.platform.fabric;
 
 import aqario.fowlplay.common.entity.*;
+import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
@@ -37,7 +38,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -95,8 +95,8 @@ public class PlatformHelperImpl {
         return () -> registry;
     }
 
-    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
-        SmartBrainSchedule registry = Registry.register(Registries.SCHEDULE, Identifier.of(FowlPlay.ID, id), schedule.get());
+    public static Supplier<ExtendedSchedule> registerSchedule(String id, Supplier<ExtendedSchedule> schedule) {
+        ExtendedSchedule registry = Registry.register(Registries.SCHEDULE, Identifier.of(FowlPlay.ID, id), schedule.get());
         return () -> registry;
     }
 

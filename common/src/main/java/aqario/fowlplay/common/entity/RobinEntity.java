@@ -11,7 +11,6 @@ import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
 import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
 import aqario.fowlplay.common.entity.ai.brain.task.SetPerchWalkTargetTask;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -21,7 +20,6 @@ import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.VariantHolder;
-import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
@@ -270,11 +268,6 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     @Override
     public SmartBrainSchedule getSchedule() {
         return FowlPlaySchedules.FORAGER.get();
-    }
-
-    @Override
-    public Activity getDefaultActivity() {
-        return FowlPlayActivities.PERCH.get();
     }
 
     @Override

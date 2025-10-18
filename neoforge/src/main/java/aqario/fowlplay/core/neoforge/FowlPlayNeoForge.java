@@ -38,6 +38,7 @@ public final class FowlPlayNeoForge {
         PlatformHelperImpl.ITEMS.register(modBus);
         PlatformHelperImpl.MEMORY_MODULE_TYPES.register(modBus);
         PlatformHelperImpl.PARTICLE_TYPES.register(modBus);
+        PlatformHelperImpl.SCHEDULES.register(modBus);
         PlatformHelperImpl.SENSOR_TYPES.register(modBus);
         PlatformHelperImpl.SOUND_EVENTS.register(modBus);
         PlatformHelperImpl.TRACKED_DATA_HANDLERS.register(modBus);

@@ -5,7 +5,6 @@ import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayActivities;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -289,11 +288,6 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public SmartBrainSchedule getSchedule() {
         return FowlPlaySchedules.FORAGER.get();
-    }
-
-    @Override
-    public Activity getDefaultActivity() {
-        return FowlPlayActivities.PERCH.get();
     }
 
     @Override

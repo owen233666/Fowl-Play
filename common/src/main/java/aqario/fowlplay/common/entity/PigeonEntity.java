@@ -13,7 +13,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -479,11 +478,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public SmartBrainSchedule getSchedule() {
         return FowlPlaySchedules.FORAGER.get();
-    }
-
-    @Override
-    public Activity getDefaultActivity() {
-        return FowlPlayActivities.PERCH.get();
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {

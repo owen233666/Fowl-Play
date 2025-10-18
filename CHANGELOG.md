@@ -1,3 +1,7 @@
+## 1.1.0-beta.2
+
+- Fix crash on NeoForge
+
 ## 1.1.0-beta.1
 
 _IMPORTANT: This is a beta. While there shouldn't be any game breaking bugs, there are some unfinished assets and buggy behaviours._

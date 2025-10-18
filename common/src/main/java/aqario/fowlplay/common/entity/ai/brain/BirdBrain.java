@@ -156,4 +156,9 @@ public interface BirdBrain<E extends BirdEntity & BirdBrain<E>> extends SmartBra
             FowlPlayActivities.PICK_UP.get()
         );
     }
+
+    @Override
+    default Activity getDefaultActivity() {
+        return Activity.REST;
+    }
 }

@@ -1,6 +1,7 @@
 package aqario.fowlplay.core.platform.neoforge;
 
 import aqario.fowlplay.common.entity.*;
+import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import aqario.fowlplay.core.platform.PlatformHelper;
@@ -34,7 +35,6 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegistryBuilder;
-import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 
 import java.util.function.Supplier;
 
@@ -153,7 +153,7 @@ public class PlatformHelperImpl {
         return PARTICLE_TYPES.register(id, particleType);
     }
 
-    public static Supplier<SmartBrainSchedule> registerSchedule(String id, Supplier<SmartBrainSchedule> schedule) {
+    public static Supplier<ExtendedSchedule> registerSchedule(String id, Supplier<ExtendedSchedule> schedule) {
         return SCHEDULES.register(id, schedule);
     }
 
