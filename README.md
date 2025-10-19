@@ -2,7 +2,11 @@
 
 ![In game screenshot of seagulls flying around](https://cdn.modrinth.com/data/WpXfePbg/images/41f74f0170525f98788a9911d3596e99b579eea2.png)
 
-Fowl Play aims to improve Minecraft's ambience and make the world seem more alive, adding birds with realistic behaviours, sounds, and flying mechanics. Far from fluttering parrots and chickens, Fowl Play's birds can all take to the skies, be it hawks soaring majestically or sparrows darting between trees. Some provide much-needed ambience to forests, others can be tamed to help players, and all of them come together to create a living, interactive ecosystem.
+**Fowl Play** is a mod that aims to improve Minecraft's ambience and make the world seem more alive, adding birds with realistic behaviours, sounds, and flying mechanics
+
+Far from fluttering parrots and chickens, Fowl Play's birds can all take to the skies, be it hawks soaring majestically or sparrows darting between trees
+
+Some birds provide much-needed ambience to forests, others can be tamed to help players, and all of them interact to create a living ecosystem!
 
 <br/>
 
@@ -29,7 +33,7 @@ Sure! Just make sure to credit me and link back to this page.
 <details>
 <summary>I have a question that's not listed! / I have a suggestion!</summary>
 
-You can talk about the mod in my [GitHub Discussions](https://github.com/aqariio/Fowl-Play/discussions).
+You can talk about the mod in my **[GitHub Discussions](https://github.com/aqariio/Fowl-Play/discussions)**.
 </details>
 
 <br/>
