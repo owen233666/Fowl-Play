@@ -8,6 +8,10 @@
 
 - Fix geese not naturally spawning
 
+- Add European Portuguese translation
+
+- Add Japanese translation
+
 ## 1.1.0-beta.2
 
 - Fix crash on NeoForge
