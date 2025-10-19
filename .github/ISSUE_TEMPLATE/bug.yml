@@ -8,6 +8,7 @@ body:
         attributes:
             value: |
                 <br/>
+                
                 ### Hello! Thanks for taking the time to report an issue!
                 
                 If you meant to request a new feature or ask a question instead, please make a post on the **[Discussions](https://github.com/aqariio/Fowl-Play/discussions)** page!
