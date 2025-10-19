@@ -59,6 +59,9 @@ public final class FowlPlayNeoForge {
 //                event.add(item.get());
 //            }
 //        }));
+        if(event.getTabKey() == ItemGroups.FUNCTIONAL) {
+            event.add(FowlPlayItems.SCARECROW.get());
+        }
         if(event.getTabKey() == ItemGroups.SPAWN_EGGS) {
             event.add(FowlPlayItems.BLUE_JAY_SPAWN_EGG.get());
             event.add(FowlPlayItems.CARDINAL_SPAWN_EGG.get());

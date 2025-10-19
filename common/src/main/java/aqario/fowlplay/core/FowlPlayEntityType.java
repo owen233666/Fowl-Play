@@ -215,6 +215,16 @@ public final class FowlPlayEntityType {
             .eyeHeight(0.4f)
     );
 
+    public static final Supplier<EntityType<ScarecrowEntity>> SCARECROW = register("scarecrow",
+        EntityTypeBuilder.create(
+                ScarecrowEntity::new,
+                SpawnGroup.MISC
+            )
+            .attributes(ScarecrowEntity::createScarecrowAttributes)
+            .dimensions(0.6f, 2.0f)
+            .eyeHeight(1.72f)
+    );
+
     private static <T extends Entity> Supplier<EntityType<T>> register(String id, EntityTypeBuilder<T> builder) {
         return PlatformHelper.registerEntityType(id, () -> builder.build(id));
     }
@@ -260,6 +270,14 @@ public final class FowlPlayEntityType {
             FowlPlayConfig.getInstance().duckSpawnWeight,
             FowlPlayConfig.getInstance().duckMinGroupSize,
             FowlPlayConfig.getInstance().duckMaxGroupSize
+        );
+        addSpawn(
+            FowlPlayBiomeTags.SPAWNS_GEESE,
+            CustomSpawnGroup.BIRDS.spawnGroup,
+            FowlPlayEntityType.GOOSE,
+            FowlPlayConfig.getInstance().gooseSpawnWeight,
+            FowlPlayConfig.getInstance().gooseMinGroupSize,
+            FowlPlayConfig.getInstance().gooseMaxGroupSize
         );
         addSpawn(
             FowlPlayBiomeTags.SPAWNS_GULLS,

@@ -76,6 +76,16 @@ public class AddBirdsBiomeModifier implements BiomeModifier {
         addSpawn(
             builder,
             biome,
+            FowlPlayBiomeTags.SPAWNS_GEESE,
+            CustomSpawnGroup.BIRDS.spawnGroup,
+            FowlPlayEntityType.GOOSE.get(),
+            FowlPlayConfig.getInstance().gooseSpawnWeight,
+            FowlPlayConfig.getInstance().gooseMinGroupSize,
+            FowlPlayConfig.getInstance().gooseMaxGroupSize
+        );
+        addSpawn(
+            builder,
+            biome,
             FowlPlayBiomeTags.SPAWNS_GULLS,
             CustomSpawnGroup.BIRDS.spawnGroup,
             FowlPlayEntityType.GULL.get(),

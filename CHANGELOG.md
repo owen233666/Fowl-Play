@@ -1,3 +1,13 @@
+## 1.1.0-beta.3
+
+- Add scarecrow
+    - Birds see scarecrows as players, so any bird that avoids players will also avoid scarecrows
+    - Scarecrows can be attacked like armour stands, activating enchantments such as sweeping edge
+    - Scarecrows can be broken by sneaking and attacking it
+        - Unlike armour stands, double-clicking scarecrows will do nothing
+
+- Fix geese not naturally spawning
+
 ## 1.1.0-beta.2
 
 - Fix crash on NeoForge
