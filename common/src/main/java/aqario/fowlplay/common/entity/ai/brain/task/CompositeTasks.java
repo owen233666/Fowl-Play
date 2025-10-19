@@ -40,8 +40,7 @@ public class CompositeTasks {
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
         return new SetItemWalkTargetTask<E>()
             .radius(Birds.ITEM_PICK_UP_RANGE)
-            .speedModifier(Birds.FAST_SPEED)
-            .startCondition(Birds::canPickupFood);
+            .speedModifier(Birds.FAST_SPEED);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {

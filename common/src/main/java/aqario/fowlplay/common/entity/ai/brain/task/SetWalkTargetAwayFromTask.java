@@ -4,10 +4,7 @@ import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.FuzzyTargeting;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.WalkTarget;
+import net.minecraft.entity.ai.brain.*;
 import net.minecraft.util.math.Vec3d;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -24,6 +21,7 @@ public class SetWalkTargetAwayFromTask<E extends BirdEntity, T> extends SpeedMod
         this.targetPosition = targetPosition;
         this.memoryRequirements = MemoryList.create(2)
             .registered(
+                MemoryModuleType.LOOK_TARGET,
                 MemoryModuleType.WALK_TARGET
             )
             .present(memoryType);
@@ -51,6 +49,7 @@ public class SetWalkTargetAwayFromTask<E extends BirdEntity, T> extends SpeedMod
         for(int j = 0; j < 10; j++) {
             Vec3d target = FuzzyTargeting.findFrom(entity, 16, 16, fleeTargetPos);
             if(target != null) {
+                BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(target));
                 BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target, this.speedModifier.apply(entity, target), 0));
                 break;
             }

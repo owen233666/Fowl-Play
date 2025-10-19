@@ -49,7 +49,9 @@ public class SetItemWalkTargetTask<E extends BirdEntity> extends SpeedModifiable
             && entity.getWorld().getWorldBorder().contains(targetItem.getBlockPos())
         ) {
             WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(targetItem, false), this.speedModifier.apply(entity, targetItem.getPos()), 0);
-            BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(targetItem, true));
+            if(!BrainUtils.hasMemory(brain, MemoryModuleType.AVOID_TARGET)) {
+                BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityLookTarget(targetItem, true));
+            }
             BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, newWalkTarget);
         }
     }
