@@ -58,6 +58,6 @@ config = "fowlplay.neoforge.mixins.json"
 
 [mc-publish]
 dependencies = [
-    "architectury-api(recommended)",
-    "yacl(recommended)",
+    "architectury-api(required)",
+    "yacl(required)",
 ]

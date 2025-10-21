@@ -15,13 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(ChickenEntity.class)
+@Mixin(value = ChickenEntity.class, priority = 1001)
 public abstract class ChickenEntityMixin extends AnimalEntity implements VariantHolder<RegistryEntry<ChickenVariant>>, ChickenAnimationStates {
-    //    @Unique
-//    private static final TrackedData<RegistryEntry<ChickenVariant>> fowlplay$VARIANT = DataTracker.registerData(
-//        ChickenEntity.class,
-//        FowlPlayTrackedDataHandlerRegistry.CHICKEN_VARIANT
-//    );
     @Unique
     private final AnimationState fowlplay$standingState = new AnimationState();
     @Unique
@@ -45,6 +40,22 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
+//    @Inject(
+//        method = "createChild(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/PassiveEntity;)Lnet/minecraft/entity/passive/ChickenEntity;",
+//        at = @At("HEAD"),
+//        cancellable = true
+//    )
+//    private void fowlplay$createChild(ServerWorld serverWorld, PassiveEntity otherParent, CallbackInfoReturnable<ChickenEntity> cir) {
+//        ChickenEntity chicken = EntityType.CHICKEN.create(serverWorld);
+//        if(chicken != null) {
+//            FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.WHITE).ifPresent(
+//                variant ->
+//                    DataAttachmentHelper.setChickenVariant(chicken, variant)
+//            );
+//        }
+//        cir.setReturnValue(chicken);
+//    }
+
     @Override
     public RegistryEntry<ChickenVariant> getVariant() {
         return DataAttachmentHelper.getChickenVariant((ChickenEntity) (Object) this);
@@ -54,25 +65,6 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
     public void setVariant(RegistryEntry<ChickenVariant> variant) {
         DataAttachmentHelper.setChickenVariant((ChickenEntity) (Object) this, variant);
     }
-
-//    @Override
-//    protected void initDataTracker(DataTracker.Builder builder) {
-//        super.initDataTracker(builder);
-//        builder.add(fowlplay$VARIANT, FowlPlayRegistries.CHICKEN_VARIANT.entryOf(ChickenVariant.WHITE));
-//    }
-//
-//    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-//    private void fowlplay$readCustomVariant(NbtCompound nbt, CallbackInfo ci) {
-//        Optional.ofNullable(Identifier.tryParse(nbt.getString("variant")))
-//            .map(variant -> RegistryKey.of(FowlPlayRegistryKeys.CHICKEN_VARIANT, variant))
-//            .flatMap(FowlPlayRegistries.CHICKEN_VARIANT::getEntry)
-//            .ifPresent(this::setVariant);
-//    }
-//
-//    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-//    private void fowlplay$writeCustomVariant(NbtCompound nbt, CallbackInfo ci) {
-//        nbt.putString("variant", this.getVariant().getKey().orElse(ChickenVariant.WHITE).getValue().toString());
-//    }
 
     @Override
     public void tick() {

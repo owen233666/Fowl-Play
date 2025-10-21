@@ -1,3 +1,7 @@
+## 1.1.0-beta.4
+
+- Fix incompatibility with PerfectParity
+
 ## 1.1.0-beta.3
 
 - Add scarecrow
