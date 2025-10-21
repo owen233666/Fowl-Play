@@ -15,4 +15,9 @@ public class DataAttachmentHelper {
     public static void setChickenVariant(ChickenEntity entity, RegistryEntry<ChickenVariant> variant) {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static void sendChickenVariantUpdate(ChickenEntity entity) {
+        throw new AssertionError();
+    }
 }

@@ -14,9 +14,13 @@ public class DataAttachmentHelperImpl {
 
     public static void setChickenVariant(ChickenEntity entity, RegistryEntry<ChickenVariant> variant) {
         entity.setData(FowlPlayDataAttachments.CHICKEN_VARIANT, variant);
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new ChickenVariantPayload(
+    }
+
+    public static void sendChickenVariantUpdate(ChickenEntity entity) {
+        ChickenVariantPayload payload = new ChickenVariantPayload(
             entity.getId(),
-            variant
-        ));
+            getChickenVariant(entity)
+        );
+        PacketDistributor.sendToPlayersTrackingEntity(entity, payload);
     }
 }

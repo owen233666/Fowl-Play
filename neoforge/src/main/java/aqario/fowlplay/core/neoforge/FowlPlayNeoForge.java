@@ -7,6 +7,7 @@ import aqario.fowlplay.core.FowlPlayItems;
 import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.item.ItemGroups;
 import net.neoforged.api.distmarker.Dist;
@@ -59,13 +60,12 @@ public final class FowlPlayNeoForge {
             ChickenVariantPayload.ID,
             ChickenVariantPayload.CODEC,
             (payload, context) -> {
-                System.out.println("received");
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if(world == null) {
                     return;
                 }
-                ChickenEntity entity = (ChickenEntity) world.getEntityById(payload.entityId());
-                if(entity != null) {
+                Entity entity = world.getEntityById(payload.entityId());
+                if(entity instanceof ChickenEntity) {
                     entity.setData(FowlPlayDataAttachments.CHICKEN_VARIANT, payload.variant());
                 }
             }

@@ -82,6 +82,9 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
             this.fowlplay$floatingState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
         }
         super.tick();
+        if(!this.getWorld().isClient()) {
+            DataAttachmentHelper.sendChickenVariantUpdate((ChickenEntity) (Object) this);
+        }
     }
 
     @Override
