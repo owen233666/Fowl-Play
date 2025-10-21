@@ -20,7 +20,9 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
     public static final PacketCodec<PacketByteBuf, DebugBirdCustomPayload> CODEC = CustomPayload.codecOf(
         DebugBirdCustomPayload::write, DebugBirdCustomPayload::new
     );
-    public static final CustomPayload.Id<DebugBirdCustomPayload> ID = new CustomPayload.Id<>(Identifier.of(FowlPlay.ID, "debug/bird"));
+    public static final CustomPayload.Id<DebugBirdCustomPayload> ID = new CustomPayload.Id<>(
+        Identifier.of(FowlPlay.ID, "debug/bird")
+    );
 
     private DebugBirdCustomPayload(PacketByteBuf buf) {
         this(new BirdData(buf));

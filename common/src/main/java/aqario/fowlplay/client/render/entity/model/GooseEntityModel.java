@@ -3,6 +3,7 @@ package aqario.fowlplay.client.render.entity.model;
 import aqario.fowlplay.client.render.entity.animation.DomesticGooseAnimations;
 import aqario.fowlplay.client.render.entity.animation.GooseAnimations;
 import aqario.fowlplay.common.entity.GooseEntity;
+import aqario.fowlplay.common.entity.GooseVariant;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -97,7 +98,7 @@ public class GooseEntityModel extends FlyingBirdEntityModel<GooseEntity> {
             this.leftWing.visible = true;
             this.rightWing.visible = true;
         }
-        boolean domestic = goose.getVariant().value().domestic();
+        boolean domestic = goose.getVariant().value().modelType() == GooseVariant.ModelType.DOMESTIC;
         final Animation walkingAnimation = domestic ? DomesticGooseAnimations.WALKING : GooseAnimations.WALKING;
         final Animation standingAnimation = domestic ? DomesticGooseAnimations.STANDING : GooseAnimations.STANDING;
         final Animation swimmingAnimation = domestic ? DomesticGooseAnimations.SWIMMING : GooseAnimations.SWIMMING;
