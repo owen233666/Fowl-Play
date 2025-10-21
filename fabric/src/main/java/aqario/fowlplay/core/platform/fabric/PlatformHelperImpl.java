@@ -5,7 +5,6 @@ import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import aqario.fowlplay.core.platform.PlatformHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -77,7 +76,7 @@ public class PlatformHelperImpl {
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
         Item registry = Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item.get());
-        PlatformHelper.addItemToItemGroup(() -> registry, group);
+        addItemToItemGroup(() -> registry, group);
         return () -> registry;
     }
 

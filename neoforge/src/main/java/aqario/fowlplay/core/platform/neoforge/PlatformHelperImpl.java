@@ -4,7 +4,6 @@ import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import aqario.fowlplay.core.platform.PlatformHelper;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -137,7 +136,7 @@ public class PlatformHelperImpl {
     // TODO: Add items to group automatically
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
         Supplier<Item> registry = ITEMS.register(id, item);
-        PlatformHelper.addItemToItemGroup(registry, group);
+        addItemToItemGroup(registry, group);
         return registry;
     }
 
