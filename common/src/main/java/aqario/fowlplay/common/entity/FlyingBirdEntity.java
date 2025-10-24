@@ -8,6 +8,7 @@ import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
@@ -263,12 +264,17 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         }
     }
 
+    @Override
+    protected boolean canStartRiding(Entity entity) {
+        return !this.isFlying() && super.canStartRiding(entity);
+    }
+
     public boolean canStartFlying() {
         return !this.isFlying() && !this.isBelowWaterline() && this.getHealth() >= MIN_HEALTH_TO_FLY;
     }
 
     public boolean shouldStopFlying() {
-        if(this.isSubmergedInWater()) {
+        if(this.isSubmergedInWater() || this.hasVehicle()) {
             return true;
         }
         if(this.timeFlying < MIN_FLIGHT_TIME) {
