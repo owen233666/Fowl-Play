@@ -12,8 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class SetLandWalkTargetTask {
-    public static SingleTickBehaviour<BirdEntity> create(int range) {
-        return new SingleTickBehaviour<>(
+    public static OneShotTask<BirdEntity> create(int range) {
+        return new OneShotTask<>(
             MemoryList.create(4)
                 .present(
                     MemoryModuleType.HAS_HUNTING_COOLDOWN

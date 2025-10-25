@@ -7,6 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -51,7 +52,6 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -252,8 +252,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     }
 
     @Override
-    public SquareRadius getWalkRange() {
-        return new SquareRadius(24, 12);
+    public CuboidRadius<Integer> getWalkRange() {
+        return new CuboidRadius<>(24, 12);
     }
 
     @Override
@@ -327,7 +327,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.setWaterWalkTarget(),
+            CompositeTasks.setWaterRestTarget(),
             CompositeTasks.idleIfInWater()
         );
     }

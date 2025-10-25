@@ -31,7 +31,7 @@ public class PenguinSpecificTasks {
                 1
             ),
             Pair.of(
-                SetWaterWalkTargetTask.create(32),
+                IterativeSetWaterWalkTargetTask.create(32),
                 2
             )
         ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN));
@@ -39,12 +39,12 @@ public class PenguinSpecificTasks {
 
     private static final int[][] SWIM_DISTANCES = new int[][]{{31, 15}};
 
-    public static SingleTickBehaviour<PenguinEntity> swim() {
+    public static OneShotTask<PenguinEntity> swim() {
         return swim(PenguinSpecificTasks::findSwimTargetPos, Entity::isInsideWaterOrBubbleColumn);
     }
 
-    private static SingleTickBehaviour<PenguinEntity> swim(Function<PenguinEntity, Vec3d> targetGetter, Predicate<PenguinEntity> predicate) {
-        return new SingleTickBehaviour<>(
+    private static OneShotTask<PenguinEntity> swim(Function<PenguinEntity, Vec3d> targetGetter, Predicate<PenguinEntity> predicate) {
+        return new OneShotTask<>(
             MemoryList.create(1)
                 .absent(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {

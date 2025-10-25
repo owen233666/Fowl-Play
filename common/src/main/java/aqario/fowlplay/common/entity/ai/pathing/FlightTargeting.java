@@ -1,33 +1,51 @@
 package aqario.fowlplay.common.entity.ai.pathing;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.tags.FowlPlayBlockTags;
+import aqario.fowlplay.common.util.CuboidRadius;
+import aqario.fowlplay.common.util.TargetingUtil;
 import net.minecraft.entity.ai.FuzzyPositions;
+import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.NavigationConditions;
-import net.minecraft.entity.ai.NoPenaltySolidTargeting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.tslat.smartbrainlib.object.SquareRadius;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * Similar to {@link FuzzyTargeting} but only for flying birds.
+ */
 public class FlightTargeting {
+    // TODO: create a separate implementation that isn't biased towards water and use that instead for SetNonAirWalkTargetTask
     @Nullable
-    public static Vec3d findPerchOrGround(FlyingBirdEntity entity, SquareRadius perchRange, SquareRadius groundRange) {
-        Vec3d perch = findPerch(entity, (int) perchRange.xzRadius(), (int) perchRange.yRadius());
-        return perch != null ? perch : findGround(entity, (int) groundRange.xzRadius(), (int) groundRange.yRadius());
+    public static Vec3d findWaterOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> waterRange, CuboidRadius<Integer> groundRange) {
+        Vec3d water = findWater(entity, waterRange.xz(), waterRange.y());
+        return water != null ? water : findGround(entity, groundRange.xz(), groundRange.y());
+    }
+
+    @Nullable
+    public static Vec3d findWater(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
+        return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
+                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, -2, 0, 0, Math.PI * 3 / 2);
+                return pos == null ? null : TargetingUtil.validateWater(entity, pos);
+            }, pos -> 0))
+            .orElse(fallback(entity, horizontalRange, verticalRange));
+    }
+
+    @Nullable
+    public static Vec3d findPerchOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> perchRange, CuboidRadius<Integer> groundRange) {
+        Vec3d perch = findPerch(entity, perchRange.xz(), perchRange.y());
+        return perch != null ? perch : findGround(entity, groundRange.xz(), groundRange.y());
     }
 
     @Nullable
     public static Vec3d findGround(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
-        boolean bl = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
-        Vec3d target = FuzzyPositions.guessBest(
-            () -> NoPenaltySolidTargeting.tryMake(entity, horizontalRange, verticalRange, -2, 0, 0, Math.PI, bl),
-            pos -> 0
-        );
-        return target == null || target.y > entity.getY() ? null : target;
+        return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
+                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, -2, 0, 0, Math.PI * 3 / 2);
+                return pos == null ? null : TargetingUtil.validateGround(entity, pos);
+            }, pos -> 0))
+            .orElse(fallback(entity, horizontalRange, verticalRange));
     }
 
     @Nullable
@@ -39,26 +57,27 @@ public class FlightTargeting {
     public static Vec3d findPerch(FlyingBirdEntity entity, int horizontalRange, int verticalRange, ToDoubleFunction<BlockPos> scorer) {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
         Vec3d direction = entity.getRotationVec(1);
-        return FuzzyPositions.guessBest(() -> {
-            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, Math.PI * 2);
-            if(blockPos == null) {
-                return null;
-            }
-            BlockPos blockPos2 = towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
-            if(blockPos2 == null) {
-                return null;
-            }
-            return validatePerch(entity, blockPos2);
-        }, scorer);
+        return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
+                BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), horizontalRange, verticalRange, 0, direction.x, direction.z, Math.PI * 3 / 2);
+                if(blockPos == null) {
+                    return null;
+                }
+                BlockPos blockPos2 = TargetingUtil.towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
+                if(blockPos2 == null) {
+                    return null;
+                }
+                return TargetingUtil.validatePerch(entity, blockPos2);
+            }, scorer))
+            .orElse(fallback(entity, horizontalRange, verticalRange));
     }
 
     @Nullable
-    public static Vec3d find(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
-        return find(entity, horizontalRange, verticalRange, entity::getPathfindingFavor);
+    public static Vec3d findRandom(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
+        return findRandom(entity, horizontalRange, verticalRange, entity::getFlyingPathfindingFavor);
     }
 
     @Nullable
-    public static Vec3d find(FlyingBirdEntity entity, int horizontalRange, int verticalRange, ToDoubleFunction<BlockPos> scorer) {
+    public static Vec3d findRandom(FlyingBirdEntity entity, int horizontalRange, int verticalRange, ToDoubleFunction<BlockPos> scorer) {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, horizontalRange);
         // the entity's path should be in the same direction as its look vector
         Vec3d direction = entity.getRotationVec(1);
@@ -69,12 +88,19 @@ public class FlightTargeting {
             if(blockPos == null) {
                 return null;
             }
-            BlockPos blockPos2 = towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
+            BlockPos blockPos2 = TargetingUtil.towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
             if(blockPos2 == null) {
                 return null;
             }
-            return Birds.isPosWithinViewAngle(entity, blockPos2, angle * (Math.PI / 180)) ? validate(entity, blockPos2) : null;
+            return TargetingUtil.isPosWithinViewAngle(entity, blockPos2, angle * (Math.PI / 180)) ? TargetingUtil.validateAny(entity, blockPos2) : null;
         }, scorer);
+    }
+
+    @Nullable
+    public static Vec3d fallback(FlyingBirdEntity entity, int horizontalRange, int verticalRange) {
+        return entity.isFlying()
+            ? findRandom(entity, horizontalRange, verticalRange)
+            : null;
     }
 
     @Nullable
@@ -98,35 +124,8 @@ public class FlightTargeting {
             if(blockPos == null) {
                 return null;
             }
-            BlockPos blockPos2 = towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
-            return blockPos2 == null ? null : validate(entity, blockPos2);
+            BlockPos blockPos2 = TargetingUtil.towardTarget(entity, horizontalRange, posTargetInRange, blockPos);
+            return blockPos2 == null ? null : TargetingUtil.validateAny(entity, blockPos2);
         });
-    }
-
-    @Nullable
-    public static BlockPos validate(FlyingBirdEntity entity, BlockPos pos) {
-        pos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos -> NavigationConditions.isSolidAt(entity, currentPos));
-        return !NavigationConditions.isWaterAt(entity, pos) && !NavigationConditions.hasPathfindingPenalty(entity, pos) ? pos : null;
-    }
-
-    @Nullable
-    public static BlockPos validatePerch(FlyingBirdEntity entity, BlockPos pos) {
-        pos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
-            NavigationConditions.isSolidAt(entity, currentPos) && !entity.getWorld().getBlockState(currentPos).isIn(FowlPlayBlockTags.PERCHES));
-        return !NavigationConditions.isWaterAt(entity, pos)
-            && !NavigationConditions.hasPathfindingPenalty(entity, pos)
-            && entity.getWorld().getBlockState(pos).isIn(FowlPlayBlockTags.PERCHES)
-            ? pos
-            : null;
-    }
-
-    @Nullable
-    public static BlockPos towardTarget(FlyingBirdEntity entity, int horizontalRange, boolean posTargetInRange, BlockPos relativeInRangePos) {
-        BlockPos blockPos = FuzzyPositions.towardTarget(entity, horizontalRange, entity.getRandom(), relativeInRangePos);
-        return !NavigationConditions.isHeightInvalid(blockPos, entity)
-            && !NavigationConditions.isPositionTargetOutOfWalkRange(posTargetInRange, entity, blockPos)
-            && !NavigationConditions.isInvalidPosition(entity.getNavigation(), blockPos)
-            ? blockPos
-            : null;
     }
 }

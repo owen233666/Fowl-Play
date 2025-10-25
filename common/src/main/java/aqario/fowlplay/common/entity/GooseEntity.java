@@ -7,6 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -46,10 +47,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
@@ -58,12 +57,10 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.object.SquareRadius;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEntity>, VariantHolder<RegistryEntry<GooseVariant>>, Flocking {
     private static final TrackedData<RegistryEntry<GooseVariant>> VARIANT = DataTracker.registerData(
@@ -294,8 +291,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     }
 
     @Override
-    public SquareRadius getWalkRange() {
-        return new SquareRadius(24, 12);
+    public CuboidRadius<Integer> getWalkRange() {
+        return new CuboidRadius<>(32, 12);
     }
 
     @Override
@@ -368,13 +365,12 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             ),
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CompositeTasks.setWaterfowlForagingTarget(),
+                    CompositeTasks.setWaterWalkTarget(),
                     1
                 ),
                 Pair.of(
-                    new Idle<FlyingBirdEntity>()
-                        .runForBetween(100, 300)
-                        .startCondition(Predicate.not(FlyingBirdEntity::isFlying)),
+                    CompositeTasks.idleIfNotFlying()
+                        .runForBetween(100, 300),
                     2
                 )
             )
@@ -390,11 +386,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new LookAroundTask<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                new SetRandomSwimTarget<>()
-                    .setRadius(24, 8),
-                new Idle<GooseEntity>()
+                CompositeTasks.setNonAirWalkTarget(),
+                CompositeTasks.idleIfNotFlying()
                     .runForBetween(100, 300)
-                    .startCondition(entity -> !entity.isFlying())
             )
         );
     }
@@ -409,7 +403,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.setWaterWalkTarget(),
+            CompositeTasks.setWaterRestTarget(),
             CompositeTasks.idleIfInWater()
         );
     }

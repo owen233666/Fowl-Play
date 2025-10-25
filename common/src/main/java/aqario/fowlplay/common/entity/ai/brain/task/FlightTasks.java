@@ -8,8 +8,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
  * A collection of tasks that control the flying behavior of birds.
  */
 public class FlightTasks {
-    public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> startFlying() {
-        return new SingleTickBehaviour<>(
+    public static <E extends FlyingBirdEntity> OneShotTask<E> startFlying() {
+        return new OneShotTask<>(
             (bird, brain) -> {
                 if(bird.canStartFlying()) {
                     bird.startFlying();
@@ -20,8 +20,8 @@ public class FlightTasks {
         );
     }
 
-    public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> stopFlying() {
-        return new SingleTickBehaviour<>(
+    public static <E extends FlyingBirdEntity> OneShotTask<E> stopFlying() {
+        return new OneShotTask<>(
             MemoryList.create(1)
                 .registered(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {
@@ -31,8 +31,8 @@ public class FlightTasks {
         );
     }
 
-    public static <E extends FlyingBirdEntity> SingleTickBehaviour<E> stopFalling() {
-        return new SingleTickBehaviour<>(
+    public static <E extends FlyingBirdEntity> OneShotTask<E> stopFalling() {
+        return new OneShotTask<>(
             (bird, brain) -> {
                 if(bird.fallDistance > 1 && bird.canStartFlying()) {
                     bird.startFlying();

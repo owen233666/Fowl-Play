@@ -11,8 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class DeliverBundleTask {
-    public static <E extends PigeonEntity> SingleTickBehaviour<E> run() {
-        return new SingleTickBehaviour<>(
+    public static <E extends PigeonEntity> OneShotTask<E> run() {
+        return new OneShotTask<>(
             MemoryList.create(4)
                 .present(FowlPlayMemoryModuleType.RECIPIENT.get())
                 .registered(MemoryModuleType.LOOK_TARGET)

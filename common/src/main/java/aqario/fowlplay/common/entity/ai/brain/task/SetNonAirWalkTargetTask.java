@@ -14,25 +14,37 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
-public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
+public class SetNonAirWalkTargetTask<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
+    protected Predicate<E> avoidWaterPredicate = entity -> true;
     protected CuboidRadius<Integer> radius = new CuboidRadius<>(32, 16);
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
-    public SetWaterWalkTargetTask<E> setRadius(int radius) {
+    public SetNonAirWalkTargetTask<E> setRadius(int radius) {
         return setRadius(radius, radius);
     }
 
-    public SetWaterWalkTargetTask<E> setRadius(int xz, int y) {
+    public SetNonAirWalkTargetTask<E> setRadius(int xz, int y) {
         this.radius = new CuboidRadius<>(xz, y);
 
         return this;
     }
 
-    public SetWaterWalkTargetTask<E> walkTargetPredicate(BiPredicate<E, Vec3d> predicate) {
+    public SetNonAirWalkTargetTask<E> walkTargetPredicate(BiPredicate<E, Vec3d> predicate) {
         this.positionPredicate = predicate;
+
+        return this;
+    }
+
+    public SetNonAirWalkTargetTask<E> dontAvoidWater() {
+        return this.avoidWaterWhen(entity -> false);
+    }
+
+    public SetNonAirWalkTargetTask<E> avoidWaterWhen(Predicate<E> predicate) {
+        this.avoidWaterPredicate = predicate;
 
         return this;
     }
@@ -60,6 +72,9 @@ public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMod
 
     @Nullable
     protected Vec3d getTargetPos(E entity) {
+        if(this.avoidWaterPredicate.test(entity)) {
+            return FlightTargeting.findGround(entity, this.radius.xz(), this.radius.y());
+        }
         return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius);
     }
 }

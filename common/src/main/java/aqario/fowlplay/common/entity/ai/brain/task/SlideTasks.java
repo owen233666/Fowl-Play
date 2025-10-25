@@ -8,8 +8,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
  * A collection of tasks that control the sliding behavior of penguins.
  */
 public class SlideTasks {
-    public static <E extends PenguinEntity> SingleTickBehaviour<E> startSliding() {
-        return new SingleTickBehaviour<>(
+    public static <E extends PenguinEntity> OneShotTask<E> startSliding() {
+        return new OneShotTask<>(
             MemoryList.create(1)
                 .registered(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {
@@ -22,8 +22,8 @@ public class SlideTasks {
         );
     }
 
-    public static <E extends PenguinEntity> SingleTickBehaviour<E> stopSliding() {
-        return new SingleTickBehaviour<>(
+    public static <E extends PenguinEntity> OneShotTask<E> stopSliding() {
+        return new OneShotTask<>(
             MemoryList.create(1)
                 .registered(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {
@@ -36,8 +36,8 @@ public class SlideTasks {
         );
     }
 
-    public static <E extends PenguinEntity> SingleTickBehaviour<E> toggleSliding(int seconds) {
-        return new SingleTickBehaviour<>(
+    public static <E extends PenguinEntity> OneShotTask<E> toggleSliding(int seconds) {
+        return new OneShotTask<>(
             MemoryList.create(1)
                 .registered(MemoryModuleType.WALK_TARGET),
             (bird, brain) -> {

@@ -14,11 +14,11 @@ import java.util.function.BiPredicate;
 /**
  * A behaviour that operates purely through side effects. Useful for when I'm too lazy to write an entire class.
  */
-public class SingleTickBehaviour<E extends BirdEntity> extends ExtendedBehaviour<E> {
+public class OneShotTask<E extends BirdEntity> extends ExtendedBehaviour<E> {
     private final List<Pair<MemoryModuleType<?>, MemoryModuleState>> requiredMemories;
     private final BiPredicate<E, Brain<?>> callback;
 
-    public SingleTickBehaviour(List<Pair<MemoryModuleType<?>, MemoryModuleState>> requiredMemories, BiPredicate<E, Brain<?>> callback) {
+    public OneShotTask(List<Pair<MemoryModuleType<?>, MemoryModuleState>> requiredMemories, BiPredicate<E, Brain<?>> callback) {
         this.requiredMemories = requiredMemories;
         this.callback = callback;
         for(Pair<MemoryModuleType<?>, MemoryModuleState> memoryReq : requiredMemories) {
@@ -26,7 +26,7 @@ public class SingleTickBehaviour<E extends BirdEntity> extends ExtendedBehaviour
         }
     }
 
-    public SingleTickBehaviour(BiPredicate<E, Brain<?>> callback) {
+    public OneShotTask(BiPredicate<E, Brain<?>> callback) {
         this.requiredMemories = List.of();
         this.callback = callback;
     }

@@ -7,13 +7,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.util.math.BlockPos;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 
 import java.util.function.Predicate;
 
@@ -21,19 +18,25 @@ import java.util.function.Predicate;
  * A collection of preconfigured tasks and task lists for ease of use.
  */
 public class CompositeTasks {
-    public static <E extends BirdEntity> ExtendedBehaviour<E> setWaterfowlForagingTarget() {
-        return new SetRandomSwimTarget<E>()
-            .setRadius(24, 8)
-            .swimTargetPredicate((entity, target) -> target != null && entity.getWorld().isWater(BlockPos.ofFloored(target).down()));
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterWalkTarget() {
+        return new SetWaterWalkTargetTask<E>()
+            .setRadius(32, 24);
     }
 
-    public static <E extends BirdEntity> ExtendedBehaviour<E> setWaterWalkTarget() {
-        return new SetRandomSwimTarget<E>()
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setNonAirWalkTarget() {
+        return new SetNonAirWalkTargetTask<E>()
+            .setRadius(32, 16)
+            .dontAvoidWater();
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setGroundWalkTarget() {
+        return new SetNonAirWalkTargetTask<E>()
+            .setRadius(32, 16);
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterRestTarget() {
+        return new SetWaterWalkTargetTask<E>()
             .setRadius(64, 32)
-            .swimTargetPredicate((entity, target) ->
-                target != null
-                    && entity.getWorld().isWater(BlockPos.ofFloored(target).down())
-            )
             .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn));
     }
 
@@ -46,6 +49,13 @@ public class CompositeTasks {
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {
         return new SetWalkTargetAwayFromTask<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::getPos)
             .speedModifier(Birds.FAST_SPEED);
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfNotFlying() {
+        return new Idle<E>()
+            .noTimeout()
+            .startCondition(entity -> !entity.isFlying() && !Birds.isPerched(entity))
+            .stopIf(entity -> entity.isFlying() || Birds.isPerched(entity));
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfPerched() {
@@ -75,7 +85,7 @@ public class CompositeTasks {
                 new OneRandomBehaviour<E>(
                     new LookAroundTask<>(),
                     new Idle<>()
-                        .runForBetween(100, 200)
+                        .noTimeout()
                 )
                     .runForBetween(30, 100)
                     .startCondition(Birds::isPerched)
@@ -89,13 +99,13 @@ public class CompositeTasks {
         );
     }
 
-    public static <E extends BirdEntity> ExtendedBehaviour<E> tryForage() {
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryForage() {
         return new OneRandomBehaviour<>(
             Pair.of(
                 new OneRandomBehaviour<>(
                     new LookAroundTask<>(),
                     new Idle<>()
-                        .runForBetween(100, 200)
+                        .noTimeout()
                 )
                     .runForBetween(30, 100)
                     .startCondition(Entity::isOnGround)
@@ -103,9 +113,7 @@ public class CompositeTasks {
                 2
             ),
             Pair.of(
-                new SetRandomWalkTarget<>()
-                    .setRadius(32, 16)
-                    .walkTargetPredicate((entity, target) -> target != null && !entity.getWorld().isAir(BlockPos.ofFloored(target).down())),
+                setGroundWalkTarget(),
                 1
             )
         );

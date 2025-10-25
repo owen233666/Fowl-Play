@@ -121,6 +121,7 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
             if(this.currentPath != null
                 && this.currentPath.isFinished()
                 && this.getTargetPos() != null
+                && this.bird.getPos().isInRange(this.getTargetPos().toBottomCenterPos(), 2)
                 && Birds.shouldLandAtDestination(this.bird, this.getTargetPos())
             ) {
                 this.bird.stopFlying();

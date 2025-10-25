@@ -2,6 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain.task;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
+import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.Brain;
@@ -17,8 +18,7 @@ import java.util.List;
 public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
-    private static final int HORIZONTAL_RANGE = 32;
-    private static final int VERTICAL_RANGE = 16;
+    private static final CuboidRadius<Integer> RANGE = new CuboidRadius<>(32, 16);
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
@@ -28,7 +28,7 @@ public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends Exten
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Vec3d target = FlightTargeting.find(entity, HORIZONTAL_RANGE, VERTICAL_RANGE, entity::getFlyingPathfindingFavor);
+        Vec3d target = FlightTargeting.findRandom(entity, RANGE.xz(), RANGE.y());
         if(target == null) {
             BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
         }
