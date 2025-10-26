@@ -145,7 +145,7 @@ public final class Birds {
         }
         LivingTargetCache visibleMobs = BrainUtils.getMemory(brain, MemoryModuleType.VISIBLE_MOBS);
         if(visibleMobs == null) {
-            return false;
+            return true;
         }
         List<LivingEntity> avoidTargets = visibleMobs.stream(entity -> true)
             .filter(entity -> shouldAvoid(bird, entity))

@@ -386,7 +386,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new LookAroundTask<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CompositeTasks.setNonAirWalkTarget(),
+                CompositeTasks.setWaterWalkTarget(),
                 CompositeTasks.idleIfNotFlying()
                     .runForBetween(100, 300)
             )

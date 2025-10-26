@@ -23,12 +23,6 @@ public class CompositeTasks {
             .setRadius(32, 24);
     }
 
-    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setNonAirWalkTarget() {
-        return new SetNonAirWalkTargetTask<E>()
-            .setRadius(32, 16)
-            .dontAvoidWater();
-    }
-
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setGroundWalkTarget() {
         return new SetNonAirWalkTargetTask<E>()
             .setRadius(32, 16);

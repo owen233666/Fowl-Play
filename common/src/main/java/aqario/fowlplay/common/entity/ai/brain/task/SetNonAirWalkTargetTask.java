@@ -75,6 +75,6 @@ public class SetNonAirWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMo
         if(this.avoidWaterPredicate.test(entity)) {
             return FlightTargeting.findGround(entity, this.radius.xz(), this.radius.y());
         }
-        return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius);
+        return FlightTargeting.findNonAir(entity, this.radius);
     }
 }

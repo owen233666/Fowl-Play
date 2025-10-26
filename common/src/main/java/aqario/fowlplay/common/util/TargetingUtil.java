@@ -42,6 +42,29 @@ public class TargetingUtil {
     }
 
     @Nullable
+    public static BlockPos validateNonAir(PathAwareEntity entity, BlockPos pos) {
+        BlockPos adjustedPos;
+        if(pos.getY() > entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) {
+            adjustedPos = new BlockPos(
+                pos.getX(),
+                entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) + 1,
+                pos.getZ()
+            );
+        }
+        else {
+            adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos)
+            );
+        }
+        if(NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
+            || !TargetingUtil.isPositionNonAir(entity, adjustedPos)
+        ) {
+            return null;
+        }
+        return entity.getWorld().isWater(adjustedPos.down()) ? adjustedPos.down() : adjustedPos;
+    }
+
+    @Nullable
     public static BlockPos validateGround(PathAwareEntity entity, BlockPos pos) {
         BlockPos adjustedPos = new BlockPos(
             pos.getX(),
@@ -85,6 +108,11 @@ public class TargetingUtil {
 
     public static boolean isPerch(PathAwareEntity entity, BlockPos pos) {
         return entity.getWorld().getBlockState(pos).isIn(FowlPlayBlockTags.PERCHES);
+    }
+
+    public static boolean isPositionNonAir(PathAwareEntity entity, BlockPos pos) {
+        BlockPos belowPos = pos.down();
+        return !entity.getWorld().getBlockState(belowPos).isAir();
     }
 
     public static boolean isPositionGrounded(PathAwareEntity entity, BlockPos pos) {

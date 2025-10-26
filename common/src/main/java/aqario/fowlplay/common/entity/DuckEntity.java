@@ -326,7 +326,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new LookAroundTask<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CompositeTasks.setNonAirWalkTarget(),
+                CompositeTasks.setWaterWalkTarget(),
                 CompositeTasks.idleIfNotFlying()
                     .runForBetween(100, 300)
             )

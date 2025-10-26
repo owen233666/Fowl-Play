@@ -21,7 +21,7 @@ public class SetItemWalkTargetTask<E extends BirdEntity> extends SpeedModifiable
         .present(
             SBLMemoryTypes.NEARBY_ITEMS.get()
         );
-    protected Function<E, Integer> radius = entity -> 10;
+    protected Function<E, Integer> radius = entity -> 32;
 
     public SetItemWalkTargetTask<E> radius(int radius) {
         return this.radius(entity -> radius);
@@ -44,8 +44,7 @@ public class SetItemWalkTargetTask<E extends BirdEntity> extends SpeedModifiable
         List<ItemEntity> wantedItems = BrainUtils.getMemory(brain, SBLMemoryTypes.NEARBY_ITEMS.get());
         // noinspection ConstantConditions
         ItemEntity targetItem = wantedItems.getFirst();
-        if(!BrainUtils.hasMemory(brain, MemoryModuleType.ITEM_PICKUP_COOLDOWN_TICKS)
-            && targetItem.isInRange(entity, this.radius.apply(entity))
+        if(targetItem.isInRange(entity, this.radius.apply(entity))
             && entity.getWorld().getWorldBorder().contains(targetItem.getBlockPos())
         ) {
             WalkTarget newWalkTarget = new WalkTarget(new EntityLookTarget(targetItem, false), this.speedModifier.apply(entity, targetItem.getPos()), 0);

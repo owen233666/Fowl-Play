@@ -34,6 +34,15 @@ public class FlightTargeting {
     }
 
     @Nullable
+    public static Vec3d findNonAir(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+        return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
+                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.xz(), range.y(), -2, 0, 0, Math.PI * 3 / 2);
+                return pos == null ? null : TargetingUtil.validateNonAir(entity, pos);
+            }, pos -> 0))
+            .orElse(fallback(entity, range.xz(), range.y()));
+    }
+
+    @Nullable
     public static Vec3d findPerchOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> perchRange, CuboidRadius<Integer> groundRange) {
         Vec3d perch = findPerch(entity, perchRange.xz(), perchRange.y());
         return perch != null ? perch : findGround(entity, groundRange.xz(), groundRange.y());

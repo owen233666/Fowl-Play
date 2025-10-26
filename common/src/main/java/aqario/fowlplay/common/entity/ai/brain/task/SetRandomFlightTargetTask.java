@@ -18,7 +18,7 @@ import java.util.List;
 public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
-    private static final CuboidRadius<Integer> RANGE = new CuboidRadius<>(32, 16);
+    private static final CuboidRadius<Integer> RANGE = new CuboidRadius<>(64, 16);
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
