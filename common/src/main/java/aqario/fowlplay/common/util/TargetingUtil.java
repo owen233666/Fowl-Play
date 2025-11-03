@@ -1,6 +1,7 @@
 package aqario.fowlplay.common.util;
 
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.ai.FuzzyPositions;
 import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -9,6 +10,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Predicate;
 
 public class TargetingUtil {
     @Nullable
@@ -27,21 +30,10 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateWater(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos;
-        // if position is above the surface, set to surface level
-        if(pos.getY() > entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) {
-            adjustedPos = new BlockPos(
-                pos.getX(),
-                entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()),
-                pos.getZ()
-            );
-        }
-        // else, move up until we reach solid ground or water
-        else {
-            adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos) || NavigationConditions.isWaterAt(entity, currentPos)
-            ).down();
-        }
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos)
+                    || NavigationConditions.isWaterAt(entity, currentPos),
+            0);
         if(!NavigationConditions.isWaterAt(entity, adjustedPos)) {
             return null;
         }
@@ -50,21 +42,10 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateNonAir(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos;
-        // if position is above the surface, set to surface level
-        if(pos.getY() > entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) {
-            adjustedPos = new BlockPos(
-                pos.getX(),
-                entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) + 1,
-                pos.getZ()
-            );
-        }
-        // else, move up until we reach solid ground or water
-        else {
-            adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos) || NavigationConditions.isWaterAt(entity, currentPos)
-            );
-        }
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos)
+                    || NavigationConditions.isWaterAt(entity, currentPos),
+            1);
         if(NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPositionNonAir(entity, adjustedPos)
         ) {
@@ -75,11 +56,9 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateGround(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos = new BlockPos(
-            pos.getX(),
-            entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()),
-            pos.getZ()
-        );
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos),
+            1);
         if(NavigationConditions.isWaterAt(entity, adjustedPos)
             || NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPositionGrounded(entity, adjustedPos)
@@ -91,18 +70,20 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validatePerch(PathAwareEntity entity, BlockPos pos) {
-        // TODO: fix logic since right now whenever currentPos is air then the loop stops, so it doesn't really work for trees and overhangs
-        BlockPos adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
-            NavigationConditions.isSolidAt(entity, currentPos)
-                && !TargetingUtil.isPerch(entity, currentPos)
-        );
-        if(NavigationConditions.isWaterAt(entity, adjustedPos)
+        // TODO: this logic still needs fixing
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING, currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos)
+                    && !TargetingUtil.isPerch(entity, currentPos),
+            1);
+        if(NavigationConditions.isWaterAt(entity, adjustedPos.down())
             || NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPerch(entity, adjustedPos)
         ) {
             return null;
         }
-        return adjustedPos;
+        return entity.getWorld().getBlockState(adjustedPos).getBlock() instanceof LeavesBlock
+            ? adjustedPos.down()
+            : adjustedPos;
     }
 
     @Nullable
@@ -112,6 +93,30 @@ public class TargetingUtil {
             || NavigationConditions.isPositionTargetOutOfWalkRange(posTargetInRange, entity, adjustedPos)
         ) {
             return null;
+        }
+        return adjustedPos;
+    }
+
+    public static BlockPos findSurfacePosition(
+        final PathAwareEntity entity,
+        final BlockPos initialPos,
+        final Heightmap.Type heightmap,
+        final Predicate<BlockPos> predicate,
+        final int blocksAbove
+    ) {
+        BlockPos adjustedPos;
+        // if position is above the surface, set to surface level
+        if(initialPos.getY() > entity.getWorld().getTopY(heightmap, initialPos.getX(), initialPos.getZ())) {
+            adjustedPos = new BlockPos(
+                initialPos.getX(),
+                entity.getWorld().getTopY(heightmap, initialPos.getX(), initialPos.getZ()) + blocksAbove,
+                initialPos.getZ()
+            );
+        }
+        // else, move up until we reach solid ground or water
+        else {
+            adjustedPos = FuzzyPositions.upWhile(initialPos, entity.getWorld().getTopY(), predicate)
+                .up(blocksAbove - 1);
         }
         return adjustedPos;
     }
