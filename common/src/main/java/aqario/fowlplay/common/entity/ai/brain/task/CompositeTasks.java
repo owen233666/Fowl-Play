@@ -31,7 +31,8 @@ public class CompositeTasks {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterRestTarget() {
         return new SetWaterWalkTargetTask<E>()
             .setRadius(64, 32)
-            .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn));
+            .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn))
+            .stopIf(Entity::isInsideWaterOrBubbleColumn);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {

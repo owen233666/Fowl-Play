@@ -17,7 +17,6 @@ import java.util.function.ToDoubleFunction;
  * Similar to {@link FuzzyTargeting} but only for flying birds.
  */
 public class FlightTargeting {
-    // TODO: create a separate implementation that isn't biased towards water and use that instead for SetNonAirWalkTargetTask
     @Nullable
     public static Vec3d findWaterOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> waterRange, CuboidRadius<Integer> groundRange) {
         Vec3d water = findWater(entity, waterRange.xz(), waterRange.y());

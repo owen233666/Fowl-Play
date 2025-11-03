@@ -27,23 +27,31 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateWater(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos = new BlockPos(
-            pos.getX(),
-            entity.getWorld().getTopY(Heightmap.Type.OCEAN_FLOOR, pos.getX(), pos.getZ()),
-            pos.getZ()
-        );
-        adjustedPos = FuzzyPositions.upWhile(adjustedPos, entity.getWorld().getTopY(), currentPos ->
-            NavigationConditions.isWaterAt(entity, currentPos) || NavigationConditions.isSolidAt(entity, currentPos)
-        );
-        if(!NavigationConditions.isWaterAt(entity, adjustedPos.down())) {
+        BlockPos adjustedPos;
+        // if position is above the surface, set to surface level
+        if(pos.getY() > entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) {
+            adjustedPos = new BlockPos(
+                pos.getX(),
+                entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()),
+                pos.getZ()
+            );
+        }
+        // else, move up until we reach solid ground or water
+        else {
+            adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
+                NavigationConditions.isSolidAt(entity, currentPos) || NavigationConditions.isWaterAt(entity, currentPos)
+            ).down();
+        }
+        if(!NavigationConditions.isWaterAt(entity, adjustedPos)) {
             return null;
         }
-        return adjustedPos.down();
+        return adjustedPos;
     }
 
     @Nullable
     public static BlockPos validateNonAir(PathAwareEntity entity, BlockPos pos) {
         BlockPos adjustedPos;
+        // if position is above the surface, set to surface level
         if(pos.getY() > entity.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) {
             adjustedPos = new BlockPos(
                 pos.getX(),
@@ -51,9 +59,10 @@ public class TargetingUtil {
                 pos.getZ()
             );
         }
+        // else, move up until we reach solid ground or water
         else {
             adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos)
+                NavigationConditions.isSolidAt(entity, currentPos) || NavigationConditions.isWaterAt(entity, currentPos)
             );
         }
         if(NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
@@ -82,6 +91,7 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validatePerch(PathAwareEntity entity, BlockPos pos) {
+        // TODO: fix logic since right now whenever currentPos is air then the loop stops, so it doesn't really work for trees and overhangs
         BlockPos adjustedPos = FuzzyPositions.upWhile(pos, entity.getWorld().getTopY(), currentPos ->
             NavigationConditions.isSolidAt(entity, currentPos)
                 && !TargetingUtil.isPerch(entity, currentPos)
@@ -112,12 +122,16 @@ public class TargetingUtil {
 
     public static boolean isPositionNonAir(PathAwareEntity entity, BlockPos pos) {
         BlockPos belowPos = pos.down();
-        return !entity.getWorld().getBlockState(belowPos).isAir();
+        return isFullBlockAt(entity, belowPos) || NavigationConditions.isWaterAt(entity, belowPos);
     }
 
     public static boolean isPositionGrounded(PathAwareEntity entity, BlockPos pos) {
         BlockPos belowPos = pos.down();
-        return entity.getWorld().getBlockState(belowPos).isOpaqueFullCube(entity.getWorld(), belowPos);
+        return isFullBlockAt(entity, belowPos);
+    }
+
+    public static boolean isFullBlockAt(PathAwareEntity entity, BlockPos pos) {
+        return entity.getWorld().getBlockState(pos).isOpaqueFullCube(entity.getWorld(), pos);
     }
 
     // angle is in radians
