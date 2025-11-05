@@ -36,7 +36,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
@@ -65,17 +64,17 @@ public class PlatformHelperImpl {
     }
 
     public static Supplier<Activity> registerActivity(String id, Supplier<Activity> activity) {
-        Activity registry = Registry.register(Registries.ACTIVITY, Identifier.of(FowlPlay.ID, id), activity.get());
+        Activity registry = Registry.register(Registries.ACTIVITY, FowlPlay.id(id), activity.get());
         return () -> registry;
     }
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String id, Supplier<EntityType<T>> entityType) {
-        EntityType<T> registry = Registry.register(Registries.ENTITY_TYPE, Identifier.of(FowlPlay.ID, id), entityType.get());
+        EntityType<T> registry = Registry.register(Registries.ENTITY_TYPE, FowlPlay.id(id), entityType.get());
         return () -> registry;
     }
 
     public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
-        Item registry = Registry.register(Registries.ITEM, Identifier.of(FowlPlay.ID, id), item.get());
+        Item registry = Registry.register(Registries.ITEM, FowlPlay.id(id), item.get());
         addItemToItemGroup(() -> registry, group);
         return () -> registry;
     }
@@ -85,27 +84,27 @@ public class PlatformHelperImpl {
     }
 
     public static <T> Supplier<MemoryModuleType<T>> registerMemoryModuleType(String id, Supplier<MemoryModuleType<T>> memoryModuleType) {
-        MemoryModuleType<T> registry = Registry.register(Registries.MEMORY_MODULE_TYPE, Identifier.of(FowlPlay.ID, id), memoryModuleType.get());
+        MemoryModuleType<T> registry = Registry.register(Registries.MEMORY_MODULE_TYPE, FowlPlay.id(id), memoryModuleType.get());
         return () -> registry;
     }
 
     public static Supplier<SimpleParticleType> registerParticleType(String id, Supplier<SimpleParticleType> particleType) {
-        SimpleParticleType registry = Registry.register(Registries.PARTICLE_TYPE, Identifier.of(FowlPlay.ID, id), particleType.get());
+        SimpleParticleType registry = Registry.register(Registries.PARTICLE_TYPE, FowlPlay.id(id), particleType.get());
         return () -> registry;
     }
 
     public static Supplier<ExtendedSchedule> registerSchedule(String id, Supplier<ExtendedSchedule> schedule) {
-        ExtendedSchedule registry = Registry.register(Registries.SCHEDULE, Identifier.of(FowlPlay.ID, id), schedule.get());
+        ExtendedSchedule registry = Registry.register(Registries.SCHEDULE, FowlPlay.id(id), schedule.get());
         return () -> registry;
     }
 
     public static <T extends Sensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<SensorType<T>> sensorType) {
-        SensorType<T> registry = Registry.register(Registries.SENSOR_TYPE, Identifier.of(FowlPlay.ID, id), sensorType.get());
+        SensorType<T> registry = Registry.register(Registries.SENSOR_TYPE, FowlPlay.id(id), sensorType.get());
         return () -> registry;
     }
 
     public static Supplier<SoundEvent> registerSoundEvent(String id, Supplier<SoundEvent> soundEvent) {
-        SoundEvent registry = Registry.register(Registries.SOUND_EVENT, Identifier.of(FowlPlay.ID, id), soundEvent.get());
+        SoundEvent registry = Registry.register(Registries.SOUND_EVENT, FowlPlay.id(id), soundEvent.get());
         return () -> registry;
     }
 

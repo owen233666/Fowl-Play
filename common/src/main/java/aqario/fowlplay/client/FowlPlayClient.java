@@ -23,7 +23,7 @@ public class FowlPlayClient {
 
     public static void init() {
         if(FowlPlay.isDebugUtilsLoaded()) {
-            Identifier debugBirdId = Identifier.of(FowlPlay.ID, "debug/bird");
+            Identifier debugBirdId = FowlPlay.id("debug/bird");
             RegisterDebugRenderers.registerCustomDebugRenderer(debugBirdId, BirdDebugRenderer.INSTANCE);
             RegisterDebugRenderers.registerServerToggle(debugBirdId);
             RegisterDebugRenderers.registerClientHandler(debugBirdId, b -> FowlPlayClient.DEBUG_BIRD = b);

@@ -16,8 +16,8 @@ public record DuckVariant(Identifier texture) {
     public static final RegistryKey<DuckVariant> BROWN = register("brown");
 
     private static RegistryKey<DuckVariant> register(String id) {
-        RegistryKey<DuckVariant> key = RegistryKey.of(FowlPlayRegistryKeys.DUCK_VARIANT, Identifier.of(FowlPlay.ID, id));
-        Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/duck/" + key.getValue().getPath() + "_duck.png");
+        RegistryKey<DuckVariant> key = RegistryKey.of(FowlPlayRegistryKeys.DUCK_VARIANT, FowlPlay.id(id));
+        Identifier texture = FowlPlay.id("textures/entity/duck/" + key.getValue().getPath() + "_duck.png");
         PlatformHelper.registerVariant(id, key, () -> new DuckVariant(texture));
         return key;
     }

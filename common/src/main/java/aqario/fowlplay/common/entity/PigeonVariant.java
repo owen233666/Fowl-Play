@@ -19,8 +19,8 @@ public record PigeonVariant(Identifier texture) {
     public static final RegistryKey<PigeonVariant> WHITE = register("white");
 
     private static RegistryKey<PigeonVariant> register(String id) {
-        RegistryKey<PigeonVariant> key = RegistryKey.of(FowlPlayRegistryKeys.PIGEON_VARIANT, Identifier.of(FowlPlay.ID, id));
-        Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/pigeon/" + key.getValue().getPath() + "_pigeon.png");
+        RegistryKey<PigeonVariant> key = RegistryKey.of(FowlPlayRegistryKeys.PIGEON_VARIANT, FowlPlay.id(id));
+        Identifier texture = FowlPlay.id("textures/entity/pigeon/" + key.getValue().getPath() + "_pigeon.png");
         PlatformHelper.registerVariant(id, key, () -> new PigeonVariant(texture));
         return key;
     }

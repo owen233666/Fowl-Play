@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
@@ -26,7 +25,7 @@ public class FowlPlayDataAttachments {
 
     private static <T> AttachmentType<T> register(String id, Consumer<AttachmentRegistry.Builder<T>> builder) {
         return AttachmentRegistry.create(
-            Identifier.of(FowlPlay.ID, id),
+            FowlPlay.id(id),
             builder
         );
     }

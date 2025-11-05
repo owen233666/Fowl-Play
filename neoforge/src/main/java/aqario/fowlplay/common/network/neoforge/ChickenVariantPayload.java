@@ -8,7 +8,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 
 public record ChickenVariantPayload(int entityId, RegistryEntry<ChickenVariant> variant) implements CustomPayload {
     public static final PacketCodec<RegistryByteBuf, ChickenVariantPayload> CODEC = CustomPayload.codecOf(
@@ -16,7 +15,7 @@ public record ChickenVariantPayload(int entityId, RegistryEntry<ChickenVariant> 
         ChickenVariantPayload::new
     );
     public static final CustomPayload.Id<ChickenVariantPayload> ID = new CustomPayload.Id<>(
-        Identifier.of(FowlPlay.ID, "chicken_variant")
+        FowlPlay.id("chicken_variant")
     );
 
     private ChickenVariantPayload(RegistryByteBuf buf) {

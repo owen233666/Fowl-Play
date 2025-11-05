@@ -42,7 +42,7 @@ public class CustomChickenEntityRenderer extends MobEntityRenderer<ChickenEntity
     @Override
     public Identifier getTexture(ChickenEntity chicken) {
         return chicken.isBaby()
-            ? Identifier.of(FowlPlay.ID, "textures/entity/chicken/" + ((VariantHolder<RegistryEntry<ChickenVariant>>) chicken).getVariant().value().id() + "_baby_chicken.png")
-            : Identifier.of(FowlPlay.ID, "textures/entity/chicken/" + ((VariantHolder<RegistryEntry<ChickenVariant>>) chicken).getVariant().value().id() + "_chicken.png");
+            ? FowlPlay.id("textures/entity/chicken/" + ((VariantHolder<RegistryEntry<ChickenVariant>>) chicken).getVariant().value().id() + "_baby_chicken.png")
+            : FowlPlay.id("textures/entity/chicken/" + ((VariantHolder<RegistryEntry<ChickenVariant>>) chicken).getVariant().value().id() + "_chicken.png");
     }
 }

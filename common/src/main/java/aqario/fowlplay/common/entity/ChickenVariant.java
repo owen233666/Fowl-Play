@@ -8,7 +8,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 
 public record ChickenVariant(String id) {
     public static final PacketCodec<RegistryByteBuf, RegistryEntry<ChickenVariant>> PACKET_CODEC = PacketCodecs.registryEntry(FowlPlayRegistryKeys.CHICKEN_VARIANT);
@@ -16,7 +15,7 @@ public record ChickenVariant(String id) {
     public static final RegistryKey<ChickenVariant> RED_JUNGLEFOWL = register("red_junglefowl");
 
     private static RegistryKey<ChickenVariant> register(String id) {
-        RegistryKey<ChickenVariant> key = RegistryKey.of(FowlPlayRegistryKeys.CHICKEN_VARIANT, Identifier.of(FowlPlay.ID, id));
+        RegistryKey<ChickenVariant> key = RegistryKey.of(FowlPlayRegistryKeys.CHICKEN_VARIANT, FowlPlay.id(id));
         PlatformHelper.registerVariant(id, key, () -> new ChickenVariant(id));
         return key;
     }

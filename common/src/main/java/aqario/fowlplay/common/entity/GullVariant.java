@@ -17,8 +17,8 @@ public record GullVariant(Identifier texture) {
     public static final RegistryKey<GullVariant> BLACK_BACKED = register("black_backed");
 
     private static RegistryKey<GullVariant> register(String id) {
-        RegistryKey<GullVariant> key = RegistryKey.of(FowlPlayRegistryKeys.GULL_VARIANT, Identifier.of(FowlPlay.ID, id));
-        Identifier texture = Identifier.of(FowlPlay.ID, "textures/entity/gull/" + key.getValue().getPath() + "_gull.png");
+        RegistryKey<GullVariant> key = RegistryKey.of(FowlPlayRegistryKeys.GULL_VARIANT, FowlPlay.id(id));
+        Identifier texture = FowlPlay.id("textures/entity/gull/" + key.getValue().getPath() + "_gull.png");
         PlatformHelper.registerVariant(id, key, () -> new GullVariant(texture));
         return key;
     }
