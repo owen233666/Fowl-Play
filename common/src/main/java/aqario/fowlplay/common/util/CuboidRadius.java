@@ -5,20 +5,20 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
-public record CuboidRadius<T extends Number & Comparable<? super T>>(T xz, T y) {
+public record CuboidRadius<T extends Number & Comparable<? super T>>(T horizontal, T vertical) {
     public Vec3i toVec3i() {
-        return new Vec3i(this.xz.intValue(), this.y.intValue(), this.xz.intValue());
+        return new Vec3i(this.horizontal.intValue(), this.vertical.intValue(), this.horizontal.intValue());
     }
 
     public BlockPos toBlockPos() {
-        return BlockPos.ofFloored(this.xz.intValue(), this.y.intValue(), this.xz.intValue());
+        return BlockPos.ofFloored(this.horizontal.intValue(), this.vertical.intValue(), this.horizontal.intValue());
     }
 
     public Vec3d toVec3d() {
-        return new Vec3d(this.xz.doubleValue(), this.y.doubleValue(), this.xz.doubleValue());
+        return new Vec3d(this.horizontal.doubleValue(), this.vertical.doubleValue(), this.horizontal.doubleValue());
     }
 
     public Box inflateBox(Box box) {
-        return box.expand(this.xz.doubleValue(), this.y.doubleValue(), this.xz.doubleValue());
+        return box.expand(this.horizontal.doubleValue(), this.vertical.doubleValue(), this.horizontal.doubleValue());
     }
 }

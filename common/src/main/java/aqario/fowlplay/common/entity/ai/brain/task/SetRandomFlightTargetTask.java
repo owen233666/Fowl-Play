@@ -14,6 +14,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
@@ -28,12 +29,12 @@ public class SetRandomFlightTargetTask<E extends FlyingBirdEntity> extends Exten
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Vec3d target = FlightTargeting.findRandom(entity, RANGE.xz(), RANGE.y());
-        if(target == null) {
-            BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+        Optional<Vec3d> target = FlightTargeting.findRandom(entity, RANGE);
+        if(target.isPresent()) {
+            BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target.get(), 1.0f, 0));
         }
         else {
-            BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target, 1.0f, 0));
+            BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
         }
     }
 }

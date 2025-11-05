@@ -76,8 +76,8 @@ public final class Birds {
         double dz = target.z - pos.z;
         double dxz2 = dx * dx + dz * dz;
         double dy2 = dy * dy;
-        double xzRadius = bird.getWalkRange().xz();
-        double yRadius = bird.getWalkRange().y();
+        double xzRadius = bird.getWalkRange().horizontal();
+        double yRadius = bird.getWalkRange().vertical();
         return dxz2 > xzRadius * xzRadius || dy2 > yRadius * yRadius;
     }
 
@@ -100,8 +100,8 @@ public final class Birds {
         double dz = targetPos.z - pos.z;
         double dxz2 = dx * dx + dz * dz;
         double dy2 = dy * dy;
-        double xzRadius = FLY_AVOID_RANGE.xz();
-        double yRadius = FLY_AVOID_RANGE.y();
+        double xzRadius = FLY_AVOID_RANGE.horizontal();
+        double yRadius = FLY_AVOID_RANGE.vertical();
         return dxz2 <= xzRadius * xzRadius && dy2 <= yRadius * yRadius;
     }
 

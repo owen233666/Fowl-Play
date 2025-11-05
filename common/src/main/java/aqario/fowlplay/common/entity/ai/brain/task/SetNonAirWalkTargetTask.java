@@ -24,7 +24,7 @@ public class SetNonAirWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMo
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
     public SetNonAirWalkTargetTask<E> setRadius(int radius) {
-        return setRadius(radius, radius);
+        return this.setRadius(radius, radius);
     }
 
     public SetNonAirWalkTargetTask<E> setRadius(int xz, int y) {
@@ -73,8 +73,10 @@ public class SetNonAirWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMo
     @Nullable
     protected Vec3d getTargetPos(E entity) {
         if(this.avoidWaterPredicate.test(entity)) {
-            return FlightTargeting.findGround(entity, this.radius.xz(), this.radius.y());
+            return FlightTargeting.findGround(entity, this.radius)
+                .orElse(null);
         }
-        return FlightTargeting.findNonAir(entity, this.radius);
+        return FlightTargeting.findNonAir(entity, this.radius)
+            .orElse(null);
     }
 }

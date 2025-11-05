@@ -22,7 +22,7 @@ public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMod
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
     public SetWaterWalkTargetTask<E> setRadius(int radius) {
-        return setRadius(radius, radius);
+        return this.setRadius(radius, radius);
     }
 
     public SetWaterWalkTargetTask<E> setRadius(int xz, int y) {
@@ -60,6 +60,7 @@ public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMod
 
     @Nullable
     protected Vec3d getTargetPos(E entity) {
-        return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius);
+        return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius)
+            .orElse(null);
     }
 }

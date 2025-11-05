@@ -30,10 +30,10 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateWater(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos)
-                    || NavigationConditions.isWaterAt(entity, currentPos),
-            0);
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, 0, currentPos ->
+            NavigationConditions.isSolidAt(entity, currentPos)
+                || NavigationConditions.isWaterAt(entity, currentPos)
+        );
         if(!NavigationConditions.isWaterAt(entity, adjustedPos)) {
             return null;
         }
@@ -42,10 +42,10 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateNonAir(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos)
-                    || NavigationConditions.isWaterAt(entity, currentPos),
-            1);
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, 1, currentPos ->
+            NavigationConditions.isSolidAt(entity, currentPos)
+                || NavigationConditions.isWaterAt(entity, currentPos)
+        );
         if(NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPositionNonAir(entity, adjustedPos)
         ) {
@@ -56,9 +56,9 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos validateGround(PathAwareEntity entity, BlockPos pos) {
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos),
-            1);
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, 1, currentPos ->
+            NavigationConditions.isSolidAt(entity, currentPos)
+        );
         if(NavigationConditions.isWaterAt(entity, adjustedPos)
             || NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPositionGrounded(entity, adjustedPos)
@@ -71,10 +71,10 @@ public class TargetingUtil {
     @Nullable
     public static BlockPos validatePerch(PathAwareEntity entity, BlockPos pos) {
         // TODO: this logic still needs fixing
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING, currentPos ->
-                NavigationConditions.isSolidAt(entity, currentPos)
-                    && !TargetingUtil.isPerch(entity, currentPos),
-            1);
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, Heightmap.Type.MOTION_BLOCKING, 1, currentPos ->
+            NavigationConditions.isSolidAt(entity, currentPos)
+                && !TargetingUtil.isPerch(entity, currentPos)
+        );
         if(NavigationConditions.isWaterAt(entity, adjustedPos.down())
             || NavigationConditions.hasPathfindingPenalty(entity, adjustedPos)
             || !TargetingUtil.isPerch(entity, adjustedPos)
@@ -101,8 +101,8 @@ public class TargetingUtil {
         final PathAwareEntity entity,
         final BlockPos initialPos,
         final Heightmap.Type heightmap,
-        final Predicate<BlockPos> predicate,
-        final int blocksAbove
+        final int blocksAbove,
+        final Predicate<BlockPos> predicate
     ) {
         BlockPos adjustedPos;
         // if position is above the surface, set to surface level
