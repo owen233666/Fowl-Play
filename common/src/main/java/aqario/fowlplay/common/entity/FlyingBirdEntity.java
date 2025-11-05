@@ -37,7 +37,10 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public abstract class FlyingBirdEntity extends BirdEntity {
-    private static final TrackedData<Boolean> FLYING = DataTracker.registerData(FlyingBirdEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> FLYING = DataTracker.registerData(
+        FlyingBirdEntity.class,
+        TrackedDataHandlerRegistry.BOOLEAN
+    );
     private boolean isFlightNavigation;
     private float prevRoll;
     private float visualRoll;
@@ -140,7 +143,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 //            }
 //        }
         super.tick();
-        if(!this.getWorld().isClient) {
+        if(!this.getWorld().isClient()) {
             if(this.isFlying()) {
                 this.timeFlying++;
                 this.setNoGravity(true);
@@ -195,6 +198,16 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     public int getMaxYawChange() {
         return 20;
+    }
+
+    @Override
+    public int getMaxLookPitchChange() {
+        return this.isFlying() ? 10 : super.getMaxLookPitchChange();
+    }
+
+    @Override
+    public int getMaxLookYawChange() {
+        return this.isFlying() ? 10 : super.getMaxLookYawChange();
     }
 
     protected boolean canSwim() {
