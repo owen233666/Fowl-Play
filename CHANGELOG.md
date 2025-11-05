@@ -1,6 +1,8 @@
 ## 1.1.0-beta.4
 
 - Fix incompatibility with PerfectParity
+- Stop birds from riding vehicles when flying
+- Improve reliability of bird pathfinding (should hopefully result in less midair spinning)
 
 ## 1.1.0-beta.3
 
