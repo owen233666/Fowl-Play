@@ -202,10 +202,8 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<RobinEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<RobinEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>()
         );
     }
 
@@ -213,7 +211,7 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     public BrainActivityGroup<? extends RobinEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

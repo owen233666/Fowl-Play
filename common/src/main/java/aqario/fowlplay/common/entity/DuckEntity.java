@@ -4,7 +4,7 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.brain.task.CustomBehaviours;
-import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.FlightBehaviours;
 import aqario.fowlplay.common.entity.ai.brain.task.LookAroundTask;
 import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
@@ -264,10 +264,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<DuckEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<DuckEntity>()
-                .setScanRate(bird -> 10),
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
             new AttackTargetSensor<>()
         );
     }
@@ -275,7 +273,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public BrainActivityGroup<? extends DuckEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
@@ -294,7 +292,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     public BrainActivityGroup<? extends DuckEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
-            FlightTasks.startFlying(),
+            FlightBehaviours.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
             new AnimatableMeleeAttack<>(0)
         );

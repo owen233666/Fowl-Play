@@ -13,20 +13,20 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class SetEntityLookTargetTask {
-    public static <E extends BirdEntity> OneShotTask<E> create() {
+    public static <E extends BirdEntity> AnonymousBehaviour<E> create() {
         return create((entity, target) -> true);
     }
 
-    public static <E extends BirdEntity> OneShotTask<E> create(SpawnGroup spawnGroup) {
+    public static <E extends BirdEntity> AnonymousBehaviour<E> create(SpawnGroup spawnGroup) {
         return create((entity, target) -> spawnGroup.equals(target.getType().getSpawnGroup()));
     }
 
-    public static <E extends BirdEntity> OneShotTask<E> create(EntityType<?> type) {
+    public static <E extends BirdEntity> AnonymousBehaviour<E> create(EntityType<?> type) {
         return create((entity, target) -> type.equals(target.getType()));
     }
 
-    public static <E extends BirdEntity> OneShotTask<E> create(BiPredicate<E, LivingEntity> predicate) {
-        return new OneShotTask<>(
+    public static <E extends BirdEntity> AnonymousBehaviour<E> create(BiPredicate<E, LivingEntity> predicate) {
+        return new AnonymousBehaviour<>(
             MemoryList.create(2)
                 .absent(MemoryModuleType.LOOK_TARGET)
                 .present(MemoryModuleType.VISIBLE_MOBS),

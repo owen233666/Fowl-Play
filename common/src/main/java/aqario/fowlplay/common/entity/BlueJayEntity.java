@@ -139,10 +139,8 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<BlueJayEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<BlueJayEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>()
         );
     }
 
@@ -150,7 +148,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     public BrainActivityGroup<? extends BlueJayEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

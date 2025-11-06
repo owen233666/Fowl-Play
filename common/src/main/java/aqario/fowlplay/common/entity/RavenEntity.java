@@ -211,10 +211,8 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<RavenEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<RavenEntity>()
-                .setScanRate(bird -> 10),
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
             new AttackTargetSensor<>()
         );
     }
@@ -224,7 +222,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
@@ -244,7 +242,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     public BrainActivityGroup<? extends RavenEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
-            FlightTasks.startFlying(),
+            FlightBehaviours.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
             new AnimatableMeleeAttack<>(0)
         );

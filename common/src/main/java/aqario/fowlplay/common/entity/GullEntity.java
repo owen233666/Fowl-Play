@@ -269,10 +269,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<GullEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<GullEntity>()
-                .setScanRate(bird -> 10),
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
             new AttackTargetSensor<>()
         );
     }
@@ -280,7 +278,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
@@ -299,7 +297,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     public BrainActivityGroup<? extends GullEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
-            FlightTasks.startFlying(),
+            FlightBehaviours.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
             new AnimatableMeleeAttack<>(0),
             CustomBehaviours.forgetUnderwaterAttackTarget()

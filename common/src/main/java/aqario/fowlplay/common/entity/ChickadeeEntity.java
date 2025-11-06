@@ -166,10 +166,8 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<ChickadeeEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<ChickadeeEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>()
         );
     }
 
@@ -177,7 +175,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     public BrainActivityGroup<? extends ChickadeeEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

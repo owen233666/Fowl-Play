@@ -11,13 +11,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class DeliverBundleTask {
-    public static <E extends PigeonEntity> OneShotTask<E> run() {
-        return new OneShotTask<>(
+    public static <E extends PigeonEntity> AnonymousBehaviour<E> run() {
+        return new AnonymousBehaviour<>(
             MemoryList.create(4)
                 .present(FowlPlayMemoryModuleType.RECIPIENT.get())
-                .registered(MemoryModuleType.LOOK_TARGET)
-                .registered(MemoryModuleType.WALK_TARGET)
-                .registered(FowlPlayMemoryModuleType.TELEPORT_TARGET.get()),
+                .registered(
+                    MemoryModuleType.LOOK_TARGET,
+                    MemoryModuleType.WALK_TARGET,
+                    FowlPlayMemoryModuleType.TELEPORT_TARGET.get()
+                ),
             (bird, brain) -> {
                 PlayerEntity recipient = bird.getWorld().getPlayerByUuid(BrainUtils.getMemory(brain, FowlPlayMemoryModuleType.RECIPIENT.get()));
                 if(recipient != null) {

@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SetAdultWalkTargetTask {
     @SuppressWarnings("unchecked")
-    public static OneShotTask<BirdEntity> create(UniformIntProvider executionRange) {
-        return new OneShotTask<>(
+    public static AnonymousBehaviour<BirdEntity> create(UniformIntProvider executionRange) {
+        return new AnonymousBehaviour<>(
             MemoryList.create(3)
                 .present(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get())
                 .registered(MemoryModuleType.LOOK_TARGET)

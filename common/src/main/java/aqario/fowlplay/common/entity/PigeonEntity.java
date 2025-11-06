@@ -390,10 +390,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<PigeonEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<PigeonEntity>()
-                .setScanRate(bird -> 10),
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
             new PigeonSpecificSensor()
         );
     }
@@ -403,7 +401,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             new TeleportToTargetTask(),
             new SetOwnerTargetTask(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
@@ -425,9 +423,9 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getDeliverTasks() {
         return BirdBrain.deliverActivity(
-            FlightTasks.<PigeonEntity>stopFlying()
+            FlightBehaviours.<PigeonEntity>stopFlying()
                 .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
-            FlightTasks.<PigeonEntity>startFlying()
+            FlightBehaviours.<PigeonEntity>startFlying()
                 .startCondition(PigeonEntity::shouldFlyToRecipient),
             DeliverBundleTask.run()
         );

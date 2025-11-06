@@ -317,10 +317,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<GooseEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<GooseEntity>()
-                .setScanRate(bird -> 10),
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
             new AttackTargetSensor<>()
         );
     }
@@ -328,7 +326,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

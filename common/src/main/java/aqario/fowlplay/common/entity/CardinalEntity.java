@@ -150,10 +150,8 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<CardinalEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<CardinalEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>()
         );
     }
 
@@ -161,7 +159,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     public BrainActivityGroup<? extends CardinalEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),

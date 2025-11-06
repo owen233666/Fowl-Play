@@ -63,6 +63,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.InvalidateMemory;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowParent;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowTemptation;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomSwimTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -599,12 +600,9 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
             new ItemTemptingSensor<PenguinEntity>()
                 .temptedWith((entity, stack) -> this.getFood().test(stack)),
             new InWaterSensor<>(),
-            new AttackedSensor<PenguinEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<PenguinEntity>()
-                .setScanRate(bird -> 10),
-            new AttackTargetSensor<PenguinEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>(),
+            new AttackTargetSensor<>()
         );
     }
 
@@ -630,7 +628,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     public BrainActivityGroup<? extends PenguinEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
-            SlideTasks.startSliding(),
+            SlideBehaviours.startSliding(),
             new SetWalkTargetToAttackTarget<>()
                 .speedMod((entity, target) -> Birds.FAST_SPEED),
             new AnimatableMeleeAttack<>(0),
@@ -650,11 +648,13 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 Pair.of(
-                    SetLandWalkTargetTask.create(32),
+                    new SetRandomWalkTarget<>()
+                        .setRadius(64, 32),
                     5
                 ),
                 Pair.of(
-                    PenguinSpecificTasks.swim(),
+                    new SetRandomSwimTarget<>()
+                        .setRadius(32, 16),
                     2
                 )
             ).startCondition(entity -> entity.isInsideWaterOrBubbleColumn() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET)),
@@ -665,7 +665,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                     2
                 ),
                 Pair.of(
-                    SlideTasks.toggleSliding(20),
+                    SlideBehaviours.toggleSliding(20),
                     5
                 ),
                 Pair.of(
@@ -678,7 +678,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                     2
                 ),
                 Pair.of(
-                    PenguinSpecificTasks.goToWater(),
+                    CompositeBehaviours.slideToWater(),
                     6
                 )
             ).startCondition(entity -> !entity.isInsideWaterOrBubbleColumn() && !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
@@ -688,7 +688,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Override
     public BrainActivityGroup<? extends PenguinEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            SlideTasks.startSliding(),
+            SlideBehaviours.startSliding(),
             CustomBehaviours.setNearestFoodWalkTarget()
         );
     }

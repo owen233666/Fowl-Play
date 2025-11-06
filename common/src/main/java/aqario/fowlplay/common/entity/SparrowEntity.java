@@ -238,10 +238,8 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
             new NearbyFoodSensor<>(),
             new NearbyAdultsSensor<>(),
             new InWaterSensor<>(),
-            new AttackedSensor<SparrowEntity>()
-                .setScanRate(bird -> 10),
-            new AvoidTargetSensor<SparrowEntity>()
-                .setScanRate(bird -> 10)
+            new AttackedSensor<>(),
+            new AvoidTargetSensor<>()
         );
     }
 
@@ -249,7 +247,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
     public BrainActivityGroup<? extends SparrowEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
-            FlightTasks.stopFalling(),
+            FlightBehaviours.stopFalling(),
             SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
