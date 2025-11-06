@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
@@ -609,7 +609,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Override
     public BrainActivityGroup<? extends PenguinEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            new SetAirTargetTask<>(),
+            new SetAirWalkTarget<>(),
             new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),
@@ -642,9 +642,9 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTargetTask.create(EntityType.PLAYER),
+            SetEntityLookTarget.create(EntityType.PLAYER),
             new FollowTemptation<>(),
-            new LookAroundTask<>()
+            new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 Pair.of(
@@ -674,7 +674,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                     5
                 ),
                 Pair.of(
-                    SetAdultWalkTargetTask.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTarget.create(Birds.STAY_NEAR_ENTITY_RANGE),
                     2
                 ),
                 Pair.of(

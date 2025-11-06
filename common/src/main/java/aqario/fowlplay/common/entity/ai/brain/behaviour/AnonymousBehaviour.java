@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import com.mojang.datafixers.util.Pair;

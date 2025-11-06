@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
@@ -14,25 +14,37 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
-public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
+public class SetNonAirWalkTarget<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
+    protected Predicate<E> avoidWaterPredicate = entity -> true;
     protected CuboidRadius<Integer> radius = new CuboidRadius<>(32, 16);
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
-    public SetWaterWalkTargetTask<E> setRadius(int radius) {
+    public SetNonAirWalkTarget<E> setRadius(int radius) {
         return this.setRadius(radius, radius);
     }
 
-    public SetWaterWalkTargetTask<E> setRadius(int xz, int y) {
+    public SetNonAirWalkTarget<E> setRadius(int xz, int y) {
         this.radius = new CuboidRadius<>(xz, y);
 
         return this;
     }
 
-    public SetWaterWalkTargetTask<E> walkTargetPredicate(BiPredicate<E, Vec3d> predicate) {
+    public SetNonAirWalkTarget<E> walkTargetPredicate(BiPredicate<E, Vec3d> predicate) {
         this.positionPredicate = predicate;
+
+        return this;
+    }
+
+    public SetNonAirWalkTarget<E> dontAvoidWater() {
+        return this.avoidWaterWhen(entity -> false);
+    }
+
+    public SetNonAirWalkTarget<E> avoidWaterWhen(Predicate<E> predicate) {
+        this.avoidWaterPredicate = predicate;
 
         return this;
     }
@@ -60,7 +72,11 @@ public class SetWaterWalkTargetTask<E extends FlyingBirdEntity> extends SpeedMod
 
     @Nullable
     protected Vec3d getTargetPos(E entity) {
-        return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius)
+        if(this.avoidWaterPredicate.test(entity)) {
+            return FlightTargeting.findGround(entity, this.radius)
+                .orElse(null);
+        }
+        return FlightTargeting.findNonAir(entity, this.radius)
             .orElse(null);
     }
 }

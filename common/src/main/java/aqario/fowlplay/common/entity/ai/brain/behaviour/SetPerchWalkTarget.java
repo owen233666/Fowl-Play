@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
@@ -16,7 +16,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import java.util.List;
 import java.util.Optional;
 
-public class SetPerchWalkTargetTask<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
+public class SetPerchWalkTarget<E extends FlyingBirdEntity> extends ExtendedBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
     public static final CuboidRadius<Integer> PERCH_RANGE = new CuboidRadius<>(32, 32);

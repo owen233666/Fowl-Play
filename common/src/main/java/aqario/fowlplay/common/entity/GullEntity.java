@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
@@ -309,8 +309,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            new SetRandomLookTarget<>()
                 .lookChance(0.02f)
         );
     }
@@ -333,7 +333,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<GullEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            new SetRandomFlightTargetTask<>()
+            new SetRandomFlightTarget<>()
                 .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }

@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
@@ -17,30 +17,30 @@ import java.util.function.Predicate;
  */
 public class CustomBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterWalkTarget() {
-        return new SetWaterWalkTargetTask<E>()
+        return new SetWaterWalkTarget<E>()
             .setRadius(32, 24);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setGroundWalkTarget() {
-        return new SetNonAirWalkTargetTask<E>()
+        return new SetNonAirWalkTarget<E>()
             .setRadius(32, 16);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterRestTarget() {
-        return new SetWaterWalkTargetTask<E>()
+        return new SetWaterWalkTarget<E>()
             .setRadius(64, 32)
             .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn))
             .stopIf(Entity::isInsideWaterOrBubbleColumn);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
-        return new SetItemWalkTargetTask<E>()
+        return new SetItemWalkTarget<E>()
             .radius(Birds.ITEM_PICK_UP_RANGE)
             .speedModifier(Birds.FAST_SPEED);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {
-        return new SetWalkTargetAwayFromTask<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::getPos)
+        return new SetWalkTargetAwayFrom<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::getPos)
             .speedModifier(Birds.FAST_SPEED);
     }
 

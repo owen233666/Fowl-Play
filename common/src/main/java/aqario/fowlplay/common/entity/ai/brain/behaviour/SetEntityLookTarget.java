@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.util.MemoryList;
@@ -12,7 +12,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-public class SetEntityLookTargetTask {
+public class SetEntityLookTarget {
     public static <E extends BirdEntity> AnonymousBehaviour<E> create() {
         return create((entity, target) -> true);
     }

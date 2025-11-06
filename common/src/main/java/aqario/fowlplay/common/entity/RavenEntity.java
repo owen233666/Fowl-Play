@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySchedules;
@@ -224,7 +224,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -275,7 +275,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTargetTask<>()
+            new SetPerchWalkTarget<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
@@ -286,11 +286,11 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.soarActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    new SetRandomFlightTargetTask<>(),
+                    new SetRandomFlightTarget<>(),
                     5
                 ),
                 Pair.of(
-                    SetAdultWalkTargetTask.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTarget.create(Birds.STAY_NEAR_ENTITY_RANGE),
                     2
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -254,7 +254,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -295,7 +295,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTargetTask<>()
+            new SetPerchWalkTarget<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
@@ -304,7 +304,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            new SetRandomFlightTargetTask<>()
+            new SetRandomFlightTarget<>()
                 .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }

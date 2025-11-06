@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
@@ -38,7 +38,7 @@ public class CompositeBehaviours {
         return new OneRandomBehaviour<>(
             Pair.of(
                 new OneRandomBehaviour<E>(
-                    new LookAroundTask<>(),
+                    new SetRandomLookTarget<>(),
                     new Idle<>()
                         .noTimeout()
                 )
@@ -48,7 +48,7 @@ public class CompositeBehaviours {
                 8
             ),
             Pair.of(
-                new SetPerchWalkTargetTask<>(),
+                new SetPerchWalkTarget<>(),
                 1
             )
         );
@@ -58,7 +58,7 @@ public class CompositeBehaviours {
         return new OneRandomBehaviour<>(
             Pair.of(
                 new OneRandomBehaviour<>(
-                    new LookAroundTask<>(),
+                    new SetRandomLookTarget<>(),
                     new Idle<>()
                         .noTimeout()
                 )

@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
@@ -354,7 +354,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getForageTasks() {
         return BirdBrain.forageActivity(
-            new LeaderlessFlockTask(
+            new LeaderlessFlocking(
                 5,
                 0.04f,
                 0.6f,
@@ -380,8 +380,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 CustomBehaviours.setWaterWalkTarget(),

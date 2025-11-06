@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;

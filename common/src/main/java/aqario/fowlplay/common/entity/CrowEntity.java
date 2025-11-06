@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryModuleType;
 import aqario.fowlplay.core.FowlPlaySchedules;
@@ -218,7 +218,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -255,7 +255,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public BrainActivityGroup<? extends CrowEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            new LeaderlessFlockTask(
+            new LeaderlessFlocking(
                 3,
                 0.03f,
                 0.6f,
@@ -276,7 +276,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public BrainActivityGroup<? extends CrowEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTargetTask<>()
+            new SetPerchWalkTarget<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
             CustomBehaviours.idleIfPerched()
         );

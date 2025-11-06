@@ -2,11 +2,11 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.CustomBehaviours;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.FlightBehaviours;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.SetEntityLookTarget;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.SetRandomLookTarget;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.CustomBehaviours;
-import aqario.fowlplay.common.entity.ai.brain.task.FlightBehaviours;
-import aqario.fowlplay.common.entity.ai.brain.task.LookAroundTask;
-import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
@@ -320,8 +320,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
-            new LookAroundTask<>()
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
                 CustomBehaviours.setWaterWalkTarget(),

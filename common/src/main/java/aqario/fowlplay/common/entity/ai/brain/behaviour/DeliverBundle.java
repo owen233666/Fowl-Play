@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.brain.task;
+package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.PigeonEntity;
 import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;
@@ -10,7 +10,7 @@ import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
-public class DeliverBundleTask {
+public class DeliverBundle {
     public static <E extends PigeonEntity> AnonymousBehaviour<E> run() {
         return new AnonymousBehaviour<>(
             MemoryList.create(4)

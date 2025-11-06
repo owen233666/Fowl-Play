@@ -2,8 +2,8 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.*;
@@ -402,9 +402,9 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
-            new TeleportToTargetTask(),
-            new SetOwnerTargetTask(),
-            SetEntityLookTargetTask.create(Birds::isPlayerHoldingFood),
+            new TeleportToTarget(),
+            new SetOwnerTarget(),
+            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -427,7 +427,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 .startCondition(PigeonEntity::shouldStopFlyingToRecipient),
             FlightBehaviours.<PigeonEntity>startFlying()
                 .startCondition(PigeonEntity::shouldFlyToRecipient),
-            DeliverBundleTask.run()
+            DeliverBundle.run()
         );
     }
 
@@ -444,7 +444,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            new LeaderlessFlockTask(
+            new LeaderlessFlocking(
                 5,
                 0.03f,
                 0.6f,
@@ -466,7 +466,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTargetTask<>()
+            new SetPerchWalkTarget<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
