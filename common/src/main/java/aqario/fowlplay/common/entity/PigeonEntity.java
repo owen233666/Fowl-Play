@@ -418,7 +418,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -437,8 +437,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     public BrainActivityGroup<? extends PigeonEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
-                CompositeTasks.tryForage(),
-                CompositeTasks.tryPerch()
+                CompositeBehaviours.tryForage(),
+                CompositeBehaviours.tryPerch()
             )
         );
     }
@@ -453,14 +453,14 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
                 0.05f,
                 3f
             ),
-            CompositeTasks.tryPerch()
+            CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.<PigeonEntity>setNearestFoodWalkTarget()
+            CustomBehaviours.<PigeonEntity>setNearestFoodWalkTarget()
                 .startCondition(pigeon -> !pigeon.isSitting())
         );
     }
@@ -470,7 +470,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         return BirdBrain.restActivity(
             new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            CompositeTasks.idleIfPerched()
+            CustomBehaviours.idleIfPerched()
         );
     }
 

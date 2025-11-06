@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.entity.ai.brain.task.CompositeTasks;
+import aqario.fowlplay.common.entity.ai.brain.task.CustomBehaviours;
 import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
 import aqario.fowlplay.common.entity.ai.brain.task.LookAroundTask;
 import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
@@ -286,7 +286,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public BrainActivityGroup<? extends DuckEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -305,11 +305,11 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CompositeTasks.setWaterWalkTarget(),
+                    CustomBehaviours.setWaterWalkTarget(),
                     1
                 ),
                 Pair.of(
-                    CompositeTasks.idleIfNotFlying()
+                    CustomBehaviours.idleIfNotFlying()
                         .runForBetween(100, 300),
                     2
                 )
@@ -326,8 +326,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new LookAroundTask<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CompositeTasks.setWaterWalkTarget(),
-                CompositeTasks.idleIfNotFlying()
+                CustomBehaviours.setWaterWalkTarget(),
+                CustomBehaviours.idleIfNotFlying()
                     .runForBetween(100, 300)
             )
         );
@@ -336,15 +336,15 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public BrainActivityGroup<? extends DuckEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends DuckEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.setWaterRestTarget(),
-            CompositeTasks.idleIfInWater()
+            CustomBehaviours.setWaterRestTarget(),
+            CustomBehaviours.idleIfInWater()
         );
     }
 

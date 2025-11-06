@@ -236,7 +236,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -254,8 +254,8 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     public BrainActivityGroup<? extends RavenEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
-                CompositeTasks.tryForage(),
-                CompositeTasks.tryPerch()
+                CompositeBehaviours.tryForage(),
+                CompositeBehaviours.tryPerch()
             )
         );
     }
@@ -263,14 +263,14 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Override
     public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            CompositeTasks.tryPerch()
+            CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends RavenEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
@@ -279,7 +279,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return BirdBrain.restActivity(
             new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            CompositeTasks.idleIfPerched()
+            CustomBehaviours.idleIfPerched()
         );
     }
 

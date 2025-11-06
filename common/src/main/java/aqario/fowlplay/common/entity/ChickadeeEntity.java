@@ -6,10 +6,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
-import aqario.fowlplay.common.entity.ai.brain.task.CompositeTasks;
-import aqario.fowlplay.common.entity.ai.brain.task.FlightTasks;
-import aqario.fowlplay.common.entity.ai.brain.task.SetEntityLookTargetTask;
-import aqario.fowlplay.common.entity.ai.brain.task.SetPerchWalkTargetTask;
+import aqario.fowlplay.common.entity.ai.brain.task.*;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -191,7 +188,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     @Override
     public BrainActivityGroup<? extends ChickadeeEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -199,8 +196,8 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     public BrainActivityGroup<? extends ChickadeeEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
-                CompositeTasks.tryForage(),
-                CompositeTasks.tryPerch()
+                CompositeBehaviours.tryForage(),
+                CompositeBehaviours.tryPerch()
             )
         );
     }
@@ -208,14 +205,14 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     @Override
     public BrainActivityGroup<? extends ChickadeeEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            CompositeTasks.tryPerch()
+            CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends ChickadeeEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
@@ -224,7 +221,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
         return BirdBrain.restActivity(
             new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            CompositeTasks.idleIfPerched()
+            CustomBehaviours.idleIfPerched()
         );
     }
 

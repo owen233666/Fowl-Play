@@ -291,7 +291,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -302,7 +302,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             FlightTasks.startFlying(),
             new SetWalkTargetToAttackTarget<>(),
             new AnimatableMeleeAttack<>(0),
-            CompositeTasks.forgetUnderwaterAttackTarget()
+            CustomBehaviours.forgetUnderwaterAttackTarget()
         );
     }
 
@@ -320,15 +320,15 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends GullEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.setWaterRestTarget(),
-            CompositeTasks.idleIfInWater()
+            CustomBehaviours.setWaterRestTarget(),
+            CustomBehaviours.idleIfInWater()
         );
     }
 

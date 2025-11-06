@@ -339,7 +339,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -365,11 +365,11 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             ),
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CompositeTasks.setWaterWalkTarget(),
+                    CustomBehaviours.setWaterWalkTarget(),
                     1
                 ),
                 Pair.of(
-                    CompositeTasks.idleIfNotFlying()
+                    CustomBehaviours.idleIfNotFlying()
                         .runForBetween(100, 300),
                     2
                 )
@@ -386,8 +386,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new LookAroundTask<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CompositeTasks.setWaterWalkTarget(),
-                CompositeTasks.idleIfNotFlying()
+                CustomBehaviours.setWaterWalkTarget(),
+                CustomBehaviours.idleIfNotFlying()
                     .runForBetween(100, 300)
             )
         );
@@ -396,15 +396,15 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends GooseEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CompositeTasks.setWaterRestTarget(),
-            CompositeTasks.idleIfInWater()
+            CustomBehaviours.setWaterRestTarget(),
+            CustomBehaviours.idleIfInWater()
         );
     }
 

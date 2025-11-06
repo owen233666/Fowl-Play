@@ -260,7 +260,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
     @Override
     public BrainActivityGroup<? extends SparrowEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -268,8 +268,8 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
     public BrainActivityGroup<? extends SparrowEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
-                CompositeTasks.tryForage(),
-                CompositeTasks.tryPerch()
+                CompositeBehaviours.tryForage(),
+                CompositeBehaviours.tryPerch()
             )
         );
     }
@@ -284,14 +284,14 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
                 0.05f,
                 3f
             ),
-            CompositeTasks.tryPerch()
+            CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends SparrowEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
@@ -300,7 +300,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
         return BirdBrain.restActivity(
             new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            CompositeTasks.idleIfPerched()
+            CustomBehaviours.idleIfPerched()
         );
     }
 

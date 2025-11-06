@@ -266,7 +266,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
-            CompositeTasks.setAvoidEntityWalkTarget()
+            CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
@@ -283,14 +283,14 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
-            CompositeTasks.tryPerch()
+            CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
     public BrainActivityGroup<? extends HawkEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CompositeTasks.setNearestFoodWalkTarget()
+            CustomBehaviours.setNearestFoodWalkTarget()
         );
     }
 
@@ -299,7 +299,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         return BirdBrain.restActivity(
             new SetPerchWalkTargetTask<>()
                 .startCondition(Predicate.not(Birds::isPerched)),
-            CompositeTasks.idleIfPerched()
+            CustomBehaviours.idleIfPerched()
         );
     }
 
