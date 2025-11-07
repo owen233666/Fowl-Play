@@ -97,7 +97,10 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
 
     public PenguinEntity(EntityType<? extends PenguinEntity> entityType, World world) {
         super(entityType, world);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 0.0f);
         this.setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+        this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, 0.0f);
+        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, 0.0f);
         this.lookControl = new YawAdjustingLookControl(this, 85);
     }
 
@@ -609,7 +612,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Override
     public BrainActivityGroup<? extends PenguinEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
-            new SetAirWalkTarget<>(),
+            new SetBreatheTarget<>(),
             new SetAttackTarget<>(),
             new LookAtTarget<>()
                 .runFor(entity -> entity.getRandom().nextBetween(45, 90)),

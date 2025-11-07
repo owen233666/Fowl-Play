@@ -53,6 +53,8 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         super(entityType, world);
         this.setNavigation(false);
         this.setPathfindingPenalty(PathNodeType.LEAVES, 0.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0f);
+        this.setPathfindingPenalty(PathNodeType.WATER, -1.0f);
     }
 
     public static DefaultAttributeContainer.Builder createFlyingBirdAttributes() {

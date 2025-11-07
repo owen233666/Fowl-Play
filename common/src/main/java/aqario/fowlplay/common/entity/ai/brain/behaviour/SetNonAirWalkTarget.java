@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
+import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
 import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-public class SetNonAirWalkTarget<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
+public class SetNonAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
     protected Predicate<E> avoidWaterPredicate = entity -> true;
@@ -73,10 +73,10 @@ public class SetNonAirWalkTarget<E extends FlyingBirdEntity> extends SpeedModifi
     @Nullable
     protected Vec3d getTargetPos(E entity) {
         if(this.avoidWaterPredicate.test(entity)) {
-            return FlightTargeting.findGround(entity, this.radius)
+            return BirdTargeting.findGround(entity, this.radius)
                 .orElse(null);
         }
-        return FlightTargeting.findNonAir(entity, this.radius)
+        return BirdTargeting.findNonAir(entity, this.radius)
             .orElse(null);
     }
 }

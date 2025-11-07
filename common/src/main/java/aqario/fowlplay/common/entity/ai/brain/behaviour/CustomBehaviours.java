@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 public class CustomBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterWalkTarget() {
         return new SetWaterWalkTarget<E>()
-            .setRadius(32, 24);
+            .radius(32, 24);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setGroundWalkTarget() {
@@ -28,7 +28,7 @@ public class CustomBehaviours {
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setWaterRestTarget() {
         return new SetWaterWalkTarget<E>()
-            .setRadius(64, 32)
+            .radius(64, 32)
             .startCondition(Predicate.not(Entity::isInsideWaterOrBubbleColumn))
             .stopIf(Entity::isInsideWaterOrBubbleColumn);
     }
@@ -36,12 +36,12 @@ public class CustomBehaviours {
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
         return new SetItemWalkTarget<E>()
             .radius(Birds.ITEM_PICK_UP_RANGE)
-            .speedModifier(Birds.FAST_SPEED);
+            .speed(Birds.FAST_SPEED);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {
         return new SetWalkTargetAwayFrom<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::getPos)
-            .speedModifier(Birds.FAST_SPEED);
+            .speed(Birds.FAST_SPEED);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfNotFlying() {

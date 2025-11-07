@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
+import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
 import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
@@ -30,7 +30,7 @@ public class SetPerchWalkTarget<E extends FlyingBirdEntity> extends ExtendedBeha
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Optional<Vec3d> target = FlightTargeting.findPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE);
+        Optional<Vec3d> target = BirdTargeting.findPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE);
         if(target.isPresent()) {
             BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target.get(), 1.0f, 0));
         }

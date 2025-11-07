@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.pathing;
 
+import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.common.util.TargetingUtil;
@@ -14,69 +15,65 @@ import java.util.Optional;
 import java.util.function.ToDoubleFunction;
 
 /**
- * Similar to {@link FuzzyTargeting} but only for flying birds.
+ * Similar to {@link FuzzyTargeting} but specialized for birds.
  */
-public class FlightTargeting {
-    public static Optional<Vec3d> findWaterOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> waterRange, CuboidRadius<Integer> groundRange) {
+public class BirdTargeting {
+    public static Optional<Vec3d> findWaterOrGround(BirdEntity entity, CuboidRadius<Integer> waterRange, CuboidRadius<Integer> groundRange) {
         return findWater(entity, waterRange)
             .or(() -> findGround(entity, groundRange));
     }
 
-    public static Optional<Vec3d> findWater(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+    public static Optional<Vec3d> findWater(BirdEntity entity, CuboidRadius<Integer> range) {
         return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
-                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
-                return pos == null ? null : TargetingUtil.validateWater(entity, pos);
-            }, pos -> 0))
-            .or(() -> fallback(entity, range));
+            BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
+            return pos == null ? null : TargetingUtil.validateWater(entity, pos);
+        }, pos -> 0));
     }
 
-    public static Optional<Vec3d> findNonAir(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+    public static Optional<Vec3d> findNonAir(BirdEntity entity, CuboidRadius<Integer> range) {
         return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
-                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
-                return pos == null ? null : TargetingUtil.validateNonAir(entity, pos);
-            }, pos -> 0))
-            .or(() -> fallback(entity, range));
+            BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
+            return pos == null ? null : TargetingUtil.validateNonAir(entity, pos);
+        }, pos -> 0));
     }
 
-    public static Optional<Vec3d> findPerchOrGround(FlyingBirdEntity entity, CuboidRadius<Integer> perchRange, CuboidRadius<Integer> groundRange) {
+    public static Optional<Vec3d> findPerchOrGround(BirdEntity entity, CuboidRadius<Integer> perchRange, CuboidRadius<Integer> groundRange) {
         return findPerch(entity, perchRange)
             .or(() -> findGround(entity, groundRange));
     }
 
-    public static Optional<Vec3d> findGround(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+    public static Optional<Vec3d> findGround(BirdEntity entity, CuboidRadius<Integer> range) {
         return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
-                BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
-                return pos == null ? null : TargetingUtil.validateGround(entity, pos);
-            }, pos -> 0))
-            .or(() -> fallback(entity, range));
+            BlockPos pos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), -2, 0, 0, Math.PI * 3 / 2);
+            return pos == null ? null : TargetingUtil.validateGround(entity, pos);
+        }, pos -> 0));
     }
 
-    public static Optional<Vec3d> findPerch(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+    public static Optional<Vec3d> findPerch(BirdEntity entity, CuboidRadius<Integer> range) {
         return findPerch(entity, range, pos -> 0);
     }
 
-    public static Optional<Vec3d> findPerch(FlyingBirdEntity entity, CuboidRadius<Integer> range, ToDoubleFunction<BlockPos> scorer) {
+    public static Optional<Vec3d> findPerch(BirdEntity entity, CuboidRadius<Integer> range, ToDoubleFunction<BlockPos> scorer) {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, range.horizontal());
         Vec3d direction = entity.getRotationVec(1);
         return Optional.ofNullable(FuzzyPositions.guessBest(() -> {
-                BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), 0, direction.x, direction.z, Math.PI * 3 / 2);
-                if(blockPos == null) {
-                    return null;
-                }
-                BlockPos blockPos2 = TargetingUtil.towardTarget(entity, range.horizontal(), posTargetInRange, blockPos);
-                if(blockPos2 == null) {
-                    return null;
-                }
-                return TargetingUtil.validatePerch(entity, blockPos2);
-            }, scorer))
-            .or(() -> fallback(entity, range));
+            BlockPos blockPos = FuzzyPositions.localFuzz(entity.getRandom(), range.horizontal(), range.vertical(), 0, direction.x, direction.z, Math.PI * 3 / 2);
+            if(blockPos == null) {
+                return null;
+            }
+            BlockPos blockPos2 = TargetingUtil.towardTarget(entity, range.horizontal(), posTargetInRange, blockPos);
+            if(blockPos2 == null) {
+                return null;
+            }
+            return TargetingUtil.validatePerch(entity, blockPos2);
+        }, scorer));
     }
 
-    public static Optional<Vec3d> findRandom(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
-        return findRandom(entity, range, entity::getFlyingPathfindingFavor);
+    public static Optional<Vec3d> findAir(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
+        return findAir(entity, range, entity::getFlyingPathfindingFavor);
     }
 
-    public static Optional<Vec3d> findRandom(FlyingBirdEntity entity, CuboidRadius<Integer> range, ToDoubleFunction<BlockPos> scorer) {
+    public static Optional<Vec3d> findAir(FlyingBirdEntity entity, CuboidRadius<Integer> range, ToDoubleFunction<BlockPos> scorer) {
         boolean posTargetInRange = NavigationConditions.isPositionTargetInRange(entity, range.horizontal());
         // the entity's path should be in the same direction as its look vector
         Vec3d direction = entity.getRotationVec(1);
@@ -93,12 +90,6 @@ public class FlightTargeting {
             }
             return TargetingUtil.isPosWithinViewAngle(entity, blockPos2, angle * (Math.PI / 180)) ? TargetingUtil.validateAny(entity, blockPos2) : null;
         }, scorer));
-    }
-
-    public static Optional<Vec3d> fallback(FlyingBirdEntity entity, CuboidRadius<Integer> range) {
-        return entity.isFlying()
-            ? findRandom(entity, range)
-            : Optional.empty();
     }
 
     @Nullable

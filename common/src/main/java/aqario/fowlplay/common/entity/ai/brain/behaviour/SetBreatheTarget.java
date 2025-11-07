@@ -18,7 +18,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
-public class SetAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBehaviour<E> {
+public class SetBreatheTarget<E extends BirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .registered(MemoryModuleType.WALK_TARGET);
 

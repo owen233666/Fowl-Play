@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.ai.pathing.FlightTargeting;
+import aqario.fowlplay.common.entity.BirdEntity;
+import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
 import aqario.fowlplay.common.util.CuboidRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
@@ -15,17 +15,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class SetWaterWalkTarget<E extends FlyingBirdEntity> extends SpeedModifiableBehaviour<E> {
+public class SetWaterWalkTarget<E extends BirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
     protected CuboidRadius<Integer> radius = new CuboidRadius<>(32, 16);
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
-    public SetWaterWalkTarget<E> setRadius(int radius) {
-        return this.setRadius(radius, radius);
+    public SetWaterWalkTarget<E> radius(int radius) {
+        return this.radius(radius, radius);
     }
 
-    public SetWaterWalkTarget<E> setRadius(int xz, int y) {
+    public SetWaterWalkTarget<E> radius(int xz, int y) {
         this.radius = new CuboidRadius<>(xz, y);
 
         return this;
@@ -60,7 +60,7 @@ public class SetWaterWalkTarget<E extends FlyingBirdEntity> extends SpeedModifia
 
     @Nullable
     protected Vec3d getTargetPos(E entity) {
-        return FlightTargeting.findWaterOrGround(entity, this.radius, this.radius)
+        return BirdTargeting.findWaterOrGround(entity, this.radius, this.radius)
             .orElse(null);
     }
 }

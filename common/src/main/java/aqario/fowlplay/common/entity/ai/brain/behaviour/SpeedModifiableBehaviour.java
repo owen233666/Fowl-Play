@@ -9,11 +9,11 @@ import java.util.function.BiFunction;
 public abstract class SpeedModifiableBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
     protected BiFunction<E, Vec3d, Float> speedModifier = (entity, targetPos) -> 1f;
 
-    public SpeedModifiableBehaviour<E> speedModifier(float modifier) {
-        return this.speedModifier((entity, targetPos) -> modifier);
+    public SpeedModifiableBehaviour<E> speed(float modifier) {
+        return this.speed((entity, targetPos) -> modifier);
     }
 
-    public SpeedModifiableBehaviour<E> speedModifier(BiFunction<E, Vec3d, Float> function) {
+    public SpeedModifiableBehaviour<E> speed(BiFunction<E, Vec3d, Float> function) {
         this.speedModifier = function;
 
         return this;
