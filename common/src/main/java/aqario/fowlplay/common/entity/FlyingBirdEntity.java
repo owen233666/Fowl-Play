@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity;
 import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
 import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.common.util.CuboidRadius;
+import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import com.mojang.datafixers.util.Pair;
@@ -132,8 +132,8 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     public abstract float getFlapPitch();
 
     // range where the bird prefers walking over flying
-    public CuboidRadius<Integer> getWalkRange() {
-        return new CuboidRadius<>(16, 8);
+    public CylindricalRadius getWalkRange() {
+        return new CylindricalRadius(16, 8);
     }
 
     @Override

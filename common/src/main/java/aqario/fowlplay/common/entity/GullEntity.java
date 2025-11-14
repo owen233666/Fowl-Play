@@ -7,7 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.common.util.CuboidRadius;
+import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -248,8 +248,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     }
 
     @Override
-    public CuboidRadius<Integer> getWalkRange() {
-        return new CuboidRadius<>(24, 12);
+    public CylindricalRadius getWalkRange() {
+        return new CylindricalRadius(24, 12);
     }
 
     @Override

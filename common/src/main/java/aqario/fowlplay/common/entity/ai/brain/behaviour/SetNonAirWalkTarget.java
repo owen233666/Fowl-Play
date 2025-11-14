@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
-import aqario.fowlplay.common.util.CuboidRadius;
+import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -20,7 +20,7 @@ public class SetNonAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBe
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
     protected Predicate<E> avoidWaterPredicate = entity -> true;
-    protected CuboidRadius<Integer> radius = new CuboidRadius<>(32, 16);
+    protected CylindricalRadius radius = new CylindricalRadius(32, 16);
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
     public SetNonAirWalkTarget<E> setRadius(int radius) {
@@ -28,7 +28,7 @@ public class SetNonAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBe
     }
 
     public SetNonAirWalkTarget<E> setRadius(int xz, int y) {
-        this.radius = new CuboidRadius<>(xz, y);
+        this.radius = new CylindricalRadius(xz, y);
 
         return this;
     }
@@ -73,10 +73,8 @@ public class SetNonAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBe
     @Nullable
     protected Vec3d getTargetPos(E entity) {
         if(this.avoidWaterPredicate.test(entity)) {
-            return BirdTargeting.findGround(entity, this.radius)
-                .orElse(null);
+            return BirdTargeting.findGround(entity, this.radius);
         }
-        return BirdTargeting.findNonAir(entity, this.radius)
-            .orElse(null);
+        return BirdTargeting.findNonAir(entity, this.radius);
     }
 }

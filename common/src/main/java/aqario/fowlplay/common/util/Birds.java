@@ -35,7 +35,7 @@ public final class Birds {
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
     public static final int ITEM_PICK_UP_RANGE = 32;
-    public static final CuboidRadius<Double> FLY_AVOID_RANGE = new CuboidRadius<>(8.0, 8.0);
+    public static final CylindricalRadius FLY_AVOID_RANGE = new CylindricalRadius(8, 6);
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformIntProvider STAY_NEAR_ENTITY_RANGE = UniformIntProvider.create(16, 32);

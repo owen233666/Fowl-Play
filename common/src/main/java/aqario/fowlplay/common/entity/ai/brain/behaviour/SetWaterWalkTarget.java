@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
-import aqario.fowlplay.common.util.CuboidRadius;
+import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -18,7 +18,7 @@ import java.util.function.BiPredicate;
 public class SetWaterWalkTarget<E extends BirdEntity> extends SpeedModifiableBehaviour<E> {
     private static final MemoryList MEMORIES = MemoryList.create(1)
         .absent(MemoryModuleType.WALK_TARGET);
-    protected CuboidRadius<Integer> radius = new CuboidRadius<>(32, 16);
+    protected CylindricalRadius radius = new CylindricalRadius(32, 16);
     protected BiPredicate<E, Vec3d> positionPredicate = (entity, pos) -> true;
 
     public SetWaterWalkTarget<E> radius(int radius) {
@@ -26,7 +26,7 @@ public class SetWaterWalkTarget<E extends BirdEntity> extends SpeedModifiableBeh
     }
 
     public SetWaterWalkTarget<E> radius(int xz, int y) {
-        this.radius = new CuboidRadius<>(xz, y);
+        this.radius = new CylindricalRadius(xz, y);
 
         return this;
     }
@@ -60,7 +60,6 @@ public class SetWaterWalkTarget<E extends BirdEntity> extends SpeedModifiableBeh
 
     @Nullable
     protected Vec3d getTargetPos(E entity) {
-        return BirdTargeting.findWaterOrGround(entity, this.radius, this.radius)
-            .orElse(null);
+        return BirdTargeting.findWaterOrGround(entity, this.radius, this.radius);
     }
 }
