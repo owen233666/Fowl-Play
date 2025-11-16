@@ -4,8 +4,8 @@ import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.util.Birds;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -63,8 +63,8 @@ public class CompositeBehaviours {
                         .noTimeout()
                 )
                     .runForBetween(30, 100)
-                    .startCondition(Entity::isOnGround)
-                    .stopIf(Predicate.not(Entity::isOnGround)),
+                    .startCondition(Entity::onGround)
+                    .stopIf(Predicate.not(Entity::onGround)),
                 2
             ),
             Pair.of(

@@ -7,29 +7,29 @@ import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.brain.Activity;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.Schedule;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
-import net.minecraft.entity.data.TrackedDataHandler;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.entity.schedule.Schedule;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class PlatformHelperImpl {
-    public static final Object2ObjectOpenHashMap<Supplier<Item>, RegistryKey<ItemGroup>> ITEM_TO_GROUPS = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<Supplier<Item>, ResourceKey<CreativeModeTab>> ITEM_TO_GROUPS = new Object2ObjectOpenHashMap<>();
     public static final DeferredRegister<ChickenVariant> CHICKEN_VARIANTS = DeferredRegister.create(
         FowlPlayRegistryKeys.CHICKEN_VARIANT,
         FowlPlay.ID
@@ -65,62 +65,62 @@ public class PlatformHelperImpl {
         FowlPlay.ID
     );
     public static final DeferredRegister<Activity> ACTIVITIES = DeferredRegister.create(
-        Registries.ACTIVITY,
+        BuiltInRegistries.ACTIVITY,
         FowlPlay.ID
     );
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
-        Registries.ENTITY_TYPE,
+        BuiltInRegistries.ENTITY_TYPE,
         FowlPlay.ID
     );
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.createItems(
         FowlPlay.ID
     );
     public static final DeferredRegister<MemoryModuleType<?>> MEMORY_MODULE_TYPES = DeferredRegister.create(
-        Registries.MEMORY_MODULE_TYPE,
+        BuiltInRegistries.MEMORY_MODULE_TYPE,
         FowlPlay.ID
     );
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(
-        Registries.PARTICLE_TYPE,
+        BuiltInRegistries.PARTICLE_TYPE,
         FowlPlay.ID
     );
     public static final DeferredRegister<Schedule> SCHEDULES = DeferredRegister.create(
-        Registries.SCHEDULE,
+        BuiltInRegistries.SCHEDULE,
         FowlPlay.ID
     );
     public static final DeferredRegister<SensorType<?>> SENSOR_TYPES = DeferredRegister.create(
-        Registries.SENSOR_TYPE,
+        BuiltInRegistries.SENSOR_TYPE,
         FowlPlay.ID
     );
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(
-        Registries.SOUND_EVENT,
+        BuiltInRegistries.SOUND_EVENT,
         FowlPlay.ID
     );
     public static final ObjectArrayList<Registry<?>> REGISTRIES = new ObjectArrayList<>();
-    public static final DeferredRegister<TrackedDataHandler<?>> TRACKED_DATA_HANDLERS = DeferredRegister.create(
+    public static final DeferredRegister<EntityDataSerializer<?>> TRACKED_DATA_HANDLERS = DeferredRegister.create(
         NeoForgeRegistries.ENTITY_DATA_SERIALIZERS,
         FowlPlay.ID
     );
-    public static final ObjectArrayList<Pair<EntityModelLayer, Supplier<TexturedModelData>>> MODEL_LAYERS = new ObjectArrayList<>();
-    public static final ObjectArrayList<Pair<Supplier<EntityType<?>>, EntityRendererFactory<?>>> ENTITY_RENDERERS = new ObjectArrayList<>();
+    public static final ObjectArrayList<Pair<ModelLayerLocation, Supplier<LayerDefinition>>> MODEL_LAYERS = new ObjectArrayList<>();
+    public static final ObjectArrayList<Pair<Supplier<EntityType<?>>, EntityRendererProvider<?>>> ENTITY_RENDERERS = new ObjectArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> void registerVariant(String id, RegistryKey<T> key, Supplier<T> variant) {
-        if(key.isOf(FowlPlayRegistryKeys.CHICKEN_VARIANT)) {
+    public static <T> void registerVariant(String id, ResourceKey<T> key, Supplier<T> variant) {
+        if(key.isFor(FowlPlayRegistryKeys.CHICKEN_VARIANT)) {
             CHICKEN_VARIANTS.register(id, (Supplier<ChickenVariant>) variant);
         }
-        else if(key.isOf(FowlPlayRegistryKeys.DUCK_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistryKeys.DUCK_VARIANT)) {
             DUCK_VARIANTS.register(id, (Supplier<DuckVariant>) variant);
         }
-        else if(key.isOf(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
             GOOSE_VARIANTS.register(id, (Supplier<GooseVariant>) variant);
         }
-        else if(key.isOf(FowlPlayRegistryKeys.GULL_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistryKeys.GULL_VARIANT)) {
             GULL_VARIANTS.register(id, (Supplier<GullVariant>) variant);
         }
-        else if(key.isOf(FowlPlayRegistryKeys.PIGEON_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistryKeys.PIGEON_VARIANT)) {
             PIGEON_VARIANTS.register(id, (Supplier<PigeonVariant>) variant);
         }
-        else if(key.isOf(FowlPlayRegistryKeys.SPARROW_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistryKeys.SPARROW_VARIANT)) {
             SPARROW_VARIANTS.register(id, (Supplier<SparrowVariant>) variant);
         }
     }
@@ -134,14 +134,14 @@ public class PlatformHelperImpl {
     }
 
     // TODO: Add items to group automatically
-    public static Supplier<Item> registerItem(String id, Supplier<Item> item, RegistryKey<ItemGroup> group) {
+    public static Supplier<Item> registerItem(String id, Supplier<Item> item, ResourceKey<CreativeModeTab> group) {
         Supplier<Item> registry = ITEMS.register(id, item);
         addItemToItemGroup(registry, group);
         return registry;
     }
 
-    public static <T extends MobEntity> Supplier<Item> registerSpawnEggItem(String id, Supplier<EntityType<T>> entityType, int backgroundColor, int highlightColor) {
-        return registerItem(id, () -> new DeferredSpawnEggItem(entityType, backgroundColor, highlightColor, new Item.Settings()), ItemGroups.SPAWN_EGGS);
+    public static <T extends Mob> Supplier<Item> registerSpawnEggItem(String id, Supplier<EntityType<T>> entityType, int backgroundColor, int highlightColor) {
+        return registerItem(id, () -> new DeferredSpawnEggItem(entityType, backgroundColor, highlightColor, new Item.Properties()), CreativeModeTabs.SPAWN_EGGS);
     }
 
     public static <T> Supplier<MemoryModuleType<T>> registerMemoryModuleType(String id, Supplier<MemoryModuleType<T>> memoryModuleType) {
@@ -164,7 +164,7 @@ public class PlatformHelperImpl {
         return SOUND_EVENTS.register(id, soundEvent);
     }
 
-    public static <T> Registry<T> registerRegistry(RegistryKey<Registry<T>> registryKey, boolean sync) {
+    public static <T> Registry<T> registerRegistry(ResourceKey<Registry<T>> registryKey, boolean sync) {
         RegistryBuilder<T> builder = new RegistryBuilder<>(registryKey);
         if(sync) {
             builder.sync(true);
@@ -174,23 +174,23 @@ public class PlatformHelperImpl {
         return registry;
     }
 
-    public static <T> void registerTrackedDataHandler(String id, TrackedDataHandler<T> handler) {
+    public static <T> void registerTrackedDataHandler(String id, EntityDataSerializer<T> handler) {
         TRACKED_DATA_HANDLERS.register(id, () -> handler);
     }
 
-    public static void addItemToItemGroup(Supplier<Item> item, RegistryKey<ItemGroup> itemGroup) {
+    public static void addItemToItemGroup(Supplier<Item> item, ResourceKey<CreativeModeTab> itemGroup) {
         ITEM_TO_GROUPS.put(item, itemGroup);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererFactory<T> provider) {
+    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> provider) {
         ENTITY_RENDERERS.add(Pair.of((Supplier<EntityType<?>>) (Supplier<?>) type, provider));
     }
 
-    public static void registerModelLayer(EntityModelLayer location, Supplier<TexturedModelData> definition) {
+    public static void registerModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
         MODEL_LAYERS.add(Pair.of(location, definition));
     }
 
-    public static <T extends ParticleEffect> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleFactory<T> provider) {
+    public static <T extends ParticleOptions> void registerParticleFactory(Supplier<ParticleType<T>> supplier, ParticleProvider<T> provider) {
     }
 }

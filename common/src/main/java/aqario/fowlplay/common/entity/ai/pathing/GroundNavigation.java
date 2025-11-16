@@ -2,14 +2,14 @@ package aqario.fowlplay.common.entity.ai.pathing;
 
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.util.Birds;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 import org.jetbrains.annotations.Nullable;
 
 public class GroundNavigation extends SmoothGroundNavigation {
-    public GroundNavigation(MobEntity mob, World level) {
+    public GroundNavigation(Mob mob, Level level) {
         super(mob, level);
     }
 
@@ -20,18 +20,18 @@ public class GroundNavigation extends SmoothGroundNavigation {
             return null;
         }
         // noinspection ConstantConditions
-        Path.DebugNodeInfo debugNodeInfo = path.getDebugNodeInfos();
+        Path.DebugData debugNodeInfo = path.debugData();
         if(debugNodeInfo != null) {
-            newPath.setDebugInfo(debugNodeInfo.openSet(), debugNodeInfo.closedSet(), debugNodeInfo.targetNodes());
+            newPath.setDebug(debugNodeInfo.openSet(), debugNodeInfo.closedSet(), debugNodeInfo.targetNodes());
         }
         return newPath;
     }
 
     @Override
-    public boolean startMovingAlong(@Nullable Path path, double speed) {
-        if(path != null && this.entity instanceof FlyingBirdEntity flyingBird) {
+    public boolean moveTo(@Nullable Path path, double speed) {
+        if(path != null && this.mob instanceof FlyingBirdEntity flyingBird) {
             Birds.tryFlyingAlongPath(flyingBird, path);
         }
-        return super.startMovingAlong(path, speed);
+        return super.moveTo(path, speed);
     }
 }

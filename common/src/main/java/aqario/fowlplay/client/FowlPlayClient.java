@@ -11,19 +11,19 @@ import aqario.fowlplay.core.platform.PlatformHelper;
 import com.google.common.base.Suppliers;
 import dev.architectury.networking.NetworkManager;
 import io.github.flemmli97.debugutils.api.RegisterDebugRenderers;
-import net.minecraft.client.model.Dilation;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 
 @SuppressWarnings("unused")
 public class FowlPlayClient {
-    private static final Dilation ARMOR_DILATION = new Dilation(1.0F);
-    private static final Dilation HAT_DILATION = new Dilation(0.5F);
+    private static final CubeDeformation ARMOR_DILATION = new CubeDeformation(1.0F);
+    private static final CubeDeformation HAT_DILATION = new CubeDeformation(0.5F);
     public static boolean DEBUG_BIRD = false;
 
     public static void init() {
         if(FowlPlay.isDebugUtilsLoaded()) {
-            Identifier debugBirdId = FowlPlay.id("debug/bird");
+            ResourceLocation debugBirdId = FowlPlay.id("debug/bird");
             RegisterDebugRenderers.registerCustomDebugRenderer(debugBirdId, BirdDebugRenderer.INSTANCE);
             RegisterDebugRenderers.registerServerToggle(debugBirdId);
             RegisterDebugRenderers.registerClientHandler(debugBirdId, b -> FowlPlayClient.DEBUG_BIRD = b);

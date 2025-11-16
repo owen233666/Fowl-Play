@@ -13,16 +13,16 @@ import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -45,23 +45,23 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     public final AnimationState flappingState = new AnimationState();
     public final AnimationState floatingState = new AnimationState();
 
-    public BlueJayEntity(EntityType<? extends BirdEntity> entityType, World world) {
+    public BlueJayEntity(EntityType<? extends BirdEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.BLUE_JAY_FOOD);
+        return Ingredient.of(FowlPlayItemTags.BLUE_JAY_FOOD);
     }
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().isIn(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS);
+        return entity.getType().is(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS);
     }
 
     @Nullable
     @Override
-    public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         return null;
     }
 
@@ -72,13 +72,13 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
 
     @Override
     protected void updateAnimations() {
-        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-        this.flappingState.setRunning(this.isFlying(), this.age);
-        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+        this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
+        this.flappingState.animateWhen(this.isFlying(), this.tickCount);
+        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     @Override
-    protected boolean isFlappingWings() {
+    protected boolean isFlapping() {
         return this.isFlying();
     }
 
@@ -120,7 +120,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     }
 
     @Override
-    protected Brain.Profile<BlueJayEntity> createBrainProfile() {
+    protected Brain.Provider<BlueJayEntity> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -196,8 +196,8 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     }
 
     @Override
-    protected void mobTick() {
+    protected void customServerAiStep() {
         this.tickBrain(this);
-        super.mobTick();
+        super.customServerAiStep();
     }
 }

@@ -11,25 +11,25 @@ import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Activity;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
@@ -58,7 +58,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     private int timeSinceLastFlap = this.getFlapFrequency();
     private int flapTime = 0;
 
-    public HawkEntity(EntityType<? extends HawkEntity> entityType, World world) {
+    public HawkEntity(EntityType<? extends HawkEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -67,13 +67,13 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         return 100;
     }
 
-    public static DefaultAttributeContainer.Builder createHawkAttributes() {
+    public static AttributeSupplier.Builder createHawkAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
-            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 48)
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0f)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0f)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.225f)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.24f);
+            .add(Attributes.FOLLOW_RANGE, 48)
+            .add(Attributes.MAX_HEALTH, 15.0f)
+            .add(Attributes.ATTACK_DAMAGE, 3.0f)
+            .add(Attributes.MOVEMENT_SPEED, 0.225f)
+            .add(Attributes.FLYING_SPEED, 0.24f);
     }
 
     @Override
@@ -94,22 +94,22 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return this.getTargetInBrain();
+        return this.getTargetFromBrain();
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
     }
 
     @Override
@@ -119,24 +119,24 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
 
     @Nullable
     @Override
-    public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         return null;
     }
 
     public Ingredient getFood() {
-        return Ingredient.fromTag(FowlPlayItemTags.HAWK_FOOD);
+        return Ingredient.of(FowlPlayItemTags.HAWK_FOOD);
     }
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
         // TODO: avoid if the target has hurt this entity and the target is not an attack target
-        return entity.getType().isIn(FowlPlayEntityTypeTags.HAWK_AVOIDS);
+        return entity.getType().is(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
     @Override
     public boolean canHunt(LivingEntity target) {
-        return target.getType().isIn(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
-            (target.getType().isIn(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
+        return target.getType().is(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
+            (target.getType().is(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
     }
 
     @Override
@@ -144,19 +144,19 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         if(this.hasLowHealth()) {
             return false;
         }
-        Optional<LivingEntity> hurtBy = this.getBrain().getOptionalRegisteredMemory(MemoryModuleType.HURT_BY_ENTITY);
+        Optional<LivingEntity> hurtBy = this.getBrain().getMemory(MemoryModuleType.HURT_BY_ENTITY);
         return hurtBy.isPresent() && hurtBy.get().equals(target);
     }
 
     @Override
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return !effect.equals(StatusEffects.HUNGER) && super.canHaveStatusEffect(effect);
+    public boolean canBeAffected(MobEffectInstance effect) {
+        return !effect.is(MobEffects.HUNGER) && super.canBeAffected(effect);
     }
 
     @Override
     public void updateAnimations() {
-        this.standingState.setRunning(!this.isFlying() && !this.isInsideWaterOrBubbleColumn(), this.age);
-        this.glidingState.setRunning(this.isFlying(), this.age);
+        this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
+        this.glidingState.animateWhen(this.isFlying(), this.tickCount);
         if(this.isFlying()) {
             if(this.timeSinceLastFlap > this.getFlapFrequency()) {
                 this.timeSinceLastFlap = 0;
@@ -174,7 +174,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
             this.timeSinceLastFlap = this.getFlapFrequency();
             this.flapTime = 0;
         }
-        this.floatingState.setRunning(!this.isFlying() && this.isInsideWaterOrBubbleColumn(), this.age);
+        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     private boolean isCurrentlyFlapping() {
@@ -182,7 +182,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
-    protected boolean isFlappingWings() {
+    protected boolean isFlapping() {
         return this.isFlying();
     }
 
@@ -202,8 +202,8 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
-    public Vec3d getLeashOffset() {
-        return new Vec3d(0.0, 0.5f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
+    public Vec3 getLeashOffset() {
+        return new Vec3(0.0, 0.5f * this.getEyeHeight(), this.getBbWidth() * 0.4f);
     }
 
     @Nullable
@@ -229,7 +229,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
-    protected Brain.Profile<HawkEntity> createBrainProfile() {
+    protected Brain.Provider<HawkEntity> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -316,13 +316,13 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
-    protected void mobTick() {
+    protected void customServerAiStep() {
         Brain<?> brain = this.getBrain();
-        Activity activity = brain.getFirstPossibleNonCoreActivity().orElse(null);
+        Activity activity = brain.getActiveNonCoreActivity().orElse(null);
         this.tickBrain(this);
-        if(activity == Activity.FIGHT && brain.getFirstPossibleNonCoreActivity().orElse(null) != Activity.FIGHT) {
-            brain.remember(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
+        if(activity == Activity.FIGHT && brain.getActiveNonCoreActivity().orElse(null) != Activity.FIGHT) {
+            brain.setMemoryWithExpiry(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
         }
-        super.mobTick();
+        super.customServerAiStep();
     }
 }

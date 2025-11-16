@@ -3,35 +3,35 @@ package aqario.fowlplay.common.network.neoforge;
 import aqario.fowlplay.common.entity.ChickenVariant;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistryKeys;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public record ChickenVariantPayload(int entityId, RegistryEntry<ChickenVariant> variant) implements CustomPayload {
-    public static final PacketCodec<RegistryByteBuf, ChickenVariantPayload> CODEC = CustomPayload.codecOf(
+public record ChickenVariantPayload(int entityId, Holder<ChickenVariant> variant) implements CustomPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChickenVariantPayload> CODEC = CustomPacketPayload.codec(
         ChickenVariantPayload::write,
         ChickenVariantPayload::new
     );
-    public static final CustomPayload.Id<ChickenVariantPayload> ID = new CustomPayload.Id<>(
+    public static final CustomPacketPayload.Type<ChickenVariantPayload> ID = new CustomPacketPayload.Type<>(
         FowlPlay.id("chicken_variant")
     );
 
-    private ChickenVariantPayload(RegistryByteBuf buf) {
+    private ChickenVariantPayload(RegistryFriendlyByteBuf buf) {
         this(
             buf.readInt(),
-            PacketCodecs.registryEntry(FowlPlayRegistryKeys.CHICKEN_VARIANT).decode(buf)
+            ByteBufCodecs.holderRegistry(FowlPlayRegistryKeys.CHICKEN_VARIANT).decode(buf)
         );
     }
 
-    private void write(RegistryByteBuf buf) {
+    private void write(RegistryFriendlyByteBuf buf) {
         buf.writeInt(this.entityId);
-        PacketCodecs.registryEntry(FowlPlayRegistryKeys.CHICKEN_VARIANT).encode(buf, this.variant);
+        ByteBufCodecs.holderRegistry(FowlPlayRegistryKeys.CHICKEN_VARIANT).encode(buf, this.variant);
     }
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

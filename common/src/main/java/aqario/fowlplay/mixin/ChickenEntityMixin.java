@@ -4,19 +4,19 @@ import aqario.fowlplay.common.entity.ChickenVariant;
 import aqario.fowlplay.common.util.ChickenAnimationStates;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.platform.DataAttachmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.core.Holder;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(value = ChickenEntity.class, priority = 999)
-public abstract class ChickenEntityMixin extends AnimalEntity implements VariantHolder<RegistryEntry<ChickenVariant>>, ChickenAnimationStates {
+@Mixin(value = Chicken.class, priority = 999)
+public abstract class ChickenEntityMixin extends Animal implements VariantHolder<Holder<ChickenVariant>>, ChickenAnimationStates {
     @Unique
     private final AnimationState fowlplay$standingState = new AnimationState();
     @Unique
@@ -24,20 +24,20 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
     @Unique
     private final AnimationState fowlplay$floatingState = new AnimationState();
 
-    protected ChickenEntityMixin(EntityType<? extends AnimalEntity> entityType, World world) {
+    protected ChickenEntityMixin(EntityType<? extends Animal> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         switch(spawnReason) {
             case BREEDING ->
-                FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.WHITE).ifPresent(this::setVariant);
+                FowlPlayRegistries.CHICKEN_VARIANT.getHolder(ChickenVariant.WHITE).ifPresent(this::setVariant);
             case CHUNK_GENERATION ->
-                FowlPlayRegistries.CHICKEN_VARIANT.getEntry(ChickenVariant.RED_JUNGLEFOWL).ifPresent(this::setVariant);
+                FowlPlayRegistries.CHICKEN_VARIANT.getHolder(ChickenVariant.RED_JUNGLEFOWL).ifPresent(this::setVariant);
             default -> FowlPlayRegistries.CHICKEN_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         }
-        return super.initialize(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
 //    @Inject(
@@ -57,25 +57,25 @@ public abstract class ChickenEntityMixin extends AnimalEntity implements Variant
 //    }
 
     @Override
-    public RegistryEntry<ChickenVariant> getVariant() {
-        return DataAttachmentHelper.getChickenVariant((ChickenEntity) (Object) this);
+    public Holder<ChickenVariant> getVariant() {
+        return DataAttachmentHelper.getChickenVariant((Chicken) (Object) this);
     }
 
     @Override
-    public void setVariant(RegistryEntry<ChickenVariant> variant) {
-        DataAttachmentHelper.setChickenVariant((ChickenEntity) (Object) this, variant);
+    public void setVariant(Holder<ChickenVariant> variant) {
+        DataAttachmentHelper.setChickenVariant((Chicken) (Object) this, variant);
     }
 
     @Override
     public void tick() {
-        if(this.getWorld().isClient()) {
-            this.fowlplay$standingState.setRunning(this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.fowlplay$flappingState.setRunning(!this.isOnGround() && !this.isInsideWaterOrBubbleColumn(), this.age);
-            this.fowlplay$floatingState.setRunning(this.isInsideWaterOrBubbleColumn(), this.age);
+        if(this.level().isClientSide()) {
+            this.fowlplay$standingState.animateWhen(this.onGround() && !this.isInWaterOrBubble(), this.tickCount);
+            this.fowlplay$flappingState.animateWhen(!this.onGround() && !this.isInWaterOrBubble(), this.tickCount);
+            this.fowlplay$floatingState.animateWhen(this.isInWaterOrBubble(), this.tickCount);
         }
         super.tick();
-        if(!this.getWorld().isClient()) {
-            DataAttachmentHelper.sendChickenVariantUpdate((ChickenEntity) (Object) this);
+        if(!this.level().isClientSide()) {
+            DataAttachmentHelper.sendChickenVariantUpdate((Chicken) (Object) this);
         }
     }
 

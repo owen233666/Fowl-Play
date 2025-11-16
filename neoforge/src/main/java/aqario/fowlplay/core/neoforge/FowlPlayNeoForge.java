@@ -4,10 +4,10 @@ import aqario.fowlplay.client.neoforge.FowlPlayNeoForgeClient;
 import aqario.fowlplay.common.network.neoforge.ChickenVariantPayload;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Chicken;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -58,12 +58,12 @@ public final class FowlPlayNeoForge {
             ChickenVariantPayload.ID,
             ChickenVariantPayload.CODEC,
             (payload, context) -> {
-                ClientWorld world = MinecraftClient.getInstance().world;
+                ClientLevel world = Minecraft.getInstance().level;
                 if(world == null) {
                     return;
                 }
-                Entity entity = world.getEntityById(payload.entityId());
-                if(entity instanceof ChickenEntity) {
+                Entity entity = world.getEntity(payload.entityId());
+                if(entity instanceof Chicken) {
                     entity.setData(FowlPlayDataAttachments.CHICKEN_VARIANT, payload.variant());
                 }
             }
@@ -81,7 +81,7 @@ public final class FowlPlayNeoForge {
     private static void onAddItemGroupEntries(BuildCreativeModeTabContentsEvent event) {
         PlatformHelperImpl.ITEM_TO_GROUPS.forEach(((item, group) -> {
             if(event.getTabKey() == group) {
-                event.add(item.get());
+                event.accept(item.get());
             }
         }));
     }

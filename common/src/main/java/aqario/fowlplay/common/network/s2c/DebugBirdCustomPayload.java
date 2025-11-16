@@ -2,12 +2,12 @@ package aqario.fowlplay.common.network.s2c;
 
 import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.core.FowlPlay;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -15,19 +15,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload {
-    public static final PacketCodec<PacketByteBuf, DebugBirdCustomPayload> CODEC = CustomPayload.codecOf(
+public record DebugBirdCustomPayload(BirdData birdData) implements CustomPacketPayload {
+    public static final StreamCodec<FriendlyByteBuf, DebugBirdCustomPayload> CODEC = CustomPacketPayload.codec(
         DebugBirdCustomPayload::write, DebugBirdCustomPayload::new
     );
-    public static final CustomPayload.Id<DebugBirdCustomPayload> ID = new CustomPayload.Id<>(
+    public static final CustomPacketPayload.Type<DebugBirdCustomPayload> ID = new CustomPacketPayload.Type<>(
         FowlPlay.id("debug/bird")
     );
 
-    private DebugBirdCustomPayload(PacketByteBuf buf) {
+    private DebugBirdCustomPayload(FriendlyByteBuf buf) {
         this(new BirdData(buf));
     }
 
-    private void write(PacketByteBuf buf) {
+    private void write(FriendlyByteBuf buf) {
         this.birdData.write(buf);
     }
 
@@ -36,7 +36,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
     }
 
     @Override
-    public CustomPayload.Id<DebugBirdCustomPayload> getId() {
+    public CustomPacketPayload.Type<DebugBirdCustomPayload> type() {
         return ID;
     }
 
@@ -48,7 +48,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         String navigation,
         float health,
         float maxHealth,
-        Vec3d pos,
+        Vec3 pos,
         String inventory,
         @Nullable Path path,
         List<String> trusting,
@@ -62,52 +62,52 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         Set<BlockPos> pois,
         Set<BlockPos> potentialPois
     ) {
-        public BirdData(PacketByteBuf buf) {
+        public BirdData(FriendlyByteBuf buf) {
             this(
-                buf.readUuid(),
+                buf.readUUID(),
                 buf.readInt(),
-                buf.readString(),
-                buf.readString(),
-                buf.readString(),
+                buf.readUtf(),
+                buf.readUtf(),
+                buf.readUtf(),
                 buf.readFloat(),
                 buf.readFloat(),
-                buf.readVec3d(),
-                buf.readString(),
-                buf.readNullable(Path::fromBuf),
-                buf.readList(PacketByteBuf::readString),
+                buf.readVec3(),
+                buf.readUtf(),
+                buf.readNullable(Path::createFromStream),
+                buf.readList(FriendlyByteBuf::readUtf),
                 buf.readBoolean(),
                 buf.readBoolean(),
                 buf.readBoolean(),
-                buf.readList(PacketByteBuf::readString),
-                buf.readList(PacketByteBuf::readString),
-                buf.readList(PacketByteBuf::readString),
-                buf.readNullable(PacketByteBuf::readString),
-                buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC),
-                buf.readCollection(HashSet::new, BlockPos.PACKET_CODEC)
+                buf.readList(FriendlyByteBuf::readUtf),
+                buf.readList(FriendlyByteBuf::readUtf),
+                buf.readList(FriendlyByteBuf::readUtf),
+                buf.readNullable(FriendlyByteBuf::readUtf),
+                buf.readCollection(HashSet::new, BlockPos.STREAM_CODEC),
+                buf.readCollection(HashSet::new, BlockPos.STREAM_CODEC)
             );
         }
 
-        public void write(PacketByteBuf buf) {
-            buf.writeUuid(this.uuid);
+        public void write(FriendlyByteBuf buf) {
+            buf.writeUUID(this.uuid);
             buf.writeInt(this.entityId);
-            buf.writeString(this.name);
-            buf.writeString(this.moveControl);
-            buf.writeString(this.navigation);
+            buf.writeUtf(this.name);
+            buf.writeUtf(this.moveControl);
+            buf.writeUtf(this.navigation);
             buf.writeFloat(this.health);
             buf.writeFloat(this.maxHealth);
-            buf.writeVec3d(this.pos);
-            buf.writeString(this.inventory);
-            buf.writeNullable(this.path, (bufx, path) -> path.toBuf(bufx));
-            buf.writeCollection(this.trusting, PacketByteBuf::writeString);
+            buf.writeVec3(this.pos);
+            buf.writeUtf(this.inventory);
+            buf.writeNullable(this.path, (bufx, path) -> path.writeToStream(bufx));
+            buf.writeCollection(this.trusting, FriendlyByteBuf::writeUtf);
             buf.writeBoolean(this.flying);
             buf.writeBoolean(this.ambient);
             buf.writeBoolean(this.perched);
-            buf.writeCollection(this.possibleActivities, PacketByteBuf::writeString);
-            buf.writeCollection(this.runningTasks, PacketByteBuf::writeString);
-            buf.writeCollection(this.memories, PacketByteBuf::writeString);
-            buf.writeNullable(this.schedule, PacketByteBuf::writeString);
-            buf.writeCollection(this.pois, BlockPos.PACKET_CODEC);
-            buf.writeCollection(this.potentialPois, BlockPos.PACKET_CODEC);
+            buf.writeCollection(this.possibleActivities, FriendlyByteBuf::writeUtf);
+            buf.writeCollection(this.runningTasks, FriendlyByteBuf::writeUtf);
+            buf.writeCollection(this.memories, FriendlyByteBuf::writeUtf);
+            buf.writeNullable(this.schedule, FriendlyByteBuf::writeUtf);
+            buf.writeCollection(this.pois, BlockPos.STREAM_CODEC);
+            buf.writeCollection(this.potentialPois, BlockPos.STREAM_CODEC);
         }
     }
 }

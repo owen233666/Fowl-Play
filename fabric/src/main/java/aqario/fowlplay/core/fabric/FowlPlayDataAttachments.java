@@ -6,17 +6,17 @@ import aqario.fowlplay.core.FowlPlayRegistries;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
 
 import java.util.function.Consumer;
 
 @SuppressWarnings("UnstableApiUsage")
 public class FowlPlayDataAttachments {
-    public static final AttachmentType<RegistryEntry<ChickenVariant>> CHICKEN_VARIANT = register(
+    public static final AttachmentType<Holder<ChickenVariant>> CHICKEN_VARIANT = register(
         "chicken_variant",
         builder -> builder
-            .initializer(() -> FowlPlayRegistries.CHICKEN_VARIANT.entryOf(ChickenVariant.WHITE))
-            .persistent(FowlPlayRegistries.CHICKEN_VARIANT.getEntryCodec())
+            .initializer(() -> FowlPlayRegistries.CHICKEN_VARIANT.getHolderOrThrow(ChickenVariant.WHITE))
+            .persistent(FowlPlayRegistries.CHICKEN_VARIANT.holderByNameCodec())
             .syncWith(
                 ChickenVariant.PACKET_CODEC,
                 AttachmentSyncPredicate.all()

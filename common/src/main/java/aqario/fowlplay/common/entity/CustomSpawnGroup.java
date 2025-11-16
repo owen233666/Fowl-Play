@@ -1,12 +1,12 @@
 package aqario.fowlplay.common.entity;
 
-import net.minecraft.entity.SpawnGroup;
+import net.minecraft.world.entity.MobCategory;
 
 public enum CustomSpawnGroup {
     AMBIENT_BIRDS("ambient_birds", 15, true, false, 96),
     BIRDS("birds", 20, true, false, 96);
 
-    public SpawnGroup spawnGroup;
+    public MobCategory spawnGroup;
     public final String name;
     public final int spawnCap;
     public final boolean peaceful;
