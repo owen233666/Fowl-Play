@@ -18,8 +18,8 @@ import net.tslat.smartbrainlib.api.core.navigation.ExtendedNavigator;
 import org.jetbrains.annotations.Nullable;
 
 public class FlightNavigation extends MobNavigation implements ExtendedNavigator {
-    private static final int NODE_DISTANCE = 3;
-    private static final float NODE_REACH_RADIUS = 2;
+    private static final int NODE_DISTANCE = 2;
+    private static final float NODE_REACH_RADIUS = 1.5f;
     private final FlyingBirdEntity bird;
 
     public FlightNavigation(FlyingBirdEntity bird, World world) {
@@ -137,10 +137,7 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
 
     @Override
     public Vec3d getEntityPosAtNode(int nodeIndex) {
-        MobEntity mob = this.getMob();
-        Path path = this.getCurrentPath();
-        double lateralOffset = MathHelper.floor(mob.getWidth() + 1.0F) / 2.0F;
-        return Vec3d.of(path.getNodePos(nodeIndex)).add(lateralOffset, 0.5F, lateralOffset);
+        return Vec3d.ofBottomCenter(this.getCurrentPath().getNodePos(nodeIndex));
     }
 
     @Override
@@ -168,7 +165,9 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
     public boolean isCloseToNextNode(float distance) {
         final Vec3d nextNodePos = this.getEntityPosAtNode(this.getCurrentPath().getCurrentNodeIndex());
 
-        if(this.currentPath.getCurrentNodeIndex() + 1 >= this.currentPath.getLength()) {
+        if(this.currentPath.getCurrentNodeIndex() + 1 >= this.currentPath.getLength()
+            && Birds.shouldLandAtDestination(this.bird, this.getTargetPos())
+        ) {
             return this.getPos().isInRange(nextNodePos, 0.5);
         }
         return this.getPos().isInRange(nextNodePos, distance);

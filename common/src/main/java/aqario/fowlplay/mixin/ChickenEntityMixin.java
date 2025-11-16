@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(value = ChickenEntity.class, priority = 1001)
+@Mixin(value = ChickenEntity.class, priority = 999)
 public abstract class ChickenEntityMixin extends AnimalEntity implements VariantHolder<RegistryEntry<ChickenVariant>>, ChickenAnimationStates {
     @Unique
     private final AnimationState fowlplay$standingState = new AnimationState();

@@ -5,14 +5,19 @@ import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.debug.PathfindingDebugRenderer;
 import net.minecraft.client.render.debug.VillageDebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.ai.pathing.PathNode;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Position;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,21 +79,22 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
     }
 
     private void draw(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double x, double y, double z) {
-        this.birds.values().forEach(brain -> {
-            if(this.isClose(brain)) {
-                this.drawBirdData(matrices, vertexConsumers, brain, x, y, z);
+        this.birds.values().forEach(birdData -> {
+            if(this.isClose(birdData)) {
+                drawBirdData(matrices, vertexConsumers, birdData, this.isTargeted(birdData), x, y, z);
             }
         });
     }
 
-    private void drawBirdData(
-        MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
+    private static void drawBirdData(
+        MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, boolean targeted, double cameraX, double cameraY, double cameraZ
     ) {
-        boolean targeted = this.isTargeted(birdData);
         int i = 0;
         drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.name(), -1, 0.03F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "trusting: " + Arrays.toString(birdData.trusting().toArray()), -3355444, 0.02F);
+        i++;
+        drawString(matrices, vertexConsumers, birdData.pos(), i, "flying: " + birdData.flying(), -1, 0.02F);
         i++;
         drawString(matrices, vertexConsumers, birdData.pos(), i, "perched: " + birdData.perched(), -1, 0.02F);
         i++;
@@ -137,15 +143,157 @@ public class BirdDebugRenderer implements DebugRenderer.Renderer {
             }
         }
 
-        this.drawPath(matrices, vertexConsumers, birdData, cameraX, cameraY, cameraZ);
+        drawPath(matrices, vertexConsumers, birdData, cameraX, cameraY, cameraZ);
     }
 
-    private void drawPath(
+    private static void drawPath(
         MatrixStack matrices, VertexConsumerProvider vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
     ) {
         if(birdData.path() != null) {
-            PathfindingDebugRenderer.drawPath(matrices, vertexConsumers, birdData.path(), 0.1F, false, false, cameraX, cameraY, cameraZ);
+            if(birdData.flying()) {
+                drawPath(matrices, vertexConsumers, birdData.path(), 0.1F, false, false, cameraX, cameraY, cameraZ);
+            }
+            else {
+                PathfindingDebugRenderer.drawPath(matrices, vertexConsumers, birdData.path(), 0.5F, false, false, cameraX, cameraY, cameraZ);
+            }
         }
+    }
+
+    public static void drawPath(
+        MatrixStack matrices,
+        VertexConsumerProvider vertexConsumers,
+        Path path,
+        float nodeSize,
+        boolean drawDebugNodes,
+        boolean drawLabels,
+        double cameraX,
+        double cameraY,
+        double cameraZ
+    ) {
+        PathfindingDebugRenderer.drawPathLines(matrices, vertexConsumers.getBuffer(RenderLayer.getDebugLineStrip(6.0)), path, cameraX, cameraY, cameraZ);
+        BlockPos blockPos = path.getTarget();
+        if(getManhattanDistance(blockPos, cameraX, cameraY, cameraZ) <= 80.0F) {
+            DebugRenderer.drawBox(
+                matrices,
+                vertexConsumers,
+                new Box(blockPos.getX() + 0.25F, blockPos.getY() + 0.25F, blockPos.getZ() + 0.25, blockPos.getX() + 0.75F, blockPos.getY() + 0.75F, blockPos.getZ() + 0.75F)
+                    .offset(-cameraX, -cameraY, -cameraZ),
+                0.0F,
+                1.0F,
+                0.0F,
+                0.5F
+            );
+
+            for(int i = 0; i < path.getLength(); i++) {
+                PathNode pathNode = path.getNode(i);
+                if(getManhattanDistance(pathNode.getBlockPos(), cameraX, cameraY, cameraZ) <= 80.0F) {
+                    float red = i == path.getCurrentNodeIndex() ? 1.0F : 0.0F;
+                    float blue = i == path.getCurrentNodeIndex() ? 0.0F : 1.0F;
+                    DebugRenderer.drawBox(
+                        matrices,
+                        vertexConsumers,
+                        new Box(
+                            pathNode.x + 0.5F - nodeSize,
+                            pathNode.y + 0.5F - nodeSize,
+                            pathNode.z + 0.5F - nodeSize,
+                            pathNode.x + 0.5F + nodeSize,
+                            pathNode.y + 0.5F + nodeSize,
+                            pathNode.z + 0.5F + nodeSize
+                        )
+                            .offset(-cameraX, -cameraY, -cameraZ),
+                        red,
+                        0.0F,
+                        blue,
+                        0.5F
+                    );
+                }
+            }
+        }
+
+        Path.DebugNodeInfo debugNodeInfo = path.getDebugNodeInfos();
+        if(drawDebugNodes && debugNodeInfo != null) {
+            for(PathNode pathNode2 : debugNodeInfo.closedSet()) {
+                if(getManhattanDistance(pathNode2.getBlockPos(), cameraX, cameraY, cameraZ) <= 80.0F) {
+                    DebugRenderer.drawBox(
+                        matrices,
+                        vertexConsumers,
+                        new Box(
+                            pathNode2.x + 0.5F - nodeSize / 2.0F,
+                            pathNode2.y + 0.5F - nodeSize / 2.0F,
+                            pathNode2.z + 0.5F - nodeSize / 2.0F,
+                            pathNode2.x + 0.5F + nodeSize / 2.0F,
+                            pathNode2.y + 0.5F + nodeSize / 2.0F,
+                            pathNode2.z + 0.5F + nodeSize / 2.0F
+                        )
+                            .offset(-cameraX, -cameraY, -cameraZ),
+                        1.0F,
+                        0.8F,
+                        0.8F,
+                        0.5F
+                    );
+                }
+            }
+
+            for(PathNode pathNode2x : debugNodeInfo.openSet()) {
+                if(getManhattanDistance(pathNode2x.getBlockPos(), cameraX, cameraY, cameraZ) <= 80.0F) {
+                    DebugRenderer.drawBox(
+                        matrices,
+                        vertexConsumers,
+                        new Box(
+                            pathNode2x.x + 0.5F - nodeSize / 2.0F,
+                            pathNode2x.y + 0.5F - nodeSize / 2.0F,
+                            pathNode2x.z + 0.5F - nodeSize / 2.0F,
+                            pathNode2x.x + 0.5F + nodeSize / 2.0F,
+                            pathNode2x.y + 0.5F + nodeSize / 2.0F,
+                            pathNode2x.z + 0.5F + nodeSize / 2.0F
+                        )
+                            .offset(-cameraX, -cameraY, -cameraZ),
+                        0.8F,
+                        1.0F,
+                        1.0F,
+                        0.5F
+                    );
+                }
+            }
+        }
+
+        if(drawLabels) {
+            for(int j = 0; j < path.getLength(); j++) {
+                PathNode pathNode3 = path.getNode(j);
+                if(getManhattanDistance(pathNode3.getBlockPos(), cameraX, cameraY, cameraZ) <= 80.0F) {
+                    DebugRenderer.drawString(
+                        matrices,
+                        vertexConsumers,
+                        String.valueOf(pathNode3.type),
+                        pathNode3.x + 0.5,
+                        pathNode3.y + 0.75,
+                        pathNode3.z + 0.5,
+                        Colors.WHITE,
+                        0.02F,
+                        true,
+                        0.0F,
+                        true
+                    );
+                    DebugRenderer.drawString(
+                        matrices,
+                        vertexConsumers,
+                        String.format(Locale.ROOT, "%.2f", pathNode3.penalty),
+                        pathNode3.x + 0.5,
+                        pathNode3.y + 0.25,
+                        pathNode3.z + 0.5,
+                        Colors.WHITE,
+                        0.02F,
+                        true,
+                        0.0F,
+                        true
+                    );
+                }
+            }
+        }
+    }
+
+    private static float getManhattanDistance(BlockPos pos, double x, double y, double z) {
+        return (float) (Math.abs(pos.getX() - x) + Math.abs(pos.getY() - y) + Math.abs(pos.getZ() - z));
     }
 
     private static void drawString(

@@ -52,6 +52,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
         String inventory,
         @Nullable Path path,
         List<String> trusting,
+        boolean flying,
         boolean ambient,
         boolean perched,
         List<String> possibleActivities,
@@ -76,6 +77,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
                 buf.readList(PacketByteBuf::readString),
                 buf.readBoolean(),
                 buf.readBoolean(),
+                buf.readBoolean(),
                 buf.readList(PacketByteBuf::readString),
                 buf.readList(PacketByteBuf::readString),
                 buf.readList(PacketByteBuf::readString),
@@ -97,6 +99,7 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPayload
             buf.writeString(this.inventory);
             buf.writeNullable(this.path, (bufx, path) -> path.toBuf(bufx));
             buf.writeCollection(this.trusting, PacketByteBuf::writeString);
+            buf.writeBoolean(this.flying);
             buf.writeBoolean(this.ambient);
             buf.writeBoolean(this.perched);
             buf.writeCollection(this.possibleActivities, PacketByteBuf::writeString);

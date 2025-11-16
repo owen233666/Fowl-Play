@@ -48,6 +48,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     private static final int ROLL_FACTOR = 4;
     private static final float MIN_HEALTH_TO_FLY = 1.5F;
     private static final int MIN_FLIGHT_TIME = 15;
+    private static final double MIN_FLIGHT_VELOCITY = 0.1;
 
     protected FlyingBirdEntity(EntityType<? extends BirdEntity> entityType, World world) {
         super(entityType, world);
@@ -203,11 +204,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     @Override
-    public int getMaxLookPitchChange() {
-        return this.isFlying() ? 10 : super.getMaxLookPitchChange();
-    }
-
-    @Override
     public int getMaxLookYawChange() {
         return this.isFlying() ? 10 : super.getMaxLookYawChange();
     }
@@ -295,7 +291,10 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         if(this.timeFlying < MIN_FLIGHT_TIME) {
             return false;
         }
-        return this.isOnGround() || this.isBelowWaterline() || this.getHealth() < MIN_HEALTH_TO_FLY;
+        return this.isOnGround()
+            || this.isBelowWaterline()
+            || this.getVelocity().length() < MIN_FLIGHT_VELOCITY
+            || this.getHealth() < MIN_HEALTH_TO_FLY;
     }
 
     public void startFlying() {

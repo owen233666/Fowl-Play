@@ -65,6 +65,17 @@ subprojects {
         maven {
             url = "https://maven.shedaniel.me/"
         }
+        maven {
+            name 'luck-repo'
+            url 'https://repo.lucko.me/'
+            content {
+                includeModule 'me.lucko', 'spark-api'
+            }
+        }
+        maven {
+            name = 'Kotlin for Forge'
+            url = 'https://thedarkcolour.github.io/KotlinForForge/'
+        }
     }
 
     dependencies {
