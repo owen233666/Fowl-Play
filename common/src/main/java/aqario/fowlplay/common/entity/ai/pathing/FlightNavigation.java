@@ -142,11 +142,11 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
 
     @Override
     protected void continueFollowingPath() {
-        final Vec3d safeSurfacePos = this.getPos();
-        final int shortcutNode = this.getClosestVerticalTraversal(MathHelper.floor(safeSurfacePos.y));
+        final Vec3d pos = this.getPos();
+        final int shortcutNode = this.getClosestVerticalTraversal(MathHelper.floor(pos.y));
         this.nodeReachProximity = this.bird.getWidth() > 0.75f ? this.bird.getWidth() / 2f : 0.75f - this.bird.getWidth() / 2f;
 
-//        if (!this.attemptShortcut(shortcutNode, safeSurfacePos)) {
+//        if (!this.attemptShortcut(shortcutNode, pos)) {
         if(this.isCloseToNextNode(NODE_REACH_RADIUS)/* || this.isAboutToTraverseVertically() && this.isCloseToNextNode(this.getNodeReachProximity())*/) {
             int nextNodeIndex = this.currentPath.getCurrentNodeIndex() + NODE_DISTANCE;
             if(this.currentPath.getCurrentNodeIndex() < this.currentPath.getLength() - 1 && nextNodeIndex >= this.currentPath.getLength()) {
@@ -158,7 +158,7 @@ public class FlightNavigation extends MobNavigation implements ExtendedNavigator
         }
 //        }
 
-        this.checkTimeouts(safeSurfacePos);
+        this.checkTimeouts(pos);
     }
 
     @Override
