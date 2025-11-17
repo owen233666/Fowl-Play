@@ -64,7 +64,7 @@ import java.util.Optional;
 public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEntity>, VariantHolder<Holder<GooseVariant>>, Flocking {
     private static final EntityDataAccessor<Holder<GooseVariant>> VARIANT = SynchedEntityData.defineId(
         GooseEntity.class,
-        FowlPlayTrackedDataHandlerRegistry.GOOSE_VARIANT
+        FowlPlayEntityDataSerializers.GOOSE_VARIANT
     );
     private static final String AGGRESSIVE_KEY = "aggressive";
     private boolean aggressive;
@@ -108,14 +108,14 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         switch(spawnReason) {
             case BREEDING ->
-                FowlPlayRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.DOMESTIC, world.getRandom())
+                FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.DOMESTIC, world.getRandom())
                     .ifPresent(this::setVariant);
 
             case CHUNK_GENERATION, NATURAL ->
-                FowlPlayRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
+                FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
                     .ifPresent(this::setVariant);
 
-            default -> FowlPlayRegistries.GOOSE_VARIANT.getRandom(world.getRandom())
+            default -> FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandom(world.getRandom())
                 .ifPresent(this::setVariant);
         }
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
@@ -149,7 +149,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(VARIANT, FowlPlayRegistries.GOOSE_VARIANT.getHolderOrThrow(GooseVariant.GREYLAG));
+        builder.define(VARIANT, FowlPlayBuiltInRegistries.GOOSE_VARIANT.getHolderOrThrow(GooseVariant.GREYLAG));
     }
 
     @Override
@@ -175,8 +175,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         Optional.ofNullable(ResourceLocation.tryParse(nbt.getString("variant")))
-            .map(variant -> ResourceKey.create(FowlPlayRegistryKeys.GOOSE_VARIANT, variant))
-            .flatMap(FowlPlayRegistries.GOOSE_VARIANT::getHolder)
+            .map(variant -> ResourceKey.create(FowlPlayRegistries.GOOSE_VARIANT, variant))
+            .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
             .ifPresent(this::setVariant);
         if(nbt.contains(AGGRESSIVE_KEY, Tag.TAG_ANY_NUMERIC)) {
             this.aggressive = nbt.getBoolean(AGGRESSIVE_KEY);

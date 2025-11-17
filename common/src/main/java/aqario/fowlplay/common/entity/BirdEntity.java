@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.control.BirdBodyControl;
+import aqario.fowlplay.common.entity.ai.control.BirdBodyRotationControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugInfoSender;
@@ -65,7 +65,7 @@ public abstract class BirdEntity extends Animal {
         this.setYRot(world.getRandom().nextFloat() * 360.0F);
         this.setYBodyRot(this.getYRot());
         this.setYHeadRot(this.getYRot());
-        if(this.getType().getCategory() == CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup) {
+        if(this.getType().getCategory() == CustomMobCategory.AMBIENT_BIRDS.mobCategory) {
             this.setAmbient(true);
         }
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
@@ -84,7 +84,7 @@ public abstract class BirdEntity extends Animal {
             this.setAmbient(nbt.getBoolean("ambient"));
         }
         else {
-            this.setAmbient(this.getType().getCategory() == CustomSpawnGroup.AMBIENT_BIRDS.spawnGroup);
+            this.setAmbient(this.getType().getCategory() == CustomMobCategory.AMBIENT_BIRDS.mobCategory);
         }
     }
 
@@ -406,7 +406,7 @@ public abstract class BirdEntity extends Animal {
 
     @Override
     protected BodyRotationControl createBodyControl() {
-        return new BirdBodyControl(this);
+        return new BirdBodyRotationControl(this);
     }
 
     @Override

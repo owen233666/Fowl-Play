@@ -3,7 +3,7 @@ package aqario.fowlplay.core.platform.neoforge;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import aqario.fowlplay.core.FowlPlayRegistries;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -41,27 +41,27 @@ import java.util.function.Supplier;
 public class PlatformHelperImpl {
     public static final Object2ObjectOpenHashMap<Supplier<Item>, ResourceKey<CreativeModeTab>> ITEM_TO_GROUPS = new Object2ObjectOpenHashMap<>();
     public static final DeferredRegister<ChickenVariant> CHICKEN_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.CHICKEN_VARIANT,
+        FowlPlayRegistries.CHICKEN_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<DuckVariant> DUCK_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.DUCK_VARIANT,
+        FowlPlayRegistries.DUCK_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<GooseVariant> GOOSE_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.GOOSE_VARIANT,
+        FowlPlayRegistries.GOOSE_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<GullVariant> GULL_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.GULL_VARIANT,
+        FowlPlayRegistries.GULL_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<PigeonVariant> PIGEON_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.PIGEON_VARIANT,
+        FowlPlayRegistries.PIGEON_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<SparrowVariant> SPARROW_VARIANTS = DeferredRegister.create(
-        FowlPlayRegistryKeys.SPARROW_VARIANT,
+        FowlPlayRegistries.SPARROW_VARIANT,
         FowlPlay.ID
     );
     public static final DeferredRegister<Activity> ACTIVITIES = DeferredRegister.create(
@@ -105,22 +105,22 @@ public class PlatformHelperImpl {
 
     @SuppressWarnings("unchecked")
     public static <T> void registerVariant(String id, ResourceKey<T> key, Supplier<T> variant) {
-        if(key.isFor(FowlPlayRegistryKeys.CHICKEN_VARIANT)) {
+        if(key.isFor(FowlPlayRegistries.CHICKEN_VARIANT)) {
             CHICKEN_VARIANTS.register(id, (Supplier<ChickenVariant>) variant);
         }
-        else if(key.isFor(FowlPlayRegistryKeys.DUCK_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistries.DUCK_VARIANT)) {
             DUCK_VARIANTS.register(id, (Supplier<DuckVariant>) variant);
         }
-        else if(key.isFor(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistries.GOOSE_VARIANT)) {
             GOOSE_VARIANTS.register(id, (Supplier<GooseVariant>) variant);
         }
-        else if(key.isFor(FowlPlayRegistryKeys.GULL_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistries.GULL_VARIANT)) {
             GULL_VARIANTS.register(id, (Supplier<GullVariant>) variant);
         }
-        else if(key.isFor(FowlPlayRegistryKeys.PIGEON_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistries.PIGEON_VARIANT)) {
             PIGEON_VARIANTS.register(id, (Supplier<PigeonVariant>) variant);
         }
-        else if(key.isFor(FowlPlayRegistryKeys.SPARROW_VARIANT)) {
+        else if(key.isFor(FowlPlayRegistries.SPARROW_VARIANT)) {
             SPARROW_VARIANTS.register(id, (Supplier<SparrowVariant>) variant);
         }
     }

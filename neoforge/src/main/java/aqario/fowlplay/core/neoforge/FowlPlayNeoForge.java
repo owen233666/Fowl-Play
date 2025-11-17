@@ -6,8 +6,12 @@ import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.platform.neoforge.PlatformHelperImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -18,6 +22,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
+
+import java.util.Comparator;
 
 @Mod(FowlPlay.ID)
 public final class FowlPlayNeoForge {
@@ -79,10 +85,16 @@ public final class FowlPlayNeoForge {
     }
 
     private static void onAddItemGroupEntries(BuildCreativeModeTabContentsEvent event) {
-        PlatformHelperImpl.ITEM_TO_GROUPS.forEach(((item, group) -> {
-            if(event.getTabKey() == group) {
-                event.accept(item.get());
-            }
-        }));
+        PlatformHelperImpl.ITEM_TO_GROUPS.entrySet().stream()
+            .sorted(Comparator.comparing(entry ->
+                BuiltInRegistries.ITEM.getKey(entry.getKey().get()))
+            )
+            .forEach(entry -> {
+                Item item = entry.getKey().get();
+                ResourceKey<CreativeModeTab> group = entry.getValue();
+                if(event.getTabKey() == group) {
+                    event.accept(item);
+                }
+            });
     }
 }

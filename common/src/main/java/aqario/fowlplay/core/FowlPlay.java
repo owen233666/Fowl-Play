@@ -28,8 +28,8 @@ public class FowlPlay {
         LOGGER.info("Loading {} {}", mod.getName(), mod.getVersion());
         FowlPlayConfig.load();
 
-        FowlPlayRegistryKeys.init();
         FowlPlayRegistries.init();
+        FowlPlayBuiltInRegistries.init();
     }
 
     public static void init() {
@@ -48,7 +48,7 @@ public class FowlPlay {
         FowlPlaySchedules.init();
         FowlPlaySensorType.init();
         FowlPlaySoundEvents.init();
-        FowlPlayTrackedDataHandlerRegistry.init();
+        FowlPlayEntityDataSerializers.init();
 
         initSpawners();
     }

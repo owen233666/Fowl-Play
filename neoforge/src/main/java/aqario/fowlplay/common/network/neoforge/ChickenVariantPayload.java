@@ -2,7 +2,7 @@ package aqario.fowlplay.common.network.neoforge;
 
 import aqario.fowlplay.common.entity.ChickenVariant;
 import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
+import aqario.fowlplay.core.FowlPlayRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -21,13 +21,13 @@ public record ChickenVariantPayload(int entityId, Holder<ChickenVariant> variant
     private ChickenVariantPayload(RegistryFriendlyByteBuf buf) {
         this(
             buf.readInt(),
-            ByteBufCodecs.holderRegistry(FowlPlayRegistryKeys.CHICKEN_VARIANT).decode(buf)
+            ByteBufCodecs.holderRegistry(FowlPlayRegistries.CHICKEN_VARIANT).decode(buf)
         );
     }
 
     private void write(RegistryFriendlyByteBuf buf) {
         buf.writeInt(this.entityId);
-        ByteBufCodecs.holderRegistry(FowlPlayRegistryKeys.CHICKEN_VARIANT).encode(buf, this.variant);
+        ByteBufCodecs.holderRegistry(FowlPlayRegistries.CHICKEN_VARIANT).encode(buf, this.variant);
     }
 
     @Override

@@ -60,7 +60,7 @@ import java.util.Optional;
 public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEntity>, VariantHolder<Holder<GullVariant>> {
     private static final EntityDataAccessor<Holder<GullVariant>> VARIANT = SynchedEntityData.defineId(
         GullEntity.class,
-        FowlPlayTrackedDataHandlerRegistry.GULL_VARIANT
+        FowlPlayEntityDataSerializers.GULL_VARIANT
     );
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
@@ -100,7 +100,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        FowlPlayRegistries.GULL_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
+        FowlPlayBuiltInRegistries.GULL_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
@@ -132,7 +132,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(VARIANT, FowlPlayRegistries.GULL_VARIANT.getHolderOrThrow(GullVariant.HERRING));
+        builder.define(VARIANT, FowlPlayBuiltInRegistries.GULL_VARIANT.getHolderOrThrow(GullVariant.HERRING));
     }
 
     @Override
@@ -155,8 +155,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         Optional.ofNullable(ResourceLocation.tryParse(nbt.getString("variant")))
-            .map(variant -> ResourceKey.create(FowlPlayRegistryKeys.GULL_VARIANT, variant))
-            .flatMap(FowlPlayRegistries.GULL_VARIANT::getHolder)
+            .map(variant -> ResourceKey.create(FowlPlayRegistries.GULL_VARIANT, variant))
+            .flatMap(FowlPlayBuiltInRegistries.GULL_VARIANT::getHolder)
             .ifPresent(this::setVariant);
     }
 

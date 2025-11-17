@@ -3,8 +3,8 @@ package aqario.fowlplay.core.platform.fabric;
 import aqario.fowlplay.common.entity.*;
 import aqario.fowlplay.common.entity.ai.brain.ExtendedSchedule;
 import aqario.fowlplay.core.FowlPlay;
+import aqario.fowlplay.core.FowlPlayBuiltInRegistries;
 import aqario.fowlplay.core.FowlPlayRegistries;
-import aqario.fowlplay.core.FowlPlayRegistryKeys;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -43,23 +43,23 @@ import java.util.function.Supplier;
 public class PlatformHelperImpl {
     @SuppressWarnings("unchecked")
     public static <T> void registerVariant(String id, ResourceKey<T> key, Supplier<T> variant) {
-        if(key.isFor(FowlPlayRegistryKeys.CHICKEN_VARIANT)) {
-            Registry.register(FowlPlayRegistries.CHICKEN_VARIANT, (ResourceKey<ChickenVariant>) key, (ChickenVariant) variant.get());
+        if(key.isFor(FowlPlayRegistries.CHICKEN_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.CHICKEN_VARIANT, (ResourceKey<ChickenVariant>) key, (ChickenVariant) variant.get());
         }
-        else if(key.isFor(FowlPlayRegistryKeys.DUCK_VARIANT)) {
-            Registry.register(FowlPlayRegistries.DUCK_VARIANT, (ResourceKey<DuckVariant>) key, (DuckVariant) variant.get());
+        else if(key.isFor(FowlPlayRegistries.DUCK_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.DUCK_VARIANT, (ResourceKey<DuckVariant>) key, (DuckVariant) variant.get());
         }
-        else if(key.isFor(FowlPlayRegistryKeys.GOOSE_VARIANT)) {
-            Registry.register(FowlPlayRegistries.GOOSE_VARIANT, (ResourceKey<GooseVariant>) key, (GooseVariant) variant.get());
+        else if(key.isFor(FowlPlayRegistries.GOOSE_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.GOOSE_VARIANT, (ResourceKey<GooseVariant>) key, (GooseVariant) variant.get());
         }
-        else if(key.isFor(FowlPlayRegistryKeys.GULL_VARIANT)) {
-            Registry.register(FowlPlayRegistries.GULL_VARIANT, (ResourceKey<GullVariant>) key, (GullVariant) variant.get());
+        else if(key.isFor(FowlPlayRegistries.GULL_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.GULL_VARIANT, (ResourceKey<GullVariant>) key, (GullVariant) variant.get());
         }
-        else if(key.isFor(FowlPlayRegistryKeys.PIGEON_VARIANT)) {
-            Registry.register(FowlPlayRegistries.PIGEON_VARIANT, (ResourceKey<PigeonVariant>) key, (PigeonVariant) variant.get());
+        else if(key.isFor(FowlPlayRegistries.PIGEON_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.PIGEON_VARIANT, (ResourceKey<PigeonVariant>) key, (PigeonVariant) variant.get());
         }
-        else if(key.isFor(FowlPlayRegistryKeys.SPARROW_VARIANT)) {
-            Registry.register(FowlPlayRegistries.SPARROW_VARIANT, (ResourceKey<SparrowVariant>) key, (SparrowVariant) variant.get());
+        else if(key.isFor(FowlPlayRegistries.SPARROW_VARIANT)) {
+            Registry.register(FowlPlayBuiltInRegistries.SPARROW_VARIANT, (ResourceKey<SparrowVariant>) key, (SparrowVariant) variant.get());
         }
     }
 

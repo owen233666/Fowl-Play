@@ -65,7 +65,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     );
     private static final EntityDataAccessor<Holder<PigeonVariant>> VARIANT = SynchedEntityData.defineId(
         PigeonEntity.class,
-        FowlPlayTrackedDataHandlerRegistry.PIGEON_VARIANT
+        FowlPlayEntityDataSerializers.PIGEON_VARIANT
     );
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
@@ -81,19 +81,19 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         float f = world.getRandom().nextFloat();
         if(f < 0.5f) { // 50% chance for banded
-            FowlPlayRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.BANDED).ifPresent(this::setVariant);
+            FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.BANDED).ifPresent(this::setVariant);
         }
         else if(f < 0.75f) { // 25% chance for checkered
-            FowlPlayRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.CHECKERED).ifPresent(this::setVariant);
+            FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.CHECKERED).ifPresent(this::setVariant);
         }
         else if(f < 0.95f) { // 20% chance for gray
-            FowlPlayRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.GRAY).ifPresent(this::setVariant);
+            FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.GRAY).ifPresent(this::setVariant);
         }
         else if(f < 0.99f) { // 4% chance for rusty
-            FowlPlayRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.RUSTY).ifPresent(this::setVariant);
+            FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.RUSTY).ifPresent(this::setVariant);
         }
         else { // 1% chance for white
-            FowlPlayRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.WHITE).ifPresent(this::setVariant);
+            FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.WHITE).ifPresent(this::setVariant);
         }
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
@@ -108,7 +108,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(RECIPIENT, Optional.empty());
-        builder.define(VARIANT, FowlPlayRegistries.PIGEON_VARIANT.getHolderOrThrow(PigeonVariant.BANDED));
+        builder.define(VARIANT, FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolderOrThrow(PigeonVariant.BANDED));
     }
 
     @Override
@@ -134,8 +134,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         Optional.ofNullable(ResourceLocation.tryParse(nbt.getString("variant")))
-            .map(variant -> ResourceKey.create(FowlPlayRegistryKeys.PIGEON_VARIANT, variant))
-            .flatMap(FowlPlayRegistries.PIGEON_VARIANT::getHolder)
+            .map(variant -> ResourceKey.create(FowlPlayRegistries.PIGEON_VARIANT, variant))
+            .flatMap(FowlPlayBuiltInRegistries.PIGEON_VARIANT::getHolder)
             .ifPresent(this::setVariant);
 
         if(nbt.hasUUID("recipient")) {
@@ -509,7 +509,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         ItemStack stack = this.getItemBySlot(EquipmentSlot.OFFHAND);
         ServerPlayer recipient = this.getServer().getPlayerList().getPlayerByName(stack.getHoverName().getString());
 
-        if(!(stack.getItem() instanceof BundleItem) || !stack.getComponents().has(DataComponents.CUSTOM_NAME) || recipient == null || recipient.getUUID() == null) {
+        if(!(stack.getItem() instanceof BundleItem) || !stack.getComponents().has(DataComponents.CUSTOM_NAME) || recipient == null) {
             this.setRecipientUuid(null);
             return;
         }

@@ -63,7 +63,7 @@ import java.util.Optional;
 public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEntity>, VariantHolder<Holder<DuckVariant>>, Flocking {
     private static final EntityDataAccessor<Holder<DuckVariant>> VARIANT = SynchedEntityData.defineId(
         DuckEntity.class,
-        FowlPlayTrackedDataHandlerRegistry.DUCK_VARIANT
+        FowlPlayEntityDataSerializers.DUCK_VARIANT
     );
     public final AnimationState standingState = new AnimationState();
     public final AnimationState glidingState = new AnimationState();
@@ -103,7 +103,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        FowlPlayRegistries.DUCK_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
+        FowlPlayBuiltInRegistries.DUCK_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
@@ -135,7 +135,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(VARIANT, FowlPlayRegistries.DUCK_VARIANT.getHolderOrThrow(DuckVariant.GREEN_HEADED));
+        builder.define(VARIANT, FowlPlayBuiltInRegistries.DUCK_VARIANT.getHolderOrThrow(DuckVariant.GREEN_HEADED));
     }
 
     @Override
@@ -158,8 +158,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         Optional.ofNullable(ResourceLocation.tryParse(nbt.getString("variant")))
-            .map(variant -> ResourceKey.create(FowlPlayRegistryKeys.DUCK_VARIANT, variant))
-            .flatMap(FowlPlayRegistries.DUCK_VARIANT::getHolder)
+            .map(variant -> ResourceKey.create(FowlPlayRegistries.DUCK_VARIANT, variant))
+            .flatMap(FowlPlayBuiltInRegistries.DUCK_VARIANT::getHolder)
             .ifPresent(this::setVariant);
     }
 

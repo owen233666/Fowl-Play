@@ -28,7 +28,6 @@ public class FowlPlayClient {
             RegisterDebugRenderers.registerServerToggle(debugBirdId);
             RegisterDebugRenderers.registerClientHandler(debugBirdId, b -> FowlPlayClient.DEBUG_BIRD = b);
 
-//            NetworkManager.registerS2CPayloadType(DebugBirdCustomPayload.ID, DebugBirdCustomPayload.CODEC);
             NetworkManager.registerReceiver(
                 NetworkManager.Side.S2C,
                 DebugBirdCustomPayload.ID,
@@ -40,49 +39,49 @@ public class FowlPlayClient {
     }
 
     public static void registerModelLayers() {
-        PlatformHelper.registerModelLayer(BlueJayEntityModel.MODEL_LAYER, BlueJayEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(CardinalEntityModel.MODEL_LAYER, CardinalEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(ChickadeeEntityModel.MODEL_LAYER, ChickadeeEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(CrowEntityModel.MODEL_LAYER, CrowEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(DuckEntityModel.MODEL_LAYER, DuckEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(GooseEntityModel.MODEL_LAYER, GooseEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(DomesticGooseEntityModel.MODEL_LAYER, DomesticGooseEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(GullEntityModel.MODEL_LAYER, GullEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(HawkEntityModel.MODEL_LAYER, HawkEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(PenguinEntityModel.MODEL_LAYER, PenguinEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(BabyPenguinEntityModel.MODEL_LAYER, BabyPenguinEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(PigeonEntityModel.MODEL_LAYER, PigeonEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(RavenEntityModel.MODEL_LAYER, RavenEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(RobinEntityModel.MODEL_LAYER, RobinEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(SparrowEntityModel.MODEL_LAYER, SparrowEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(ScarecrowEntityModel.MODEL_LAYER, ScarecrowEntityModel::getTexturedModelData);
-        PlatformHelper.registerModelLayer(ScarecrowEntityModel.INNER_ARMOR, () -> ScarecrowArmorEntityModel.getTexturedModelData(HAT_DILATION));
-        PlatformHelper.registerModelLayer(ScarecrowEntityModel.OUTER_ARMOR, () -> ScarecrowArmorEntityModel.getTexturedModelData(ARMOR_DILATION));
+        PlatformHelper.registerModelLayer(BlueJayModel.MODEL_LAYER, BlueJayModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(CardinalModel.MODEL_LAYER, CardinalModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(ChickadeeModel.MODEL_LAYER, ChickadeeModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(CrowModel.MODEL_LAYER, CrowModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(DuckModel.MODEL_LAYER, DuckModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(GooseModel.MODEL_LAYER, GooseModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(DomesticGooseModel.MODEL_LAYER, DomesticGooseModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(GullModel.MODEL_LAYER, GullModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(HawkModel.MODEL_LAYER, HawkModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(PenguinModel.MODEL_LAYER, PenguinModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(BabyPenguinModel.MODEL_LAYER, BabyPenguinModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(PigeonModel.MODEL_LAYER, PigeonModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(RavenModel.MODEL_LAYER, RavenModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(RobinModel.MODEL_LAYER, RobinModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(SparrowModel.MODEL_LAYER, SparrowModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(ScarecrowModel.MODEL_LAYER, ScarecrowModel::getTexturedModelData);
+        PlatformHelper.registerModelLayer(ScarecrowModel.INNER_ARMOR, () -> ScarecrowArmorModel.getTexturedModelData(HAT_DILATION));
+        PlatformHelper.registerModelLayer(ScarecrowModel.OUTER_ARMOR, () -> ScarecrowArmorModel.getTexturedModelData(ARMOR_DILATION));
 
         if(FowlPlayConfig.getInstance().customChickenModel) {
-            PlatformHelper.registerModelLayer(CustomChickenEntityModel.MODEL_LAYER, CustomChickenEntityModel::getTexturedModelData);
-            PlatformHelper.registerModelLayer(CustomBabyChickenEntityModel.MODEL_LAYER, CustomBabyChickenEntityModel::getTexturedModelData);
+            PlatformHelper.registerModelLayer(CustomChickenModel.MODEL_LAYER, CustomChickenModel::getTexturedModelData);
+            PlatformHelper.registerModelLayer(CustomBabyChickenModel.MODEL_LAYER, CustomBabyChickenModel::getTexturedModelData);
         }
     }
 
     public static void registerEntityRenderers() {
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.BLUE_JAY, BlueJayEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CARDINAL, CardinalEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CHICKADEE, ChickadeeEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CROW, CrowEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.DUCK, DuckEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GOOSE, GooseEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GULL, GullEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.HAWK, HawkEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PENGUIN, PenguinEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PIGEON, PigeonEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.RAVEN, RavenEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.ROBIN, RobinEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SPARROW, SparrowEntityRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SCARECROW, ScarecrowEntityRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.BLUE_JAY, BlueJayRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CARDINAL, CardinalRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CHICKADEE, ChickadeeRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CROW, CrowRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.DUCK, DuckRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GOOSE, GooseRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GULL, GullRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.HAWK, HawkRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PENGUIN, PenguinRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PIGEON, PigeonRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.RAVEN, RavenRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.ROBIN, RobinRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SPARROW, SparrowRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SCARECROW, ScarecrowRenderer::new);
 
         if(FowlPlayConfig.getInstance().customChickenModel) {
-            PlatformHelper.registerEntityRenderer(Suppliers.ofInstance(EntityType.CHICKEN), CustomChickenEntityRenderer::new);
+            PlatformHelper.registerEntityRenderer(Suppliers.ofInstance(EntityType.CHICKEN), CustomChickenRenderer::new);
         }
     }
 
