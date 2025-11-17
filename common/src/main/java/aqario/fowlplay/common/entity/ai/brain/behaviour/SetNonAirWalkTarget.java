@@ -1,12 +1,12 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.ai.pathing.BirdTargeting;
+import aqario.fowlplay.common.entity.ai.pathing.BirdRandomPos;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.common.util.MemoryList;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -73,8 +73,8 @@ public class SetNonAirWalkTarget<E extends BirdEntity> extends SpeedModifiableBe
     @Nullable
     protected Vec3 getTargetPos(E entity) {
         if(this.avoidWaterPredicate.test(entity)) {
-            return BirdTargeting.findGround(entity, this.radius);
+            return BirdRandomPos.getGround(entity, this.radius);
         }
-        return BirdTargeting.findNonAir(entity, this.radius);
+        return BirdRandomPos.getNonAir(entity, this.radius);
     }
 }

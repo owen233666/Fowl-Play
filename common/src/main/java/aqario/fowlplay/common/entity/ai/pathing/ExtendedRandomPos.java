@@ -8,15 +8,15 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.DoubleUnaryOperator;
 
 public class ExtendedRandomPos {
-    public static BlockPos withinRangePreferFar(
+    public static BlockPos generatePreferFar(
         final RandomSource random,
         final int horizontalRange,
         final int verticalRange
     ) {
-        return withinRange(random, Math::sqrt, horizontalRange, verticalRange);
+        return generate(random, Math::sqrt, horizontalRange, verticalRange);
     }
 
-    public static BlockPos withinRange(
+    public static BlockPos generate(
         final RandomSource random,
         final DoubleUnaryOperator distanceFunction,
         final int horizontalRange,
@@ -30,7 +30,7 @@ public class ExtendedRandomPos {
         return BlockPos.containing(x, y, z);
     }
 
-    public static BlockPos withinAngleSlicePreferFar(
+    public static BlockPos generateWithinAnglePreferFar(
         final RandomSource random,
         final int horizontalRange,
         final int verticalRange,
@@ -38,7 +38,7 @@ public class ExtendedRandomPos {
         final Vec3 direction,
         final double sliceAngle
     ) {
-        return withinAngleSlice(
+        return generateWithinAngle(
             random,
             Math::sqrt,
             0,
@@ -50,7 +50,7 @@ public class ExtendedRandomPos {
         );
     }
 
-    public static BlockPos withinAngleSlicePreferNear(
+    public static BlockPos generateWithinAnglePreferNear(
         final RandomSource random,
         final int horizontalRange,
         final int verticalRange,
@@ -58,7 +58,7 @@ public class ExtendedRandomPos {
         final Vec3 direction,
         final double sliceAngle
     ) {
-        return withinAngleSlice(
+        return generateWithinAngle(
             random,
             d -> Math.pow(d, 2),
             0,
@@ -71,9 +71,9 @@ public class ExtendedRandomPos {
     }
 
     /**
-     * @param sliceAngle the angle in radians
+     * @param angle the slice angle in radians
      */
-    public static BlockPos withinAngleSlice(
+    public static BlockPos generateWithinAngle(
         final RandomSource random,
         final DoubleUnaryOperator distanceFunction,
         final int minHorizontalRange,
@@ -81,10 +81,10 @@ public class ExtendedRandomPos {
         final int verticalRange,
         final int flyingHeight,
         final Vec3 direction,
-        final double sliceAngle
+        final double angle
     ) {
         double directionAngle = Mth.atan2(direction.z, direction.x) - (float) (Math.PI / 2);
-        double randomAngle = directionAngle + (2.0F * random.nextFloat() - 1.0F) * sliceAngle;
+        double randomAngle = directionAngle + (2.0F * random.nextFloat() - 1.0F) * angle;
         double randomDist = Mth.lerp(
             distanceFunction.applyAsDouble(random.nextDouble()),
             minHorizontalRange,
@@ -96,7 +96,7 @@ public class ExtendedRandomPos {
         return BlockPos.containing(x, y, z);
     }
 
-    public static BlockPos withinAngleCone(
+    public static BlockPos generateWithinCone(
         final RandomSource random,
         final int minRange,
         final int maxRange,
