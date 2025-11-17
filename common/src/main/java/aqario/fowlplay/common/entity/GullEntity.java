@@ -38,6 +38,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.BreedWithPartner;
@@ -300,20 +301,42 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     }
 
     @Override
+    public BrainActivityGroup<? extends GullEntity> getForageTasks() {
+        return BirdBrain.forageActivity(
+            new OneRandomBehaviour<>(
+                Pair.of(
+                    CustomBehaviours.setNonAirWalkTarget(),
+                    1
+                ),
+                Pair.of(
+                    CustomBehaviours.idleIfNotFlying()
+                        .runForBetween(100, 300),
+                    2
+                )
+            )
+        );
+    }
+
+    @Override
     public BrainActivityGroup<? extends GullEntity> getIdleTasks() {
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
             SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
             new SetRandomLookTarget<>()
-                .lookChance(0.02f)
+                .lookChance(0.02f),
+            new OneRandomBehaviour<>(
+                CustomBehaviours.setNonAirWalkTarget(),
+                CustomBehaviours.idleIfNotFlying()
+                    .runForBetween(100, 300)
+            )
         );
     }
 
     @Override
     public BrainActivityGroup<? extends GullEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CustomBehaviours.setNearestFoodWalkTarget()
+            CompositeBehaviours.tryPickUpFood()
         );
     }
 

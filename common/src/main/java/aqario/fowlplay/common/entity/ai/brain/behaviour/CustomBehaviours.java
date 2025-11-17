@@ -21,6 +21,12 @@ public class CustomBehaviours {
             .radius(32, 24);
     }
 
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setNonAirWalkTarget() {
+        return new SetNonAirWalkTarget<E>()
+            .setRadius(32, 16)
+            .dontAvoidWater();
+    }
+
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> setGroundWalkTarget() {
         return new SetNonAirWalkTarget<E>()
             .setRadius(32, 16);

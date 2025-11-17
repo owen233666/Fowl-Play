@@ -17,11 +17,11 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BirdEntity extends Animal {
@@ -155,9 +156,8 @@ public abstract class BirdEntity extends Animal {
             this.take(item, stack.getCount());
             item.discard();
             this.eatingTime = 0;
-            if(this.getBrain().checkMemory(FowlPlayMemoryTypes.SEES_FOOD.get(), MemoryStatus.VALUE_PRESENT)) {
-                this.getBrain().eraseMemory(FowlPlayMemoryTypes.SEES_FOOD.get());
-            }
+            Brain<?> brain = this.getBrain();
+            BrainUtils.clearMemory(brain, FowlPlayMemoryTypes.SEES_FOOD.get());
         }
     }
 

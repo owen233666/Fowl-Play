@@ -449,7 +449,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CustomBehaviours.<PigeonEntity>setNearestFoodWalkTarget()
+            CompositeBehaviours.<PigeonEntity>tryPickUpFood()
                 .startCondition(pigeon -> !pigeon.isSitting())
         );
     }

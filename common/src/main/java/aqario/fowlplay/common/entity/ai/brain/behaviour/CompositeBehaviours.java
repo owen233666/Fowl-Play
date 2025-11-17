@@ -28,6 +28,14 @@ public class CompositeBehaviours {
         );
     }
 
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryPickUpFood() {
+        return new AllApplicableBehaviours<>(
+            CustomBehaviours.setNearestFoodWalkTarget(),
+            new SetRandomFlightTarget<>()
+                .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public static ExtendedBehaviour<PenguinEntity> slideToWater() {
         return new AllApplicableBehaviours<>(

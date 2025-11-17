@@ -203,7 +203,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     @Override
     public BrainActivityGroup<? extends ChickadeeEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
-            CustomBehaviours.setNearestFoodWalkTarget()
+            CompositeBehaviours.tryPickUpFood()
         );
     }
 

@@ -36,8 +36,8 @@ public class BirdLookControl extends LookControl {
     private void tickFlying() {
 //        if(this.lookAtCooldown > 0) {
 //            this.lookAtCooldown--;
-            this.getYRotD().ifPresent(yaw -> this.mob.setYHeadRot(this.rotateTowards(this.mob.getYHeadRot(), yaw, this.yMaxRotSpeed)));
-            this.getXRotD().ifPresent(pitch -> this.mob.setXRot(this.rotateTowards(this.mob.getXRot(), pitch, this.xMaxRotAngle)));
+//            this.getYRotD().ifPresent(yaw -> this.mob.setYHeadRot(this.rotateTowards(this.mob.getYHeadRot(), yaw, this.yMaxRotSpeed)));
+//            this.getXRotD().ifPresent(pitch -> this.mob.setXRot(this.rotateTowards(this.mob.getXRot(), pitch, this.xMaxRotAngle)));
 //        }
 //        else {
 //            if(this.mob.getNavigation().isDone()) {
