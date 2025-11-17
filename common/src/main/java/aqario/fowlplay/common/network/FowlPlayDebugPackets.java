@@ -4,7 +4,7 @@ import aqario.fowlplay.client.FowlPlayClient;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.TrustingBirdEntity;
-import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
+import aqario.fowlplay.common.network.s2c.BirdDebugPayload;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlay;
 import com.google.common.collect.Lists;
@@ -78,7 +78,7 @@ public class FowlPlayDebugPackets {
         Set<BlockPos> pois = Set.of();
         Set<BlockPos> potentialPois = Set.of();
 
-        DebugBirdCustomPayload.BirdData data = new DebugBirdCustomPayload.BirdData(
+        BirdDebugPayload.BirdData data = new BirdDebugPayload.BirdData(
             bird.getUUID(),
             bird.getId(),
             name,
@@ -100,7 +100,7 @@ public class FowlPlayDebugPackets {
             pois,
             potentialPois
         );
-        DebugBirdCustomPayload payload = new DebugBirdCustomPayload(data);
+        BirdDebugPayload payload = new BirdDebugPayload(data);
         sendToAll((ServerLevel) bird.level(), payload);
     }
 

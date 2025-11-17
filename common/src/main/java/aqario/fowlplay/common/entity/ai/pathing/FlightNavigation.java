@@ -93,6 +93,7 @@ public class FlightNavigation extends GroundPathNavigation implements ExtendedNa
         return pos.y;
     }
 
+    @Override
     public Path createPath(BlockPos target, int distance) {
         return this.createPath(ImmutableSet.of(target), 48, false, distance);
     }

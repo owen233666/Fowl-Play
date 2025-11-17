@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
+import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
 import aqario.fowlplay.common.util.Birds;
@@ -19,6 +20,14 @@ import java.util.function.Predicate;
  * A collection of preconfigured group behaviours for ease of use.
  */
 public class CompositeBehaviours {
+    public static <E extends BirdEntity> ExtendedBehaviour<E> idleAndLookAround() {
+        return new OneRandomBehaviour<>(
+            new SetRandomLookTarget<>(),
+            new Idle<>()
+                .noTimeout()
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public static ExtendedBehaviour<PenguinEntity> slideToWater() {
         return new AllApplicableBehaviours<>(
@@ -37,11 +46,7 @@ public class CompositeBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryPerch() {
         return new OneRandomBehaviour<>(
             Pair.of(
-                new OneRandomBehaviour<E>(
-                    new SetRandomLookTarget<>(),
-                    new Idle<>()
-                        .noTimeout()
-                )
+                idleAndLookAround()
                     .runForBetween(30, 100)
                     .startCondition(Birds::isPerched)
                     .stopIf(Predicate.not(Birds::isPerched)),
@@ -57,11 +62,7 @@ public class CompositeBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryForage() {
         return new OneRandomBehaviour<>(
             Pair.of(
-                new OneRandomBehaviour<>(
-                    new SetRandomLookTarget<>(),
-                    new Idle<>()
-                        .noTimeout()
-                )
+                idleAndLookAround()
                     .runForBetween(30, 100)
                     .startCondition(Entity::onGround)
                     .stopIf(Predicate.not(Entity::onGround)),

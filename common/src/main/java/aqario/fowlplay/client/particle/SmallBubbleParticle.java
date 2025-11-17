@@ -1,10 +1,10 @@
 package aqario.fowlplay.client.particle;
 
-import net.minecraft.client.particle.*;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.core.BlockPos;
 
 public class SmallBubbleParticle extends TextureSheetParticle {
     private final SpriteSet spriteProvider;
@@ -58,7 +58,7 @@ public class SmallBubbleParticle extends TextureSheetParticle {
             this.remove();
         }
         if (!this.removed) {
-            this.setSprite(spriteProvider.get(this.popAge, this.maxPopAge));
+            this.setSprite(this.spriteProvider.get(this.popAge, this.maxPopAge));
         }
     }
 

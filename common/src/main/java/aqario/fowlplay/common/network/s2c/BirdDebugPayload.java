@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public record DebugBirdCustomPayload(BirdData birdData) implements CustomPacketPayload {
-    public static final StreamCodec<FriendlyByteBuf, DebugBirdCustomPayload> CODEC = CustomPacketPayload.codec(
-        DebugBirdCustomPayload::write, DebugBirdCustomPayload::new
+public record BirdDebugPayload(BirdData birdData) implements CustomPacketPayload {
+    public static final StreamCodec<FriendlyByteBuf, BirdDebugPayload> STREAM_CODEC = CustomPacketPayload.codec(
+        BirdDebugPayload::write, BirdDebugPayload::new
     );
-    public static final CustomPacketPayload.Type<DebugBirdCustomPayload> ID = new CustomPacketPayload.Type<>(
+    public static final CustomPacketPayload.Type<BirdDebugPayload> TYPE = new CustomPacketPayload.Type<>(
         FowlPlay.id("debug/bird")
     );
 
-    private DebugBirdCustomPayload(FriendlyByteBuf buf) {
+    private BirdDebugPayload(FriendlyByteBuf buf) {
         this(new BirdData(buf));
     }
 
@@ -31,13 +31,13 @@ public record DebugBirdCustomPayload(BirdData birdData) implements CustomPacketP
         this.birdData.write(buf);
     }
 
-    public static void onReceive(DebugBirdCustomPayload payload) {
+    public static void onReceive(BirdDebugPayload payload) {
         BirdDebugRenderer.INSTANCE.addBird(payload.birdData());
     }
 
     @Override
-    public CustomPacketPayload.Type<DebugBirdCustomPayload> type() {
-        return ID;
+    public CustomPacketPayload.Type<BirdDebugPayload> type() {
+        return TYPE;
     }
 
     public record BirdData(

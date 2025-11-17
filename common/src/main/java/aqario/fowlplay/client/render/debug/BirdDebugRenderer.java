@@ -1,7 +1,7 @@
 package aqario.fowlplay.client.render.debug;
 
 import aqario.fowlplay.client.FowlPlayClient;
-import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
+import aqario.fowlplay.common.network.s2c.BirdDebugPayload;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +26,7 @@ import java.util.*;
 public class BirdDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
     public static final BirdDebugRenderer INSTANCE = new BirdDebugRenderer();
     private final Minecraft client;
-    private final Map<UUID, DebugBirdCustomPayload.BirdData> birds = Maps.newHashMap();
+    private final Map<UUID, BirdDebugPayload.BirdData> birds = Maps.newHashMap();
     @Nullable
     private UUID targetedEntity;
 
@@ -39,11 +39,11 @@ public class BirdDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
         this.targetedEntity = null;
     }
 
-    public void addBird(DebugBirdCustomPayload.BirdData birdData) {
+    public void addBird(BirdDebugPayload.BirdData birdData) {
         this.birds.put(birdData.uuid(), birdData);
     }
 
-    private boolean isTargeted(DebugBirdCustomPayload.BirdData birdData) {
+    private boolean isTargeted(BirdDebugPayload.BirdData birdData) {
         return Objects.equals(this.targetedEntity, birdData.uuid());
     }
 
@@ -69,7 +69,7 @@ public class BirdDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
         DebugRenderer.getTargetedEntity(this.client.getCameraEntity(), 8).ifPresent(entity -> this.targetedEntity = entity.getUUID());
     }
 
-    private boolean isClose(DebugBirdCustomPayload.BirdData birdData) {
+    private boolean isClose(BirdDebugPayload.BirdData birdData) {
         Player playerEntity = this.client.player;
         // noinspection ConstantConditions
         BlockPos playerPos = BlockPos.containing(playerEntity.getX(), birdData.pos().y(), playerEntity.getZ());
@@ -87,7 +87,7 @@ public class BirdDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
     }
 
     private static void drawBirdData(
-        PoseStack matrices, MultiBufferSource vertexConsumers, DebugBirdCustomPayload.BirdData birdData, boolean targeted, double cameraX, double cameraY, double cameraZ
+        PoseStack matrices, MultiBufferSource vertexConsumers, BirdDebugPayload.BirdData birdData, boolean targeted, double cameraX, double cameraY, double cameraZ
     ) {
         int i = 0;
         drawString(matrices, vertexConsumers, birdData.pos(), i, birdData.name(), -1, 0.03F);
@@ -147,7 +147,7 @@ public class BirdDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
     }
 
     private static void drawPath(
-        PoseStack matrices, MultiBufferSource vertexConsumers, DebugBirdCustomPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
+        PoseStack matrices, MultiBufferSource vertexConsumers, BirdDebugPayload.BirdData birdData, double cameraX, double cameraY, double cameraZ
     ) {
         if(birdData.path() != null) {
             if(birdData.flying()) {

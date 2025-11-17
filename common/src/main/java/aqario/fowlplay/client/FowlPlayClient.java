@@ -4,7 +4,7 @@ import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.client.render.entity.*;
 import aqario.fowlplay.client.render.entity.model.*;
 import aqario.fowlplay.common.config.FowlPlayConfig;
-import aqario.fowlplay.common.network.s2c.DebugBirdCustomPayload;
+import aqario.fowlplay.common.network.s2c.BirdDebugPayload;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayEntityType;
 import aqario.fowlplay.core.platform.PlatformHelper;
@@ -30,10 +30,10 @@ public class FowlPlayClient {
 
             NetworkManager.registerReceiver(
                 NetworkManager.Side.S2C,
-                DebugBirdCustomPayload.ID,
-                DebugBirdCustomPayload.CODEC,
+                BirdDebugPayload.TYPE,
+                BirdDebugPayload.STREAM_CODEC,
                 (payload, context) ->
-                    DebugBirdCustomPayload.onReceive(payload)
+                    BirdDebugPayload.onReceive(payload)
             );
         }
     }
