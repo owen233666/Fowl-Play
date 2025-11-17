@@ -3,14 +3,16 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import aqario.fowlplay.common.entity.ai.brain.TeleportTarget;
 import aqario.fowlplay.common.util.MemoryList;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
+import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.*;
-import net.minecraft.world.entity.ai.memory.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 public class SetOwnerTarget extends SpeedModifiableBehaviour<PigeonEntity> {
     private static final MemoryList MEMORIES = MemoryList.create(3)
         .registered(
-            FowlPlayMemoryModuleType.TELEPORT_TARGET.get(),
+            FowlPlayMemoryTypes.TELEPORT_TARGET.get(),
             MemoryModuleType.LOOK_TARGET,
             MemoryModuleType.WALK_TARGET
         );
@@ -82,7 +84,7 @@ public class SetOwnerTarget extends SpeedModifiableBehaviour<PigeonEntity> {
             this.updateCountdownTicks = 20;
             if(!pigeon.isLeashed() && !pigeon.isPassenger()) {
                 if(pigeon.distanceToSqr(this.owner) >= 144.0) {
-                    BrainUtils.setMemory(brain, FowlPlayMemoryModuleType.TELEPORT_TARGET.get(), new TeleportTarget(this.owner));
+                    BrainUtils.setMemory(brain, FowlPlayMemoryTypes.TELEPORT_TARGET.get(), new TeleportTarget(this.owner));
                 }
                 else {
                     BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(this.owner, this.speedModifier.apply(pigeon, this.owner.position()), 0));

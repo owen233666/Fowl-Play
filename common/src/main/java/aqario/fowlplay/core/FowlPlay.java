@@ -41,12 +41,12 @@ public class FowlPlay {
         SparrowVariant.init();
 
         FowlPlayActivities.init();
-        FowlPlayEntityType.init();
+        FowlPlayEntityTypes.init();
         FowlPlayItems.init();
-        FowlPlayMemoryModuleType.init();
+        FowlPlayMemoryTypes.init();
         FowlPlayParticleTypes.init();
         FowlPlaySchedules.init();
-        FowlPlaySensorType.init();
+        FowlPlaySensorTypes.init();
         FowlPlaySoundEvents.init();
         FowlPlayEntityDataSerializers.init();
 

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 
 import java.util.function.Supplier;
 
-public final class FowlPlaySensorType {
+public final class FowlPlaySensorTypes {
     public static final Supplier<SensorType<NearbyAdultsSensor<?>>> NEARBY_ADULTS = register("nearby_adults",
         NearbyAdultsSensor::new
     );

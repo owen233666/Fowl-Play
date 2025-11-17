@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public final class FowlPlayMemoryModuleType {
+public final class FowlPlayMemoryTypes {
     public static final Supplier<MemoryModuleType<List<? extends AgeableMob>>> NEAREST_VISIBLE_ADULTS = register("nearest_visible_adults");
     public static final Supplier<MemoryModuleType<Unit>> SEES_FOOD = register("sees_food", Unit.CODEC);
     public static final Supplier<MemoryModuleType<Boolean>> CANNOT_PICKUP_FOOD = register("cannot_pickup_food", Codec.BOOL);

@@ -7,7 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
 import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayEntityType;
+import aqario.fowlplay.core.FowlPlayEntityTypes;
 import aqario.fowlplay.core.FowlPlayParticleTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBiomeTags;
@@ -149,7 +149,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return FowlPlayEntityType.PENGUIN.get().create(world);
+        return FowlPlayEntityTypes.PENGUIN.get().create(world);
     }
 
     @Override

@@ -3,17 +3,17 @@ package aqario.fowlplay.common.world.gen;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.SparrowEntity;
-import aqario.fowlplay.core.FowlPlayEntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerLevel;
+import aqario.fowlplay.core.FowlPlayEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class SparrowSpawner implements CustomSpawner {
             > 4L) {
             List<SparrowEntity> nearbySparrows = world.getEntitiesOfClass(SparrowEntity.class, new AABB(pos).inflate(48.0, 8.0, 48.0));
             if (nearbySparrows.size() < MAX_SPARROWS
-                && FlyingBirdEntity.canSpawnPasserines(FowlPlayEntityType.SPARROW.get(), world, MobSpawnType.NATURAL, pos, world.getRandom())
+                && FlyingBirdEntity.canSpawnPasserines(FowlPlayEntityTypes.SPARROW.get(), world, MobSpawnType.NATURAL, pos, world.getRandom())
             ) {
                 return this.spawn(pos, world);
             }
@@ -70,7 +70,7 @@ public class SparrowSpawner implements CustomSpawner {
     }
 
     private int spawn(BlockPos pos, ServerLevel world) {
-        SparrowEntity sparrow = FowlPlayEntityType.SPARROW.get().create(world);
+        SparrowEntity sparrow = FowlPlayEntityTypes.SPARROW.get().create(world);
         if (sparrow == null) {
             return 0;
         }

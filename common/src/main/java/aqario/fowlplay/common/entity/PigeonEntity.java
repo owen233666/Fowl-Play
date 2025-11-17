@@ -399,8 +399,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
-                .startCondition(entity -> !BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()))
-                .stopIf(entity -> BrainUtils.hasMemory(entity, FowlPlayMemoryModuleType.TELEPORT_TARGET.get()))
+                .startCondition(entity -> !BrainUtils.hasMemory(entity, FowlPlayMemoryTypes.TELEPORT_TARGET.get()))
+                .stopIf(entity -> BrainUtils.hasMemory(entity, FowlPlayMemoryTypes.TELEPORT_TARGET.get()))
         );
     }
 
@@ -470,7 +470,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryModuleType.RECIPIENT.get()).orElse(null);
+        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryTypes.RECIPIENT.get()).orElse(null);
         if(recipientUuid == null) {
             return false;
         }
@@ -482,7 +482,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     private static boolean shouldStopFlyingToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryModuleType.RECIPIENT.get()).orElse(null);
+        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryTypes.RECIPIENT.get()).orElse(null);
         if(recipientUuid == null) {
             return true;
         }

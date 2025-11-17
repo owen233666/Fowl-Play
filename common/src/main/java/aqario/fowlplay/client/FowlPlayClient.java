@@ -6,7 +6,7 @@ import aqario.fowlplay.client.render.entity.model.*;
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.network.s2c.BirdDebugPayload;
 import aqario.fowlplay.core.FowlPlay;
-import aqario.fowlplay.core.FowlPlayEntityType;
+import aqario.fowlplay.core.FowlPlayEntityTypes;
 import aqario.fowlplay.core.platform.PlatformHelper;
 import com.google.common.base.Suppliers;
 import dev.architectury.networking.NetworkManager;
@@ -65,20 +65,20 @@ public class FowlPlayClient {
     }
 
     public static void registerEntityRenderers() {
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.BLUE_JAY, BlueJayRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CARDINAL, CardinalRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CHICKADEE, ChickadeeRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.CROW, CrowRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.DUCK, DuckRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GOOSE, GooseRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.GULL, GullRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.HAWK, HawkRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PENGUIN, PenguinRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.PIGEON, PigeonRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.RAVEN, RavenRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.ROBIN, RobinRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SPARROW, SparrowRenderer::new);
-        PlatformHelper.registerEntityRenderer(FowlPlayEntityType.SCARECROW, ScarecrowRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.BLUE_JAY, BlueJayRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.CARDINAL, CardinalRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.CHICKADEE, ChickadeeRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.CROW, CrowRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.DUCK, DuckRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.GOOSE, GooseRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.GULL, GullRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.HAWK, HawkRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.PENGUIN, PenguinRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.PIGEON, PigeonRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.RAVEN, RavenRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.ROBIN, RobinRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.SPARROW, SparrowRenderer::new);
+        PlatformHelper.registerEntityRenderer(FowlPlayEntityTypes.SCARECROW, ScarecrowRenderer::new);
 
         if(FowlPlayConfig.getInstance().customChickenModel) {
             PlatformHelper.registerEntityRenderer(Suppliers.ofInstance(EntityType.CHICKEN), CustomChickenRenderer::new);

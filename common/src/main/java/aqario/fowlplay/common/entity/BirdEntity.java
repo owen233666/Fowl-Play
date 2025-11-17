@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
 import aqario.fowlplay.common.util.Birds;
-import aqario.fowlplay.core.FowlPlayMemoryModuleType;
+import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -155,8 +155,8 @@ public abstract class BirdEntity extends Animal {
             this.take(item, stack.getCount());
             item.discard();
             this.eatingTime = 0;
-            if(this.getBrain().checkMemory(FowlPlayMemoryModuleType.SEES_FOOD.get(), MemoryStatus.VALUE_PRESENT)) {
-                this.getBrain().eraseMemory(FowlPlayMemoryModuleType.SEES_FOOD.get());
+            if(this.getBrain().checkMemory(FowlPlayMemoryTypes.SEES_FOOD.get(), MemoryStatus.VALUE_PRESENT)) {
+                this.getBrain().eraseMemory(FowlPlayMemoryTypes.SEES_FOOD.get());
             }
         }
     }
