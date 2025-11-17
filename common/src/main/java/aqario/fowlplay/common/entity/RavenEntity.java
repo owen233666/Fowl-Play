@@ -130,12 +130,11 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         if(this.hasLowHealth()) {
             return false;
         }
-        Brain<?> brain = this.getBrain();
-        Optional<LivingEntity> hurtBy = this.getBrain().getMemory(MemoryModuleType.HURT_BY_ENTITY);
-        if(!target.getType().is(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS) && (hurtBy.isEmpty() || !hurtBy.get().equals(target))) {
+        LivingEntity hurtBy = BrainUtils.getLastAttacker(this);
+        if(!target.getType().is(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS) && (hurtBy == null || !hurtBy.equals(target))) {
             return false;
         }
-        Optional<List<? extends AgeableMob>> nearbyAdults = brain.getMemory(FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get());
+        Optional<List<? extends AgeableMob>> nearbyAdults = Optional.ofNullable(BrainUtils.getMemory(this, FowlPlayMemoryModuleType.NEAREST_VISIBLE_ADULTS.get()));
         return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
     }
 

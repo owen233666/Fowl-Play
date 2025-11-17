@@ -48,7 +48,6 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
@@ -129,7 +128,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        // TODO: avoid if the target has hurt this entity and the target is not an attack target
         return entity.getType().is(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
@@ -144,8 +142,8 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         if(this.hasLowHealth()) {
             return false;
         }
-        Optional<LivingEntity> hurtBy = this.getBrain().getMemory(MemoryModuleType.HURT_BY_ENTITY);
-        return hurtBy.isPresent() && hurtBy.get().equals(target);
+        LivingEntity hurtBy = BrainUtils.getLastAttacker(this);
+        return hurtBy != null && hurtBy.equals(target);
     }
 
     @Override
