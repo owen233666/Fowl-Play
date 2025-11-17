@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import org.jetbrains.annotations.Nullable;
 
-public interface CustomSpawnLocations {
+public interface CustomSpawnPlacementTypes {
     SpawnPlacementType GROUND = new SpawnPlacementType() {
         @Override
         public boolean isSpawnPositionOk(LevelReader worldView, BlockPos spawnPos, @Nullable EntityType<?> entityType) {
@@ -35,7 +35,7 @@ public interface CustomSpawnLocations {
             return world.getBlockState(groundPos).isPathfindable(PathComputationType.LAND) ? groundPos : pos;
         }
     };
-    SpawnPlacementType AQUATIC = CustomSpawnLocations::spawnsOnWater;
+    SpawnPlacementType AQUATIC = CustomSpawnPlacementTypes::spawnsOnWater;
 
     private static boolean isClearForSpawn(LevelReader world, BlockPos pos, EntityType<?> entityType) {
         BlockState blockState = world.getBlockState(pos);

@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.ChickadeeModel;
 import aqario.fowlplay.common.entity.ChickadeeEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -14,7 +14,7 @@ public class ChickadeeRenderer extends MobRenderer<ChickadeeEntity, ChickadeeMod
 
     public ChickadeeRenderer(EntityRendererProvider.Context context) {
         super(context, new ChickadeeModel(context.bakeLayer(ChickadeeModel.MODEL_LAYER)), 0.15f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.085, -0.1475)

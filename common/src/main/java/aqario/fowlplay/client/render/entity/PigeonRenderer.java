@@ -1,7 +1,7 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
-import aqario.fowlplay.client.render.entity.feature.PigeonBundleFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
+import aqario.fowlplay.client.render.entity.layer.PigeonBundleLayer;
 import aqario.fowlplay.client.render.entity.model.PigeonModel;
 import aqario.fowlplay.common.entity.PigeonEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -16,12 +16,12 @@ public class PigeonRenderer extends MobRenderer<PigeonEntity, PigeonModel> {
 
     public PigeonRenderer(EntityRendererProvider.Context context) {
         super(context, new PigeonModel(context.bakeLayer(PigeonModel.MODEL_LAYER)), 0.2f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.0225, -0.1475)
         ));
-        this.addLayer(new PigeonBundleFeatureRenderer(this, context.getItemInHandRenderer()));
+        this.addLayer(new PigeonBundleLayer(this, context.getItemInHandRenderer()));
     }
 
     @Override

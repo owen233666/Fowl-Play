@@ -37,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class FowlPlayDebugInfoSender {
+public class FowlPlayDebugPackets {
     @SuppressWarnings("deprecation")
-    public static void sendBirdDebugData(BirdEntity bird) {
+    public static void sendBirdData(BirdEntity bird) {
         if(!FowlPlay.isDebugUtilsLoaded()
             || bird.level().isClientSide()
             || !FowlPlayClient.DEBUG_BIRD

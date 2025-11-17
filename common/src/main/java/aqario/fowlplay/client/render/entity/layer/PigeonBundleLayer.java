@@ -1,4 +1,4 @@
-package aqario.fowlplay.client.render.entity.feature;
+package aqario.fowlplay.client.render.entity.layer;
 
 import aqario.fowlplay.client.render.entity.model.PigeonModel;
 import aqario.fowlplay.common.entity.PigeonEntity;
@@ -12,10 +12,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class PigeonBundleFeatureRenderer extends RenderLayer<PigeonEntity, PigeonModel> {
+public class PigeonBundleLayer extends RenderLayer<PigeonEntity, PigeonModel> {
     private final ItemInHandRenderer itemRenderer;
 
-    public PigeonBundleFeatureRenderer(RenderLayerParent<PigeonEntity, PigeonModel> context, ItemInHandRenderer heldItemRenderer) {
+    public PigeonBundleLayer(RenderLayerParent<PigeonEntity, PigeonModel> context, ItemInHandRenderer heldItemRenderer) {
         super(context);
         this.itemRenderer = heldItemRenderer;
     }

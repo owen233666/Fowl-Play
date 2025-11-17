@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.StuckArrowsLayer;
 import aqario.fowlplay.client.render.entity.model.ScarecrowArmorModel;
 import aqario.fowlplay.client.render.entity.model.ScarecrowModel;
 import aqario.fowlplay.common.entity.ScarecrowEntity;
@@ -27,7 +27,7 @@ public class ScarecrowRenderer extends LivingEntityRenderer<ScarecrowEntity, Sca
                 ctx.getModelManager()
             )
         );
-        this.addLayer(new StuckArrowsFeatureRenderer<>(ctx, this));
+        this.addLayer(new StuckArrowsLayer<>(ctx, this));
         this.addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
         this.addLayer(new ElytraLayer<>(this, ctx.getModelSet()));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));

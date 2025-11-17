@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.HawkModel;
 import aqario.fowlplay.common.entity.HawkEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -14,7 +14,7 @@ public class HawkRenderer extends MobRenderer<HawkEntity, HawkModel> {
 
     public HawkRenderer(EntityRendererProvider.Context context) {
         super(context, new HawkModel(context.bakeLayer(HawkModel.MODEL_LAYER)), 0.3f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.05375, -0.1475)

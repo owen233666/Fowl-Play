@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.RavenModel;
 import aqario.fowlplay.common.entity.RavenEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -14,7 +14,7 @@ public class RavenRenderer extends MobRenderer<RavenEntity, RavenModel> {
 
     public RavenRenderer(EntityRendererProvider.Context context) {
         super(context, new RavenModel(context.bakeLayer(RavenModel.MODEL_LAYER)), 0.3f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.05375, -0.1475)

@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.DomesticGooseModel;
 import aqario.fowlplay.client.render.entity.model.GooseModel;
 import aqario.fowlplay.common.entity.GooseEntity;
@@ -19,7 +19,7 @@ public class GooseRenderer extends MobRenderer<GooseEntity, GooseModel> {
 
     public GooseRenderer(EntityRendererProvider.Context context) {
         super(context, new GooseModel(context.bakeLayer(GooseModel.MODEL_LAYER)), 0.3f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.05375, -0.1475)

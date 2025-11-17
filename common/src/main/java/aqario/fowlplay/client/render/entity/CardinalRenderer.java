@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.CardinalModel;
 import aqario.fowlplay.common.entity.CardinalEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -14,7 +14,7 @@ public class CardinalRenderer extends MobRenderer<CardinalEntity, CardinalModel>
 
     public CardinalRenderer(EntityRendererProvider.Context context) {
         super(context, new CardinalModel(context.bakeLayer(CardinalModel.MODEL_LAYER)), 0.15f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.085, -0.1475)

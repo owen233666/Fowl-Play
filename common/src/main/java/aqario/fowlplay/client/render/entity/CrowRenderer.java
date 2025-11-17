@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.CrowModel;
 import aqario.fowlplay.common.entity.CrowEntity;
 import aqario.fowlplay.core.FowlPlay;
@@ -14,7 +14,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel> {
 
     public CrowRenderer(EntityRendererProvider.Context context) {
         super(context, new CrowModel(context.bakeLayer(CrowModel.MODEL_LAYER)), 0.15f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.0225, -0.1475)

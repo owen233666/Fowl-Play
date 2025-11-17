@@ -1,6 +1,6 @@
 package aqario.fowlplay.client.render.entity;
 
-import aqario.fowlplay.client.render.entity.feature.BirdHeldItemFeatureRenderer;
+import aqario.fowlplay.client.render.entity.layer.BirdHeldItemLayer;
 import aqario.fowlplay.client.render.entity.model.AdultBabyModelPair;
 import aqario.fowlplay.client.render.entity.model.BabyPenguinModel;
 import aqario.fowlplay.client.render.entity.model.PenguinModel;
@@ -21,7 +21,7 @@ public class PenguinRenderer extends MobRenderer<PenguinEntity, PenguinModel> {
 
     public PenguinRenderer(EntityRendererProvider.Context context) {
         super(context, new PenguinModel(context.bakeLayer(PenguinModel.MODEL_LAYER)), 0.3f);
-        this.addLayer(new BirdHeldItemFeatureRenderer<>(
+        this.addLayer(new BirdHeldItemLayer<>(
             this,
             context.getItemInHandRenderer(),
             new Vec3(0.0, -0.145, -0.1475)

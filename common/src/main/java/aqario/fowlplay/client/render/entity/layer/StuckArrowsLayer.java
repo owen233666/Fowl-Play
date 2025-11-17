@@ -1,24 +1,24 @@
-package aqario.fowlplay.client.render.entity.feature;
+package aqario.fowlplay.client.render.entity.layer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.model.HumanoidModel;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 
-public class StuckArrowsFeatureRenderer<T extends LivingEntity, M extends HumanoidModel<T>> extends RenderLayer<T, M> {
+public class StuckArrowsLayer<T extends LivingEntity, M extends HumanoidModel<T>> extends RenderLayer<T, M> {
     private final EntityRenderDispatcher dispatcher;
 
-    public StuckArrowsFeatureRenderer(EntityRendererProvider.Context context, LivingEntityRenderer<T, M> entityRenderer) {
+    public StuckArrowsLayer(EntityRendererProvider.Context context, LivingEntityRenderer<T, M> entityRenderer) {
         super(entityRenderer);
         this.dispatcher = context.getEntityRenderDispatcher();
     }
