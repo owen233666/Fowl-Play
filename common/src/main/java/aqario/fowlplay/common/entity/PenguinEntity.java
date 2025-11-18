@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
-import aqario.fowlplay.common.entity.ai.pathing.AmphibiousNavigation;
+import aqario.fowlplay.common.entity.ai.navigation.AmphibiousNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayEntityTypes;
 import aqario.fowlplay.core.FowlPlayParticleTypes;

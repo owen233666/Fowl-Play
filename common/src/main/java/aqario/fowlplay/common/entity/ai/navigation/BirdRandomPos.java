@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.pathing;
+package aqario.fowlplay.common.entity.ai.navigation;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;

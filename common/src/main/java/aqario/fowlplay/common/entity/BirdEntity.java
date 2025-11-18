@@ -89,7 +89,9 @@ public abstract class BirdEntity extends Animal {
         }
     }
 
-    // non-ambient birds count towards the mob cap, but they don't despawn
+    /**
+     * non-ambient birds count towards the mob cap, but they don't despawn
+     */
     public boolean isAmbient() {
         return this.ambient;
     }
@@ -202,7 +204,7 @@ public abstract class BirdEntity extends Animal {
     @Override
     public void aiStep() {
         super.aiStep();
-        if(!this.level().isClientSide && this.isAlive()) {
+        if(!this.level().isClientSide() && this.isAlive()) {
             ++this.eatingTime;
             ItemStack stack = this.getItemBySlot(EquipmentSlot.MAINHAND);
             if(this.canEat(stack)) {

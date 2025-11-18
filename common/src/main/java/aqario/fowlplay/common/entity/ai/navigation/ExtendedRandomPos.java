@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.ai.pathing;
+package aqario.fowlplay.common.entity.ai.navigation;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

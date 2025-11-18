@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity;
 
-import aqario.fowlplay.common.entity.ai.pathing.FlightNavigation;
-import aqario.fowlplay.common.entity.ai.pathing.GroundNavigation;
+import aqario.fowlplay.common.entity.ai.navigation.FlightNavigation;
+import aqario.fowlplay.common.entity.ai.navigation.GroundNavigation;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
