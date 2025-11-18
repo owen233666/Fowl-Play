@@ -313,7 +313,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
                         .runForBetween(100, 300),
                     2
                 )
-            )
+            ),
+            CustomBehaviours.flyAroundIfNoWalkTarget()
         );
     }
 
