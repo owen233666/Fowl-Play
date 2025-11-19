@@ -72,7 +72,6 @@ public class GooseModel extends FlyingBirdModel<GooseEntity> {
     @Override
     public void prepareMobModel(GooseEntity goose, float limbAngle, float limbDistance, float tickDelta) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        super.prepareMobModel(goose, limbAngle, limbDistance, tickDelta);
         float ageInTicks = goose.tickCount + tickDelta;
         float bodyYaw = Mth.rotLerp(tickDelta, goose.yBodyRotO, goose.yBodyRot);
         float headYaw = Mth.rotLerp(tickDelta, goose.yHeadRotO, goose.yHeadRot);

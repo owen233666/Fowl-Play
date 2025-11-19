@@ -174,7 +174,7 @@ public abstract class BirdEntity extends Animal {
     }
 
     public boolean isBelowWaterline() {
-        return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getWaterline();
+        return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getBoundingBox().getYsize() * 0.35/*this.getWaterline()*/;
     }
 
     // how much of the hitbox the water should cover (from the bottom)

@@ -134,6 +134,11 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     }
 
     @Override
+    public boolean canStartFlying() {
+        return !this.isBaby() && super.canStartFlying();
+    }
+
+    @Override
     protected boolean canSwim() {
         return true;
     }
