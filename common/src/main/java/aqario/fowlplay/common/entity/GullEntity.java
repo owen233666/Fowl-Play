@@ -63,10 +63,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
         GullEntity.class,
         FowlPlayEntityDataSerializers.GULL_VARIANT
     );
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
 
     public GullEntity(EntityType<? extends GullEntity> entityType, Level world) {
         super(entityType, world);
@@ -108,11 +104,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     protected boolean canSwim() {
         return true;
-    }
-
-    @Override
-    public int getFlapFrequency() {
-        return 0;
     }
 
     public static AttributeSupplier.Builder createGullAttributes() {
@@ -191,12 +182,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
         this.glidingState.animateWhen(this.isFlying(), this.tickCount);
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
+        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     @Override

@@ -99,7 +99,7 @@ public class BlueJayModel extends FlyingBirdModel<BlueJayEntity> {
             this.animateWalk(BlueJayAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(blueJay.standingState, BlueJayAnimations.STANDING, ageInTicks);
-        this.animate(blueJay.floatingState, BlueJayAnimations.FLOATING, ageInTicks);
+        this.animate(blueJay.swimmingState, BlueJayAnimations.SWIMMING, ageInTicks);
         this.animate(blueJay.glidingState, BlueJayAnimations.GLIDING, ageInTicks);
         this.animate(blueJay.flappingState, BlueJayAnimations.FLAPPING, ageInTicks);
     }

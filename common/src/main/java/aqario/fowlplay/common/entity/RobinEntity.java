@@ -20,7 +20,10 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.VariantHolder;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -43,10 +46,6 @@ import java.util.function.Predicate;
 
 public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEntity>, VariantHolder<RobinEntity.Variant> {
     private static final EntityDataAccessor<String> VARIANT = SynchedEntityData.defineId(RobinEntity.class, EntityDataSerializers.STRING);
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
 
     public RobinEntity(EntityType<? extends RobinEntity> entityType, Level world) {
         super(entityType, world);
@@ -104,20 +103,10 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     }
 
     @Override
-    public int getFlapFrequency() {
-        return 7;
-    }
-
-    @Override
     public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
         this.flappingState.animateWhen(this.isFlying(), this.tickCount);
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
+        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     @Override

@@ -64,7 +64,7 @@ public class CustomBabyChickenModel extends CustomChickenModel {
             this.animateWalk(ChickenAnimations.WALKING, limbSwing, limbSwingAmount, 3F, 3F);
         }
         this.animate(((ChickenAnimationStates) chicken).fowlplay$getStandingState(), ChickenAnimations.STANDING, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFloatingState(), ChickenAnimations.FLOATING, ageInTicks);
+        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFloatingState(), ChickenAnimations.SWIMMING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {

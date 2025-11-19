@@ -95,7 +95,7 @@ public class ChickadeeModel extends FlyingBirdModel<ChickadeeEntity> {
             this.animateWalk(ChickadeeAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(chickadee.standingState, ChickadeeAnimations.STANDING, ageInTicks);
-        this.animate(chickadee.floatingState, ChickadeeAnimations.FLOATING, ageInTicks);
+        this.animate(chickadee.swimmingState, ChickadeeAnimations.SWIMMING, ageInTicks);
         this.animate(chickadee.glidingState, ChickadeeAnimations.GLIDING, ageInTicks);
         this.animate(chickadee.flappingState, ChickadeeAnimations.FLAPPING, ageInTicks);
     }

@@ -22,7 +22,7 @@ public abstract class ChickenMixin extends Animal implements VariantHolder<Holde
     @Unique
     private final AnimationState fowlplay$flappingState = new AnimationState();
     @Unique
-    private final AnimationState fowlplay$floatingState = new AnimationState();
+    private final AnimationState fowlplay$swimmingState = new AnimationState();
 
     protected ChickenMixin(EntityType<? extends Animal> entityType, Level world) {
         super(entityType, world);
@@ -71,7 +71,7 @@ public abstract class ChickenMixin extends Animal implements VariantHolder<Holde
         if(this.level().isClientSide()) {
             this.fowlplay$standingState.animateWhen(this.onGround() && !this.isInWaterOrBubble(), this.tickCount);
             this.fowlplay$flappingState.animateWhen(!this.onGround() && !this.isInWaterOrBubble(), this.tickCount);
-            this.fowlplay$floatingState.animateWhen(this.isInWaterOrBubble(), this.tickCount);
+            this.fowlplay$swimmingState.animateWhen(this.isInWaterOrBubble(), this.tickCount);
         }
         super.tick();
         if(!this.level().isClientSide()) {
@@ -91,6 +91,6 @@ public abstract class ChickenMixin extends Animal implements VariantHolder<Holde
 
     @Override
     public AnimationState fowlplay$getFloatingState() {
-        return this.fowlplay$floatingState;
+        return this.fowlplay$swimmingState;
     }
 }

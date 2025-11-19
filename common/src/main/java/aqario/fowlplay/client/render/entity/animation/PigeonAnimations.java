@@ -183,7 +183,7 @@ public class PigeonAnimations {
         )
         .build();
 
-    public static final AnimationDefinition FLOATING = AnimationDefinition.Builder.withLength(0f).looping()
+    public static final AnimationDefinition SWIMMING = AnimationDefinition.Builder.withLength(0f).looping()
         .build();
 
     public static final AnimationDefinition GLIDING = AnimationDefinition.Builder.withLength(0f).looping()

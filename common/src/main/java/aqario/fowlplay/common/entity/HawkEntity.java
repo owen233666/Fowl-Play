@@ -19,7 +19,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -51,19 +50,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
-    private int timeSinceLastFlap = this.getFlapFrequency();
-    private int flapTime = 0;
-
     public HawkEntity(EntityType<? extends HawkEntity> entityType, Level world) {
         super(entityType, world);
-    }
-
-    @Override
-    public int getFlapFrequency() {
-        return 100;
     }
 
     public static AttributeSupplier.Builder createHawkAttributes() {
@@ -149,39 +137,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public boolean canBeAffected(MobEffectInstance effect) {
         return !effect.is(MobEffects.HUNGER) && super.canBeAffected(effect);
-    }
-
-    @Override
-    public void updateAnimations() {
-        this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
-        this.glidingState.animateWhen(this.isFlying(), this.tickCount);
-        if(this.isFlying()) {
-            if(this.timeSinceLastFlap > this.getFlapFrequency()) {
-                this.timeSinceLastFlap = 0;
-                this.flapTime++;
-            }
-            else if(this.isCurrentlyFlapping()) {
-                this.flapTime++;
-            }
-            else {
-                this.timeSinceLastFlap++;
-                this.flapTime = 0;
-            }
-        }
-        else {
-            this.timeSinceLastFlap = this.getFlapFrequency();
-            this.flapTime = 0;
-        }
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
-    }
-
-    private boolean isCurrentlyFlapping() {
-        return this.flapTime > 0 && this.flapTime < 60;
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
     }
 
     @Override

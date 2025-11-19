@@ -84,12 +84,10 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
     private static final long LAST_POSE_CHANGE_TICKS = 0L;
     public static final EntityDataAccessor<Long> LAST_POSE_TICK = SynchedEntityData.defineId(PenguinEntity.class, EntityDataSerializers.LONG);
     private static final int SWIM_PARTICLE_COUNT = 15;
-    public final AnimationState standingState = new AnimationState();
     public final AnimationState slidingState = new AnimationState();
     public final AnimationState slidingTransitionState = new AnimationState();
     public final AnimationState standingTransitionState = new AnimationState();
     public final AnimationState flappingState = new AnimationState();
-    public final AnimationState swimmingState = new AnimationState();
     public final AnimationState dancingState = new AnimationState();
     private boolean songPlaying;
     @Nullable

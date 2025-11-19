@@ -112,7 +112,7 @@ public class HawkModel extends FlyingBirdModel<HawkEntity> {
             this.animateWalk(HawkAnimations.WALKING, limbAngle, limbDistance, 2.5F, 4F);
         }
         this.animate(hawk.standingState, HawkAnimations.STANDING, ageInTicks);
-        this.animate(hawk.floatingState, HawkAnimations.FLOATING, ageInTicks);
+        this.animate(hawk.swimmingState, HawkAnimations.SWIMMING, ageInTicks);
         this.animate(hawk.glidingState, HawkAnimations.GLIDING, ageInTicks);
     }
 

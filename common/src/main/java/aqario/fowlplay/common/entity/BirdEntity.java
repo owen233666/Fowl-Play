@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdBodyRotationControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
+import aqario.fowlplay.common.util.AnimationStateList;
 import aqario.fowlplay.common.util.Birds;
 import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -34,6 +35,9 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BirdEntity extends Animal {
+    public final AnimationState standingState = new AnimationState();
+    public final AnimationState swimmingState = new AnimationState();
+    public final AnimationStateList idleAnimStates = this.createIdleAnimations();
     private boolean ambient;
     private int eatingTime;
     protected int idleAnimationChance;
@@ -285,6 +289,10 @@ public abstract class BirdEntity extends Animal {
         this.level().getProfiler().pop();
     }
 
+    protected AnimationStateList createIdleAnimations() {
+        return new AnimationStateList();
+    }
+
     @Override
     public void tick() {
         if(this.level().isClientSide()) {
@@ -293,7 +301,35 @@ public abstract class BirdEntity extends Animal {
         super.tick();
     }
 
+    protected boolean isMoving() {
+        return this.walkAnimation.isMoving();
+    }
+
     protected void updateAnimations() {
+        // on land
+        if(!this.isInWaterOrBubble()) {
+            if(this.random.nextInt(1000) < this.idleAnimationChance++ && !this.isMoving()) {
+                this.resetIdleAnimationDelay();
+                this.standingState.stop();
+                this.idleAnimStates.stopAll();
+                this.idleAnimStates.startRandom(this.tickCount);
+            }
+            else if(this.isMoving()) {
+                this.idleAnimStates.stopAll();
+            }
+            if(!this.idleAnimStates.containsStarted()) {
+                this.standingState.startIfStopped(this.tickCount);
+            }
+            else {
+                this.standingState.stop();
+            }
+        }
+        else {
+            this.standingState.stop();
+            this.idleAnimStates.stopAll();
+        }
+        // in water
+        this.swimmingState.animateWhen(this.isInWaterOrBubble(), this.tickCount);
     }
 
     protected int getIdleAnimationDelay() {

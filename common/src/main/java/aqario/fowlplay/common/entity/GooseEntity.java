@@ -68,10 +68,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     );
     private static final String AGGRESSIVE_KEY = "aggressive";
     private boolean aggressive;
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
 
     public GooseEntity(EntityType<? extends GooseEntity> entityType, Level world) {
         super(entityType, world);
@@ -124,11 +120,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     protected boolean canSwim() {
         return true;
-    }
-
-    @Override
-    public int getFlapFrequency() {
-        return 0;
     }
 
     public static AttributeSupplier.Builder createGooseAttributes() {
@@ -232,7 +223,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
         this.flappingState.animateWhen(this.isFlying(), this.tickCount);
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
+        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     @Override
@@ -241,11 +232,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         if(!this.aggressive && name != null && name.getString().equalsIgnoreCase("untitled")) {
             this.aggressive = true;
         }
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
     }
 
     @Override

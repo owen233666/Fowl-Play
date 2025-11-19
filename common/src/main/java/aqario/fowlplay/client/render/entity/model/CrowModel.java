@@ -99,7 +99,7 @@ public class CrowModel extends FlyingBirdModel<CrowEntity> {
             this.animateWalk(CrowAnimations.WALKING, limbAngle, limbDistance, 5F, 5F);
         }
         this.animate(crow.standingState, CrowAnimations.STANDING, ageInTicks);
-        this.animate(crow.floatingState, CrowAnimations.FLOATING, ageInTicks);
+        this.animate(crow.swimmingState, CrowAnimations.SWIMMING, ageInTicks);
         this.animate(crow.glidingState, CrowAnimations.GLIDING, ageInTicks);
         this.animate(crow.flappingState, CrowAnimations.FLAPPING, ageInTicks);
     }

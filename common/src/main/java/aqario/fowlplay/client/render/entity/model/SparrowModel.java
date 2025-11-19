@@ -95,7 +95,7 @@ public class SparrowModel extends FlyingBirdModel<SparrowEntity> {
             this.animateWalk(SparrowAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(sparrow.standingState, SparrowAnimations.STANDING, ageInTicks);
-        this.animate(sparrow.floatingState, SparrowAnimations.FLOATING, ageInTicks);
+        this.animate(sparrow.swimmingState, SparrowAnimations.SWIMMING, ageInTicks);
         this.animate(sparrow.glidingState, SparrowAnimations.GLIDING, ageInTicks);
         this.animate(sparrow.flappingState, SparrowAnimations.FLAPPING, ageInTicks);
         this.animate(sparrow.preeningState, SparrowAnimations.PREENING, ageInTicks);

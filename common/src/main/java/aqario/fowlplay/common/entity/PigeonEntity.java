@@ -67,10 +67,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         PigeonEntity.class,
         FowlPlayEntityDataSerializers.PIGEON_VARIANT
     );
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
     public final AnimationState sittingState = new AnimationState();
 
     public PigeonEntity(EntityType<? extends PigeonEntity> entityType, Level world) {
@@ -154,11 +150,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public float getWaterline() {
         return 0.45F;
-    }
-
-    @Override
-    public int getFlapFrequency() {
-        return 7;
     }
 
     @Nullable
@@ -280,13 +271,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble() && !this.isInSittingPose(), this.tickCount);
         this.flappingState.animateWhen(this.isFlying(), this.tickCount);
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
+        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
         this.sittingState.animateWhen(this.isInSittingPose(), this.tickCount);
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
     }
 
     @Override

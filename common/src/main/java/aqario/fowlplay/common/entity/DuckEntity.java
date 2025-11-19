@@ -62,10 +62,6 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         DuckEntity.class,
         FowlPlayEntityDataSerializers.DUCK_VARIANT
     );
-    public final AnimationState standingState = new AnimationState();
-    public final AnimationState glidingState = new AnimationState();
-    public final AnimationState flappingState = new AnimationState();
-    public final AnimationState floatingState = new AnimationState();
 
     public DuckEntity(EntityType<? extends DuckEntity> entityType, Level world) {
         super(entityType, world);
@@ -107,11 +103,6 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     protected boolean canSwim() {
         return true;
-    }
-
-    @Override
-    public int getFlapFrequency() {
-        return 0;
     }
 
     public static AttributeSupplier.Builder createDuckAttributes() {
@@ -184,12 +175,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
         this.flappingState.animateWhen(this.isFlying(), this.tickCount);
-        this.floatingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
-    }
-
-    @Override
-    protected boolean isFlapping() {
-        return this.isFlying();
+        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
     }
 
     @Override

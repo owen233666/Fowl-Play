@@ -113,7 +113,7 @@ public class GooseModel extends FlyingBirdModel<GooseEntity> {
             this.animateWalk(walkingAnimation, limbAngle, limbDistance, 3F, 3F);
         }
         this.animate(goose.standingState, standingAnimation, ageInTicks);
-        this.animate(goose.floatingState, swimmingAnimation, ageInTicks);
+        this.animate(goose.swimmingState, swimmingAnimation, ageInTicks);
         this.animate(goose.glidingState, glidingAnimation, ageInTicks);
         this.animate(goose.flappingState, flappingAnimation, ageInTicks);
     }

@@ -30,7 +30,7 @@ public class PenguinRenderer extends MobRenderer<PenguinEntity, PenguinModel> {
     }
 
     private static AdultBabyModelPair<PenguinModel> bakeModels(EntityRendererProvider.Context context) {
-        return AdultBabyModelPair.of(
+        return new AdultBabyModelPair<>(
             new PenguinModel(context.bakeLayer(PenguinModel.MODEL_LAYER)),
             new BabyPenguinModel(context.bakeLayer(BabyPenguinModel.MODEL_LAYER))
         );

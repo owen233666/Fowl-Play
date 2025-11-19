@@ -99,7 +99,7 @@ public class DuckModel extends FlyingBirdModel<DuckEntity> {
             this.animateWalk(DuckAnimations.WALKING, limbAngle, limbDistance, 4F, 4F);
         }
         this.animate(duck.standingState, DuckAnimations.STANDING, ageInTicks);
-        this.animate(duck.floatingState, DuckAnimations.FLOATING, ageInTicks);
+        this.animate(duck.swimmingState, DuckAnimations.SWIMMING, ageInTicks);
         this.animate(duck.glidingState, DuckAnimations.GLIDING, ageInTicks);
         this.animate(duck.flappingState, DuckAnimations.FLAPPING, ageInTicks);
     }

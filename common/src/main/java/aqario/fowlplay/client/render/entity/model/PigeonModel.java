@@ -98,7 +98,7 @@ public class PigeonModel extends FlyingBirdModel<PigeonEntity> {
             this.animateWalk(PigeonAnimations.WALKING, limbAngle, limbDistance, 5F, 5F);
         }
         this.animate(pigeon.standingState, PigeonAnimations.STANDING, ageInTicks);
-        this.animate(pigeon.floatingState, PigeonAnimations.FLOATING, ageInTicks);
+        this.animate(pigeon.swimmingState, PigeonAnimations.SWIMMING, ageInTicks);
         this.animate(pigeon.glidingState, PigeonAnimations.GLIDING, ageInTicks);
         this.animate(pigeon.flappingState, PigeonAnimations.FLAPPING, ageInTicks);
         this.animate(pigeon.sittingState, PigeonAnimations.SITTING, ageInTicks);

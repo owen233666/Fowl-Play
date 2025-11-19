@@ -16,10 +16,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -41,6 +38,8 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         FlyingBirdEntity.class,
         EntityDataSerializers.BOOLEAN
     );
+    public final AnimationState glidingState = new AnimationState();
+    public final AnimationState flappingState = new AnimationState();
     private boolean isFlightNavigation;
     private float prevRoll;
     private float roll;
@@ -127,8 +126,6 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.playSound(FowlPlaySoundEvents.ENTITY_BIRD_FLAP.get(), this.getFlapVolume(), this.getFlapPitch());
     }
 
-    public abstract int getFlapFrequency();
-
     public abstract float getFlapVolume();
 
     public abstract float getFlapPitch();
@@ -187,6 +184,41 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     public float getRoll(float tickDelta) {
         return tickDelta == 1.0F ? this.roll : Mth.lerp(tickDelta, this.prevRoll, this.roll);
+    }
+
+    @Override
+    protected void updateAnimations() {
+        // on land
+        if(!this.isFlying() && !this.isInWaterOrBubble()) {
+            if(this.random.nextInt(1000) < this.idleAnimationChance++ && !this.isMoving()) {
+                this.resetIdleAnimationDelay();
+                this.standingState.stop();
+                this.idleAnimStates.stopAll();
+                this.idleAnimStates.startRandom(this.tickCount);
+            }
+            else if(this.isMoving()) {
+                this.idleAnimStates.stopAll();
+            }
+            if(!this.idleAnimStates.containsStarted()) {
+                this.standingState.startIfStopped(this.tickCount);
+            }
+            else {
+                this.standingState.stop();
+            }
+        }
+        else {
+            this.standingState.stop();
+            this.idleAnimStates.stopAll();
+        }
+        // flying
+        this.glidingState.animateWhen(this.isFlying(), this.tickCount);
+        // in water
+        this.swimmingState.animateWhen(this.isInWaterOrBubble() && !this.isFlying(), this.tickCount);
+    }
+
+    @Override
+    protected boolean isFlapping() {
+        return this.isFlying();
     }
 
     protected PathNavigation getLandNavigation() {

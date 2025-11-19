@@ -102,7 +102,7 @@ public class GullModel extends FlyingBirdModel<GullEntity> {
             this.animateWalk(GullAnimations.WALKING, limbAngle, limbDistance, 4F, 4F);
         }
         this.animate(gull.standingState, GullAnimations.STANDING, ageInTicks);
-        this.animate(gull.floatingState, GullAnimations.FLOATING, ageInTicks);
+        this.animate(gull.swimmingState, GullAnimations.SWIMMING, ageInTicks);
         this.animate(gull.glidingState, GullAnimations.GLIDING, ageInTicks);
     }
 

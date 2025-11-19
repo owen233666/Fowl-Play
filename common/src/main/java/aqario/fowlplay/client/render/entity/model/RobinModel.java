@@ -95,7 +95,7 @@ public class RobinModel extends FlyingBirdModel<RobinEntity> {
             this.animateWalk(RobinAnimations.WALKING, limbAngle, limbDistance, 6F, 6F);
         }
         this.animate(robin.standingState, RobinAnimations.STANDING, ageInTicks);
-        this.animate(robin.floatingState, RobinAnimations.FLOATING, ageInTicks);
+        this.animate(robin.swimmingState, RobinAnimations.SWIMMING, ageInTicks);
         this.animate(robin.glidingState, RobinAnimations.GLIDING, ageInTicks);
         this.animate(robin.flappingState, RobinAnimations.FLAPPING, ageInTicks);
     }

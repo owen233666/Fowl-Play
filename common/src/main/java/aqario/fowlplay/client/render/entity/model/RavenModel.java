@@ -111,7 +111,7 @@ public class RavenModel extends FlyingBirdModel<RavenEntity> {
             this.animateWalk(RavenAnimations.WALKING, limbAngle, limbDistance, 2.5F, 4F);
         }
         this.animate(raven.standingState, RavenAnimations.STANDING, ageInTicks);
-        this.animate(raven.floatingState, RavenAnimations.FLOATING, ageInTicks);
+        this.animate(raven.swimmingState, RavenAnimations.SWIMMING, ageInTicks);
         this.animate(raven.glidingState, RavenAnimations.GLIDING, ageInTicks);
     }
 

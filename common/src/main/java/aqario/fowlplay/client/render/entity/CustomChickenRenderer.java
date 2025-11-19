@@ -23,7 +23,7 @@ public class CustomChickenRenderer extends MobRenderer<Chicken, CustomChickenMod
     }
 
     private static AdultBabyModelPair<CustomChickenModel> bakeModels(EntityRendererProvider.Context context) {
-        return AdultBabyModelPair.of(
+        return new AdultBabyModelPair<>(
             new CustomChickenModel(context.bakeLayer(CustomChickenModel.MODEL_LAYER)),
             new CustomBabyChickenModel(context.bakeLayer(CustomBabyChickenModel.MODEL_LAYER))
         );

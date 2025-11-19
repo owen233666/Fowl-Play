@@ -1,84 +1,45 @@
 package aqario.fowlplay.common.util;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectIterators;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class AnimationStateList implements Iterable<AnimationState> {
     private final List<Entry> entries;
     private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-    public AnimationStateList(AnimationState... states) {
-        this.entries = new ObjectArrayList<>(states.length);
-
-        for(AnimationState state : states) {
-            this.entries.add(new Entry(state, 1));
-        }
+    public AnimationStateList() {
+        this.entries = new ObjectArrayList<>();
     }
 
-    @SafeVarargs
-    public AnimationStateList(Pair<AnimationState, Integer>... entries) {
-        this.entries = new ObjectArrayList<>(entries.length);
-
-        for(Pair<AnimationState, Integer> entry : entries) {
-            this.entries.add(new Entry(entry.getFirst(), entry.getSecond()));
-        }
-    }
-
-    public AnimationStateList(Collection<Pair<AnimationState, Integer>> entries) {
-        this.entries = new ObjectArrayList<>(entries.size());
-
-        for(Pair<AnimationState, Integer> entry : entries) {
-            this.entries.add(new Entry(entry.getFirst(), entry.getSecond()));
-        }
-    }
-
-    public AnimationStateList randomize() {
-        this.entries.forEach(entry -> entry.setRandomizedWeight(this.random.nextFloat()));
-        this.entries.sort(Comparator.comparingDouble(Entry::getRandomizedWeight));
-
+    public AnimationStateList with(AnimationState entry, int weight) {
+        this.entries.add(new Entry(entry, weight));
         return this;
     }
 
-    public boolean add(AnimationState entry, int weight) {
-        return this.entries.add(new Entry(entry, weight));
+    public AnimationStateList randomize() {
+        this.entries.forEach(entry -> entry.randomizeWeight(this.random.nextFloat()));
+        this.entries.sort(Comparator.comparingDouble(Entry::getRandomizedWeight));
+        return this;
     }
 
     public void startRandom(int tickCount) {
-        this.getRandom().ifPresent(animState -> animState.start(tickCount));
+        this.randomize().getFirst()
+            .ifPresent(animState -> animState.start(tickCount));
     }
 
     @NotNull
-    public Optional<AnimationState> getRandom() {
-        return this.randomize().getFirstOptional();
-    }
-
-    @NotNull
-    public Optional<AnimationState> getOptional(int index) {
-        return Optional.ofNullable(this.get(index));
-    }
-
-    @NotNull
-    public Optional<AnimationState> getFirstOptional() {
-        return Optional.ofNullable(this.getFirst());
-    }
-
-    @Nullable
-    public AnimationState get(int index) {
-        return this.entries.get(index).get();
-    }
-
-    @Nullable
-    public AnimationState getFirst() {
-        return this.entries.getFirst().get();
+    public Optional<AnimationState> getFirst() {
+        return Optional.ofNullable(this.entries.isEmpty() ? null : this.entries.getFirst())
+            .map(Entry::getState);
     }
 
     public int size() {
@@ -86,8 +47,8 @@ public class AnimationStateList implements Iterable<AnimationState> {
     }
 
     public boolean containsStarted() {
-        for(Entry entry : this.entries) {
-            if(entry.get().isStarted()) {
+        for(AnimationState state : this) {
+            if(state != null && state.isStarted()) {
                 return true;
             }
         }
@@ -100,11 +61,11 @@ public class AnimationStateList implements Iterable<AnimationState> {
 
     @Override
     public void forEach(Consumer<? super AnimationState> action) {
-        this.entries.forEach(entry -> action.accept(entry.get()));
-    }
-
-    public Stream<AnimationState> stream() {
-        return this.entries.stream().map(Entry::get);
+        this.entries.forEach(entry -> {
+            if(entry.getState() != null) {
+                action.accept(entry.getState());
+            }
+        });
     }
 
     @NotNull
@@ -113,7 +74,7 @@ public class AnimationStateList implements Iterable<AnimationState> {
         return new ObjectIterators.AbstractIndexBasedIterator<>(0, 0) {
             @Override
             protected AnimationState get(int location) {
-                return AnimationStateList.this.entries.get(location).get();
+                return AnimationStateList.this.entries.get(location).getState();
             }
 
             @Override
@@ -142,7 +103,7 @@ public class AnimationStateList implements Iterable<AnimationState> {
             return this.randomizedWeight;
         }
 
-        protected AnimationState get() {
+        protected AnimationState getState() {
             return this.state;
         }
 
@@ -150,7 +111,7 @@ public class AnimationStateList implements Iterable<AnimationState> {
             return this.weight;
         }
 
-        protected void setRandomizedWeight(float mod) {
+        protected void randomizeWeight(float mod) {
             this.randomizedWeight = -Math.pow(mod, 1f / this.weight);
         }
 
