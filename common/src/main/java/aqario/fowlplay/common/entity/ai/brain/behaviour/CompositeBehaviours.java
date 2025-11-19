@@ -48,11 +48,11 @@ public class CompositeBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetWaterRestTarget() {
         return new AllApplicableBehaviours<>(
             new SetWaterWalkTarget<E>()
-                .radius(64, 32)
-                .startCondition(Predicate.not(Entity::isInWaterOrBubble))
-                .stopIf(Entity::isInWaterOrBubble),
+                .radius(64, 32),
             new SetRandomFlightTarget<>()
-        );
+        )
+            .startCondition(Predicate.not(Entity::isInWaterOrBubble))
+            .stopIf(Entity::isInWaterOrBubble);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> idleAndLookAround() {
