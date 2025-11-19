@@ -68,6 +68,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         FowlPlayEntityDataSerializers.GOOSE_VARIANT
     );
     private static final String AGGRESSIVE_KEY = "aggressive";
+    private static final String VARIANT_KEY = "variant";
     private boolean aggressive;
 
     public GooseEntity(EntityType<? extends GooseEntity> entityType, Level world) {
@@ -179,7 +180,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putString("variant", this.getVariantKey().location().toString());
+        nbt.putString(VARIANT_KEY, this.getVariantKey().location().toString());
         if(this.aggressive) {
             nbt.putBoolean(AGGRESSIVE_KEY, true);
         }
@@ -188,7 +189,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        Optional.ofNullable(ResourceLocation.tryParse(nbt.getString("variant")))
+        Optional.ofNullable(ResourceLocation.tryParse(nbt.getString(VARIANT_KEY)))
             .map(variant -> ResourceKey.create(FowlPlayRegistries.GOOSE_VARIANT, variant))
             .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
             .ifPresent(this::setVariant);

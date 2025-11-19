@@ -1,7 +1,7 @@
 package aqario.fowlplay.client.render.entity.model;
 
 import aqario.fowlplay.client.render.entity.animation.ChickenAnimations;
-import aqario.fowlplay.common.util.ChickenAnimationStates;
+import aqario.fowlplay.common.util.ChickenAnimationHolder;
 import aqario.fowlplay.core.FowlPlay;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,7 +17,7 @@ public class CustomBabyChickenModel extends CustomChickenModel {
         super(root);
     }
 
-    public static LayerDefinition getTexturedModelData() {
+    public static LayerDefinition createBodyLayer() {
         MeshDefinition modelData = new MeshDefinition();
         PartDefinition modelPartData = modelData.getRoot();
         PartDefinition root = modelPartData.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 19.0F, 0.0F));
@@ -63,8 +63,8 @@ public class CustomBabyChickenModel extends CustomChickenModel {
         if (chicken.onGround() && !chicken.isInWaterOrBubble()) {
             this.animateWalk(ChickenAnimations.WALKING, limbSwing, limbSwingAmount, 3F, 3F);
         }
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getStandingState(), ChickenAnimations.STANDING, ageInTicks);
-        this.animate(((ChickenAnimationStates) chicken).fowlplay$getFloatingState(), ChickenAnimations.SWIMMING, ageInTicks);
+        this.animate(((ChickenAnimationHolder) chicken).fowlplay$getStandingState(), ChickenAnimations.STANDING, ageInTicks);
+        this.animate(((ChickenAnimationHolder) chicken).fowlplay$getFloatingState(), ChickenAnimations.SWIMMING, ageInTicks);
     }
 
     private void updateHeadRotation(float headYaw, float headPitch) {
