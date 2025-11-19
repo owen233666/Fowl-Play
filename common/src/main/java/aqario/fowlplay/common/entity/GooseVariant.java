@@ -1,5 +1,6 @@
 package aqario.fowlplay.common.entity;
 
+import aqario.fowlplay.common.util.PathBuilder;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import aqario.fowlplay.core.platform.PlatformHelper;
@@ -14,7 +15,7 @@ import net.minecraft.util.StringRepresentable;
 import java.util.Optional;
 
 public record GooseVariant(
-    ResourceLocation texture,
+    String id,
     ModelType modelType,
     Optional<ResourceLocation> domesticId
 ) {
@@ -24,6 +25,16 @@ public record GooseVariant(
     public static final ResourceKey<GooseVariant> SWAN = registerWild("swan", "chinese");
     public static final ResourceKey<GooseVariant> EMDEN = registerDomestic("emden");
     public static final ResourceKey<GooseVariant> CHINESE = registerDomestic("chinese");
+
+    public ResourceLocation texture(boolean isBaby) {
+        return FowlPlay.id(new PathBuilder()
+            .add("textures/entity/goose/")
+            .add(this.id)
+            .add("_goose")
+            .addIf("_baby", isBaby)
+            .add(".png")
+        );
+    }
 
     private static ResourceKey<GooseVariant> registerWild(String id) {
         return register(id, ModelType.WILD, Optional.empty());
@@ -39,9 +50,8 @@ public record GooseVariant(
 
     private static ResourceKey<GooseVariant> register(String id, ModelType modelType, Optional<String> domesticId) {
         ResourceKey<GooseVariant> key = ResourceKey.create(FowlPlayRegistries.GOOSE_VARIANT, FowlPlay.id(id));
-        ResourceLocation texture = FowlPlay.id("textures/entity/goose/" + key.location().getPath() + "_goose.png");
         PlatformHelper.registerVariant(id, key, () -> new GooseVariant(
-            texture,
+            id,
             modelType,
             domesticId.map(FowlPlay::id)
         ));

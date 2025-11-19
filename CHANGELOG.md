@@ -1,6 +1,6 @@
 ## 1.1.0
 
-- Bird AI has been massively overhauled:
+- **Bird AI has been completely overhauled**
   - Birds now adhere to a schedule when determining what their behaviours should be, similar to villagers
     - During the day, birds will fly around, perch, and forage for food
     - At night, perching birds will seek out a tree to sleep in, while waterfowl will sleep on the ground or on water
@@ -13,25 +13,28 @@
   - Birds now stop flying when below a certain speed
   - Birds will now tilt their heads when looking at things
   - Fix jerky movement when birds turn
-- Add goose
+- **Introducing the goose**
     - Geese variants are split into two categories: domestic and wild
     - Naturally spawned geese will have wild variants
-        - Greylag goose (unfinished)
         - Canada goose
-        - Swan goose (unfinished)
-    - Domestic variants are obtained through breeding (geese are currently unbreedable, so these variants are unobtainable in survival for now)
-        - Emden goose
-        - Chinese goose
+        - Greylag goose
+        - Swan goose
+    - Domestic variants are obtained through breeding (this mechanic will be expanded in the future)
+        - Emden (from greylag goose)
+        - Chinese (from swan gose)
+        - Canada geese do not have a domestic variant
     - Geese with the name "untitled" will attack any player they see
-- Add scarecrow
+- **Add Scarecrows**
     - Birds see scarecrows as players, so any bird that avoids players will also avoid scarecrows
     - Scarecrows can be attacked like armour stands, activating enchantments such as sweeping edge
     - Scarecrows can be broken by sneaking and attacking it
         - Unlike armour stands, double-clicking scarecrows will do nothing
-- Fix incompatibility with PerfectParity
-- Add European Portuguese translation
-- Add Japanese translation
-- Add Traditional Chinese translation
+    - Scarecrows can be destroyed by fire, lava, and explosions
+- **Other features**
+  - Fix incompatibility with PerfectParity
+  - Add European Portuguese translation
+  - Add Japanese translation
+  - Add Traditional Chinese translation
 
 ## 1.1.0-beta.5
 
