@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -102,19 +103,33 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        switch(spawnReason) {
-            case BREEDING ->
-                FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.DOMESTIC, world.getRandom())
-                    .ifPresent(this::setVariant);
+        FowlPlayBuiltInRegistries.GOOSE_VARIANT
+            .getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
+            .ifPresent(this::setVariant);
 
-            case CHUNK_GENERATION, NATURAL ->
-                FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
-                    .ifPresent(this::setVariant);
-
-            default -> FowlPlayBuiltInRegistries.GOOSE_VARIANT.getRandom(world.getRandom())
-                .ifPresent(this::setVariant);
-        }
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+    }
+
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
+        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(world);
+        if(goose != null && entity instanceof GooseEntity parent2) {
+            getRandomOf(goose.getRandom(), this, parent2).getVariant().value().domesticId()
+                .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
+                .ifPresent(goose::setVariant);
+        }
+        return goose;
+    }
+
+    @SafeVarargs
+    private static <T> T getRandomOf(RandomSource random, T... selections) {
+        return selections[random.nextInt(selections.length)];
+    }
+
+    @Override
+    public float getAgeScale() {
+        return this.isBaby() ? 0.4F : 1.0F;
     }
 
     @Override
@@ -144,7 +159,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(VARIANT, FowlPlayBuiltInRegistries.GOOSE_VARIANT.getHolderOrThrow(GooseVariant.GREYLAG));
+        builder.define(VARIANT, FowlPlayBuiltInRegistries.GOOSE_VARIANT.getHolderOrThrow(GooseVariant.CANADA));
     }
 
     @Override
@@ -157,10 +172,14 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         this.entityData.set(VARIANT, variant);
     }
 
+    public ResourceKey<GooseVariant> getVariantKey() {
+        return this.getVariant().unwrapKey().orElse(GooseVariant.CANADA);
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putString("variant", this.getVariant().unwrapKey().orElse(GooseVariant.GREYLAG).location().toString());
+        nbt.putString("variant", this.getVariantKey().location().toString());
         if(this.aggressive) {
             nbt.putBoolean(AGGRESSIVE_KEY, true);
         }
@@ -180,17 +199,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     public boolean isAggressive() {
         return this.aggressive;
-    }
-
-    @Override
-    public boolean isBaby() {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return null;
     }
 
     @Override

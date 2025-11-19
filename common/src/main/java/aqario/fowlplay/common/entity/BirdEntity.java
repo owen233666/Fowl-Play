@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.DifficultyInstance;
@@ -121,6 +122,11 @@ public abstract class BirdEntity extends Animal {
             return false;
         }
         return equipmentSlot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
+    }
+
+    @Override
+    public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        return null;
     }
 
     @Override

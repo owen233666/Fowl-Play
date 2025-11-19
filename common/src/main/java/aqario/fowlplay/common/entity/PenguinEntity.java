@@ -451,13 +451,16 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
         return !this.isVehicle();
     }
 
-    public boolean canBreed() {
+    public boolean isReadyToBreed() {
         return !this.isVehicle() && !this.isPassenger() && !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
     }
 
     @Override
     public boolean canMate(Animal other) {
-        return other != this && other instanceof PenguinEntity penguin && this.canBreed() && penguin.canBreed();
+        return other != this
+            && other instanceof PenguinEntity penguin
+            && this.isReadyToBreed()
+            && penguin.isReadyToBreed();
     }
 
     public boolean shouldStepDown() {
