@@ -137,6 +137,10 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return this.getTargetFromBrain();
     }
 
+    public boolean isDomestic() {
+        return this.getVariant().is(FowlPlayVariantTags.Goose.DOMESTIC);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -273,7 +277,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public CylindricalRadius getWalkRange() {
-        return new CylindricalRadius(32, 12);
+        return this.isDomestic()
+            ? new CylindricalRadius(64, 12)
+            : new CylindricalRadius(32, 12);
     }
 
     @Override
@@ -344,7 +350,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             ),
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CustomBehaviours.setWaterWalkTarget(),
+                    CompositeBehaviours.trySetWaterWalkTarget(),
                     1
                 ),
                 Pair.of(
@@ -365,7 +371,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CustomBehaviours.setWaterWalkTarget(),
+                CompositeBehaviours.trySetWaterWalkTarget(),
                 CustomBehaviours.idleIfNotFlying()
                     .runForBetween(100, 300)
             )
@@ -382,7 +388,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public BrainActivityGroup<? extends GooseEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CustomBehaviours.setWaterRestTarget(),
+            CompositeBehaviours.trySetWaterRestTarget(),
             CustomBehaviours.idleIfInWater()
         );
     }

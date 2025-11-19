@@ -281,7 +281,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CustomBehaviours.setWaterWalkTarget(),
+                    CompositeBehaviours.trySetWaterWalkTarget(),
                     1
                 ),
                 Pair.of(
@@ -302,7 +302,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CustomBehaviours.setWaterWalkTarget(),
+                CompositeBehaviours.trySetWaterWalkTarget(),
                 CustomBehaviours.idleIfNotFlying()
                     .runForBetween(100, 300)
             )
@@ -319,7 +319,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public BrainActivityGroup<? extends DuckEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CustomBehaviours.setWaterRestTarget(),
+            CompositeBehaviours.trySetWaterRestTarget(),
             CustomBehaviours.idleIfInWater()
         );
     }

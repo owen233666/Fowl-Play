@@ -52,7 +52,6 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -291,7 +290,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
                 Pair.of(
-                    CustomBehaviours.setNonAirWalkTarget(),
+                    CompositeBehaviours.trySetNonAirWalkTarget(),
                     1
                 ),
                 Pair.of(
@@ -300,7 +299,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
                     2
                 )
             ),
-            CustomBehaviours.flyAroundIfNoWalkTarget()
+            new SetRandomFlightTarget<>()
         );
     }
 
@@ -313,7 +312,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(
-                CustomBehaviours.setNonAirWalkTarget(),
+                CompositeBehaviours.trySetNonAirWalkTarget(),
                 CustomBehaviours.idleIfNotFlying()
                     .runForBetween(100, 300)
             )
@@ -330,7 +329,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public BrainActivityGroup<? extends GullEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            CustomBehaviours.setWaterRestTarget(),
+            CompositeBehaviours.trySetWaterRestTarget(),
             CustomBehaviours.idleIfInWater()
         );
     }
@@ -339,7 +338,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     public BrainActivityGroup<GullEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
             new SetRandomFlightTarget<>()
-                .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }
 

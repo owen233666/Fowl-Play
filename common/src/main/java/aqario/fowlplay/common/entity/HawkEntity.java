@@ -258,7 +258,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
             new SetRandomFlightTarget<>()
-                .startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
         );
     }
 

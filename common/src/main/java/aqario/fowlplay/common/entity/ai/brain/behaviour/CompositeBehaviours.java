@@ -20,6 +20,41 @@ import java.util.function.Predicate;
  * A collection of preconfigured group behaviours for ease of use.
  */
 public class CompositeBehaviours {
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetWaterWalkTarget() {
+        return new AllApplicableBehaviours<>(
+            new SetWaterWalkTarget<E>()
+                .radius(32, 24),
+            new SetRandomFlightTarget<>()
+        );
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetNonAirWalkTarget() {
+        return new AllApplicableBehaviours<>(
+            new SetNonAirWalkTarget<E>()
+                .setRadius(32)
+                .dontAvoidWater(),
+            new SetRandomFlightTarget<>()
+        );
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetGroundWalkTarget() {
+        return new AllApplicableBehaviours<>(
+            new SetNonAirWalkTarget<E>()
+                .setRadius(32, 16),
+            new SetRandomFlightTarget<>()
+        );
+    }
+
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetWaterRestTarget() {
+        return new AllApplicableBehaviours<>(
+            new SetWaterWalkTarget<E>()
+                .radius(64, 32)
+                .startCondition(Predicate.not(Entity::isInWaterOrBubble))
+                .stopIf(Entity::isInWaterOrBubble),
+            new SetRandomFlightTarget<>()
+        );
+    }
+
     public static <E extends BirdEntity> ExtendedBehaviour<E> idleAndLookAround() {
         return new OneRandomBehaviour<>(
             new SetRandomLookTarget<>(),
@@ -31,7 +66,7 @@ public class CompositeBehaviours {
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> tryPickUpFood() {
         return new AllApplicableBehaviours<>(
             CustomBehaviours.setNearestFoodWalkTarget(),
-            CustomBehaviours.flyAroundIfNoWalkTarget()
+            new SetRandomFlightTarget<>()
         );
     }
 
@@ -76,7 +111,7 @@ public class CompositeBehaviours {
                 2
             ),
             Pair.of(
-                CustomBehaviours.setGroundWalkTarget(),
+                trySetGroundWalkTarget(),
                 1
             )
         );
