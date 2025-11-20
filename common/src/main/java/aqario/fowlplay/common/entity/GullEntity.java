@@ -6,7 +6,7 @@ import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.navigation.AmphibiousNavigation;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -308,7 +308,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(

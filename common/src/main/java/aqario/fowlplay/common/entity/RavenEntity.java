@@ -4,7 +4,7 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -208,7 +208,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -260,7 +260,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
         return BirdBrain.restActivity(
             new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+                .startCondition(Predicate.not(BirdUtil::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
     }
@@ -274,7 +274,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
                     5
                 ),
                 Pair.of(
-                    SetAdultWalkTarget.create(Birds.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTarget.create(BirdUtil.STAY_NEAR_ENTITY_RANGE),
                     2
                 )
             ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))

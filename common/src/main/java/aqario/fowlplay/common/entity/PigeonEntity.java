@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.navigation.GroundNavigation;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
@@ -381,7 +381,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             FlightBehaviours.stopFalling(),
             new TeleportToTarget(),
             new SetOwnerTarget(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -444,7 +444,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
         return BirdBrain.restActivity(
             new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+                .startCondition(Predicate.not(BirdUtil::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
     }

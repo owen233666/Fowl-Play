@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
 import aqario.fowlplay.common.util.AnimationStateList;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import net.minecraft.core.component.DataComponents;
@@ -199,7 +199,7 @@ public abstract class BirdEntity extends Animal {
     }
 
     public int getFleeRange(LivingEntity target) {
-        return Birds.isNotFlightless(target) ? 32 : 16;
+        return BirdUtil.isNotFlightless(target) ? 32 : 16;
     }
 
     public boolean hasLowHealth() {
@@ -347,11 +347,11 @@ public abstract class BirdEntity extends Animal {
     }
 
     protected boolean canCall() {
-        return Birds.isDaytime(this);
+        return BirdUtil.isDaytime(this);
     }
 
     protected boolean canSing() {
-        return Birds.isDaytime(this) && this.onGround() && !this.isBaby();
+        return BirdUtil.isDaytime(this) && this.onGround() && !this.isBaby();
     }
 
     private void resetCallDelay() {

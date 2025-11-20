@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.entity.ai.navigation.FlightNavigation;
 import aqario.fowlplay.common.entity.ai.navigation.GroundNavigation;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
@@ -347,7 +347,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
         this.getNavigation().stop();
         Brain<?> brain = this.getBrain();
         brain.eraseMemory(MemoryModuleType.WALK_TARGET);
-        if(Birds.isNotFlightless(this) && Birds.isPerched(this)) {
+        if(BirdUtil.isNotFlightless(this) && BirdUtil.isPerched(this)) {
             this.setDeltaMovement(Vec3.ZERO);
             this.getNavigation().stop();
         }
@@ -376,7 +376,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
     @Override
     protected boolean canSing() {
-        return Birds.isPerched(this) && super.canSing();
+        return BirdUtil.isPerched(this) && super.canSing();
     }
 
     // TODO: the wings should flap faster based on positive vertical (maybe horizontal) acceleration, not velocity

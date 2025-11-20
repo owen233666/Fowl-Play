@@ -46,6 +46,7 @@ public class FowlPlay {
         SparrowVariant.init();
 
         FowlPlayActivities.init();
+        FowlPlayBlocks.init();
         FowlPlayEntityTypes.init();
         FowlPlayItems.init();
         FowlPlayMemoryTypes.init();

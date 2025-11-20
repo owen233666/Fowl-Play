@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -18,27 +18,27 @@ import java.util.function.Predicate;
 public class CustomBehaviours {
     public static <E extends BirdEntity> ExtendedBehaviour<E> setNearestFoodWalkTarget() {
         return new SetItemWalkTarget<E>()
-            .radius(Birds.ITEM_PICK_UP_RANGE)
-            .speed(Birds.FAST_SPEED);
+            .radius(BirdUtil.ITEM_PICK_UP_RANGE)
+            .speed(BirdUtil.FAST_SPEED);
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> setAvoidEntityWalkTarget() {
         return new SetWalkTargetAwayFrom<E, LivingEntity>(MemoryModuleType.AVOID_TARGET, Entity::position)
-            .speed(Birds.FAST_SPEED);
+            .speed(BirdUtil.FAST_SPEED);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfNotFlying() {
         return new Idle<E>()
             .noTimeout()
-            .startCondition(entity -> !entity.isFlying() && !Birds.isPerched(entity))
-            .stopIf(entity -> entity.isFlying() || Birds.isPerched(entity));
+            .startCondition(entity -> !entity.isFlying() && !BirdUtil.isPerched(entity))
+            .stopIf(entity -> entity.isFlying() || BirdUtil.isPerched(entity));
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> idleIfPerched() {
         return new Idle<E>()
             .noTimeout()
-            .startCondition(Birds::isPerched)
-            .stopIf(Predicate.not(Birds::isPerched));
+            .startCondition(BirdUtil::isPerched)
+            .stopIf(Predicate.not(BirdUtil::isPerched));
     }
 
     public static <E extends BirdEntity> ExtendedBehaviour<E> idleIfInWater() {

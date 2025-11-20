@@ -8,7 +8,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
 import aqario.fowlplay.common.util.AnimationStateList;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -241,7 +241,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightBehaviours.stopFalling(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -290,7 +290,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
     public BrainActivityGroup<? extends SparrowEntity> getRestTasks() {
         return BirdBrain.restActivity(
             new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+                .startCondition(Predicate.not(BirdUtil::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
     }

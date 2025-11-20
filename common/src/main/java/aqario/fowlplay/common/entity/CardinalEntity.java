@@ -7,7 +7,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -137,7 +137,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightBehaviours.stopFalling(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -179,7 +179,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     public BrainActivityGroup<? extends CardinalEntity> getRestTasks() {
         return BirdBrain.restActivity(
             new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+                .startCondition(Predicate.not(BirdUtil::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
     }

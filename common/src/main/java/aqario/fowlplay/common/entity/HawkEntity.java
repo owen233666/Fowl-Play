@@ -4,7 +4,7 @@ import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
 import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -207,7 +207,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
             new SetAttackTarget<>(),
-            SetEntityLookTarget.create(Birds::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -249,7 +249,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
         return BirdBrain.restActivity(
             new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+                .startCondition(Predicate.not(BirdUtil::isPerched)),
             CustomBehaviours.idleIfPerched()
         );
     }

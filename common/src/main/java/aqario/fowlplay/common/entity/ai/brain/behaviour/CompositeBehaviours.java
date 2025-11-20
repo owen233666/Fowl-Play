@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
-import aqario.fowlplay.common.util.Birds;
+import aqario.fowlplay.common.util.BirdUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -90,8 +90,8 @@ public class CompositeBehaviours {
             Pair.of(
                 idleAndLookAround()
                     .runForBetween(30, 100)
-                    .startCondition(Birds::isPerched)
-                    .stopIf(Predicate.not(Birds::isPerched)),
+                    .startCondition(BirdUtil::isPerched)
+                    .stopIf(Predicate.not(BirdUtil::isPerched)),
                 8
             ),
             Pair.of(
