@@ -19,7 +19,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -154,12 +153,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
     @Override
     public boolean isBaby() {
         return false;
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return null;
     }
 
     public Ingredient getFood() {

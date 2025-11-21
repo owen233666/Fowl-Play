@@ -17,10 +17,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.VariantHolder;
@@ -79,12 +77,6 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
         if(nbt.contains("variant")) {
             this.setVariant(Variant.valueOf(nbt.getString("variant")));
         }
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return null;
     }
 
     @Override

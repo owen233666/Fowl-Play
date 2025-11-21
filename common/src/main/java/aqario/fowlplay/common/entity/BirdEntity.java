@@ -124,8 +124,9 @@ public abstract class BirdEntity extends Animal {
         return equipmentSlot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
     }
 
+    @Nullable
     @Override
-    public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         return null;
     }
 

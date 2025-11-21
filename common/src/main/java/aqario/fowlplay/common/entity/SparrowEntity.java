@@ -14,10 +14,8 @@ import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,12 +49,6 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
 
     public SparrowEntity(EntityType<? extends SparrowEntity> entityType, Level world) {
         super(entityType, world);
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return null;
     }
 
     @Override

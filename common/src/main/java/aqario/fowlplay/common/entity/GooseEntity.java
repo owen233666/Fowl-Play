@@ -113,14 +113,19 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(world);
-        if(goose != null && entity instanceof GooseEntity parent2) {
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(level);
+        if(goose != null && otherParent instanceof GooseEntity parent2) {
             getRandomOf(goose.getRandom(), this, parent2).getVariant().value().domesticId()
                 .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
                 .ifPresent(goose::setVariant);
         }
         return goose;
+    }
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return this.getFood().test(stack);
     }
 
     @SafeVarargs
@@ -224,7 +229,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public boolean shouldAttack(LivingEntity target) {
         if(this.isAggressive()) {
-            return target instanceof Player;
+            return target instanceof Player player && !this.trusts(player);
         }
         if(this.hasLowHealth()) {
             return false;
