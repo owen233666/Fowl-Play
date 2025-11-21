@@ -135,7 +135,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public float getAgeScale() {
-        return this.isBaby() ? 0.55F : 1.0F;
+        return this.isBaby() ? 0.45F : 1.0F;
     }
 
     @Override
@@ -208,8 +208,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         }
     }
 
+    @Override
     public boolean isAggressive() {
-        return this.aggressive;
+        return this.aggressive && !this.isBaby();
     }
 
     @Override
@@ -275,7 +276,19 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_GOOSE_CALL.get();
+        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+            return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.SWAN)) {
+            return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.EMDEN)) {
+            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.CHINESE)) {
+            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_CALL.get();
+        }
+        return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_CALL.get();
     }
 
     @Override
@@ -286,7 +299,19 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_GOOSE_HURT.get();
+        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+            return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.SWAN)) {
+            return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.EMDEN)) {
+            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.CHINESE)) {
+            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_HURT.get();
+        }
+        return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_HURT.get();
     }
 
     @Override
