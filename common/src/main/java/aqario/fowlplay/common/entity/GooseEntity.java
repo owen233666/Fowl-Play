@@ -135,7 +135,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public float getAgeScale() {
-        return this.isBaby() ? 0.4F : 1.0F;
+        return this.isBaby() ? 0.55F : 1.0F;
     }
 
     @Override
