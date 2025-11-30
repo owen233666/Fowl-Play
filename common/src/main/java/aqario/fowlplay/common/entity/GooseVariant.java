@@ -62,7 +62,7 @@ public record GooseVariant(
 
     public enum ModelType implements StringRepresentable {
         WILD("wild"),
-        DOMESTIC("modelType");
+        DOMESTIC("domestic");
 
         private final String name;
 

@@ -1,8 +1,11 @@
 package aqario.fowlplay.common.util;
 
+import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.GoalUtils;
 import net.minecraft.world.entity.ai.util.RandomPos;
@@ -130,9 +133,29 @@ public class TargetingUtil {
     }
 
     @Nullable
-    public static Vec3 validatePos(PathfinderMob entity, BlockPos pos, CylindricalRadius range) {
+    public static Vec3 validatePos(PathfinderMob entity, @Nullable BlockPos pos, CylindricalRadius range) {
         BlockPos validPos = validateBlockPos(entity, pos, range);
         return validPos != null ? validPos.getBottomCenter() : null;
+    }
+
+    /**
+     * <a href="https://www.desmos.com/calculator/k6yqz8wj65">https://www.desmos.com/calculator/k6yqz8wj65</a>
+     */
+    @Nullable
+    public static BlockPos shiftPosTowardsFlyHeightRange(FlyingBirdEntity bird, @Nullable BlockPos pos) {
+        if(pos == null) {
+            return null;
+        }
+        int posY = pos.getY();
+        RandomSource random = bird.getRandom();
+        Pair<Integer, Integer> flyHeightRange = bird.getFlyHeightRange();
+        if(posY < flyHeightRange.getFirst()) {
+            return pos.atY(Math.min(random.nextIntBetweenInclusive(5, 10), flyHeightRange.getFirst() - posY));
+        }
+        if(posY > flyHeightRange.getSecond()) {
+            return pos.atY(Math.max(-random.nextIntBetweenInclusive(5, 10), flyHeightRange.getSecond() - posY));
+        }
+        return pos;
     }
 
     public static boolean isPerch(PathfinderMob entity, BlockPos pos) {

@@ -6,11 +6,8 @@ import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.common.util.TargetingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
-import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.ToDoubleFunction;
 
 /**
  * Similar to {@link LandRandomPos} but specialized for birds.
@@ -60,46 +57,33 @@ public class BirdRandomPos {
 
     @Nullable
     public static Vec3 getPerch(BirdEntity entity, CylindricalRadius range) {
-        return getPerch(entity, range, pos -> 0);
-    }
-
-    @Nullable
-    public static Vec3 getPerch(BirdEntity entity, CylindricalRadius range, ToDoubleFunction<BlockPos> scorer) {
         Vec3 direction = entity.getViewVector(1);
-        return RandomPos.generateRandomPos(() -> {
-            BlockPos pos = TargetingUtil.tryFindPerch(entity, range, ExtendedRandomPos.generateWithinAnglePreferNear(
-                entity.getRandom(),
-                range.horizontal(),
-                range.vertical(),
-                0,
-                direction,
-                Math.PI * 3 / 2
-            ));
-            return TargetingUtil.validateBlockPos(entity, pos, range);
-        }, scorer);
+        BlockPos pos = TargetingUtil.tryFindPerch(entity, range, ExtendedRandomPos.generateWithinAnglePreferNear(
+            entity.getRandom(),
+            range.horizontal(),
+            range.vertical(),
+            0,
+            direction,
+            Math.PI * 3 / 2
+        ));
+        return TargetingUtil.validatePos(entity, pos, range);
     }
 
     @Nullable
     public static Vec3 getAir(FlyingBirdEntity entity, CylindricalRadius range) {
-        return getAir(entity, range, entity::getFlyingWalkTargetValue);
-    }
-
-    @Nullable
-    public static Vec3 getAir(FlyingBirdEntity entity, CylindricalRadius range, ToDoubleFunction<BlockPos> scorer) {
         // the entity's path should be in the same direction as its look vector
         Vec3 direction = entity.getViewVector(1);
         // the angle within which the target position should be in regard to the entity's look vector
         final double angle = 15.0;
-        return RandomPos.generateRandomPos(() -> {
-            BlockPos pos = TargetingUtil.tryFindAir(entity, range, ExtendedRandomPos.generateWithinAnglePreferFar(
-                entity.getRandom(),
-                range.horizontal(),
-                range.vertical(),
-                0,
-                direction,
-                angle * (Math.PI / 180)
-            ));
-            return TargetingUtil.validateBlockPos(entity, pos, range);
-        }, scorer);
+        BlockPos pos = TargetingUtil.tryFindAir(entity, range, ExtendedRandomPos.generateWithinAnglePreferFar(
+            entity.getRandom(),
+            range.horizontal(),
+            range.vertical(),
+            0,
+            direction,
+            angle * (Math.PI / 180)
+        ));
+        pos = TargetingUtil.shiftPosTowardsFlyHeightRange(entity, pos);
+        return TargetingUtil.validatePos(entity, pos, range);
     }
 }
