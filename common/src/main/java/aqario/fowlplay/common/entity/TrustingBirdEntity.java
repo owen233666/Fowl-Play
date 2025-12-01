@@ -40,7 +40,7 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     protected ListTag toNbtList(List<UUID> uuids) {
         ListTag nbtList = new ListTag();
 
-        for (UUID uuid : uuids) {
+        for(UUID uuid : uuids) {
             nbtList.add(NbtUtils.createUUID(uuid));
         }
 
@@ -56,9 +56,9 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("trusted")) {
+        if(nbt.contains("trusted")) {
             ListTag list = (ListTag) nbt.get("trusted");
-            if (list != null) {
+            if(list != null) {
                 list.forEach(element -> this.addTrustedUuid(NbtUtils.loadUUID(element)));
             }
         }
@@ -68,8 +68,8 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     protected void pickUpItem(ItemEntity item) {
         super.pickUpItem(item);
         UUID thrower = item.getOwner() != null ? item.getOwner().getUUID() : null;
-        if (thrower != null && !this.trustsUuid(thrower)) {
-            if (this.random.nextInt(3) == 0) {
+        if(thrower != null && !this.trustsUuid(thrower)) {
+            if(this.random.nextInt(3) == 0) {
                 this.addTrustedUuid(thrower);
                 this.level().broadcastEntityEvent(this, EntityEvent.VILLAGER_HAPPY);
             }
@@ -78,8 +78,8 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
 
     @Override
     public void handleEntityEvent(byte status) {
-        if (status == EntityEvent.VILLAGER_HAPPY) {
-            if (this.forcedAgeTimer == 0) {
+        if(status == EntityEvent.VILLAGER_HAPPY) {
+            if(this.forcedAgeTimer == 0) {
                 this.forcedAgeTimer = 20;
             }
         }
@@ -121,7 +121,7 @@ public abstract class TrustingBirdEntity extends FlyingBirdEntity {
     public List<Player> getTrusted() {
         List<UUID> uuids = this.getTrustedUuids();
         List<Player> entities = new ArrayList<>();
-        for (UUID uuid : uuids) {
+        for(UUID uuid : uuids) {
             entities.add(this.level().getPlayerByUUID(uuid));
         }
         return entities;
