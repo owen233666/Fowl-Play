@@ -116,13 +116,13 @@ public class TargetingUtil {
             entity, range.horizontal(), entity.getRandom(), initialPos
         );
         int surfaceY = entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ());
-        // if position is above the surface, set to surface level
-        if(adjustedPos.getY() > surfaceY) {
+        // if both position and entity are above the surface, set to surface level
+        if(adjustedPos.getY() > surfaceY && entity.getY() >= surfaceY) {
             adjustedPos = adjustedPos.atY(
                 surfaceY + blocksAbove
             );
         }
-        // else, move up until we reach solid ground or water
+        // else, move up based on provided predicate, and vertically offset final position by blocksAbove
         else {
             adjustedPos = RandomPos.moveUpOutOfSolid(adjustedPos, entity.level().getMaxBuildHeight(), predicate)
                 .above(blocksAbove - 1);
