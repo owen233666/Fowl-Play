@@ -13,6 +13,9 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -36,6 +39,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BirdEntity extends Animal {
+    private static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(BirdEntity.class, EntityDataSerializers.BOOLEAN);
     public final AnimationState standingState = new AnimationState();
     public final AnimationState swimmingState = new AnimationState();
     public final AnimationStateList idleAnimStates = this.createIdleAnimations();
@@ -67,20 +71,37 @@ public abstract class BirdEntity extends Animal {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        this.setYRot(world.getRandom().nextFloat() * 360.0F);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        this.setYRot(level.getRandom().nextFloat() * 360.0F);
         this.setYBodyRot(this.getYRot());
         this.setYHeadRot(this.getYRot());
-        if(this.getType().getCategory() == CustomMobCategory.AMBIENT_BIRDS.mobCategory) {
+        if(this.shouldSpawnAsAmbient(spawnType)) {
             this.setAmbient(true);
         }
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    protected boolean shouldSpawnAsAmbient(MobSpawnType spawnType) {
+        return this.shouldBeAmbient()
+            && (spawnType == MobSpawnType.NATURAL
+            || spawnType == MobSpawnType.CHUNK_GENERATION);
+    }
+
+    protected boolean shouldBeAmbient() {
+        return this.getType().getCategory() == CustomMobCategory.AMBIENT_BIRDS.mobCategory;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SLEEPING, false);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean("ambient", this.ambient);
+        nbt.putBoolean("sleeping", this.isSleeping());
     }
 
     @Override
@@ -90,8 +111,9 @@ public abstract class BirdEntity extends Animal {
             this.setAmbient(nbt.getBoolean("ambient"));
         }
         else {
-            this.setAmbient(this.getType().getCategory() == CustomMobCategory.AMBIENT_BIRDS.mobCategory);
+            this.setAmbient(this.shouldBeAmbient());
         }
+        this.setSleeping(nbt.getBoolean("sleeping"));
     }
 
     /**
@@ -112,7 +134,7 @@ public abstract class BirdEntity extends Animal {
 
     @Override
     public int getMaxSpawnClusterSize() {
-        return 8;
+        return 6;
     }
 
     @Override
@@ -175,14 +197,28 @@ public abstract class BirdEntity extends Animal {
     }
 
     public boolean isBelowWaterline() {
-        return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getBoundingBox().getYsize() * 0.35/*this.getWaterline()*/;
+        return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getBoundingBox().getYsize() * 0.35;
     }
 
-    // how much of the hitbox the water should cover (from the bottom)
-    public abstract float getWaterline();
+    @Override
+    public boolean isSleeping() {
+        return this.entityData.get(SLEEPING);
+    }
+
+    private void setSleeping(boolean sleeping) {
+        this.entityData.set(SLEEPING, sleeping);
+    }
+
+    private void goToSleep() {
+        this.setSleeping(true);
+    }
+
+    private void wakeUp() {
+        this.setSleeping(false);
+    }
 
     private boolean canEat(ItemStack stack) {
-        return this.getFood().test(stack)/* && !this.isSleeping()*/;
+        return this.getFood().test(stack) && !this.isSleeping();
     }
 
     public abstract Ingredient getFood();
@@ -306,6 +342,9 @@ public abstract class BirdEntity extends Animal {
             this.updateAnimations();
         }
         super.tick();
+        if (this.isAmbient() && !this.shouldBeAmbient()) {
+            this.setAmbient(false);
+        }
     }
 
     protected boolean isMoving() {

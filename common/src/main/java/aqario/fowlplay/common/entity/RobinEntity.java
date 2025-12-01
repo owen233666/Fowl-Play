@@ -112,11 +112,6 @@ public class RobinEntity extends FlyingBirdEntity implements BirdBrain<RobinEnti
     }
 
     @Override
-    public float getWaterline() {
-        return 0.45F;
-    }
-
-    @Override
     public Vec3 getLeashOffset() {
         return new Vec3(0.0, 0.5f * this.getEyeHeight(), this.getBbWidth() * 0.4f);
     }

@@ -68,11 +68,6 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
         return 1.0f;
     }
 
-    @Override
-    public float getWaterline() {
-        return 0.45F;
-    }
-
     @Nullable
     @Override
     protected SoundEvent getCallSound() {

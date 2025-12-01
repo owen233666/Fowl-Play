@@ -1,22 +1,20 @@
 package aqario.fowlplay.common.entity;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -136,7 +134,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements O
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide && !this.isInvulnerableTo(source)) {
+        if (!this.level().isClientSide() && !this.isInvulnerableTo(source)) {
             this.setSitting(false);
         }
         return super.hurt(source, amount);
@@ -154,7 +152,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements O
         if (this.isFlying()) {
             this.setSitting(false);
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.isSitting()) {
                 this.getNavigation().stop();
                 this.setInSittingPose(true);
@@ -163,11 +161,6 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements O
                 this.setInSittingPose(false);
             }
         }
-    }
-
-    @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        return this.trusts(player) ? super.mobInteract(player, hand) : InteractionResult.PASS;
     }
 
     @Nullable
@@ -238,7 +231,7 @@ public abstract class TameableBirdEntity extends TrustingBirdEntity implements O
 
     @Override
     public void die(DamageSource source) {
-        if (!this.level().isClientSide && this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
+        if (!this.level().isClientSide() && this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
             this.getOwner().sendSystemMessage(this.getCombatTracker().getDeathMessage());
         }
 

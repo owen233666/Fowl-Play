@@ -104,12 +104,12 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         FowlPlayBuiltInRegistries.GOOSE_VARIANT
-            .getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
+            .getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, level.getRandom())
             .ifPresent(this::setVariant);
 
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Nullable
@@ -313,11 +313,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_HURT.get();
         }
         return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_HURT.get();
-    }
-
-    @Override
-    public float getWaterline() {
-        return 0.35F;
     }
 
     @Override

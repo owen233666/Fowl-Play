@@ -142,11 +142,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     }
 
     @Override
-    public float getWaterline() {
-        return 0.5F;
-    }
-
-    @Override
     public Vec3 getLeashOffset() {
         return new Vec3(0.0, 0.5f * this.getEyeHeight(), this.getBbWidth() * 0.4f);
     }

@@ -73,8 +73,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        float f = world.getRandom().nextFloat();
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        float f = level.getRandom().nextFloat();
         if(f < 0.5f) { // 50% chance for banded
             FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.BANDED).ifPresent(this::setVariant);
         }
@@ -90,7 +90,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         else { // 1% chance for white
             FowlPlayBuiltInRegistries.PIGEON_VARIANT.getHolder(PigeonVariant.WHITE).ifPresent(this::setVariant);
         }
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
@@ -144,11 +144,6 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public Pair<Integer, Integer> getFlyHeightRange() {
         return Pair.of(10, 12);
-    }
-
-    @Override
-    public float getWaterline() {
-        return 0.45F;
     }
 
     @Override

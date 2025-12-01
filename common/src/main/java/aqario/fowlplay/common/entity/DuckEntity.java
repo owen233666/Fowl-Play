@@ -95,9 +95,9 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        FowlPlayBuiltInRegistries.DUCK_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        FowlPlayBuiltInRegistries.DUCK_VARIANT.getRandom(level.getRandom()).ifPresent(this::setVariant);
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
@@ -202,11 +202,6 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return FowlPlaySoundEvents.ENTITY_DUCK_HURT.get();
-    }
-
-    @Override
-    public float getWaterline() {
-        return 0.35F;
     }
 
     @Override
