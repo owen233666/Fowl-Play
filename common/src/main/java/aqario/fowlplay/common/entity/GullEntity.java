@@ -90,7 +90,8 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
 
     @Override
     protected PathNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.level());
+        return new AmphibiousNavigation(this, this.level())
+            .setSurfaceOnly();
     }
 
     @Override
@@ -227,7 +228,7 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
 
     @Override
     public CylindricalRadius getWalkRange() {
-        return new CylindricalRadius(24, 12);
+        return new CylindricalRadius(24, 8);
     }
 
     @Override

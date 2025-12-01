@@ -99,7 +99,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     protected PathNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.level());
+        return new AmphibiousNavigation(this, this.level())
+            .setSurfaceOnly();
     }
 
     @Override
@@ -322,8 +323,8 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public CylindricalRadius getWalkRange() {
         return this.isDomestic()
-            ? new CylindricalRadius(64, 12)
-            : new CylindricalRadius(32, 12);
+            ? new CylindricalRadius(64, 8)
+            : new CylindricalRadius(32, 8);
     }
 
     @Override

@@ -33,9 +33,14 @@
     - Scarecrows can be destroyed by fire, lava, and explosions
 - **Other changes**
   - Fix incompatibility with Perfect Parity
+  - Fix seemingly random crash in 1.20.1 when a bird is pathing
   - Add European Portuguese translation
   - Add Japanese translation
   - Add Traditional Chinese translation
+
+## 1.1.0-beta.6
+
+- Fix seemingly random crash in 1.20.1 when a bird is pathing
 
 ## 1.1.0-beta.5
 

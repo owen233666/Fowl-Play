@@ -83,7 +83,6 @@ public class BirdRandomPos {
             direction,
             angle * (Math.PI / 180)
         ));
-        pos = TargetingUtil.shiftPosTowardsFlyHeightRange(entity, pos);
         return TargetingUtil.validatePos(entity, pos, range);
     }
 }

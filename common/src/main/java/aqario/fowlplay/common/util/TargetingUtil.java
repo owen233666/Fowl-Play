@@ -18,16 +18,25 @@ import java.util.function.Predicate;
 
 public class TargetingUtil {
     @Nullable
-    public static BlockPos tryFindAir(PathfinderMob entity, CylindricalRadius range, BlockPos pos) {
+    public static BlockPos tryFindAir(FlyingBirdEntity entity, CylindricalRadius range, BlockPos pos) {
         BlockPos adjustedPos = RandomPos.generateRandomPosTowardDirection(
             entity, range.horizontal(), entity.getRandom(), pos
         );
-        adjustedPos = RandomPos.moveUpOutOfSolid(adjustedPos, entity.level().getMaxBuildHeight(), currentPos ->
-            GoalUtils.isSolid(entity, currentPos)
-        );
-        if(GoalUtils.isWater(entity, adjustedPos)
+        adjustedPos = shiftPosTowardsFlyHeightRange(entity, adjustedPos);
+        int surfaceY = entity.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, adjustedPos.getX(), adjustedPos.getZ());
+        if(adjustedPos.getY() < surfaceY && entity.getY() >= surfaceY) {
+            adjustedPos = adjustedPos.atY(
+                surfaceY + 12
+            );
+        }
+        else if(entity.getY() < surfaceY) {
+            adjustedPos = RandomPos.moveUpOutOfSolid(adjustedPos, entity.level().getMaxBuildHeight(), currentPos ->
+                GoalUtils.isSolid(entity, currentPos) || GoalUtils.isWater(entity, currentPos)
+            );
+        }
+        if(GoalUtils.isSolid(entity, adjustedPos)
+            || GoalUtils.isWater(entity, adjustedPos)
             || GoalUtils.hasMalus(entity, adjustedPos)
-            || GoalUtils.isNotStable(entity.getNavigation(), adjustedPos)
         ) {
             return null;
         }
@@ -103,12 +112,11 @@ public class TargetingUtil {
         BlockPos adjustedPos = RandomPos.generateRandomPosTowardDirection(
             entity, range.horizontal(), entity.getRandom(), initialPos
         );
+        int surfaceY = entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ());
         // if position is above the surface, set to surface level
-        if(adjustedPos.getY() > entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ())) {
-            adjustedPos = new BlockPos(
-                adjustedPos.getX(),
-                entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ()) + blocksAbove,
-                adjustedPos.getZ()
+        if(adjustedPos.getY() > surfaceY) {
+            adjustedPos = adjustedPos.atY(
+                surfaceY + blocksAbove
             );
         }
         // else, move up until we reach solid ground or water
@@ -138,22 +146,17 @@ public class TargetingUtil {
         return validPos != null ? validPos.getBottomCenter() : null;
     }
 
-    /**
-     * <a href="https://www.desmos.com/calculator/k6yqz8wj65">https://www.desmos.com/calculator/k6yqz8wj65</a>
-     */
-    @Nullable
-    public static BlockPos shiftPosTowardsFlyHeightRange(FlyingBirdEntity bird, @Nullable BlockPos pos) {
-        if(pos == null) {
-            return null;
-        }
+    public static BlockPos shiftPosTowardsFlyHeightRange(FlyingBirdEntity bird, BlockPos pos) {
         int posY = pos.getY();
         RandomSource random = bird.getRandom();
         Pair<Integer, Integer> flyHeightRange = bird.getFlyHeightRange();
-        if(posY < flyHeightRange.getFirst()) {
-            return pos.atY(Math.min(random.nextIntBetweenInclusive(5, 10), flyHeightRange.getFirst() - posY));
+        int lower = flyHeightRange.getFirst();
+        int upper = flyHeightRange.getSecond();
+        if(posY < lower) {
+            return pos.above(Math.min(random.nextIntBetweenInclusive(5, 10), lower - posY));
         }
-        if(posY > flyHeightRange.getSecond()) {
-            return pos.atY(Math.max(-random.nextIntBetweenInclusive(5, 10), flyHeightRange.getSecond() - posY));
+        if(posY > upper) {
+            return pos.below(Math.min(random.nextIntBetweenInclusive(5, 10), posY - upper));
         }
         return pos;
     }

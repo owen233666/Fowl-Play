@@ -90,7 +90,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     protected PathNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.level());
+        return new AmphibiousNavigation(this, this.level())
+            .setSurfaceOnly();
     }
 
     @Override
@@ -210,7 +211,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     public CylindricalRadius getWalkRange() {
-        return new CylindricalRadius(32, 12);
+        return new CylindricalRadius(32, 8);
     }
 
     @Override
