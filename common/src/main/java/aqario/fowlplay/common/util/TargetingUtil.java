@@ -85,20 +85,23 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos tryFindPerch(PathfinderMob entity, CylindricalRadius range, BlockPos pos) {
-        // TODO: this logic still needs fixing
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, range, Heightmap.Types.MOTION_BLOCKING, 1, currentPos ->
-            GoalUtils.isSolid(entity, currentPos)
-                && !TargetingUtil.isPerch(entity, currentPos)
-        );
-        if(GoalUtils.isWater(entity, adjustedPos.below())
+        int surfaceY = entity.level().getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, range, Heightmap.Types.MOTION_BLOCKING, 0, currentPos -> {
+            if(currentPos.getY() >= surfaceY) {
+                return false;
+            }
+            return !(isPerch(entity, currentPos)
+                && entity.level().getBlockState(currentPos.above()).isAir());
+        });
+        if(!TargetingUtil.isPerch(entity, adjustedPos)
+            || GoalUtils.isWater(entity, adjustedPos)
             || GoalUtils.hasMalus(entity, adjustedPos)
-            || !TargetingUtil.isPerch(entity, adjustedPos)
         ) {
             return null;
         }
         return entity.level().getBlockState(adjustedPos).getBlock() instanceof LeavesBlock
-            ? adjustedPos.below()
-            : adjustedPos;
+            ? adjustedPos
+            : adjustedPos.above();
     }
 
     public static BlockPos findSurfacePosition(
