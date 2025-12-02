@@ -115,9 +115,10 @@ public class TargetingUtil {
         BlockPos adjustedPos = RandomPos.generateRandomPosTowardDirection(
             entity, range.horizontal(), entity.getRandom(), initialPos
         );
+        int entitySurfaceY = entity.level().getHeight(heightmap, entity.getBlockX(), entity.getBlockZ());
         int surfaceY = entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ());
-        // if both position and entity are above the surface, set to surface level
-        if(adjustedPos.getY() > surfaceY && entity.getY() >= surfaceY) {
+        // if both position and entity are above the surface, set to surface level, and vertically offset final position by blocksAbove
+        if(adjustedPos.getY() > surfaceY && entity.getY() >= entitySurfaceY) {
             adjustedPos = adjustedPos.atY(
                 surfaceY + blocksAbove
             );

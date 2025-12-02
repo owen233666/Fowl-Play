@@ -29,7 +29,7 @@ public class SetPerchWalkTarget<E extends FlyingBirdEntity> extends ExtendedBeha
     @Override
     protected void start(E entity) {
         Brain<?> brain = entity.getBrain();
-        Vec3 target = BirdRandomPos.getPerchOrGround(entity, PERCH_RANGE, GROUND_RANGE);
+        Vec3 target = BirdRandomPos.getPerch(entity, PERCH_RANGE/*, GROUND_RANGE*/);
         if(target != null) {
             BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(target, 1.0f, 0));
         }

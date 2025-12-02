@@ -20,6 +20,14 @@ import java.util.function.Predicate;
  * A collection of preconfigured group behaviours for ease of use.
  */
 public class CompositeBehaviours {
+    public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetPerchRestTarget() {
+        return new AllApplicableBehaviours<E>(
+            new SetPerchWalkTarget<>(),
+            new SetRandomFlightTarget<>()
+        )
+            .startCondition(Predicate.not(Birds::isPerched));
+    }
+
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetWaterWalkTarget() {
         return new AllApplicableBehaviours<>(
             new SetWaterWalkTarget<E>()

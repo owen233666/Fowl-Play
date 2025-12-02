@@ -2,7 +2,10 @@ package aqario.fowlplay.common.entity;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
-import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.CompositeBehaviours;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.CustomBehaviours;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.FlightBehaviours;
+import aqario.fowlplay.common.entity.ai.brain.behaviour.SetEntityLookTarget;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
@@ -34,7 +37,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<CardinalEntity> {
     public CardinalEntity(EntityType<? extends BirdEntity> entityType, Level world) {
@@ -165,8 +167,7 @@ public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<Cardin
     @Override
     public BrainActivityGroup<? extends CardinalEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+            CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()
         );
     }

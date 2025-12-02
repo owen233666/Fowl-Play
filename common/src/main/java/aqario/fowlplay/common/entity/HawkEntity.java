@@ -45,7 +45,6 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
     public HawkEntity(EntityType<? extends HawkEntity> entityType, Level world) {
@@ -235,8 +234,7 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
     @Override
     public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+            CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()
         );
     }

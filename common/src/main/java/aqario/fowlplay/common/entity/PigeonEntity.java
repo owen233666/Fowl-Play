@@ -55,7 +55,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class PigeonEntity extends TameableBirdEntity implements BirdBrain<PigeonEntity>, VariantHolder<Holder<PigeonVariant>>, Flocking {
     private static final EntityDataAccessor<Optional<UUID>> RECIPIENT = SynchedEntityData.defineId(
@@ -431,8 +430,7 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     @Override
     public BrainActivityGroup<? extends PigeonEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+            CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()
         );
     }

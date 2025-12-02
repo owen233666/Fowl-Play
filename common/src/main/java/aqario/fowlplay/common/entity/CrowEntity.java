@@ -47,7 +47,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEntity> {
     public CrowEntity(EntityType<? extends CrowEntity> entityType, Level world) {
@@ -248,8 +247,7 @@ public class CrowEntity extends TrustingBirdEntity implements BirdBrain<CrowEnti
     @Override
     public BrainActivityGroup<? extends CrowEntity> getRestTasks() {
         return BirdBrain.restActivity(
-            new SetPerchWalkTarget<>()
-                .startCondition(Predicate.not(Birds::isPerched)),
+            CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()
         );
     }
