@@ -14,12 +14,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BirdRandomPos {
     @Nullable
-    public static Vec3 getWaterOrGround(BirdEntity entity, CylindricalRadius waterRange, CylindricalRadius groundRange) {
-        Vec3 pos = getWater(entity, waterRange);
-        return pos != null ? pos : getGround(entity, groundRange);
-    }
-
-    @Nullable
     public static Vec3 getWater(BirdEntity entity, CylindricalRadius range) {
         BlockPos pos = TargetingUtil.tryFindWater(entity, range, ExtendedRandomPos.generatePreferFar(
             entity.getRandom(),
@@ -40,12 +34,6 @@ public class BirdRandomPos {
     }
 
     @Nullable
-    public static Vec3 getPerchOrGround(BirdEntity entity, CylindricalRadius perchRange, CylindricalRadius groundRange) {
-        Vec3 pos = getPerch(entity, perchRange);
-        return pos != null ? pos : getGround(entity, groundRange);
-    }
-
-    @Nullable
     public static Vec3 getGround(BirdEntity entity, CylindricalRadius range) {
         BlockPos pos = TargetingUtil.tryFindGround(entity, range, ExtendedRandomPos.generatePreferFar(
             entity.getRandom(),
@@ -57,14 +45,10 @@ public class BirdRandomPos {
 
     @Nullable
     public static Vec3 getPerch(BirdEntity entity, CylindricalRadius range) {
-        Vec3 direction = entity.getViewVector(1);
-        BlockPos pos = TargetingUtil.tryFindPerch(entity, range, ExtendedRandomPos.generateWithinAnglePreferNear(
+        BlockPos pos = TargetingUtil.tryFindPerch(entity, range, ExtendedRandomPos.generatePreferNear(
             entity.getRandom(),
             range.horizontal(),
-            range.vertical(),
-            0,
-            direction,
-            Math.PI * 3 / 2
+            range.vertical()
         ));
         return TargetingUtil.validatePos(entity, pos, range);
     }
@@ -81,7 +65,7 @@ public class BirdRandomPos {
             range.vertical(),
             0,
             direction,
-            angle * (Math.PI / 180)
+            Math.toRadians(angle)
         ));
         return TargetingUtil.validatePos(entity, pos, range);
     }
