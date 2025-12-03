@@ -30,7 +30,7 @@ public class ExtendedRandomPos {
         final int horizontalRange,
         final int verticalRange
     ) {
-        double angle = random.nextDouble() * Mth.TWO_PI;
+        double angle = random.nextDouble() * Math.TAU;
         double dist = distanceFunction.applyAsDouble(random.nextDouble()) * horizontalRange;
         double x = -dist * Math.sin(angle);
         double z = dist * Math.cos(angle);

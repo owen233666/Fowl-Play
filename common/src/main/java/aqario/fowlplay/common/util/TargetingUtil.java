@@ -90,7 +90,9 @@ public class TargetingUtil {
             if(currentPos.getY() >= surfaceY) {
                 return false;
             }
-            return !(isPerch(entity, currentPos)
+            return !(entity.level().getBlockState(currentPos).getBlock() instanceof LeavesBlock
+                && !entity.level().getBlockState(currentPos.below()).isAir())
+                && !(isPerch(entity, currentPos)
                 && entity.level().getBlockState(currentPos.above()).isAir());
         });
         if(!TargetingUtil.isPerch(entity, adjustedPos)
@@ -118,7 +120,7 @@ public class TargetingUtil {
         int entitySurfaceY = entity.level().getHeight(heightmap, entity.getBlockX(), entity.getBlockZ());
         int surfaceY = entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ());
         // if both position and entity are above the surface, set to surface level, and vertically offset final position by blocksAbove
-        if(adjustedPos.getY() > surfaceY && entity.getY() >= entitySurfaceY) {
+        if(adjustedPos.getY() >= surfaceY && entity.getY() >= entitySurfaceY) {
             adjustedPos = adjustedPos.atY(
                 surfaceY + blocksAbove
             );

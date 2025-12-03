@@ -25,6 +25,7 @@ public class CompositeBehaviours {
             new SetPerchWalkTarget<>(),
             new SetRandomFlightTarget<>()
                 .startCondition(FlyingBirdEntity::isFlying)
+                .stopIf(Predicate.not(FlyingBirdEntity::isFlying))
         );
     }
 
@@ -34,6 +35,7 @@ public class CompositeBehaviours {
                 .radius(32, 24),
             new SetRandomFlightTarget<>()
                 .startCondition(FlyingBirdEntity::isFlying)
+                .stopIf(Predicate.not(FlyingBirdEntity::isFlying))
         );
     }
 
@@ -44,6 +46,7 @@ public class CompositeBehaviours {
                 .dontAvoidWater(),
             new SetRandomFlightTarget<>()
                 .startCondition(FlyingBirdEntity::isFlying)
+                .stopIf(Predicate.not(FlyingBirdEntity::isFlying))
         );
     }
 
@@ -53,6 +56,7 @@ public class CompositeBehaviours {
                 .radius(32, 16),
             new SetRandomFlightTarget<>()
                 .startCondition(FlyingBirdEntity::isFlying)
+                .stopIf(Predicate.not(FlyingBirdEntity::isFlying))
         );
     }
 
@@ -70,6 +74,7 @@ public class CompositeBehaviours {
                 .radius(64, 32),
             new SetRandomFlightTarget<>()
                 .startCondition(FlyingBirdEntity::isFlying)
+                .stopIf(Predicate.not(FlyingBirdEntity::isFlying))
         )
             .startCondition(Predicate.not(Entity::isInWaterOrBubble))
             .stopIf(Entity::isInWaterOrBubble);
