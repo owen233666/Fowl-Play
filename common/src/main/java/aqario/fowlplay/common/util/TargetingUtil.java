@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
@@ -85,15 +86,19 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos tryFindPerch(PathfinderMob entity, CylindricalRadius range, BlockPos pos) {
-        int surfaceY = entity.level().getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
         BlockPos adjustedPos = findSurfacePosition(entity, pos, range, Heightmap.Types.MOTION_BLOCKING, 0, currentPos -> {
-            if(currentPos.getY() >= surfaceY) {
+            boolean isLeaves = entity.level().getBlockState(currentPos.below()).getBlock() instanceof LeavesBlock;
+            boolean isValidLeavesPerch = isLeaves
+                && !entity.level().getBlockState(currentPos.below(2)).isAir();
+            boolean isValidPerch = isPerch(entity, currentPos.below())
+                && entity.level().getBlockState(currentPos).isAir();
+            if(isLeaves && !isValidLeavesPerch) {
+                return true;
+            }
+            if(isValidLeavesPerch) {
                 return false;
             }
-            return !(entity.level().getBlockState(currentPos).getBlock() instanceof LeavesBlock
-                && !entity.level().getBlockState(currentPos.below()).isAir())
-                && !(isPerch(entity, currentPos)
-                && entity.level().getBlockState(currentPos.above()).isAir());
+            return !isValidPerch;
         });
         if(!TargetingUtil.isPerch(entity, adjustedPos)
             || GoalUtils.isWater(entity, adjustedPos)
@@ -117,18 +122,17 @@ public class TargetingUtil {
         BlockPos adjustedPos = RandomPos.generateRandomPosTowardDirection(
             entity, range.horizontal(), entity.getRandom(), initialPos
         );
-        int entitySurfaceY = entity.level().getHeight(heightmap, entity.getBlockX(), entity.getBlockZ());
         int surfaceY = entity.level().getHeight(heightmap, adjustedPos.getX(), adjustedPos.getZ());
-        // if both position and entity are above the surface, set to surface level, and vertically offset final position by blocksAbove
-        if(adjustedPos.getY() >= surfaceY && entity.getY() >= entitySurfaceY) {
+        // if position is above the surface, set to surface level, and vertically offset final position by blocksAbove
+        if(adjustedPos.getY() >= surfaceY) {
             adjustedPos = adjustedPos.atY(
-                surfaceY + blocksAbove
+                surfaceY + blocksAbove - 1
             );
         }
         // else, move up based on provided predicate, and vertically offset final position by blocksAbove
         else {
-            adjustedPos = RandomPos.moveUpOutOfSolid(adjustedPos, entity.level().getMaxBuildHeight(), predicate)
-                .above(blocksAbove - 1);
+            adjustedPos = RandomPos.moveUpOutOfSolid(adjustedPos, surfaceY, predicate)
+                .relative(Direction.Axis.Y, blocksAbove - 1);
         }
         return adjustedPos;
     }
