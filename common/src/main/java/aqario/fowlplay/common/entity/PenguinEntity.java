@@ -132,12 +132,6 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
         return new AmphibiousNavigation(this, this.level());
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
-    }
-
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         this.initLastPoseTick(level.getLevel().getGameTime());

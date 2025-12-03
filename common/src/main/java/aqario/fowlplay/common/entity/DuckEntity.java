@@ -11,6 +11,7 @@ import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
+import aqario.fowlplay.core.tags.FowlPlayVariantTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Holder;
@@ -96,7 +97,10 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        FowlPlayBuiltInRegistries.DUCK_VARIANT.getRandom(level.getRandom()).ifPresent(this::setVariant);
+        FowlPlayBuiltInRegistries.DUCK_VARIANT
+            .getRandomElementOf(FowlPlayVariantTags.Duck.NATURAL, level.getRandom())
+            .ifPresent(this::setVariant);
+
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -114,10 +118,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
+    public boolean isDomestic() {
+        return this.getVariant().is(FowlPlayVariantTags.Duck.DOMESTIC);
     }
 
     @Override

@@ -71,12 +71,6 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
         return Pair.of(24, 32);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
-    }
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

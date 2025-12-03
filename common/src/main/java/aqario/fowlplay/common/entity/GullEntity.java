@@ -114,12 +114,6 @@ public class GullEntity extends TrustingBirdEntity implements BirdBrain<GullEnti
             .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
-    }
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

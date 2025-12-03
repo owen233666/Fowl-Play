@@ -75,12 +75,6 @@ public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEnti
         return Pair.of(40, 48);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
-    }
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

@@ -70,6 +70,12 @@ public abstract class BirdEntity extends Animal {
             .add(Attributes.MOVEMENT_SPEED, 0.2f);
     }
 
+    @Nullable
+    @Override
+    public LivingEntity getTarget() {
+        return this.getTargetFromBrain();
+    }
+
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         this.setYRot(level.getRandom().nextFloat() * 360.0F);
@@ -342,7 +348,7 @@ public abstract class BirdEntity extends Animal {
             this.updateAnimations();
         }
         super.tick();
-        if (this.isAmbient() && !this.shouldBeAmbient()) {
+        if(this.isAmbient() && !this.shouldBeAmbient()) {
             this.setAmbient(false);
         }
     }

@@ -158,12 +158,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
-    }
-
     public boolean isDomestic() {
         return this.getVariant().is(FowlPlayVariantTags.Goose.DOMESTIC);
     }
