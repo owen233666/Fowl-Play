@@ -58,7 +58,7 @@ public class TargetingUtil {
 
     @Nullable
     public static BlockPos tryFindNonAir(PathfinderMob entity, CylindricalRadius range, BlockPos pos) {
-        BlockPos adjustedPos = findSurfacePosition(entity, pos, range, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 1, currentPos ->
+        BlockPos adjustedPos = findSurfacePosition(entity, pos, range, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 0, currentPos ->
             GoalUtils.isSolid(entity, currentPos)
                 || GoalUtils.isWater(entity, currentPos)
         );
@@ -67,7 +67,7 @@ public class TargetingUtil {
         ) {
             return null;
         }
-        return entity.level().isWaterAt(adjustedPos.below()) ? adjustedPos.below() : adjustedPos;
+        return entity.level().isWaterAt(adjustedPos) ? adjustedPos : adjustedPos.above();
     }
 
     @Nullable
@@ -77,7 +77,7 @@ public class TargetingUtil {
         );
         if(GoalUtils.isWater(entity, adjustedPos)
             || GoalUtils.hasMalus(entity, adjustedPos)
-            || !TargetingUtil.isPositionGrounded(entity, adjustedPos)
+            || !TargetingUtil.isPositionGrounded(entity, adjustedPos.below())
         ) {
             return null;
         }
@@ -176,13 +176,11 @@ public class TargetingUtil {
     }
 
     public static boolean isPositionNonAir(PathfinderMob entity, BlockPos pos) {
-        BlockPos belowPos = pos.below();
-        return isFullBlockAt(entity, belowPos) || GoalUtils.isWater(entity, belowPos);
+        return isFullBlockAt(entity, pos) || GoalUtils.isWater(entity, pos);
     }
 
     public static boolean isPositionGrounded(PathfinderMob entity, BlockPos pos) {
-        BlockPos belowPos = pos.below();
-        return isFullBlockAt(entity, belowPos);
+        return isFullBlockAt(entity, pos);
     }
 
     public static boolean isFullBlockAt(PathfinderMob entity, BlockPos pos) {
