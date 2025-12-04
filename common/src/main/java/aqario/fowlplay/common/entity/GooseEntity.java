@@ -99,28 +99,34 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     protected PathNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.level());
+        return new AmphibiousNavigation(this, this.level())
+            .setSurfaceOnly();
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         FowlPlayBuiltInRegistries.GOOSE_VARIANT
-            .getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, world.getRandom())
+            .getRandomElementOf(FowlPlayVariantTags.Goose.NATURAL, level.getRandom())
             .ifPresent(this::setVariant);
 
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(world);
-        if(goose != null && entity instanceof GooseEntity parent2) {
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(level);
+        if(goose != null && otherParent instanceof GooseEntity parent2) {
             getRandomOf(goose.getRandom(), this, parent2).getVariant().value().domesticId()
                 .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
                 .ifPresent(goose::setVariant);
         }
         return goose;
+    }
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return this.getFood().test(stack);
     }
 
     @SafeVarargs
@@ -130,7 +136,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
 
     @Override
     public float getAgeScale() {
-        return this.isBaby() ? 0.4F : 1.0F;
+        return this.isBaby() ? 0.45F : 1.0F;
     }
 
     @Override
@@ -150,12 +156,6 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
             .add(Attributes.MOVEMENT_SPEED, 0.23f)
             .add(Attributes.FLYING_SPEED, 0.22f)
             .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.5f);
-    }
-
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
     }
 
     public boolean isDomestic() {
@@ -203,8 +203,9 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         }
     }
 
+    @Override
     public boolean isAggressive() {
-        return this.aggressive;
+        return this.aggressive && !this.isBaby();
     }
 
     @Override
@@ -224,7 +225,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public boolean shouldAttack(LivingEntity target) {
         if(this.isAggressive()) {
-            return target instanceof Player;
+            return target instanceof Player player && !this.trusts(player);
         }
         if(this.hasLowHealth()) {
             return false;
@@ -270,7 +271,19 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_GOOSE_CALL.get();
+        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+            return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.SWAN)) {
+            return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.EMDEN)) {
+            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_CALL.get();
+        }
+        if(this.getVariant().is(GooseVariant.CHINESE)) {
+            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_CALL.get();
+        }
+        return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_CALL.get();
     }
 
     @Override
@@ -281,19 +294,26 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_GOOSE_HURT.get();
-    }
-
-    @Override
-    public float getWaterline() {
-        return 0.35F;
+        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+            return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.SWAN)) {
+            return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.EMDEN)) {
+            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_HURT.get();
+        }
+        if(this.getVariant().is(GooseVariant.CHINESE)) {
+            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_HURT.get();
+        }
+        return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_HURT.get();
     }
 
     @Override
     public CylindricalRadius getWalkRange() {
         return this.isDomestic()
-            ? new CylindricalRadius(64, 12)
-            : new CylindricalRadius(32, 12);
+            ? new CylindricalRadius(64, 8)
+            : new CylindricalRadius(32, 8);
     }
 
     @Override

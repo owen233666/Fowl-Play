@@ -19,10 +19,9 @@ public record ChickenVariant(String id) {
     public ResourceLocation texture(boolean isBaby) {
         return FowlPlay.id(new PathBuilder()
             .add("textures/entity/chicken/")
+            .addIf("baby_", isBaby)
             .add(this.id)
-            .add("_chicken")
-            .addIf("_baby", isBaby)
-            .add(".png")
+            .add("_chicken.png")
         );
     }
 

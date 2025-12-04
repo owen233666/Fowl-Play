@@ -11,6 +11,7 @@ import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
+import aqario.fowlplay.core.tags.FowlPlayVariantTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Holder;
@@ -19,7 +20,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -91,13 +91,17 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     protected PathNavigation getLandNavigation() {
-        return new AmphibiousNavigation(this, this.level());
+        return new AmphibiousNavigation(this, this.level())
+            .setSurfaceOnly();
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        FowlPlayBuiltInRegistries.DUCK_VARIANT.getRandom(world.getRandom()).ifPresent(this::setVariant);
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        FowlPlayBuiltInRegistries.DUCK_VARIANT
+            .getRandomElementOf(FowlPlayVariantTags.Duck.NATURAL, level.getRandom())
+            .ifPresent(this::setVariant);
+
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
@@ -114,10 +118,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.5f);
     }
 
-    @Nullable
-    @Override
-    public LivingEntity getTarget() {
-        return this.getTargetFromBrain();
+    public boolean isDomestic() {
+        return this.getVariant().is(FowlPlayVariantTags.Duck.DOMESTIC);
     }
 
     @Override
@@ -154,12 +156,6 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public boolean isBaby() {
         return false;
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return null;
     }
 
     public Ingredient getFood() {
@@ -211,13 +207,8 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     }
 
     @Override
-    public float getWaterline() {
-        return 0.35F;
-    }
-
-    @Override
     public CylindricalRadius getWalkRange() {
-        return new CylindricalRadius(32, 12);
+        return new CylindricalRadius(32, 8);
     }
 
     @Override

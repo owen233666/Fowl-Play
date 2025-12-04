@@ -29,10 +29,9 @@ public record GooseVariant(
     public ResourceLocation texture(boolean isBaby) {
         return FowlPlay.id(new PathBuilder()
             .add("textures/entity/goose/")
+            .addIf("baby_", isBaby)
             .add(this.id)
-            .add("_goose")
-            .addIf("_baby", isBaby)
-            .add(".png")
+            .add("_goose.png")
         );
     }
 
@@ -63,7 +62,7 @@ public record GooseVariant(
 
     public enum ModelType implements StringRepresentable {
         WILD("wild"),
-        DOMESTIC("modelType");
+        DOMESTIC("domestic");
 
         private final String name;
 
