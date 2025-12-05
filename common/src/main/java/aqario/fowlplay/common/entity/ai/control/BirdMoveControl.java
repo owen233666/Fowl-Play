@@ -1,7 +1,7 @@
 package aqario.fowlplay.common.entity.ai.control;
 
-import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.BirdEntity;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.util.BirdUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

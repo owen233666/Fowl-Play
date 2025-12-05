@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.entity.ai.navigation;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.util.BirdUtils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;

@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.util;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.core.tags.FowlPlayBlockTags;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;

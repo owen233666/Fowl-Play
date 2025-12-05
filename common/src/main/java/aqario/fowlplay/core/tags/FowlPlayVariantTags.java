@@ -1,7 +1,7 @@
 package aqario.fowlplay.core.tags;
 
-import aqario.fowlplay.common.entity.DuckVariant;
-import aqario.fowlplay.common.entity.GooseVariant;
+import aqario.fowlplay.common.entity.bird.duck.DuckVariant;
+import aqario.fowlplay.common.entity.bird.goose.GooseVariant;
 import aqario.fowlplay.core.FowlPlay;
 import aqario.fowlplay.core.FowlPlayRegistries;
 import net.minecraft.tags.TagKey;

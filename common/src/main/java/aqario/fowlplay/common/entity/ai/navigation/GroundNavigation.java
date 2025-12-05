@@ -1,6 +1,6 @@
 package aqario.fowlplay.common.entity.ai.navigation;
 
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.util.BirdUtils;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;

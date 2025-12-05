@@ -1,9 +1,9 @@
 package aqario.fowlplay.common.util;
 
-import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.Domesticatable;
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.TrustingBirdEntity;
+import aqario.fowlplay.common.entity.bird.BirdEntity;
+import aqario.fowlplay.common.entity.bird.Domesticatable;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.TrustingBirdEntity;
 import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import com.google.common.collect.ImmutableList;

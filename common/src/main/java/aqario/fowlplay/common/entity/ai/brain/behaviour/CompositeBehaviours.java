@@ -1,8 +1,8 @@
 package aqario.fowlplay.common.entity.ai.brain.behaviour;
 
-import aqario.fowlplay.common.entity.BirdEntity;
-import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.entity.PenguinEntity;
+import aqario.fowlplay.common.entity.bird.BirdEntity;
+import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
+import aqario.fowlplay.common.entity.bird.penguin.PenguinEntity;
 import aqario.fowlplay.common.util.BirdUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
