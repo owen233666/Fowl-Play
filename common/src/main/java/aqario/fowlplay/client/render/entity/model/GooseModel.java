@@ -49,11 +49,15 @@ public class GooseModel extends FlyingBirdModel<GooseEntity> {
         PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(18, 25).addBox(-2.5F, -1.5F, 0.0F, 5.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
             .texOffs(18, 18).addBox(-2.5F, -1.5F, 2.0F, 5.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
             .texOffs(32, 18).addBox(-2.0F, -1.0F, 2.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-            .texOffs(40, 18).addBox(-1.0F, -1.002F, 2.75F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, 6.0F, -0.0436F, 0.0F, 0.0F));
+            .texOffs(40, 18).addBox(-1.0F, -1.003F, 3.75F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, 6.0F, -0.0436F, 0.0F, 0.0F));
 
-        tail.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(41, 18).addBox(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -1.0F, 3.0F, 0.0F, -0.5236F, 0.0F));
+        tail.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(40, 18).addBox(-1.0F, -0.001F, -1.0F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.5F, -1.0F, 4.0F, 0.0F, -0.2618F, 0.0F));
 
-        tail.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(41, 18).mirror().addBox(-1.0F, -0.001F, 0.0F, 2.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.5F, -1.0F, 3.0F, 0.0F, 0.5236F, 0.0F));
+        tail.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(40, 18).addBox(-1.0F, -0.002F, -1.0F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -1.0F, 4.5F, 0.0F, -0.2618F, 0.0F));
+
+        tail.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(40, 18).mirror().addBox(-1.0F, -0.002F, -1.0F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.5F, -1.0F, 4.5F, 0.0F, 0.2618F, 0.0F));
+
+        tail.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(40, 18).mirror().addBox(-1.0F, -0.001F, -1.0F, 2.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(1.5F, -1.0F, 4.0F, 0.0F, 0.2618F, 0.0F));
 
         root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 0).addBox(-0.5F, -1.0F, 0.0F, 1.0F, 5.0F, 0.0F, new CubeDeformation(0.0F))
             .texOffs(-1, 0).mirror().addBox(-1.5F, 4.0F, -3.0F, 3.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(2.25F, 1.0F, 2.5F));
