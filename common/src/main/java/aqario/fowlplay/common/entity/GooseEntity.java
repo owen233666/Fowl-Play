@@ -316,17 +316,11 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+        if(this.getVariant().is(GooseVariant.GREYLAG) || this.getVariant().is(GooseVariant.EMDEN)) {
             return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_CALL.get();
         }
-        if(this.getVariant().is(GooseVariant.SWAN)) {
+        if(this.getVariant().is(GooseVariant.SWAN) || this.getVariant().is(GooseVariant.CHINESE)) {
             return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_CALL.get();
-        }
-        if(this.getVariant().is(GooseVariant.EMDEN)) {
-            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_CALL.get();
-        }
-        if(this.getVariant().is(GooseVariant.CHINESE)) {
-            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_CALL.get();
         }
         return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_CALL.get();
     }
@@ -339,17 +333,11 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        if(this.getVariant().is(GooseVariant.GREYLAG)) {
+        if(this.getVariant().is(GooseVariant.GREYLAG) || this.getVariant().is(GooseVariant.EMDEN)) {
             return FowlPlaySoundEvents.ENTITY_GREYLAG_GOOSE_HURT.get();
         }
-        if(this.getVariant().is(GooseVariant.SWAN)) {
+        if(this.getVariant().is(GooseVariant.SWAN) || this.getVariant().is(GooseVariant.CHINESE)) {
             return FowlPlaySoundEvents.ENTITY_SWAN_GOOSE_HURT.get();
-        }
-        if(this.getVariant().is(GooseVariant.EMDEN)) {
-            return FowlPlaySoundEvents.ENTITY_EMDEN_GOOSE_HURT.get();
-        }
-        if(this.getVariant().is(GooseVariant.CHINESE)) {
-            return FowlPlaySoundEvents.ENTITY_CHINESE_GOOSE_HURT.get();
         }
         return FowlPlaySoundEvents.ENTITY_CANADA_GOOSE_HURT.get();
     }
