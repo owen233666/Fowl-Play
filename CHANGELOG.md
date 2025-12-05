@@ -24,6 +24,7 @@
         - Chinese (from swan goose)
         - Canada geese do not have a domestic variant
     - To breed geese, you must first drop them food to get them to trust you. Afterwards, you can approach without scaring them away and feed them directly
+    - Domestic geese will no longer naturally avoid players, and can have their wings clipped using shears (to stop them from flying)
     - Geese with the name "untitled" will attack any player they see, and can pick up swords
 - **Add Scarecrows**
     - Birds see scarecrows as players, so any bird that avoids players will also avoid scarecrows

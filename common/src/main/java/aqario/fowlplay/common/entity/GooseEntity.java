@@ -253,7 +253,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public boolean shouldAttack(LivingEntity target) {
         if(this.isAggressive()) {
-            return target instanceof Player player && !this.trusts(player);
+            return target instanceof Player;
         }
         if(this.isDomestic()) {
             return false;
