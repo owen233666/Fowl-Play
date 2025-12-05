@@ -6,7 +6,7 @@ import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdAquaticMoveControl;
 import aqario.fowlplay.common.entity.ai.navigation.AmphibiousNavigation;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.core.FowlPlayEntityTypes;
 import aqario.fowlplay.core.FowlPlayParticleTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
@@ -623,7 +623,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
             new InvalidateAttackTarget<>(),
             SlideBehaviours.startSliding(),
             new SetWalkTargetToAttackTarget<>()
-                .speedMod((entity, target) -> BirdUtil.FAST_SPEED),
+                .speedMod((entity, target) -> BirdUtils.FAST_SPEED),
             new AnimatableMeleeAttack<>(0),
             new InvalidateMemory<PenguinEntity, LivingEntity>(MemoryModuleType.ATTACK_TARGET)
                 .invalidateIf((entity, memory) -> BehaviorUtils.isBreeding(entity))
@@ -667,7 +667,7 @@ public class PenguinEntity extends BirdEntity implements BirdBrain<PenguinEntity
                     5
                 ),
                 Pair.of(
-                    SetAdultWalkTarget.create(BirdUtil.STAY_NEAR_ENTITY_RANGE),
+                    SetAdultWalkTarget.create(BirdUtils.STAY_NEAR_ENTITY_RANGE),
                     2
                 ),
                 Pair.of(

@@ -3,7 +3,7 @@ package aqario.fowlplay.common.entity.ai.brain.behaviour;
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.PenguinEntity;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -62,8 +62,8 @@ public class CompositeBehaviours {
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetPerchRestTarget() {
         return CompositeBehaviours.<E>trySetPerchWalkTarget()
-            .startCondition(Predicate.not(BirdUtil::isPerched))
-            .stopIf(BirdUtil::isPerched);
+            .startCondition(Predicate.not(BirdUtils::isPerched))
+            .stopIf(BirdUtils::isPerched);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> trySetWaterRestTarget() {
@@ -116,8 +116,8 @@ public class CompositeBehaviours {
             Pair.of(
                 idleAndLookAround()
                     .runForBetween(30, 100)
-                    .startCondition(BirdUtil::isPerched)
-                    .stopIf(Predicate.not(BirdUtil::isPerched)),
+                    .startCondition(BirdUtils::isPerched)
+                    .stopIf(Predicate.not(BirdUtils::isPerched)),
                 8
             ),
             Pair.of(

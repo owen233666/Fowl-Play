@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class TargetingUtil {
+public class TargetingUtils {
     @Nullable
     public static BlockPos tryFindAir(FlyingBirdEntity entity, CylindricalRadius range, BlockPos pos) {
         BlockPos adjustedPos = RandomPos.generateRandomPosTowardDirection(
@@ -63,7 +63,7 @@ public class TargetingUtil {
                 || GoalUtils.isWater(entity, currentPos)
         );
         if(GoalUtils.hasMalus(entity, adjustedPos)
-            || !TargetingUtil.isPositionNonAir(entity, adjustedPos)
+            || !TargetingUtils.isPositionNonAir(entity, adjustedPos)
         ) {
             return null;
         }
@@ -77,7 +77,7 @@ public class TargetingUtil {
         );
         if(GoalUtils.isWater(entity, adjustedPos)
             || GoalUtils.hasMalus(entity, adjustedPos)
-            || !TargetingUtil.isPositionGrounded(entity, adjustedPos.below())
+            || !TargetingUtils.isPositionGrounded(entity, adjustedPos.below())
         ) {
             return null;
         }
@@ -100,7 +100,7 @@ public class TargetingUtil {
             }
             return !isValidPerch;
         });
-        if(!TargetingUtil.isPerch(entity, adjustedPos)
+        if(!TargetingUtils.isPerch(entity, adjustedPos)
             || GoalUtils.isWater(entity, adjustedPos)
             || GoalUtils.hasMalus(entity, adjustedPos)
         ) {

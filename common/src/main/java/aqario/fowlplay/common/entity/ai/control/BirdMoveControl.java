@@ -2,7 +2,7 @@ package aqario.fowlplay.common.entity.ai.control;
 
 import aqario.fowlplay.common.entity.BirdEntity;
 import aqario.fowlplay.common.entity.FlyingBirdEntity;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -50,11 +50,11 @@ public class BirdMoveControl extends MoveControl {
         bird.yHeadRot = bird.getYRot();
 
         // speed
-        float speed = (float) bird.getAttributeValue(Attributes.FLYING_SPEED) * BirdUtil.FLY_SPEED;
+        float speed = (float) bird.getAttributeValue(Attributes.FLYING_SPEED) * BirdUtils.FLY_SPEED;
         BlockPos destination;
         // decelerate when landing
         if((destination = bird.getNavigation().getTargetPos()) != null
-            && BirdUtil.shouldLandAtDestination(bird, destination)
+            && BirdUtils.shouldLandAtDestination(bird, destination)
         ) {
             double dist = bird.distanceToSqr(Vec3.atBottomCenterOf(destination));
             if(dist < DECELERATE_DISTANCE * DECELERATE_DISTANCE) {

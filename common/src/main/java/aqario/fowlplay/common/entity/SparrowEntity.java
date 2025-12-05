@@ -8,7 +8,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
 import aqario.fowlplay.common.util.AnimationStateList;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -227,7 +227,7 @@ public class SparrowEntity extends FlyingBirdEntity implements BirdBrain<Sparrow
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightBehaviours.stopFalling(),
-            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtils::isPlayerHoldingFood),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()

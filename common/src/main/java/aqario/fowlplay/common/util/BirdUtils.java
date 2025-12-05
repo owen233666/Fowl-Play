@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * A utility class for birds.
  */
-public final class BirdUtil {
+public final class BirdUtils {
     public static final float FAST_SPEED = 1.4F;
     public static final float FLY_SPEED = 2.0F;
     public static final float SWIM_SPEED = 4.0F;
@@ -179,6 +179,6 @@ public final class BirdUtil {
 
     public static boolean isPerched(BirdEntity entity) {
         return (!(entity instanceof FlyingBirdEntity bird) || !bird.isFlying())
-            && TargetingUtil.isPerch(entity, entity.getBlockPosBelowThatAffectsMyMovement());
+            && TargetingUtils.isPerch(entity, entity.getBlockPosBelowThatAffectsMyMovement());
     }
 }

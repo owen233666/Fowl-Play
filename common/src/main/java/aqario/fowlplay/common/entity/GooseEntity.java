@@ -6,7 +6,7 @@ import aqario.fowlplay.common.entity.ai.brain.behaviour.*;
 import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.ai.control.BirdFloatMoveControl;
 import aqario.fowlplay.common.entity.ai.navigation.AmphibiousNavigation;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -261,7 +261,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         if(this.hasLowHealth()) {
             return false;
         }
-        return BirdUtil.wasHurtBy(this, target);
+        return BirdUtils.wasHurtBy(this, target);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
             new SetWalkTargetToAttackTarget<>()
-                .speedMod((entity, target) -> BirdUtil.FAST_SPEED),
+                .speedMod((entity, target) -> BirdUtils.FAST_SPEED),
             new AnimatableMeleeAttack<>(0)
         );
     }
@@ -434,7 +434,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
         return BirdBrain.idleActivity(
             new BreedWithPartner<>(),
             new FollowParent<>(),
-            SetEntityLookTarget.create(BirdUtil::isPlayerHoldingFood),
+            SetEntityLookTarget.create(BirdUtils::isPlayerHoldingFood),
             new SetRandomLookTarget<>()
                 .lookChance(0.02f),
             new OneRandomBehaviour<>(

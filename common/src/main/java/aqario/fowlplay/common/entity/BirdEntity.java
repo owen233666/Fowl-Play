@@ -5,7 +5,7 @@ import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
 import aqario.fowlplay.common.util.AnimationStateList;
-import aqario.fowlplay.common.util.BirdUtil;
+import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import net.minecraft.core.component.DataComponents;
@@ -43,10 +43,15 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class BirdEntity extends Animal {
-    private static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(BirdEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(
+        BirdEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
     public final AnimationState standingState = new AnimationState();
     public final AnimationState swimmingState = new AnimationState();
     public final AnimationStateList idleAnimStates = this.createIdleAnimations();
+    private static final String AMBIENT_KEY = "ambient";
+    private static final String SLEEPING_KEY = "sleeping";
     private boolean ambient;
     private int eatingTime;
     protected int idleAnimationChance;
@@ -110,20 +115,20 @@ public abstract class BirdEntity extends Animal {
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putBoolean("ambient", this.ambient);
-        nbt.putBoolean("sleeping", this.isSleeping());
+        nbt.putBoolean(AMBIENT_KEY, this.ambient);
+        nbt.putBoolean(SLEEPING_KEY, this.isSleeping());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if(nbt.contains("ambient")) {
-            this.setAmbient(nbt.getBoolean("ambient"));
+        if(nbt.contains(AMBIENT_KEY)) {
+            this.setAmbient(nbt.getBoolean(AMBIENT_KEY));
         }
         else {
             this.setAmbient(this.shouldBeAmbient());
         }
-        this.setSleeping(nbt.getBoolean("sleeping"));
+        this.setSleeping(nbt.getBoolean(SLEEPING_KEY));
     }
 
     /**
@@ -246,7 +251,7 @@ public abstract class BirdEntity extends Animal {
     }
 
     public int getFleeRange(LivingEntity target) {
-        return BirdUtil.isNotFlightless(target) ? 32 : 16;
+        return BirdUtils.isNotFlightless(target) ? 32 : 16;
     }
 
     public boolean hasLowHealth() {
@@ -397,11 +402,11 @@ public abstract class BirdEntity extends Animal {
     }
 
     protected boolean canCall() {
-        return BirdUtil.isDaytime(this);
+        return BirdUtils.isDaytime(this);
     }
 
     protected boolean canSing() {
-        return BirdUtil.isDaytime(this) && this.onGround() && !this.isBaby();
+        return BirdUtils.isDaytime(this) && this.onGround() && !this.isBaby();
     }
 
     private void resetCallDelay() {
