@@ -122,17 +122,12 @@ public abstract class BirdEntity extends Animal {
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if(nbt.contains(AMBIENT_KEY)) {
-            this.setAmbient(nbt.getBoolean(AMBIENT_KEY));
-        }
-        else {
-            this.setAmbient(this.shouldBeAmbient());
-        }
+        this.setAmbient(nbt.getBoolean(AMBIENT_KEY));
         this.setSleeping(nbt.getBoolean(SLEEPING_KEY));
     }
 
     /**
-     * non-ambient birds count towards the mob cap, but they don't despawn
+     * ambient birds are able to despawn when far enough from the player, or when the chunks are unloaded
      */
     public boolean isAmbient() {
         return this.ambient;
