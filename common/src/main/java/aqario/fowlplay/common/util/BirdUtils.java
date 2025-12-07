@@ -8,6 +8,7 @@ import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
@@ -36,6 +37,11 @@ public final class BirdUtils {
     public static final int AVOID_TICKS = 160;
     public static final int CANNOT_PICKUP_FOOD_TICKS = 1200;
     public static final UniformInt STAY_NEAR_ENTITY_RANGE = UniformInt.of(16, 32);
+
+    @SafeVarargs
+    public static <T> T getRandomOf(RandomSource random, T... selections) {
+        return selections[random.nextInt(selections.length)];
+    }
 
     public static boolean isDaytime(BirdEntity entity) {
         Level world = entity.level();

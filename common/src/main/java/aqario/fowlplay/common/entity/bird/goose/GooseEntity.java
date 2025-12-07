@@ -30,7 +30,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -129,23 +128,18 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
-        GooseEntity goose = FowlPlayEntityTypes.GOOSE.get().create(level);
-        if(goose != null && otherParent instanceof GooseEntity parent2) {
-            getRandomOf(goose.getRandom(), this, parent2).getVariant().value().domesticId()
+        GooseEntity child = FowlPlayEntityTypes.GOOSE.get().create(level);
+        if(child != null && otherParent instanceof GooseEntity parent2) {
+            BirdUtils.getRandomOf(child.getRandom(), this, parent2).getVariant().value().domesticId()
                 .flatMap(FowlPlayBuiltInRegistries.GOOSE_VARIANT::getHolder)
-                .ifPresent(goose::setVariant);
+                .ifPresent(child::setVariant);
         }
-        return goose;
+        return child;
     }
 
     @Override
     public boolean isFood(ItemStack stack) {
         return this.getFood().test(stack);
-    }
-
-    @SafeVarargs
-    private static <T> T getRandomOf(RandomSource random, T... selections) {
-        return selections[random.nextInt(selections.length)];
     }
 
     @Override

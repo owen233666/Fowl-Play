@@ -25,6 +25,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -113,6 +114,17 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
             .ifPresent(this::setVariant);
 
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
+    public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        DuckEntity child = FowlPlayEntityTypes.DUCK.get().create(level);
+        if(child != null && otherParent instanceof DuckEntity parent2) {
+            BirdUtils.getRandomOf(child.getRandom(), this, parent2).getVariant().value().domesticId()
+                .flatMap(FowlPlayBuiltInRegistries.DUCK_VARIANT::getHolder)
+                .ifPresent(child::setVariant);
+        }
+        return child;
     }
 
     @Override

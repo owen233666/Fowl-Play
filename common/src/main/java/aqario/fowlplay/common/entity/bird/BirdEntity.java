@@ -156,6 +156,11 @@ public abstract class BirdEntity extends Animal {
         return equipmentSlot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
     }
 
+    @Override
+    public void setBaby(boolean baby) {
+        this.setAge(baby ? -72000 : 0);
+    }
+
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
