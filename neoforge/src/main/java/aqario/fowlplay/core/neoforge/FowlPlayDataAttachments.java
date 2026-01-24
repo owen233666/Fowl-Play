@@ -22,7 +22,7 @@ public class FowlPlayDataAttachments {
                 () -> FowlPlayBuiltInRegistries.CHICKEN_VARIANT.getHolderOrThrow(ChickenVariant.WHITE).getDelegate()
             )
             .serialize(FowlPlayBuiltInRegistries.CHICKEN_VARIANT.holderByNameCodec())
-
+            .sync(ChickenVariant.PACKET_CODEC)
     );
 
     private static <T> Supplier<AttachmentType<T>> register(String id, AttachmentType.Builder<T> builder) {

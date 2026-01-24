@@ -85,9 +85,6 @@ public abstract class ChickenMixin extends Animal implements VariantHolder<Holde
             this.fowlplay$swimmingState.animateWhen(this.isInWaterOrBubble(), this.tickCount);
         }
         super.tick();
-        if(!this.level().isClientSide()) {
-            DataAttachmentHelper.sendChickenVariantUpdate((Chicken) (Object) this);
-        }
     }
 
     @Override

@@ -18,7 +18,4 @@ public class DataAttachmentHelperImpl {
     public static void setChickenVariant(Chicken entity, Holder<ChickenVariant> variant) {
         entity.setAttached(FowlPlayDataAttachments.CHICKEN_VARIANT, variant);
     }
-
-    public static void sendChickenVariantUpdate(Chicken entity) {
-    }
 }
