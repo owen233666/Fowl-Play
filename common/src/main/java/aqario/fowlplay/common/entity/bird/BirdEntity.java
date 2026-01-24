@@ -5,10 +5,11 @@ import aqario.fowlplay.common.entity.ai.control.BirdBodyRotationControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
+import aqario.fowlplay.common.species.Species;
 import aqario.fowlplay.common.util.AnimationStateList;
 import aqario.fowlplay.common.util.BirdUtils;
-import aqario.fowlplay.core.FowlPlayMemoryTypes;
-import aqario.fowlplay.core.FowlPlaySoundEvents;
+import aqario.fowlplay.core.*;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,6 +18,7 @@ import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -48,6 +50,12 @@ public abstract class BirdEntity extends Animal {
         BirdEntity.class,
         EntityDataSerializers.BOOLEAN
     );
+    private static final EntityDataAccessor<Holder<Species<?>>> SPECIES_ID = SynchedEntityData.defineId(
+        BirdEntity.class,
+        FowlPlayEntityDataSerializers.SPECIES
+    );
+    @Nullable
+    private Species<?> species;
     public final AnimationState standingState = new AnimationState();
     public final AnimationState swimmingState = new AnimationState();
     public final AnimationStateList idleAnimStates = this.createIdleAnimations();
@@ -111,6 +119,7 @@ public abstract class BirdEntity extends Animal {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(SLEEPING, false);
+        builder.define(SPECIES_ID, null);
     }
 
     @Override
@@ -118,6 +127,7 @@ public abstract class BirdEntity extends Animal {
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean(AMBIENT_KEY, this.ambient);
         nbt.putBoolean(SLEEPING_KEY, this.isSleeping());
+        nbt.putString("species", this.getSpecies().unwrapKey().orElse(ResourceKey.create(FowlPlayRegistries.SPECIES, FowlPlay.id("id"))).location().toString());
     }
 
     @Override
@@ -216,6 +226,31 @@ public abstract class BirdEntity extends Animal {
         return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getBoundingBox().getYsize() * 0.35;
     }
 
+    public Species<?> species() {
+        if(this.species == null) {
+            this.species = this.getSpecies().value();
+        }
+        return this.species;
+    }
+
+    private Holder<Species<?>> getSpecies() {
+        return this.entityData.get(SPECIES_ID);
+    }
+
+    private void setSpecies(Holder<Species<?>> species) {
+        this.entityData.set(SPECIES_ID, species);
+        this.species = null;
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
+        if(SPECIES_ID.equals(data)) {
+            this.species = null;
+        }
+
+        super.onSyncedDataUpdated(data);
+    }
+
     @Override
     public boolean isSleeping() {
         return this.entityData.get(SLEEPING);
@@ -237,22 +272,24 @@ public abstract class BirdEntity extends Animal {
         return this.getFood().test(stack) && !this.isSleeping();
     }
 
-    public abstract Ingredient getFood();
+    public Ingredient getFood() {
+        return Ingredient.of(this.species().getFood());
+    }
 
     public boolean canHunt(LivingEntity target) {
-        return false;
+        return this.species().canHunt(target);
     }
 
     public boolean shouldAttack(LivingEntity target) {
-        return false;
+        return this.species().shouldAttack(target);
     }
 
     public boolean shouldAvoid(LivingEntity entity) {
-        return false;
+        return this.species().shouldAvoid(entity);
     }
 
     public int getFleeRange(LivingEntity target) {
-        return BirdUtils.isNotFlightless(target) ? 32 : 16;
+        return this.species().getFleeRangeFrom(target);
     }
 
     public boolean hasLowHealth() {

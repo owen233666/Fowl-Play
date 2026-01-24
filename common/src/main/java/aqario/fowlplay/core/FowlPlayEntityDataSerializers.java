@@ -1,6 +1,7 @@
 package aqario.fowlplay.core;
 
 import aqario.fowlplay.common.entity.variant.*;
+import aqario.fowlplay.common.species.Species;
 import aqario.fowlplay.core.platform.PlatformHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
@@ -34,6 +35,10 @@ public final class FowlPlayEntityDataSerializers {
     public static final EntityDataSerializer<Holder<SparrowVariant>> SPARROW_VARIANT = register(
         "sparrow_variant",
         EntityDataSerializer.forValueType(SparrowVariant.PACKET_CODEC)
+    );
+    public static final EntityDataSerializer<Holder<Species<?>>> SPECIES = register(
+        "species",
+        EntityDataSerializer.forValueType(Species.STREAM_CODEC)
     );
     public static final EntityDataSerializer<List<UUID>> UUID_LIST = register(
         "uuid_list",
