@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird.raven;
+package aqario.fowlplay.common.entity.bird.raptor;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
@@ -7,7 +7,6 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.*;
 import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.bird.TrustingBirdEntity;
 import aqario.fowlplay.common.util.BirdUtils;
-import aqario.fowlplay.core.FowlPlayMemoryTypes;
 import aqario.fowlplay.core.FowlPlaySchedules;
 import aqario.fowlplay.core.FowlPlaySoundEvents;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
@@ -18,7 +17,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
@@ -48,19 +47,24 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
-public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEntity> {
-    public RavenEntity(EntityType<? extends RavenEntity> entityType, Level world) {
+public class HawkEntity extends TrustingBirdEntity implements BirdBrain<HawkEntity> {
+    public HawkEntity(EntityType<? extends HawkEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public static AttributeSupplier.Builder createRavenAttributes() {
+    public static AttributeSupplier.Builder createHawkAttributes() {
         return FlyingBirdEntity.createFlyingBirdAttributes()
-            .add(Attributes.MAX_HEALTH, 10.0f)
+            .add(Attributes.FOLLOW_RANGE, 48)
+            .add(Attributes.MAX_HEALTH, 15.0f)
             .add(Attributes.ATTACK_DAMAGE, 3.0f)
             .add(Attributes.MOVEMENT_SPEED, 0.225f)
             .add(Attributes.FLYING_SPEED, 0.24f);
+    }
+
+    @Override
+    public int getMaxPitchChange() {
+        return 18;
     }
 
     @Override
@@ -70,7 +74,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
 
     @Override
     public Pair<Integer, Integer> getFlyHeightRange() {
-        return Pair.of(24, 32);
+        return Pair.of(40, 48);
     }
 
     @Override
@@ -94,13 +98,18 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     public Ingredient getFood() {
-        return Ingredient.of(FowlPlayItemTags.RAVEN_FOOD);
+        return Ingredient.of(FowlPlayItemTags.HAWK_FOOD);
+    }
+
+    @Override
+    public boolean shouldAvoid(LivingEntity entity) {
+        return entity.getType().is(FowlPlayEntityTypeTags.HAWK_AVOIDS);
     }
 
     @Override
     public boolean canHunt(LivingEntity target) {
-        return target.getType().is(FowlPlayEntityTypeTags.RAVEN_HUNT_TARGETS) ||
-            (target.getType().is(FowlPlayEntityTypeTags.RAVEN_BABY_HUNT_TARGETS) && target.isBaby());
+        return target.getType().is(FowlPlayEntityTypeTags.HAWK_HUNT_TARGETS) ||
+            (target.getType().is(FowlPlayEntityTypeTags.HAWK_BABY_HUNT_TARGETS) && target.isBaby());
     }
 
     @Override
@@ -109,23 +118,12 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
             return false;
         }
         LivingEntity hurtBy = BrainUtils.getLastAttacker(this);
-        if(!target.getType().is(FowlPlayEntityTypeTags.RAVEN_ATTACK_TARGETS) && (hurtBy == null || !hurtBy.equals(target))) {
-            return false;
-        }
-        Optional<List<? extends AgeableMob>> nearbyAdults = Optional.ofNullable(BrainUtils.getMemory(this, FowlPlayMemoryTypes.NEAREST_VISIBLE_ADULTS.get()));
-        return nearbyAdults.filter(passiveEntities -> passiveEntities.size() >= 2).isPresent();
+        return hurtBy != null && hurtBy.equals(target);
     }
 
     @Override
-    public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().is(FowlPlayEntityTypeTags.RAVEN_AVOIDS);
-    }
-
-    @Override
-    public void updateAnimations() {
-        this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
-        this.glidingState.animateWhen(this.isFlying(), this.tickCount);
-        this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
+    public boolean canBeAffected(MobEffectInstance effect) {
+        return !effect.is(MobEffects.HUNGER) && super.canBeAffected(effect);
     }
 
     @Override
@@ -146,32 +144,32 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_RAVEN_CALL.get();
+        return FowlPlaySoundEvents.ENTITY_HAWK_CALL.get();
     }
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.getInstance().ravenCallVolume;
+        return FowlPlayConfig.getInstance().hawkCallVolume;
     }
 
     @Override
     public int getCallDelay() {
-        return 1200;
+        return 800;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_RAVEN_HURT.get();
+        return FowlPlaySoundEvents.ENTITY_HAWK_HURT.get();
     }
 
     @Override
-    protected Brain.Provider<RavenEntity> brainProvider() {
+    protected Brain.Provider<HawkEntity> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
-    public List<? extends ExtendedSensor<? extends RavenEntity>> getSensors() {
+    public List<? extends ExtendedSensor<? extends HawkEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
@@ -185,7 +183,7 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getCoreTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
@@ -199,14 +197,14 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getAvoidTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
             CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getFightTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getFightTasks() {
         return BirdBrain.fightActivity(
             new InvalidateAttackTarget<>(),
             FlightBehaviours.startFlying(),
@@ -216,31 +214,21 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getForageTasks() {
-        return BirdBrain.forageActivity(
-            new OneRandomBehaviour<>(
-                CompositeBehaviours.tryForage(),
-                CompositeBehaviours.tryPerch()
-            )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends RavenEntity> getPerchTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getPickupFoodTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
             CompositeBehaviours.tryPickUpFood()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getRestTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getRestTasks() {
         return BirdBrain.restActivity(
             CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()
@@ -248,25 +236,16 @@ public class RavenEntity extends TrustingBirdEntity implements BirdBrain<RavenEn
     }
 
     @Override
-    public BrainActivityGroup<? extends RavenEntity> getSoarTasks() {
+    public BrainActivityGroup<? extends HawkEntity> getSoarTasks() {
         return BirdBrain.soarActivity(
-            new OneRandomBehaviour<>(
-                Pair.of(
-                    new SetRandomFlightTarget<>(),
-                    5
-                ),
-                Pair.of(
-                    SetAdultWalkTarget.create(BirdUtils.STAY_NEAR_ENTITY_RANGE),
-                    2
-                )
-            ).startCondition(entity -> !BrainUtils.hasMemory(entity, MemoryModuleType.WALK_TARGET))
+            new SetRandomFlightTarget<>()
         );
     }
 
     @Nullable
     @Override
     public SmartBrainSchedule getSchedule() {
-        return FowlPlaySchedules.FORAGER.get();
+        return FowlPlaySchedules.RAPTOR.get();
     }
 
     @Override

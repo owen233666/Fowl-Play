@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird.blue_jay;
+package aqario.fowlplay.common.entity.bird.passerine;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
@@ -40,23 +40,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJayEntity> {
-    public BlueJayEntity(EntityType<? extends BirdEntity> entityType, Level world) {
+public class CardinalEntity extends FlyingBirdEntity implements BirdBrain<CardinalEntity> {
+    public CardinalEntity(EntityType<? extends BirdEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
     public Ingredient getFood() {
-        return Ingredient.of(FowlPlayItemTags.BLUE_JAY_FOOD);
+        return Ingredient.of(FowlPlayItemTags.CARDINAL_FOOD);
     }
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().is(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS);
+        return entity.getType().is(FowlPlayEntityTypeTags.CARDINAL_AVOIDS);
     }
 
     @Override
-    protected void updateAnimations() {
+    public void updateAnimations() {
         this.standingState.animateWhen(!this.isFlying() && !this.isInWaterOrBubble(), this.tickCount);
         this.flappingState.animateWhen(this.isFlying(), this.tickCount);
         this.swimmingState.animateWhen(!this.isFlying() && this.isInWaterOrBubble(), this.tickCount);
@@ -75,32 +75,43 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL.get();
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_CALL.get();
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getSongSound() {
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_SONG.get();
     }
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.getInstance().blueJayCallVolume;
+        return FowlPlayConfig.getInstance().cardinalCallVolume;
+    }
+
+    @Override
+    protected float getSongVolume() {
+        return FowlPlayConfig.getInstance().cardinalSongVolume;
     }
 
     @Override
     public int getCallDelay() {
-        return 480;
+        return 180;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_HURT.get();
+        return FowlPlaySoundEvents.ENTITY_CARDINAL_HURT.get();
     }
 
     @Override
-    protected Brain.Provider<BlueJayEntity> brainProvider() {
+    protected Brain.Provider<CardinalEntity> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
-    public List<? extends ExtendedSensor<? extends BlueJayEntity>> getSensors() {
+    public List<? extends ExtendedSensor<? extends CardinalEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
@@ -113,7 +124,7 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getCoreTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightBehaviours.stopFalling(),
@@ -125,14 +136,14 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getAvoidTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
             CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getForageTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
                 CompositeBehaviours.tryForage(),
@@ -142,21 +153,21 @@ public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJay
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getPerchTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getPickupFoodTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
             CompositeBehaviours.tryPickUpFood()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends BlueJayEntity> getRestTasks() {
+    public BrainActivityGroup<? extends CardinalEntity> getRestTasks() {
         return BirdBrain.restActivity(
             CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()

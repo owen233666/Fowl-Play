@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird.sparrow;
+package aqario.fowlplay.common.entity.bird.passerine;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;

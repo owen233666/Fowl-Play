@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird.chickadee;
+package aqario.fowlplay.common.entity.bird.passerine;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
@@ -10,6 +10,7 @@ import aqario.fowlplay.common.entity.ai.brain.sensor.AttackedSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.AvoidTargetSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyAdultsSensor;
 import aqario.fowlplay.common.entity.ai.brain.sensor.NearbyFoodSensor;
+import aqario.fowlplay.common.entity.bird.BirdEntity;
 import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.core.FowlPlaySchedules;
@@ -24,7 +25,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -40,24 +40,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<ChickadeeEntity> {
-    public ChickadeeEntity(EntityType<? extends ChickadeeEntity> entityType, Level world) {
+public class BlueJayEntity extends FlyingBirdEntity implements BirdBrain<BlueJayEntity> {
+    public BlueJayEntity(EntityType<? extends BirdEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public boolean isBaby() {
-        return false;
-    }
-
-    @Override
     public Ingredient getFood() {
-        return Ingredient.of(FowlPlayItemTags.CHICKADEE_FOOD);
+        return Ingredient.of(FowlPlayItemTags.BLUE_JAY_FOOD);
     }
 
     @Override
     public boolean shouldAvoid(LivingEntity entity) {
-        return entity.getType().is(FowlPlayEntityTypeTags.CHICKADEE_AVOIDS);
+        return entity.getType().is(FowlPlayEntityTypeTags.BLUE_JAY_AVOIDS);
     }
 
     @Override
@@ -77,31 +72,15 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
         return 1.0f;
     }
 
-    @Override
-    public Vec3 getLeashOffset() {
-        return new Vec3(0.0, 0.5f * this.getEyeHeight(), this.getBbWidth() * 0.4f);
-    }
-
     @Nullable
     @Override
     protected SoundEvent getCallSound() {
-        return FowlPlaySoundEvents.ENTITY_CHICKADEE_CALL.get();
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getSongSound() {
-        return FowlPlaySoundEvents.ENTITY_CHICKADEE_SONG.get();
+        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_CALL.get();
     }
 
     @Override
     protected float getCallVolume() {
-        return FowlPlayConfig.getInstance().chickadeeCallVolume;
-    }
-
-    @Override
-    protected float getSongVolume() {
-        return FowlPlayConfig.getInstance().chickadeeSongVolume;
+        return FowlPlayConfig.getInstance().blueJayCallVolume;
     }
 
     @Override
@@ -109,24 +88,19 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
         return 480;
     }
 
-    @Override
-    public int getSongDelay() {
-        return 240;
-    }
-
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return FowlPlaySoundEvents.ENTITY_CHICKADEE_HURT.get();
+        return FowlPlaySoundEvents.ENTITY_BLUE_JAY_HURT.get();
     }
 
     @Override
-    protected Brain.Provider<ChickadeeEntity> brainProvider() {
+    protected Brain.Provider<BlueJayEntity> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
-    public List<? extends ExtendedSensor<? extends ChickadeeEntity>> getSensors() {
+    public List<? extends ExtendedSensor<? extends BlueJayEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyLivingEntitySensor<>(),
             new NearbyPlayersSensor<>(),
@@ -139,7 +113,7 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getCoreTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getCoreTasks() {
         return BirdBrain.coreActivity(
             new FloatToSurfaceOfFluid<>(),
             FlightBehaviours.stopFalling(),
@@ -151,14 +125,14 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getAvoidTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getAvoidTasks() {
         return BirdBrain.avoidActivity(
             CustomBehaviours.setAvoidEntityWalkTarget()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getForageTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getForageTasks() {
         return BirdBrain.forageActivity(
             new OneRandomBehaviour<>(
                 CompositeBehaviours.tryForage(),
@@ -168,21 +142,21 @@ public class ChickadeeEntity extends FlyingBirdEntity implements BirdBrain<Chick
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getPerchTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getPerchTasks() {
         return BirdBrain.perchActivity(
             CompositeBehaviours.tryPerch()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getPickupFoodTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getPickupFoodTasks() {
         return BirdBrain.pickupFoodActivity(
             CompositeBehaviours.tryPickUpFood()
         );
     }
 
     @Override
-    public BrainActivityGroup<? extends ChickadeeEntity> getRestTasks() {
+    public BrainActivityGroup<? extends BlueJayEntity> getRestTasks() {
         return BirdBrain.restActivity(
             CompositeBehaviours.trySetPerchRestTarget(),
             CustomBehaviours.idleIfPerched()

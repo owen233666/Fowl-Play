@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird.goose;
+package aqario.fowlplay.common.entity.bird.waterfowl;
 
 import aqario.fowlplay.common.config.FowlPlayConfig;
 import aqario.fowlplay.common.entity.ai.brain.BirdBrain;
@@ -10,6 +10,7 @@ import aqario.fowlplay.common.entity.bird.Domesticatable;
 import aqario.fowlplay.common.entity.bird.Flocking;
 import aqario.fowlplay.common.entity.bird.FlyingBirdEntity;
 import aqario.fowlplay.common.entity.bird.TrustingBirdEntity;
+import aqario.fowlplay.common.entity.variant.GooseVariant;
 import aqario.fowlplay.common.util.BirdUtils;
 import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;

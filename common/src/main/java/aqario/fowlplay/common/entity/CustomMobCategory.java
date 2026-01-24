@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.entity.bird;
+package aqario.fowlplay.common.entity;
 
 import net.minecraft.world.entity.MobCategory;
 
