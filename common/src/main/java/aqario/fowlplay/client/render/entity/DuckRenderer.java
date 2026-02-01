@@ -28,6 +28,6 @@ public class DuckRenderer extends MobRenderer<DuckEntity, DuckModel> {
         if(customName.equals("Quackers")) {
             return QUACKERS_TEXTURE;
         }
-        return duck.getVariant().value().texture(false);
+        return duck.getVariant().value().texture(false, duck.isDomestic());
     }
 }

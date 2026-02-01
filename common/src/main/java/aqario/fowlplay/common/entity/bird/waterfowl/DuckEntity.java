@@ -16,7 +16,6 @@ import aqario.fowlplay.common.util.CylindricalRadius;
 import aqario.fowlplay.core.*;
 import aqario.fowlplay.core.tags.FowlPlayEntityTypeTags;
 import aqario.fowlplay.core.tags.FowlPlayItemTags;
-import aqario.fowlplay.core.tags.FowlPlayVariantTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Holder;
@@ -73,7 +72,10 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         DuckEntity.class,
         EntityDataSerializers.BOOLEAN
     );
-    private static final String CLIPPED_KEY = "clipped";
+    private static final EntityDataAccessor<Boolean> DOMESTIC = SynchedEntityData.defineId(
+        DuckEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
     private static final String VARIANT_KEY = "variant";
 
     public DuckEntity(EntityType<? extends DuckEntity> entityType, Level world) {
@@ -111,7 +113,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         FowlPlayBuiltInRegistries.DUCK_VARIANT
-            .getRandomElementOf(FowlPlayVariantTags.Duck.NATURAL, level.getRandom())
+            .getRandom(level.getRandom())
             .ifPresent(this::setVariant);
 
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
@@ -121,9 +123,9 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         DuckEntity child = FowlPlayEntityTypes.DUCK.get().create(level);
         if(child != null && otherParent instanceof DuckEntity parent2) {
-            BirdUtils.getRandomOf(child.getRandom(), this, parent2).getVariant().value().domesticId()
-                .flatMap(FowlPlayBuiltInRegistries.DUCK_VARIANT::getHolder)
-                .ifPresent(child::setVariant);
+            Holder<DuckVariant> variant = BirdUtils.getRandomOf(child.getRandom(), this, parent2).getVariant();
+            child.setVariant(variant);
+            child.setDomestic(true);
         }
         return child;
     }
@@ -144,7 +146,12 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
 
     @Override
     public boolean isDomestic() {
-        return this.getVariant().is(FowlPlayVariantTags.Duck.DOMESTIC);
+        return this.entityData.get(DOMESTIC);
+    }
+
+    @Override
+    public void setDomestic(boolean domestic) {
+        this.entityData.set(DOMESTIC, domestic);
     }
 
     @Override
@@ -152,6 +159,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
         return this.entityData.get(CLIPPED);
     }
 
+    @Override
     public void setClippedWings(boolean clipped) {
         this.entityData.set(CLIPPED, clipped);
     }
@@ -160,6 +168,7 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CLIPPED, false);
+        builder.define(DOMESTIC, false);
         builder.define(VARIANT, FowlPlayBuiltInRegistries.DUCK_VARIANT.getHolderOrThrow(DuckVariant.GREEN_HEADED));
     }
 
@@ -176,14 +185,16 @@ public class DuckEntity extends TrustingBirdEntity implements BirdBrain<DuckEnti
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putBoolean(CLIPPED_KEY, this.hasClippedWings());
+        this.writeClipped(nbt);
+        this.writeDomestic(nbt);
         nbt.putString(VARIANT_KEY, this.getVariant().unwrapKey().orElse(DuckVariant.GREEN_HEADED).location().toString());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        this.setClippedWings(nbt.getBoolean(CLIPPED_KEY));
+        this.readClipped(nbt);
+        this.readDomestic(nbt);
         Optional.ofNullable(ResourceLocation.tryParse(nbt.getString(VARIANT_KEY)))
             .map(variant -> ResourceKey.create(FowlPlayRegistries.DUCK_VARIANT, variant))
             .flatMap(FowlPlayBuiltInRegistries.DUCK_VARIANT::getHolder)

@@ -12,47 +12,36 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.Optional;
-
 public record GooseVariant(
     String id,
-    ModelType modelType,
-    Optional<ResourceLocation> domesticId
+    boolean domesticatable
 ) {
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<GooseVariant>> PACKET_CODEC = ByteBufCodecs.holderRegistry(FowlPlayRegistries.GOOSE_VARIANT);
-    public static final ResourceKey<GooseVariant> CANADA = registerWild("canada");
-    public static final ResourceKey<GooseVariant> GREYLAG = registerWild("greylag", "emden");
-    public static final ResourceKey<GooseVariant> SWAN = registerWild("swan", "chinese");
-    public static final ResourceKey<GooseVariant> EMDEN = registerDomestic("emden");
-    public static final ResourceKey<GooseVariant> CHINESE = registerDomestic("chinese");
+    public static final ResourceKey<GooseVariant> CANADA = register("canada", false);
+    public static final ResourceKey<GooseVariant> GREYLAG = register("greylag", true);
+    public static final ResourceKey<GooseVariant> SWAN = register("swan", true);
 
-    public ResourceLocation texture(boolean isBaby) {
+    public ResourceLocation texture(boolean isBaby, boolean isDomestic) {
         return FowlPlay.id(new PathBuilder()
             .add("textures/entity/goose/")
             .addIf("baby_", isBaby)
+            .addIf("domestic_", this.domesticatable && isDomestic)
             .add(this.id)
             .add("_goose.png")
         );
     }
 
-    private static ResourceKey<GooseVariant> registerWild(String id) {
-        return register(id, ModelType.WILD, Optional.empty());
+    public ModelType modelType(boolean isDomestic) {
+        return this.domesticatable && isDomestic
+            ? ModelType.DOMESTIC
+            : ModelType.WILD;
     }
 
-    private static ResourceKey<GooseVariant> registerWild(String id, String domesticId) {
-        return register(id, ModelType.WILD, Optional.of(domesticId));
-    }
-
-    private static ResourceKey<GooseVariant> registerDomestic(String id) {
-        return register(id, ModelType.DOMESTIC, Optional.empty());
-    }
-
-    private static ResourceKey<GooseVariant> register(String id, ModelType modelType, Optional<String> domesticId) {
+    private static ResourceKey<GooseVariant> register(String id, boolean domesticatable) {
         ResourceKey<GooseVariant> key = ResourceKey.create(FowlPlayRegistries.GOOSE_VARIANT, FowlPlay.id(id));
         PlatformHelper.registerVariant(id, key, () -> new GooseVariant(
             id,
-            modelType,
-            domesticId.map(FowlPlay::id)
+            domesticatable
         ));
         return key;
     }

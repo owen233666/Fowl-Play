@@ -46,13 +46,13 @@ public class GooseRenderer extends MobRenderer<GooseEntity, GooseModel> {
 
     @Override
     public void render(GooseEntity goose, float f, float g, PoseStack matrices, MultiBufferSource vertexConsumerProvider, int i) {
-        this.model = this.models.get(goose.getVariant().value().modelType())
+        this.model = this.models.get(goose.getVariant().value().modelType(goose.isDomestic()))
             .getModel(goose.isBaby());
         super.render(goose, f, g, matrices, vertexConsumerProvider, i);
     }
 
     @Override
     public ResourceLocation getTextureLocation(GooseEntity goose) {
-        return goose.getVariant().value().texture(goose.isBaby());
+        return goose.getVariant().value().texture(goose.isBaby(), goose.isDomestic());
     }
 }

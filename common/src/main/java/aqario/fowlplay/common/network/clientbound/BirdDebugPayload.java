@@ -1,4 +1,4 @@
-package aqario.fowlplay.common.network.s2c;
+package aqario.fowlplay.common.network.clientbound;
 
 import aqario.fowlplay.client.render.debug.BirdDebugRenderer;
 import aqario.fowlplay.core.FowlPlay;
