@@ -370,9 +370,8 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             new FloatToSurfaceOfFluid<>()
                 .riseChance(0.5F),
             FlightBehaviours.stopFalling(),
-            new TeleportToTarget(),
-            new SetOwnerTarget(),
             SetEntityLookTarget.create(BirdUtils::isPlayerHoldingFood),
+            new TeleportToTarget(),
             new LookAtTarget<>()
                 .runForBetween(45, 90),
             new MoveToWalkTarget<>()
@@ -396,6 +395,13 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
             FlightBehaviours.<PigeonEntity>startFlying()
                 .startCondition(PigeonEntity::shouldFlyToRecipient),
             DeliverBundle.run()
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends PigeonEntity> getFollowTasks() {
+        return BirdBrain.followActivity(
+            new SetOwnerWalkOrTpTarget()
         );
     }
 
