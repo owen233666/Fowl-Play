@@ -355,7 +355,7 @@ public class GooseEntity extends TrustingBirdEntity implements BirdBrain<GooseEn
     @Override
     public CylindricalRadius getWalkRange() {
         return this.isDomestic()
-            ? new CylindricalRadius(64, 16)
+            ? new CylindricalRadius(64, 24)
             : new CylindricalRadius(32, 8);
     }
 
