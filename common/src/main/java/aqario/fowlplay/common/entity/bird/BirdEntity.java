@@ -4,6 +4,7 @@ import aqario.fowlplay.common.entity.CustomMobCategory;
 import aqario.fowlplay.common.entity.ai.control.BirdBodyRotationControl;
 import aqario.fowlplay.common.entity.ai.control.BirdLookControl;
 import aqario.fowlplay.common.entity.ai.control.BirdMoveControl;
+import aqario.fowlplay.common.entity.bird.waterfowl.GooseEntity;
 import aqario.fowlplay.common.network.FowlPlayDebugPackets;
 import aqario.fowlplay.common.util.AnimationStateList;
 import aqario.fowlplay.common.util.BirdUtils;
@@ -20,6 +21,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -212,8 +214,17 @@ public abstract class BirdEntity extends Animal {
         }
     }
 
-    public boolean isBelowWaterline() {
+    public boolean isWaterAboveFloatHeight() {
         return this.isUnderWater() || this.getFluidHeight(FluidTags.WATER) > this.getBoundingBox().getYsize() * 0.35;
+    }
+
+    @Override
+    public Vec3 getFluidFallingAdjustedMovement(double gravity, boolean isFalling, Vec3 deltaMovement) {
+        if(this instanceof GooseEntity && this.isWaterAboveFloatHeight()) { // TODO: implement for all birds that can float on water
+            double floatVelocity = 0.1 * Math.pow(Mth.clamp(1 - this.getEyeHeight() + this.getBoundingBox().getYsize() * 0.5, 0, 1), 3);
+            return deltaMovement.add(0.0, 0.07 * Math.pow(Math.clamp(this.getFluidHeight(FluidTags.WATER), 0, 1), 3), 0.0);
+        }
+        return super.getFluidFallingAdjustedMovement(gravity, isFalling, deltaMovement);
     }
 
     @Override

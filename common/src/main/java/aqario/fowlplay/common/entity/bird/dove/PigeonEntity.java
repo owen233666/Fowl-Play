@@ -452,10 +452,10 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     private static boolean shouldFlyToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryTypes.RECIPIENT.get()).orElse(null);
-        if(recipientUuid == null) {
+        if(!pigeon.isMemoryPresent(FowlPlayMemoryTypes.RECIPIENT.get())) {
             return false;
         }
+        UUID recipientUuid = pigeon.getPresentMemory(FowlPlayMemoryTypes.RECIPIENT.get());
         Player recipient = pigeon.level().getPlayerByUUID(recipientUuid);
         if(recipient == null) {
             return false;
@@ -464,10 +464,10 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
     }
 
     private static boolean shouldStopFlyingToRecipient(PigeonEntity pigeon) {
-        UUID recipientUuid = pigeon.getBrain().getMemory(FowlPlayMemoryTypes.RECIPIENT.get()).orElse(null);
-        if(recipientUuid == null) {
+        if(!pigeon.isMemoryPresent(FowlPlayMemoryTypes.RECIPIENT.get())) {
             return true;
         }
+        UUID recipientUuid = pigeon.getPresentMemory(FowlPlayMemoryTypes.RECIPIENT.get());
         Player recipient = pigeon.level().getPlayerByUUID(recipientUuid);
         if(recipient == null) {
             return true;
@@ -480,22 +480,16 @@ public class PigeonEntity extends TameableBirdEntity implements BirdBrain<Pigeon
         this.tickBrain(this);
         super.customServerAiStep();
 
-        if(this.getServer() == null) {
-            return;
+        if(this.isTamed() && this.getServer() != null) {
+            ItemStack stack = this.getItemBySlot(EquipmentSlot.OFFHAND);
+            ServerPlayer recipient = this.getServer().getPlayerList().getPlayerByName(stack.getHoverName().getString());
+
+            if(!(stack.getItem() instanceof BundleItem) || !stack.getComponents().has(DataComponents.CUSTOM_NAME) || recipient == null) {
+                this.setRecipientUuid(null);
+            }
+            else {
+                this.setRecipientUuid(recipient.getUUID());
+            }
         }
-
-        if(!this.isTamed()) {
-            return;
-        }
-
-        ItemStack stack = this.getItemBySlot(EquipmentSlot.OFFHAND);
-        ServerPlayer recipient = this.getServer().getPlayerList().getPlayerByName(stack.getHoverName().getString());
-
-        if(!(stack.getItem() instanceof BundleItem) || !stack.getComponents().has(DataComponents.CUSTOM_NAME) || recipient == null) {
-            this.setRecipientUuid(null);
-            return;
-        }
-
-        this.setRecipientUuid(recipient.getUUID());
     }
 }

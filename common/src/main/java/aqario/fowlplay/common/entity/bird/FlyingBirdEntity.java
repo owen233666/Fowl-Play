@@ -289,7 +289,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
     }
 
     public boolean canStartFlying() {
-        return !this.isFlightless() && !this.isFlying() && !this.isBelowWaterline() && this.getHealth() >= MIN_HEALTH_TO_FLY;
+        return !this.isFlightless() && !this.isFlying() && !this.isWaterAboveFloatHeight() && this.getHealth() >= MIN_HEALTH_TO_FLY;
     }
 
     public boolean shouldStopFlying() {
@@ -300,7 +300,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
             return false;
         }
         return this.onGround()
-            || this.isBelowWaterline()
+            || this.isWaterAboveFloatHeight()
             || this.getDeltaMovement().length() < MIN_FLIGHT_VELOCITY
             || this.getHealth() < MIN_HEALTH_TO_FLY;
     }
@@ -396,7 +396,7 @@ public abstract class FlyingBirdEntity extends BirdEntity {
 
         if(this.isControlledByLocalInstance()) {
             if(this.isInWater()) {
-                this.moveRelative(this.isBelowWaterline() ? 0.02F : this.getSpeed(), movementInput);
+                this.moveRelative(this.isWaterAboveFloatHeight() ? 0.02F : this.getSpeed(), movementInput);
                 this.move(MoverType.SELF, this.getDeltaMovement());
                 this.setDeltaMovement(this.getDeltaMovement().scale(0.8F));
             }

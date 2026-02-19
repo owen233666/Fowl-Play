@@ -13,8 +13,7 @@ public class FlightBehaviours {
                 bird.startFlying();
                 return true;
             }
-        )
-            .startCondition(FlyingBirdEntity::canStartFlying);
+        ).startCondition(FlyingBirdEntity::canStartFlying);
     }
 
     public static <E extends FlyingBirdEntity> ExtendedBehaviour<E> stopFlying() {
@@ -32,7 +31,6 @@ public class FlightBehaviours {
                 bird.startFlying();
                 return true;
             }
-        )
-            .startCondition(bird -> bird.fallDistance > 1 && bird.canStartFlying());
+        ).startCondition(bird -> bird.fallDistance > 1 && bird.canStartFlying());
     }
 }
